@@ -71,6 +71,23 @@
       border-color: #D4AF37;
       box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
     }
+
+    /* Print Stylesheet untuk Ekspor Laporan Keuangan PDF */
+    @media print {
+      body * { visibility: hidden; }
+      #printableReport, #printableReport * { visibility: visible; color: #000 !important; }
+      #printableReport {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%;
+        background: #fff !important;
+        padding: 20px;
+        box-shadow: none !important;
+        border: none !important;
+      }
+      .no-print { display: none !important; }
+    }
   </style>
 </head>
 <body class="min-h-screen text-slate-200 antialiased selection:bg-amber-500 selection:text-black">
@@ -81,8 +98,47 @@
     <span id="toastMsg">Notifikasi Enterprise</span>
   </div>
 
+  <!-- ================= SECTION LOGIN MODAL / SCREEN ================= -->
+  <div id="loginOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-corporate-950/90 backdrop-blur-md">
+    <div class="glass-card max-w-md w-full p-8 rounded-2xl border border-amber-500/20 shadow-2xl relative overflow-hidden">
+      <div class="text-center mb-8">
+        <div class="inline-flex p-4 bg-gradient-to-b from-amber-500/20 to-transparent border border-amber-500/30 rounded-2xl text-amber-400 shadow-xl mb-3">
+          <i class="fa-solid fa-building-columns text-3xl"></i>
+        </div>
+        <h2 class="text-xl font-extrabold tracking-wider uppercase text-white">AAAIIM <span class="text-amber-400">OneFinance</span></h2>
+        <p class="text-xs text-slate-400 mt-1 uppercase tracking-widest font-medium">Enterprise Portal Login</p>
+      </div>
+
+      <form onsubmit="handleLogin(event)" class="space-y-4">
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Username / ID Staf</label>
+          <div class="relative">
+            <i class="fa-solid fa-user-shield absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
+            <input type="text" id="loginUser" required placeholder="admin / staf / auditor" class="w-full pl-10 pr-3 py-3 rounded-xl glass-input text-xs outline-none text-white">
+          </div>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Kata Sandi</label>
+          <div class="relative">
+            <i class="fa-solid fa-key absolute left-3.5 top-3.5 text-slate-500 text-xs"></i>
+            <input type="password" id="loginPass" required placeholder="••••••••" class="w-full pl-10 pr-3 py-3 rounded-xl glass-input text-xs outline-none text-white">
+          </div>
+        </div>
+
+        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase mt-2">
+          <i class="fa-solid fa-right-to-bracket"></i> Autentikasi Masuk
+        </button>
+      </form>
+
+      <div class="mt-6 pt-4 border-t border-corporate-border text-center">
+        <p class="text-[10px] text-slate-500">Demologin credential: <br><span class="text-slate-400 font-mono">User: admin | Pass: admin123</span> (Akses Penuh)</p>
+      </div>
+    </div>
+  </div>
+
   <!-- MAIN APPLICATION CONTENT -->
-  <div id="mainApp">
+  <div id="mainApp" class="hidden">
     <!-- HEADER -->
     <header class="sticky top-0 z-40 border-b border-corporate-border glass-card bg-corporate-950/80">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
@@ -101,13 +157,16 @@
 
         <div class="flex items-center gap-4">
           <div class="flex items-center gap-3 pl-4 border-l border-corporate-border">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 flex items-center justify-center font-black text-xs shadow-lg shadow-amber-500/10">
-              PUB
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 flex items-center justify-center font-black text-xs shadow-lg shadow-amber-500/10" id="userAvatar">
+              ADM
             </div>
             <div class="hidden md:block text-left">
-              <span class="text-xs font-bold block text-slate-200">Public Shared Session</span>
-              <span class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-wifi text-[6px]"></i> Terhubung ke Cloud</span>
+              <span class="text-xs font-bold block text-slate-200" id="userNameDisplay">Admin Direksi</span>
+              <span class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1" id="userRoleDisplay"><i class="fa-solid fa-shield text-[8px]"></i> Akses Penuh</span>
             </div>
+            <button onclick="handleLogout()" class="ml-2 p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl border border-rose-500/20 transition-all text-xs" title="Keluar Sesi">
+              <i class="fa-solid fa-power-off"></i>
+            </button>
           </div>
         </div>
       </div>
@@ -117,10 +176,12 @@
         <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn active border-b-2 border-amber-400 text-amber-400 font-semibold flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
           <i class="fa-solid fa-chart-pie"></i> Eksekutif Dashboard
         </button>
+        <button onclick="switchTab('analisis')" id="nav-analisis" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
+          <i class="fa-solid fa-chart-line"></i> Analisis Rasio Keuangan
+        </button>
         <button onclick="switchTab('pencatatan')" id="nav-pencatatan" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
           <i class="fa-solid fa-pen-to-square"></i> Jurnal Transaksi
         </button>
-        <!-- TAB BARU KHUSUS TRANSFER -->
         <button onclick="switchTab('transfer')" id="nav-transfer" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
           <i class="fa-solid fa-right-left"></i> Transfer Antar Akun
         </button>
@@ -128,7 +189,7 @@
           <i class="fa-solid fa-vault"></i> Manajemen Kas & Rekening
         </button>
         <button onclick="switchTab('laporan')" id="nav-laporan" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
-          <i class="fa-solid fa-file-invoice-dollar"></i> Laporan Keuangan
+          <i class="fa-solid fa-file-invoice-dollar"></i> Laporan Keuangan PDF
         </button>
       </div>
     </header>
@@ -204,7 +265,37 @@
         </div>
       </section>
 
-      <!-- ================= TAB 2: PENCATATAN (PENDAPATAN/PENGELUARAN) ================= -->
+      <!-- ================= TAB BARU 2: ANALISIS PERUSAHAAN ================= -->
+      <section id="tab-analisis" class="tab-content hidden space-y-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="glass-card p-6 rounded-2xl border-l-4 border-l-amber-400">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Margin Laba Bersih (NPM)</span>
+            <h3 class="text-3xl font-black text-amber-400 mt-2" id="npmValue">0%</h3>
+            <p class="text-xs text-slate-400 mt-2">Persentase pendapatan yang berhasil menjadi laba bersih perusahaan.</p>
+          </div>
+
+          <div class="glass-card p-6 rounded-2xl border-l-4 border-l-rose-400">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Rasio Beban Operasional</span>
+            <h3 class="text-3xl font-black text-rose-400 mt-2" id="expenseRatioValue">0%</h3>
+            <p class="text-xs text-slate-400 mt-2">Proporsi pengeluaran dari total pendapatan yang masuk.</p>
+          </div>
+
+          <div class="glass-card p-6 rounded-2xl border-l-4 border-l-cyan-400">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Indeks Kesehatan Finansial</span>
+            <h3 class="text-3xl font-black text-cyan-400 mt-2" id="healthScore">SEHAT</h3>
+            <p class="text-xs text-slate-400 mt-2" id="healthDesc">Kondisi kas dan efisiensi operasional tergolong stabil.</p>
+          </div>
+        </div>
+
+        <div class="glass-card p-6 rounded-2xl space-y-4">
+          <h2 class="text-base font-bold text-white tracking-wide uppercase border-b border-corporate-border pb-3">Ringkasan Eksekutif & Mitigasi Risiko</h2>
+          <div id="executiveSummary" class="space-y-3 text-xs text-slate-300">
+            <!-- Dynamic analysis loaded here -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB 3: PENCATATAN ================= -->
       <section id="tab-pencatatan" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="glass-card p-6 rounded-2xl h-fit">
           <h2 class="text-base font-bold text-white tracking-wide uppercase mb-1">Entri Jurnal Baru</h2>
@@ -246,7 +337,7 @@
               <textarea id="txNotes" rows="2" placeholder="Catatan transaksi..." class="w-full p-3 rounded-xl glass-input text-xs outline-none"></textarea>
             </div>
 
-            <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
+            <button type="submit" id="btnSaveTx" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
               <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Jurnal
             </button>
           </form>
@@ -262,7 +353,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB BARU: TRANSFER ANTAAR AKUN ================= -->
+      <!-- ================= TAB 4: TRANSFER ANTAAR AKUN ================= -->
       <section id="tab-transfer" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="glass-card p-6 rounded-2xl h-fit">
           <h2 class="text-base font-bold text-white tracking-wide uppercase mb-1">Transfer Dana Antar Rekening</h2>
@@ -304,7 +395,7 @@
               <textarea id="transferNotes" rows="2" placeholder="Contoh: Pengisian petty cash, rebalancing kas..." class="w-full p-3 rounded-xl glass-input text-xs outline-none"></textarea>
             </div>
 
-            <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
+            <button type="submit" id="btnSaveTransfer" class="w-full py-3.5 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
               <i class="fa-solid fa-right-left"></i> Proses Pemindahan Dana
             </button>
           </form>
@@ -320,7 +411,7 @@
         </div>
       </section>
 
-      <!-- ================= TAB 3: AKUN & KAS ================= -->
+      <!-- ================= TAB 5: AKUN & KAS ================= -->
       <section id="tab-akun" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="glass-card p-6 rounded-2xl h-fit">
           <h2 class="text-base font-bold text-white tracking-wide uppercase mb-1">Tambah Akun/Bank</h2>
@@ -346,7 +437,7 @@
               <input type="number" id="accBalance" placeholder="0" class="w-full p-3 rounded-xl glass-input text-xs outline-none">
             </div>
 
-            <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
+            <button type="submit" id="btnSaveAcc" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
               <i class="fa-solid fa-plus-circle"></i> Tambah Akun Cloud
             </button>
           </form>
@@ -360,10 +451,17 @@
         </div>
       </section>
 
-      <!-- ================= TAB 4: LAPORAN ================= -->
+      <!-- ================= TAB 6: LAPORAN KEUANGAN PDF ================= -->
       <section id="tab-laporan" class="tab-content hidden space-y-6">
-        <div class="glass-card p-8 sm:p-12 rounded-2xl" id="reportDisplay">
-          <!-- Dynamic report -->
+        <div class="flex justify-between items-center no-print">
+          <p class="text-xs text-slate-400">Laporan Resmi Perusahaan disajikan secara otomatis.</p>
+          <button onclick="window.print()" class="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/20 hover:from-amber-400 transition-all flex items-center gap-2 text-xs uppercase tracking-wider">
+            <i class="fa-solid fa-file-pdf"></i> Unduh / Cetak Laporan PDF
+          </button>
+        </div>
+
+        <div class="glass-card p-8 sm:p-12 rounded-2xl text-slate-800" id="printableReport">
+          <!-- Printable Official Report HTML generated below -->
         </div>
       </section>
 
@@ -375,15 +473,16 @@
     // -----------------------------------------------------------------
     // 1. ISIKAN KONFIGURASI FIREBASE ANDA DI SINI
     // -----------------------------------------------------------------
-    const firebaseConfig = {
-      apiKey: "PASTE_API_KEY_ANDA_DI_SINI",
-      authDomain: "PROJECT_ID_ANDA.firebaseapp.com",
-      databaseURL: "https://PROJECT_ID_ANDA-default-rtdb.firebaseio.com",
-      projectId: "PROJECT_ID_ANDA",
-      storageBucket: "PROJECT_ID_ANDA.appspot.com",
-      messagingSenderId: "SENDER_ID",
-      appId: "APP_ID"
-    };
+  const firebaseConfig = {
+      apiKey: "AIzaSyB8L2mjD2fiUqP3iAGccCh98MyIgsgM_14",
+      authDomain: "aaaiim-onefinance.firebaseapp.com",
+      databaseURL: "https://aaaiim-onefinance-default-rtdb.firebaseio.com",
+      projectId: "aaaiim-onefinance",
+      storageBucket: "aaaiim-onefinance.firebasestorage.app",
+      messagingSenderId: "111442380622",
+      appId: "1:111442380622:web:9106c659173ed914bd401f",
+      measurementId: "G-ZFTSGN3YR9"
+  };
 
     // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
@@ -392,16 +491,73 @@
     // Variable State Data
     let transactions = [];
     let accounts = [];
+    let currentUser = null;
 
     const todayDate = new Date().toISOString().split('T')[0];
     document.getElementById('txDate').value = todayDate;
     document.getElementById('transferDate').value = todayDate;
 
     // -----------------------------------------------------------------
-    // 2. REALTIME LISTENERS
+    // 2. AUTHENTICATION & ROLE MANAGEMENT
+    // -----------------------------------------------------------------
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('loginUser').value.trim().toLowerCase();
+      const p = document.getElementById('loginPass').value;
+
+      if (u === 'admin' && p === 'admin123') {
+        currentUser = { name: 'Admin Direksi', role: 'admin', label: 'Super Admin' };
+      } else if (u === 'staf' && p === 'staf123') {
+        currentUser = { name: 'Staf Keuangan', role: 'staf', label: 'Operasional' };
+      } else if (u === 'auditor' && p === 'auditor123') {
+        currentUser = { name: 'Auditor Eksternal', role: 'auditor', label: 'Read-Only' };
+      } else {
+        showToast('❌ Username atau Password Salah!');
+        return;
+      }
+
+      // Update UI sesuai Role
+      document.getElementById('loginOverlay').classList.add('hidden');
+      document.getElementById('mainApp').classList.remove('hidden');
+      document.getElementById('userNameDisplay').innerText = currentUser.name;
+      document.getElementById('userRoleDisplay').innerHTML = `<i class="fa-solid fa-shield text-[8px]"></i> ${currentUser.label}`;
+      document.getElementById('userAvatar').innerText = currentUser.name.substring(0, 3).toUpperCase();
+
+      applyRolePermissions();
+      showToast(`Selamat datang, ${currentUser.name}`);
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      document.getElementById('mainApp').classList.add('hidden');
+      document.getElementById('loginOverlay').classList.remove('hidden');
+      document.getElementById('loginUser').value = '';
+      document.getElementById('loginPass').value = '';
+    }
+
+    function applyRolePermissions() {
+      const isAuditor = currentUser && currentUser.role === 'auditor';
+      
+      // Jika Auditor/Read-Only, sembunyikan atau matikan tombol simpan
+      ['btnSaveTx', 'btnSaveTransfer', 'btnSaveAcc'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+          btn.disabled = isAuditor;
+          if (isAuditor) {
+            btn.classList.add('opacity-50', 'cursor-not-allowed');
+          } else {
+            btn.classList.remove('opacity-50', 'cursor-not-allowed');
+          }
+        }
+      });
+    }
+
+    // -----------------------------------------------------------------
+    // 3. REALTIME LISTENERS
     // -----------------------------------------------------------------
     
-    // Listener Transaksi & Transfer
+    // Listener Transaksi
     db.ref('transactions').on('value', (snapshot) => {
       const data = snapshot.val();
       transactions = [];
@@ -428,12 +584,13 @@
     });
 
     // -----------------------------------------------------------------
-    // 3. EVENT HANDLERS (TERMASUK FITUR TRANSFER BARU)
+    // 4. EVENT HANDLERS
     // -----------------------------------------------------------------
 
-    // Simpan Transaksi Pendapatan/Pengeluaran biasa
     function handleSaveTx(e) {
       e.preventDefault();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+
       const accountName = document.getElementById('txAccount').value;
       const amount = parseFloat(document.getElementById('txAmount').value);
       const type = document.getElementById('txType').value;
@@ -461,9 +618,10 @@
       showToast('Jurnal Transaksi Disimpan!');
     }
 
-    // SIMPAN KHUSUS TRANSFER ANTAAR AKUN
     function handleSaveTransfer(e) {
       e.preventDefault();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+
       const fromAccName = document.getElementById('transferFromAccount').value;
       const toAccName = document.getElementById('transferToAccount').value;
       const amount = parseFloat(document.getElementById('transferAmount').value);
@@ -478,18 +636,8 @@
       const sourceAcc = accounts.find(a => a.name === fromAccName);
       const targetAcc = accounts.find(a => a.name === toAccName);
 
-      if (!sourceAcc || !targetAcc) {
-        showToast('❌ Rekening tidak valid.');
-        return;
-      }
+      if (!sourceAcc || !targetAcc) return showToast('❌ Rekening tidak valid.');
 
-      if (parseFloat(sourceAcc.balance || 0) < amount) {
-        if (!confirm('⚠️ Saldo rekening sumber tidak mencukupi. Lanjutkan transaksi?')) {
-          return;
-        }
-      }
-
-      // Catat sebagai transaksi bertipe "Transfer"
       const transferTx = {
         type: 'Transfer',
         amount: amount,
@@ -503,14 +651,8 @@
 
       db.ref('transactions').push(transferTx);
 
-      // Kurangi saldo rekening pengirim & Tambah saldo rekening penerima
-      db.ref('accounts/' + sourceAcc.id).update({
-        balance: parseFloat(sourceAcc.balance || 0) - amount
-      });
-
-      db.ref('accounts/' + targetAcc.id).update({
-        balance: parseFloat(targetAcc.balance || 0) + amount
-      });
+      db.ref('accounts/' + sourceAcc.id).update({ balance: parseFloat(sourceAcc.balance || 0) - amount });
+      db.ref('accounts/' + targetAcc.id).update({ balance: parseFloat(targetAcc.balance || 0) + amount });
 
       document.getElementById('transferAmount').value = '';
       document.getElementById('transferNotes').value = '';
@@ -519,6 +661,8 @@
 
     function handleSaveAccount(e) {
       e.preventDefault();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+
       const newAcc = {
         name: document.getElementById('accName').value,
         type: document.getElementById('accType').value,
@@ -532,7 +676,7 @@
     }
 
     // -----------------------------------------------------------------
-    // 4. RENDER UI FUNCTIONS
+    // 5. RENDER UI & ANALYTICS
     // -----------------------------------------------------------------
 
     function getTotals() {
@@ -596,13 +740,119 @@
         </div>
       `).join('');
 
-      // Render History Lists
       renderHistoryLists();
-      renderReport();
+      renderAnalytics();
+      renderPrintableReport();
+    }
+
+    function renderAnalytics() {
+      const totals = getTotals();
+      const npm = totals.income > 0 ? ((totals.net / totals.income) * 100).toFixed(1) : 0;
+      const expenseRatio = totals.income > 0 ? ((totals.expense / totals.income) * 100).toFixed(1) : 0;
+
+      document.getElementById('npmValue').innerText = npm + '%';
+      document.getElementById('expenseRatioValue').innerText = expenseRatio + '%';
+
+      const healthScoreEl = document.getElementById('healthScore');
+      const healthDescEl = document.getElementById('healthDesc');
+      const execSummary = document.getElementById('executiveSummary');
+
+      if (totals.net >= 0 && expenseRatio <= 70) {
+        healthScoreEl.innerText = 'SANGAT SEHAT';
+        healthScoreEl.className = 'text-3xl font-black text-emerald-400 mt-2';
+        healthDescEl.innerText = 'Profitabilitas tinggi dan beban operasional terkontrol dengan baik.';
+      } else if (totals.net >= 0) {
+        healthScoreEl.innerText = 'STABIL';
+        healthScoreEl.className = 'text-3xl font-black text-amber-400 mt-2';
+        healthDescEl.innerText = 'Perusahaan mencetak laba, tetapi rasio pengeluaran cukup tinggi.';
+      } else {
+        healthScoreEl.innerText = 'PERINGATAN (DEFISIT)';
+        healthScoreEl.className = 'text-3xl font-black text-rose-400 mt-2';
+        healthDescEl.innerText = 'Beban operasional melebihi pendapatan. Perlu evaluasi anggaran.';
+      }
+
+      execSummary.innerHTML = `
+        <div class="p-4 rounded-xl bg-corporate-900 border border-corporate-border">
+          <p class="font-bold text-amber-400 mb-1"><i class="fa-solid fa-chart-line"></i> Analisis Profitabilitas:</p>
+          <p>Margin Laba Bersih saat ini berada pada tingkat <strong>${npm}%</strong>. Setiap Rp 1.000 pendapatan menghasilkan laba bersih Rp ${Math.max(0, Math.round(npm * 10))}.</p>
+        </div>
+        <div class="p-4 rounded-xl bg-corporate-900 border border-corporate-border">
+          <p class="font-bold text-cyan-400 mb-1"><i class="fa-solid fa-scale-balanced"></i> Likuiditas Kas:</p>
+          <p>Total portofolio kas dan bank siap pakai sebesar <strong>Rp ${totals.assets.toLocaleString()}</strong> secara konsolidasi.</p>
+        </div>
+      `;
+    }
+
+    function renderPrintableReport() {
+      const totals = getTotals();
+      const reportDate = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      document.getElementById('printableReport').innerHTML = `
+        <div class="border-b-2 border-slate-900 pb-6 mb-8 flex justify-between items-center">
+          <div>
+            <h1 class="text-2xl font-black uppercase text-slate-900 tracking-wider">PT AAAIIM ONEFINANCE GLOBAL</h1>
+            <p class="text-xs text-slate-600">Enterprise Capital & Financial Management Portal</p>
+            <p class="text-xs text-slate-500 mt-1">Laporan Disusun: ${reportDate}</p>
+          </div>
+          <div class="text-right">
+            <span class="px-3 py-1 bg-slate-100 text-slate-800 border border-slate-300 rounded text-xs font-bold uppercase">Laporan Resmi Laba/Rugi</span>
+          </div>
+        </div>
+
+        <div class="space-y-6 text-sm">
+          <div>
+            <h3 class="font-bold text-slate-900 uppercase border-b border-slate-200 pb-2 mb-3">I. Ringkasan Kinerja Keuangan</h3>
+            <table class="w-full text-left border-collapse">
+              <tr class="border-b border-slate-200">
+                <td class="py-2.5 text-slate-700">Total Pendapatan Operasional</td>
+                <td class="py-2.5 font-mono text-right font-bold text-emerald-700">Rp ${totals.income.toLocaleString()}</td>
+              </tr>
+              <tr class="border-b border-slate-200">
+                <td class="py-2.5 text-slate-700">Total Beban & Pengeluaran Operasional</td>
+                <td class="py-2.5 font-mono text-right font-bold text-rose-700">(Rp ${totals.expense.toLocaleString()})</td>
+              </tr>
+              <tr class="border-b-2 border-slate-900 font-bold bg-slate-50">
+                <td class="py-3 text-slate-900">LABA (RUGI) BERSIH OPERASIONAL</td>
+                <td class="py-3 font-mono text-right text-slate-900">Rp ${totals.net.toLocaleString()}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div>
+            <h3 class="font-bold text-slate-900 uppercase border-b border-slate-200 pb-2 mb-3">II. Konsolidasi Kas & Bank</h3>
+            <table class="w-full text-left border-collapse">
+              ${accounts.map(a => `
+                <tr class="border-b border-slate-200">
+                  <td class="py-2 text-slate-700">${a.name} (${a.type})</td>
+                  <td class="py-2 font-mono text-right text-slate-900">Rp ${parseFloat(a.balance || 0).toLocaleString()}</td>
+                </tr>
+              `).join('')}
+              <tr class="font-bold bg-slate-50 border-t border-slate-900">
+                <td class="py-2.5 text-slate-900">TOTAL ASSET KAS & BANK</td>
+                <td class="py-2.5 font-mono text-right text-slate-900">Rp ${totals.assets.toLocaleString()}</td>
+              </tr>
+            </table>
+          </div>
+
+          <div class="pt-12 grid grid-cols-2 text-center text-xs text-slate-600">
+            <div>
+              <p>Dibuat Oleh,</p>
+              <div class="h-16"></div>
+              <p class="font-bold text-slate-900 underline">${currentUser ? currentUser.name : 'Staf Keuangan'}</p>
+              <p>Departemen Keuangan</p>
+            </div>
+            <div>
+              <p>Disetujui Oleh,</p>
+              <div class="h-16"></div>
+              <p class="font-bold text-slate-900 underline">Direktur Utama / CFO</p>
+              <p>PT AAAIIM OneFinance</p>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
     function renderHistoryLists() {
-      // History Jurnal Operasional (Tanpa Transfer)
       const nonTransfers = transactions.filter(t => t.type !== 'Transfer');
       document.getElementById('txHistoryList').innerHTML = nonTransfers.length === 0 ? 
         '<p class="text-xs text-slate-500 text-center py-4">Belum ada transaksi operasional.</p>' :
@@ -618,7 +868,6 @@
           </div>
         `).join('');
 
-      // History Khusus Transfer
       const transfers = transactions.filter(t => t.type === 'Transfer');
       document.getElementById('transferHistoryList').innerHTML = transfers.length === 0 ?
         '<p class="text-xs text-slate-500 text-center py-4">Belum ada riwayat transfer antar akun.</p>' :
@@ -635,30 +884,6 @@
             </span>
           </div>
         `).join('');
-    }
-
-    function renderReport() {
-      const totals = getTotals();
-      document.getElementById('reportDisplay').innerHTML = `
-        <div class="text-center pb-8 border-b border-corporate-border mb-8">
-          <h2 class="text-lg font-extrabold text-white uppercase tracking-widest">LAPORAN KEUANGAN KONSOLIDASI (CLOUD)</h2>
-          <p class="text-xs text-slate-400 mt-1">AAAIIM Global Shared Statement</p>
-        </div>
-        <div class="max-w-xl mx-auto space-y-4 text-xs">
-          <div class="flex justify-between py-3 border-b border-corporate-border font-bold text-emerald-400">
-            <span>TOTAL PENDAPATAN</span>
-            <span class="font-mono">Rp ${totals.income.toLocaleString()}</span>
-          </div>
-          <div class="flex justify-between py-3 border-b border-corporate-border font-bold text-rose-400">
-            <span>TOTAL PENGELUARAN</span>
-            <span class="font-mono">(Rp ${totals.expense.toLocaleString()})</span>
-          </div>
-          <div class="flex justify-between py-4 border-t-2 border-amber-500/30 font-black text-sm text-white">
-            <span class="text-amber-400">LABA BERSIH OPERASIONAL</span>
-            <span class="font-mono ${totals.net >= 0 ? 'text-emerald-400' : 'text-rose-400'}">Rp ${totals.net.toLocaleString()}</span>
-          </div>
-        </div>
-      `;
     }
 
     function switchTab(tabId) {
