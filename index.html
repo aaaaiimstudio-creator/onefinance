@@ -30,7 +30,8 @@
               900: '#0b1120',
               800: '#131c31',
               700: '#1e2d4a',
-              border: 'rgba(255, 255, 255, 0.08)'
+              border: 'rgba(255, 255, 255, 0.08)',
+              lightBorder: 'rgba(0, 0, 0, 0.08)'
             },
             accent: {
               gold: '#D4AF37',
@@ -45,32 +46,45 @@
   </script>
 
   <style>
-    body { font-family: 'Inter', sans-serif; background-color: #060913; color: #f1f5f9; }
-    ::-webkit-scrollbar { width: 5px; height: 5px; }
-    ::-webkit-scrollbar-track { background: #060913; }
-    ::-webkit-scrollbar-thumb { background: #1e2d4a; border-radius: 10px; }
-    ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
-
-    .glass-card {
-      background: rgba(11, 17, 32, 0.75);
+    body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease, color 0.3s ease; }
+    
+    /* Dark Mode Defaults */
+    html.dark body { background-color: #060913; color: #f1f5f9; }
+    html.dark .glass-card {
+      background: rgba(11, 17, 32, 0.85);
       backdrop-filter: blur(16px);
       -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
     }
-    .glass-card-gold {
-      background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(11, 17, 32, 0.8) 100%);
-      border: 1px solid rgba(212, 175, 55, 0.2);
-    }
-    .glass-input {
+    html.dark .glass-input {
       background: rgba(6, 9, 19, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.1);
-      transition: all 0.3s ease;
+      color: #fff;
     }
-    .glass-input:focus {
-      border-color: #D4AF37;
-      box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
+    html.dark .header-bg { background: rgba(6, 9, 19, 0.9); border-color: rgba(255, 255, 255, 0.08); }
+
+    /* Light Mode Overrides */
+    html:not(.dark) body { background-color: #f8fafc; color: #0f172a; }
+    html:not(.dark) .glass-card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
     }
+    html:not(.dark) .glass-input {
+      background: #f1f5f9;
+      border: 1px solid #cbd5e1;
+      color: #0f172a;
+    }
+    html:not(.dark) .header-bg { background: #ffffff; border-color: #e2e8f0; }
+    html:not(.dark) .text-white { color: #0f172a !important; }
+    html:not(.dark) .text-slate-200 { color: #1e293b !important; }
+    html:not(.dark) .text-slate-300 { color: #334155 !important; }
+    html:not(.dark) .text-slate-400 { color: #64748b !important; }
+
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: #1e2d4a; border-radius: 10px; }
 
     /* Print Stylesheet untuk Ekspor Laporan Keuangan PDF */
     @media print {
@@ -90,17 +104,112 @@
     }
   </style>
 </head>
-<body class="min-h-screen text-slate-200 antialiased selection:bg-amber-500 selection:text-black">
+<body class="min-h-screen antialiased selection:bg-amber-500 selection:text-black">
 
   <!-- Toast Notification -->
-  <div id="toast" class="fixed top-6 right-6 z-50 hidden flex items-center gap-3 glass-card border-l-4 border-l-amber-400 text-white px-5 py-4 rounded-xl shadow-2xl text-sm font-medium transition-all">
+  <div id="toast" class="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 hidden flex items-center gap-3 glass-card border-l-4 border-l-amber-400 text-slate-800 dark:text-white px-4 py-3 sm:px-5 sm:py-4 rounded-xl shadow-2xl text-xs sm:text-sm font-medium transition-all max-w-xs sm:max-w-md">
     <i class="fa-solid fa-shield-check text-amber-400 text-lg"></i>
     <span id="toastMsg">Notifikasi Enterprise</span>
   </div>
 
-  <!-- ================= SECTION LOGIN MODAL / SCREEN ================= -->
+  <!-- ================= MODAL EDIT TRANSAKSI ================= -->
+  <div id="editTxModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+    <div class="glass-card max-w-lg w-full p-6 sm:p-8 rounded-2xl border border-amber-500/20 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center mb-6 border-b border-corporate-border pb-3">
+        <h3 class="text-base font-bold text-white uppercase tracking-wider flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square text-amber-400"></i> Edit Jurnal Transaksi
+        </h3>
+        <button onclick="closeEditTxModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form id="editTxForm" onsubmit="handleUpdateTx(event)" class="space-y-4">
+        <input type="hidden" id="editTxId">
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Tipe Transaksi</label>
+          <select id="editTxType" class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+            <option value="Pendapatan">Pendapatan (+)</option>
+            <option value="Pengeluaran">Pengeluaran (-)</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nominal (Rp)</label>
+          <input type="number" id="editTxAmount" min="1" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Entitas Akun</label>
+          <select id="editTxAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+            <!-- Dynamic -->
+          </select>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Kategori Pos</label>
+          <input type="text" id="editTxCategory" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Tanggal Transaksi</label>
+          <input type="date" id="editTxDate" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Memo / Catatan</label>
+          <textarea id="editTxNotes" rows="2" class="w-full p-3 rounded-xl glass-input text-xs outline-none"></textarea>
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button type="button" onclick="closeEditTxModal()" class="w-1/2 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-xl text-xs uppercase">Batal</button>
+          <button type="submit" class="w-1/2 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs uppercase shadow-lg shadow-amber-500/20">Perbarui</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= MODAL EDIT AKUN/KAS ================= -->
+  <div id="editAccModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
+    <div class="glass-card max-w-md w-full p-6 sm:p-8 rounded-2xl border border-amber-500/20 shadow-2xl relative">
+      <div class="flex justify-between items-center mb-6 border-b border-corporate-border pb-3">
+        <h3 class="text-base font-bold text-white uppercase tracking-wider flex items-center gap-2">
+          <i class="fa-solid fa-pen-to-square text-amber-400"></i> Edit Akun / Rekening
+        </h3>
+        <button onclick="closeEditAccModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form id="editAccForm" onsubmit="handleUpdateAcc(event)" class="space-y-4">
+        <input type="hidden" id="editAccId">
+        <input type="hidden" id="oldAccName">
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nama Akun / Bank</label>
+          <input type="text" id="editAccName" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Tipe Instrumen</label>
+          <select id="editAccType" class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+            <option value="Kas">Kas Tunai</option>
+            <option value="Bank">Rekening Bank</option>
+            <option value="E-Wallet">E-Wallet / Digital</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Saldo Terkini (Rp)</label>
+          <input type="number" id="editAccBalance" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+        </div>
+
+        <div class="flex gap-3 pt-2">
+          <button type="button" onclick="closeEditAccModal()" class="w-1/2 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-xl text-xs uppercase">Batal</button>
+          <button type="submit" class="w-1/2 py-3 bg-amber-500 hover:bg-amber-400 text-slate-950 font-bold rounded-xl text-xs uppercase shadow-lg shadow-amber-500/20">Simpan Perubahan</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ================= SECTION LOGIN SCREEN ================= -->
   <div id="loginOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-corporate-950/90 backdrop-blur-md">
-    <div class="glass-card max-w-md w-full p-8 rounded-2xl border border-amber-500/20 shadow-2xl relative overflow-hidden">
+    <div class="glass-card max-w-md w-full p-6 sm:p-8 rounded-2xl border border-amber-500/20 shadow-2xl relative overflow-hidden">
       <div class="text-center mb-8">
         <div class="inline-flex p-4 bg-gradient-to-b from-amber-500/20 to-transparent border border-amber-500/30 rounded-2xl text-amber-400 shadow-xl mb-3">
           <i class="fa-solid fa-building-columns text-3xl"></i>
@@ -132,174 +241,180 @@
       </form>
 
       <div class="mt-6 pt-4 border-t border-corporate-border text-center">
-        <p class="text-[10px] text-slate-500">Demologin credential: <br><span class="text-slate-400 font-mono">User: admin | Pass: admin123</span> (Akses Penuh)</p>
+        <p class="text-[10px] text-slate-400">Demo Login: <span class="text-amber-400 font-mono">admin | admin123</span> (Akses Penuh)</p>
       </div>
     </div>
   </div>
 
-  <!-- MAIN APPLICATION CONTENT -->
+  <!-- ================= MAIN APPLICATION CONTENT ================= -->
   <div id="mainApp" class="hidden">
     <!-- HEADER -->
-    <header class="sticky top-0 z-40 border-b border-corporate-border glass-card bg-corporate-950/80">
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-        <div class="flex items-center gap-4">
-          <div class="p-3 bg-gradient-to-b from-amber-500/20 to-transparent border border-amber-500/30 rounded-xl text-amber-400 shadow-md">
-            <i class="fa-solid fa-building-columns text-xl"></i>
+    <header class="sticky top-0 z-40 border-b header-bg">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
+        <div class="flex items-center gap-3 sm:gap-4">
+          <div class="p-2 sm:p-3 bg-gradient-to-b from-amber-500/20 to-transparent border border-amber-500/30 rounded-xl text-amber-400 shadow-md">
+            <i class="fa-solid fa-building-columns text-lg sm:text-xl"></i>
           </div>
           <div>
-            <h1 class="text-lg font-extrabold tracking-wider uppercase text-white flex items-center gap-2">
+            <h1 class="text-sm sm:text-lg font-extrabold tracking-wider uppercase text-white flex items-center gap-2">
               AAAIIM <span class="text-amber-400">OneFinance</span>
-              <span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full font-semibold">SHARED CLOUD</span>
             </h1>
-            <p class="text-[10px] text-slate-400 font-medium tracking-widest uppercase">Global Shared Financial Portal</p>
+            <p class="text-[9px] sm:text-[10px] text-slate-400 font-medium tracking-widest uppercase">Global Enterprise Portal</p>
           </div>
         </div>
 
-        <div class="flex items-center gap-4">
-          <div class="flex items-center gap-3 pl-4 border-l border-corporate-border">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 flex items-center justify-center font-black text-xs shadow-lg shadow-amber-500/10" id="userAvatar">
+        <div class="flex items-center gap-2 sm:gap-4">
+          <!-- Dark Mode Toggle Button -->
+          <button onclick="toggleDarkMode()" class="p-2.5 bg-slate-800/20 hover:bg-slate-800/40 text-amber-400 rounded-xl border border-amber-500/20 transition-all text-xs flex items-center gap-2" title="Mode Siang / Malam">
+            <i id="themeIcon" class="fa-solid fa-moon"></i>
+            <span class="hidden md:inline text-[10px] font-bold uppercase tracking-wider" id="themeText">Night</span>
+          </button>
+
+          <div class="flex items-center gap-2 sm:gap-3 pl-2 sm:pl-4 border-l border-corporate-border">
+            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 flex items-center justify-center font-black text-xs shadow-lg shadow-amber-500/10" id="userAvatar">
               ADM
             </div>
             <div class="hidden md:block text-left">
               <span class="text-xs font-bold block text-slate-200" id="userNameDisplay">Admin Direksi</span>
               <span class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1" id="userRoleDisplay"><i class="fa-solid fa-shield text-[8px]"></i> Akses Penuh</span>
             </div>
-            <button onclick="handleLogout()" class="ml-2 p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl border border-rose-500/20 transition-all text-xs" title="Keluar Sesi">
+            <button onclick="handleLogout()" class="p-2 bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 rounded-xl border border-rose-500/20 transition-all text-xs" title="Keluar Sesi">
               <i class="fa-solid fa-power-off"></i>
             </button>
           </div>
         </div>
       </div>
 
-      <!-- Navigation Tabs -->
-      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex space-x-2 overflow-x-auto border-t border-corporate-border">
-        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn active border-b-2 border-amber-400 text-amber-400 font-semibold flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
+      <!-- Navigation Tabs (Mobile Scrollable) -->
+      <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-2 overflow-x-auto border-t border-corporate-border no-scrollbar">
+        <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn active border-b-2 border-amber-400 text-amber-400 font-semibold flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all">
           <i class="fa-solid fa-chart-pie"></i> Eksekutif Dashboard
         </button>
-        <button onclick="switchTab('analisis')" id="nav-analisis" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
-          <i class="fa-solid fa-chart-line"></i> Analisis Rasio Keuangan
+        <button onclick="switchTab('analisis')" id="nav-analisis" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all">
+          <i class="fa-solid fa-chart-line"></i> Analisis Rasio
         </button>
-        <button onclick="switchTab('pencatatan')" id="nav-pencatatan" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
+        <button onclick="switchTab('pencatatan')" id="nav-pencatatan" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all">
           <i class="fa-solid fa-pen-to-square"></i> Jurnal Transaksi
         </button>
-        <button onclick="switchTab('transfer')" id="nav-transfer" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
+        <button onclick="switchTab('transfer')" id="nav-transfer" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all">
           <i class="fa-solid fa-right-left"></i> Transfer Antar Akun
         </button>
-        <button onclick="switchTab('akun')" id="nav-akun" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
+        <button onclick="switchTab('akun')" id="nav-akun" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all">
           <i class="fa-solid fa-vault"></i> Manajemen Kas & Rekening
         </button>
-        <button onclick="switchTab('laporan')" id="nav-laporan" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
+        <button onclick="switchTab('laporan')" id="nav-laporan" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all">
           <i class="fa-solid fa-file-invoice-dollar"></i> Laporan Keuangan PDF
         </button>
       </div>
     </header>
 
     <!-- MAIN CONTAINER -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
       <!-- ================= TAB 1: DASHBOARD ================= -->
       <section id="tab-dashboard" class="tab-content space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          <div class="glass-card p-6 rounded-2xl relative overflow-hidden">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
+          <div class="glass-card p-5 sm:p-6 rounded-2xl relative overflow-hidden">
             <div class="flex justify-between items-start">
               <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Arus Masuk</span>
               <div class="p-2.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl"><i class="fa-solid fa-arrow-trend-up"></i></div>
             </div>
-            <h3 class="text-2xl font-black mt-3 text-white tracking-tight" id="kpiIncome">Rp 0</h3>
-            <p class="text-[11px] text-emerald-400/80 mt-2 font-medium flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Real-time Sync</p>
+            <h3 class="text-xl sm:text-2xl font-black mt-3 text-white tracking-tight" id="kpiIncome">Rp 0</h3>
+            <p class="text-[11px] text-emerald-400 mt-1 font-medium"><i class="fa-solid fa-circle-check"></i> Real-time Sync</p>
           </div>
 
-          <div class="glass-card p-6 rounded-2xl relative overflow-hidden">
+          <div class="glass-card p-5 sm:p-6 rounded-2xl relative overflow-hidden">
             <div class="flex justify-between items-start">
               <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Beban Operasional</span>
               <div class="p-2.5 bg-rose-500/10 text-rose-400 border border-rose-500/20 rounded-xl"><i class="fa-solid fa-arrow-trend-down"></i></div>
             </div>
-            <h3 class="text-2xl font-black mt-3 text-white tracking-tight" id="kpiExpense">Rp 0</h3>
-            <p class="text-[11px] text-slate-400 mt-2 font-medium">Akumulasi Pengeluaran</p>
+            <h3 class="text-xl sm:text-2xl font-black mt-3 text-white tracking-tight" id="kpiExpense">Rp 0</h3>
+            <p class="text-[11px] text-slate-400 mt-1 font-medium">Akumulasi Pengeluaran</p>
           </div>
 
-          <div class="glass-card glass-card-gold p-6 rounded-2xl relative overflow-hidden">
+          <div class="glass-card p-5 sm:p-6 rounded-2xl relative overflow-hidden border border-amber-500/30">
             <div class="flex justify-between items-start">
               <span class="text-[10px] font-bold text-amber-400 uppercase tracking-widest">Laba Bersih Perusahaan</span>
               <div class="p-2.5 bg-amber-500/10 text-amber-400 border border-amber-500/20 rounded-xl"><i class="fa-solid fa-coins"></i></div>
             </div>
-            <h3 class="text-2xl font-black mt-3 text-amber-400 tracking-tight" id="kpiNet">Rp 0</h3>
-            <p class="text-[11px] text-amber-200/60 mt-2 font-medium">Net Operating Income</p>
+            <h3 class="text-xl sm:text-2xl font-black mt-3 text-amber-400 tracking-tight" id="kpiNet">Rp 0</h3>
+            <p class="text-[11px] text-amber-400/80 mt-1 font-medium">Net Operating Income</p>
           </div>
 
-          <div class="glass-card p-6 rounded-2xl relative overflow-hidden">
+          <div class="glass-card p-5 sm:p-6 rounded-2xl relative overflow-hidden">
             <div class="flex justify-between items-start">
               <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Kas & Bank</span>
               <div class="p-2.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-xl"><i class="fa-solid fa-vault"></i></div>
             </div>
-            <h3 class="text-2xl font-black mt-3 text-white tracking-tight" id="kpiAssets">Rp 0</h3>
-            <p class="text-[11px] text-cyan-400 mt-2 font-medium">Konsolidasi Rekening</p>
+            <h3 class="text-xl sm:text-2xl font-black mt-3 text-white tracking-tight" id="kpiAssets">Rp 0</h3>
+            <p class="text-[11px] text-cyan-400 mt-1 font-medium">Konsolidasi Rekening</p>
           </div>
         </div>
 
-        <div class="glass-card p-6 rounded-2xl">
-          <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6 pb-4 border-b border-corporate-border">
+        <div class="glass-card p-4 sm:p-6 rounded-2xl">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-2 mb-6 pb-4 border-b border-corporate-border">
             <div>
-              <h2 class="text-base font-bold text-white tracking-wide uppercase">Jurnal Transaksi Cloud</h2>
-              <p class="text-xs text-slate-400 mt-0.5">Semua data disinkronkan langsung dari seluruh pengguna link</p>
+              <h2 class="text-sm sm:text-base font-bold text-white tracking-wide uppercase">Jurnal Transaksi Realtime</h2>
+              <p class="text-xs text-slate-400">Data realtime tersinkron di seluruh perangkat</p>
             </div>
           </div>
 
           <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse">
+            <table class="w-full text-left border-collapse min-w-[600px]">
               <thead>
-                <tr class="border-b border-corporate-border text-[11px] text-slate-400 uppercase tracking-wider font-semibold">
-                  <th class="py-3 px-4">Tanggal</th>
-                  <th class="py-3 px-4">Tipe</th>
-                  <th class="py-3 px-4">Kategori / Jalur</th>
-                  <th class="py-3 px-4">Akun</th>
-                  <th class="py-3 px-4">Keterangan</th>
-                  <th class="py-3 px-4 text-right">Nominal (IDR)</th>
+                <tr class="border-b border-corporate-border text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-semibold">
+                  <th class="py-3 px-3">Tanggal</th>
+                  <th class="py-3 px-3">Tipe</th>
+                  <th class="py-3 px-3">Kategori</th>
+                  <th class="py-3 px-3">Akun</th>
+                  <th class="py-3 px-3">Keterangan</th>
+                  <th class="py-3 px-3 text-right">Nominal</th>
+                  <th class="py-3 px-3 text-center">Aksi</th>
                 </tr>
               </thead>
               <tbody id="txTableBody" class="divide-y divide-corporate-border text-xs">
-                <!-- Data Realtime dari Firebase -->
+                <!-- Realtime Dynamic Data -->
               </tbody>
             </table>
           </div>
         </div>
       </section>
 
-      <!-- ================= TAB BARU 2: ANALISIS PERUSAHAAN ================= -->
+      <!-- ================= TAB 2: ANALISIS PERUSAHAAN ================= -->
       <section id="tab-analisis" class="tab-content hidden space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
           <div class="glass-card p-6 rounded-2xl border-l-4 border-l-amber-400">
             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Margin Laba Bersih (NPM)</span>
             <h3 class="text-3xl font-black text-amber-400 mt-2" id="npmValue">0%</h3>
-            <p class="text-xs text-slate-400 mt-2">Persentase pendapatan yang berhasil menjadi laba bersih perusahaan.</p>
+            <p class="text-xs text-slate-400 mt-2">Persentase pendapatan yang berhasil menjadi profit bersih.</p>
           </div>
 
           <div class="glass-card p-6 rounded-2xl border-l-4 border-l-rose-400">
             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Rasio Beban Operasional</span>
             <h3 class="text-3xl font-black text-rose-400 mt-2" id="expenseRatioValue">0%</h3>
-            <p class="text-xs text-slate-400 mt-2">Proporsi pengeluaran dari total pendapatan yang masuk.</p>
+            <p class="text-xs text-slate-400 mt-2">Proporsi pengeluaran operasional terhadap pemasukan.</p>
           </div>
 
           <div class="glass-card p-6 rounded-2xl border-l-4 border-l-cyan-400">
             <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Indeks Kesehatan Finansial</span>
             <h3 class="text-3xl font-black text-cyan-400 mt-2" id="healthScore">SEHAT</h3>
-            <p class="text-xs text-slate-400 mt-2" id="healthDesc">Kondisi kas dan efisiensi operasional tergolong stabil.</p>
+            <p class="text-xs text-slate-400 mt-2" id="healthDesc">Kondisi kas dan efisiensi operasional stabil.</p>
           </div>
         </div>
 
         <div class="glass-card p-6 rounded-2xl space-y-4">
           <h2 class="text-base font-bold text-white tracking-wide uppercase border-b border-corporate-border pb-3">Ringkasan Eksekutif & Mitigasi Risiko</h2>
           <div id="executiveSummary" class="space-y-3 text-xs text-slate-300">
-            <!-- Dynamic analysis loaded here -->
+            <!-- Dynamic analysis -->
           </div>
         </div>
       </section>
 
       <!-- ================= TAB 3: PENCATATAN ================= -->
       <section id="tab-pencatatan" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="glass-card p-6 rounded-2xl h-fit">
+        <div class="glass-card p-5 sm:p-6 rounded-2xl h-fit">
           <h2 class="text-base font-bold text-white tracking-wide uppercase mb-1">Entri Jurnal Baru</h2>
-          <p class="text-xs text-slate-400 mb-6">Pencatatan Operasional Pendapatan / Pengeluaran</p>
+          <p class="text-xs text-slate-400 mb-6">Input Pendapatan atau Pengeluaran Operasional</p>
 
           <form id="txForm" onsubmit="handleSaveTx(event)" class="space-y-4">
             <div>
@@ -312,7 +427,7 @@
 
             <div>
               <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nominal (Rp)</label>
-              <input type="number" id="txAmount" placeholder="0" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+              <input type="number" id="txAmount" placeholder="0" min="1" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
             </div>
 
             <div>
@@ -324,7 +439,7 @@
 
             <div>
               <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Kategori Pos</label>
-              <input type="text" id="txCategory" placeholder="Penjualan, Operasional, Payroll" class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+              <input type="text" id="txCategory" placeholder="Penjualan, Payroll, Sewa, Operasional" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
             </div>
 
             <div>
@@ -334,36 +449,36 @@
 
             <div>
               <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Memo / Catatan</label>
-              <textarea id="txNotes" rows="2" placeholder="Catatan transaksi..." class="w-full p-3 rounded-xl glass-input text-xs outline-none"></textarea>
+              <textarea id="txNotes" rows="2" placeholder="Catatan rinci..." class="w-full p-3 rounded-xl glass-input text-xs outline-none"></textarea>
             </div>
 
             <button type="submit" id="btnSaveTx" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
-              <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Jurnal
+              <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Jurnal Transaksi
             </button>
           </form>
         </div>
 
-        <div class="lg:col-span-2 glass-card p-6 rounded-2xl">
+        <div class="lg:col-span-2 glass-card p-5 sm:p-6 rounded-2xl">
           <div class="flex justify-between items-center mb-6 pb-4 border-b border-corporate-border">
-            <h2 class="text-base font-bold text-white tracking-wide uppercase">Riwayat Transaksi Terupdate</h2>
+            <h2 class="text-base font-bold text-white tracking-wide uppercase">Riwayat & Fitur Kelola Transaksi</h2>
           </div>
           <div id="txHistoryList" class="space-y-3">
-            <!-- Dynamic list -->
+            <!-- Dynamic list with edit and delete -->
           </div>
         </div>
       </section>
 
       <!-- ================= TAB 4: TRANSFER ANTAAR AKUN ================= -->
       <section id="tab-transfer" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="glass-card p-6 rounded-2xl h-fit">
+        <div class="glass-card p-5 sm:p-6 rounded-2xl h-fit">
           <h2 class="text-base font-bold text-white tracking-wide uppercase mb-1">Transfer Dana Antar Rekening</h2>
           <p class="text-xs text-slate-400 mb-6">Pemindahan saldo kas internal perusahaan</p>
 
           <form id="transferForm" onsubmit="handleSaveTransfer(event)" class="space-y-4">
             <div>
               <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Rekening Sumber (Pengirim)</label>
-              <select id="transferFromAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none border-rose-500/30">
-                <!-- Dynamic Options -->
+              <select id="transferFromAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+                <!-- Dynamic -->
               </select>
             </div>
 
@@ -375,8 +490,8 @@
 
             <div>
               <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Rekening Tujuan (Penerima)</label>
-              <select id="transferToAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none border-emerald-500/30">
-                <!-- Dynamic Options -->
+              <select id="transferToAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+                <!-- Dynamic -->
               </select>
             </div>
 
@@ -391,36 +506,36 @@
             </div>
 
             <div>
-              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Keterangan / Memo Transfer</label>
-              <textarea id="transferNotes" rows="2" placeholder="Contoh: Pengisian petty cash, rebalancing kas..." class="w-full p-3 rounded-xl glass-input text-xs outline-none"></textarea>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Memo Transfer</label>
+              <textarea id="transferNotes" rows="2" placeholder="Keterangan transfer..." class="w-full p-3 rounded-xl glass-input text-xs outline-none"></textarea>
             </div>
 
-            <button type="submit" id="btnSaveTransfer" class="w-full py-3.5 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
+            <button type="submit" id="btnSaveTransfer" class="w-full py-3.5 bg-gradient-to-r from-cyan-500 to-cyan-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
               <i class="fa-solid fa-right-left"></i> Proses Pemindahan Dana
             </button>
           </form>
         </div>
 
-        <div class="lg:col-span-2 glass-card p-6 rounded-2xl">
+        <div class="lg:col-span-2 glass-card p-5 sm:p-6 rounded-2xl">
           <div class="flex justify-between items-center mb-6 pb-4 border-b border-corporate-border">
             <h2 class="text-base font-bold text-white tracking-wide uppercase">Riwayat Transfer Antar Rekening</h2>
           </div>
           <div id="transferHistoryList" class="space-y-3">
-            <!-- Dynamic list history transfer -->
+            <!-- Dynamic list -->
           </div>
         </div>
       </section>
 
       <!-- ================= TAB 5: AKUN & KAS ================= -->
       <section id="tab-akun" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div class="glass-card p-6 rounded-2xl h-fit">
-          <h2 class="text-base font-bold text-white tracking-wide uppercase mb-1">Tambah Akun/Bank</h2>
+        <div class="glass-card p-5 sm:p-6 rounded-2xl h-fit">
+          <h2 class="text-base font-bold text-white tracking-wide uppercase mb-1">Tambah Akun/Bank Baru</h2>
           <p class="text-xs text-slate-400 mb-6">Tambah entitas Kas baru secara global</p>
 
           <form id="accForm" onsubmit="handleSaveAccount(event)" class="space-y-4">
             <div>
               <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nama Akun / Bank</label>
-              <input type="text" id="accName" placeholder="BCA Utama, Kas Kecil" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+              <input type="text" id="accName" placeholder="BCA Utama, Kas Operasional" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
             </div>
 
             <div>
@@ -437,31 +552,34 @@
               <input type="number" id="accBalance" placeholder="0" class="w-full p-3 rounded-xl glass-input text-xs outline-none">
             </div>
 
-            <button type="submit" id="btnSaveAcc" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
+            <button type="submit" id="btnSaveAcc" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
               <i class="fa-solid fa-plus-circle"></i> Tambah Akun Cloud
             </button>
           </form>
         </div>
 
-        <div class="lg:col-span-2 glass-card p-6 rounded-2xl">
-          <h2 class="text-base font-bold text-white tracking-wide uppercase mb-6 pb-4 border-b border-corporate-border">Portofolio Rekening Aktif</h2>
+        <div class="lg:col-span-2 glass-card p-5 sm:p-6 rounded-2xl">
+          <h2 class="text-base font-bold text-white tracking-wide uppercase mb-6 pb-4 border-b border-corporate-border">Kelola Portofolio Rekening & Kas</h2>
           <div id="accountCardsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Dynamic list -->
+            <!-- Dynamic list with edit button -->
           </div>
         </div>
       </section>
 
       <!-- ================= TAB 6: LAPORAN KEUANGAN PDF ================= -->
       <section id="tab-laporan" class="tab-content hidden space-y-6">
-        <div class="flex justify-between items-center no-print">
-          <p class="text-xs text-slate-400">Laporan Resmi Perusahaan disajikan secara otomatis.</p>
-          <button onclick="window.print()" class="px-6 py-3 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/20 hover:from-amber-400 transition-all flex items-center gap-2 text-xs uppercase tracking-wider">
+        <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 no-print">
+          <div>
+            <h2 class="text-base font-bold text-white uppercase tracking-wider">Laporan Keuangan Perusahaan Standar Akuntansi</h2>
+            <p class="text-xs text-slate-400">Laporan Laba/Rugi, Neraca Kas, dan Arus Kas secara otomatis disajikan realtime.</p>
+          </div>
+          <button onclick="window.print()" class="px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/20 hover:from-amber-400 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider w-full sm:w-auto">
             <i class="fa-solid fa-file-pdf"></i> Unduh / Cetak Laporan PDF
           </button>
         </div>
 
-        <div class="glass-card p-8 sm:p-12 rounded-2xl text-slate-800" id="printableReport">
-          <!-- Printable Official Report HTML generated below -->
+        <div class="glass-card p-6 sm:p-12 rounded-2xl text-slate-800" id="printableReport">
+          <!-- Comprehensive Printable Official Financial Report HTML -->
         </div>
       </section>
 
@@ -473,22 +591,21 @@
     // -----------------------------------------------------------------
     // 1. ISIKAN KONFIGURASI FIREBASE ANDA DI SINI
     // -----------------------------------------------------------------
-  const firebaseConfig = {
-      apiKey: "AIzaSyB8L2mjD2fiUqP3iAGccCh98MyIgsgM_14",
-      authDomain: "aaaiim-onefinance.firebaseapp.com",
-      databaseURL: "https://aaaiim-onefinance-default-rtdb.firebaseio.com",
-      projectId: "aaaiim-onefinance",
-      storageBucket: "aaaiim-onefinance.firebasestorage.app",
-      messagingSenderId: "111442380622",
-      appId: "1:111442380622:web:9106c659173ed914bd401f",
-      measurementId: "G-ZFTSGN3YR9"
-  };
+    const firebaseConfig = {
+        apiKey: "AIzaSyB8L2mjD2fiUqP3iAGccCh98MyIgsgM_14",
+        authDomain: "aaaiim-onefinance.firebaseapp.com",
+        databaseURL: "https://aaaiim-onefinance-default-rtdb.firebaseio.com",
+        projectId: "aaaiim-onefinance",
+        storageBucket: "aaaiim-onefinance.firebasestorage.app",
+        messagingSenderId: "111442380622",
+        appId: "1:111442380622:web:9106c659173ed914bd401f",
+        measurementId: "G-ZFTSGN3YR9"
+    };
 
-    // Inisialisasi Firebase
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // Variable State Data
+    // State Variables
     let transactions = [];
     let accounts = [];
     let currentUser = null;
@@ -498,9 +615,36 @@
     document.getElementById('transferDate').value = todayDate;
 
     // -----------------------------------------------------------------
-    // 2. AUTHENTICATION & ROLE MANAGEMENT
+    // 2. NIGHT MODE / DARK MODE TOGGLE
     // -----------------------------------------------------------------
+    function toggleDarkMode() {
+      const html = document.documentElement;
+      const themeIcon = document.getElementById('themeIcon');
+      const themeText = document.getElementById('themeText');
 
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        themeIcon.className = 'fa-solid fa-sun text-amber-500';
+        themeText.innerText = 'Day Mode';
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        themeIcon.className = 'fa-solid fa-moon text-amber-400';
+        themeText.innerText = 'Night Mode';
+        localStorage.setItem('theme', 'dark');
+      }
+    }
+
+    // Auto load theme preference
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.remove('dark');
+      document.getElementById('themeIcon').className = 'fa-solid fa-sun text-amber-500';
+      document.getElementById('themeText').innerText = 'Day Mode';
+    }
+
+    // -----------------------------------------------------------------
+    // 3. AUTHENTICATION & PERMISSIONS
+    // -----------------------------------------------------------------
     function handleLogin(e) {
       e.preventDefault();
       const u = document.getElementById('loginUser').value.trim().toLowerCase();
@@ -517,7 +661,6 @@
         return;
       }
 
-      // Update UI sesuai Role
       document.getElementById('loginOverlay').classList.add('hidden');
       document.getElementById('mainApp').classList.remove('hidden');
       document.getElementById('userNameDisplay').innerText = currentUser.name;
@@ -532,32 +675,22 @@
       currentUser = null;
       document.getElementById('mainApp').classList.add('hidden');
       document.getElementById('loginOverlay').classList.remove('hidden');
-      document.getElementById('loginUser').value = '';
-      document.getElementById('loginPass').value = '';
     }
 
     function applyRolePermissions() {
       const isAuditor = currentUser && currentUser.role === 'auditor';
-      
-      // Jika Auditor/Read-Only, sembunyikan atau matikan tombol simpan
       ['btnSaveTx', 'btnSaveTransfer', 'btnSaveAcc'].forEach(id => {
         const btn = document.getElementById(id);
         if (btn) {
           btn.disabled = isAuditor;
-          if (isAuditor) {
-            btn.classList.add('opacity-50', 'cursor-not-allowed');
-          } else {
-            btn.classList.remove('opacity-50', 'cursor-not-allowed');
-          }
+          btn.style.opacity = isAuditor ? '0.5' : '1';
         }
       });
     }
 
     // -----------------------------------------------------------------
-    // 3. REALTIME LISTENERS
+    // 4. REALTIME FIREBASE LISTENERS
     // -----------------------------------------------------------------
-    
-    // Listener Transaksi
     db.ref('transactions').on('value', (snapshot) => {
       const data = snapshot.val();
       transactions = [];
@@ -569,7 +702,6 @@
       renderDashboard();
     });
 
-    // Listener Akun/Rekening
     db.ref('accounts').on('value', (snapshot) => {
       const data = snapshot.val();
       accounts = [];
@@ -584,9 +716,8 @@
     });
 
     // -----------------------------------------------------------------
-    // 4. EVENT HANDLERS
+    // 5. CRUD TRANSAKSI (TAMBAH, EDIT, HAPUS)
     // -----------------------------------------------------------------
-
     function handleSaveTx(e) {
       e.preventDefault();
       if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
@@ -609,15 +740,159 @@
       const targetAcc = accounts.find(a => a.name === accountName);
       if (targetAcc) {
         const adjustment = type === 'Pendapatan' ? amount : -amount;
-        const newBalance = parseFloat(targetAcc.balance || 0) + adjustment;
-        db.ref('accounts/' + targetAcc.id).update({ balance: newBalance });
+        db.ref('accounts/' + targetAcc.id).update({ balance: parseFloat(targetAcc.balance || 0) + adjustment });
       }
 
       document.getElementById('txAmount').value = '';
       document.getElementById('txNotes').value = '';
-      showToast('Jurnal Transaksi Disimpan!');
+      showToast('✅ Jurnal Transaksi Disimpan!');
     }
 
+    function openEditTxModal(id) {
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      const tx = transactions.find(t => t.id === id);
+      if (!tx) return;
+
+      document.getElementById('editTxId').value = tx.id;
+      document.getElementById('editTxType').value = tx.type;
+      document.getElementById('editTxAmount').value = tx.amount;
+      document.getElementById('editTxCategory').value = tx.category;
+      document.getElementById('editTxDate').value = tx.date;
+      document.getElementById('editTxNotes').value = tx.notes;
+      document.getElementById('editTxAccount').value = tx.account;
+
+      document.getElementById('editTxModal').classList.remove('hidden');
+    }
+
+    function closeEditTxModal() {
+      document.getElementById('editTxModal').classList.add('hidden');
+    }
+
+    function handleUpdateTx(e) {
+      e.preventDefault();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+
+      const id = document.getElementById('editTxId').value;
+      const oldTx = transactions.find(t => t.id === id);
+      if (!oldTx) return;
+
+      // Revert old transaction effect on account
+      const oldAcc = accounts.find(a => a.name === oldTx.account);
+      if (oldAcc) {
+        const revertAdj = oldTx.type === 'Pendapatan' ? -oldTx.amount : oldTx.amount;
+        db.ref('accounts/' + oldAcc.id).update({ balance: parseFloat(oldAcc.balance || 0) + revertAdj });
+      }
+
+      const updatedTx = {
+        type: document.getElementById('editTxType').value,
+        amount: parseFloat(document.getElementById('editTxAmount').value),
+        account: document.getElementById('editTxAccount').value,
+        category: document.getElementById('editTxCategory').value,
+        date: document.getElementById('editTxDate').value,
+        notes: document.getElementById('editTxNotes').value
+      };
+
+      db.ref('transactions/' + id).update(updatedTx);
+
+      // Apply new transaction effect on account
+      setTimeout(() => {
+        const newAcc = accounts.find(a => a.name === updatedTx.account);
+        if (newAcc) {
+          const newAdj = updatedTx.type === 'Pendapatan' ? updatedTx.amount : -updatedTx.amount;
+          db.ref('accounts/' + newAcc.id).update({ balance: parseFloat(newAcc.balance || 0) + newAdj });
+        }
+      }, 300);
+
+      closeEditTxModal();
+      showToast('✅ Jurnal Transaksi Diperbarui!');
+    }
+
+    function deleteTx(id) {
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      if (!confirm('Apakah Anda yakin ingin menghapus jurnal transaksi ini?')) return;
+
+      const tx = transactions.find(t => t.id === id);
+      if (tx) {
+        const targetAcc = accounts.find(a => a.name === tx.account);
+        if (targetAcc && tx.type !== 'Transfer') {
+          const revertAdj = tx.type === 'Pendapatan' ? -tx.amount : tx.amount;
+          db.ref('accounts/' + targetAcc.id).update({ balance: parseFloat(targetAcc.balance || 0) + revertAdj });
+        }
+      }
+
+      db.ref('transactions/' + id).remove();
+      showToast('🗑️ Jurnal Transaksi Dihapus!');
+    }
+
+    // -----------------------------------------------------------------
+    // 6. CRUD AKUN / REKENING (EDIT NAMA & SALDO)
+    // -----------------------------------------------------------------
+    function handleSaveAccount(e) {
+      e.preventDefault();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+
+      const newAcc = {
+        name: document.getElementById('accName').value.trim(),
+        type: document.getElementById('accType').value,
+        balance: parseFloat(document.getElementById('accBalance').value) || 0
+      };
+
+      db.ref('accounts').push(newAcc);
+      document.getElementById('accName').value = '';
+      document.getElementById('accBalance').value = '';
+      showToast('✅ Akun Baru Berhasil Ditambahkan!');
+    }
+
+    function openEditAccModal(id) {
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      const acc = accounts.find(a => a.id === id);
+      if (!acc) return;
+
+      document.getElementById('editAccId').value = acc.id;
+      document.getElementById('oldAccName').value = acc.name;
+      document.getElementById('editAccName').value = acc.name;
+      document.getElementById('editAccType').value = acc.type;
+      document.getElementById('editAccBalance').value = acc.balance;
+
+      document.getElementById('editAccModal').classList.remove('hidden');
+    }
+
+    function closeEditAccModal() {
+      document.getElementById('editAccModal').classList.add('hidden');
+    }
+
+    function handleUpdateAcc(e) {
+      e.preventDefault();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+
+      const id = document.getElementById('editAccId').value;
+      const oldName = document.getElementById('oldAccName').value;
+      const newName = document.getElementById('editAccName').value.trim();
+
+      const updatedAcc = {
+        name: newName,
+        type: document.getElementById('editAccType').value,
+        balance: parseFloat(document.getElementById('editAccBalance').value) || 0
+      };
+
+      db.ref('accounts/' + id).update(updatedAcc);
+
+      // Jika nama akun berubah, perbarui juga rekam jejak di transaksi
+      if (oldName !== newName) {
+        transactions.forEach(t => {
+          if (t.account === oldName) {
+            db.ref('transactions/' + t.id).update({ account: newName });
+          }
+        });
+      }
+
+      closeEditAccModal();
+      showToast('✅ Detail Rekening Diperbarui!');
+    }
+
+    // -----------------------------------------------------------------
+    // 7. TRANSFER DANA
+    // -----------------------------------------------------------------
     function handleSaveTransfer(e) {
       e.preventDefault();
       if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
@@ -628,10 +903,7 @@
       const date = document.getElementById('transferDate').value;
       const notes = document.getElementById('transferNotes').value || 'Transfer Kas Internal';
 
-      if (fromAccName === toAccName) {
-        showToast('❌ Rekening sumber dan tujuan tidak boleh sama!');
-        return;
-      }
+      if (fromAccName === toAccName) return showToast('❌ Rekening sumber dan tujuan tidak boleh sama!');
 
       const sourceAcc = accounts.find(a => a.name === fromAccName);
       const targetAcc = accounts.find(a => a.name === toAccName);
@@ -650,35 +922,17 @@
       };
 
       db.ref('transactions').push(transferTx);
-
       db.ref('accounts/' + sourceAcc.id).update({ balance: parseFloat(sourceAcc.balance || 0) - amount });
       db.ref('accounts/' + targetAcc.id).update({ balance: parseFloat(targetAcc.balance || 0) + amount });
 
       document.getElementById('transferAmount').value = '';
       document.getElementById('transferNotes').value = '';
-      showToast('✅ Transfer Dana Antar Rekening Berhasil!');
-    }
-
-    function handleSaveAccount(e) {
-      e.preventDefault();
-      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
-
-      const newAcc = {
-        name: document.getElementById('accName').value,
-        type: document.getElementById('accType').value,
-        balance: parseFloat(document.getElementById('accBalance').value) || 0
-      };
-
-      db.ref('accounts').push(newAcc);
-      document.getElementById('accName').value = '';
-      document.getElementById('accBalance').value = '';
-      showToast('Akun Baru Berhasil Ditambahkan!');
+      showToast('✅ Pemindahan Dana Berhasil!');
     }
 
     // -----------------------------------------------------------------
-    // 5. RENDER UI & ANALYTICS
+    // 8. RENDER UI & ANALISIS
     // -----------------------------------------------------------------
-
     function getTotals() {
       let income = 0, expense = 0, assets = 0;
       transactions.forEach(t => {
@@ -696,10 +950,10 @@
       document.getElementById('kpiNet').innerText = 'Rp ' + totals.net.toLocaleString();
       document.getElementById('kpiAssets').innerText = 'Rp ' + totals.assets.toLocaleString();
 
-      // Render Tabel Transaksi Konsolidasi
+      // Render Tabel Dashboard
       const tbody = document.getElementById('txTableBody');
       if (transactions.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500">Belum ada transaksi di cloud.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-slate-500">Belum ada transaksi di cloud.</td></tr>`;
       } else {
         tbody.innerHTML = transactions.map(t => {
           let badgeClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
@@ -708,35 +962,44 @@
 
           return `
             <tr class="hover:bg-corporate-800/40 transition-all">
-              <td class="py-3.5 px-4 font-mono text-[11px] text-slate-400">${t.date}</td>
-              <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold border ${badgeClass}">${t.type}</span></td>
-              <td class="py-3.5 px-4 font-medium text-slate-300">${t.category}</td>
-              <td class="py-3.5 px-4 text-slate-400">${t.account}</td>
-              <td class="py-3.5 px-4 text-slate-400">${t.notes}</td>
-              <td class="py-3.5 px-4 text-right font-black font-mono ${t.type === 'Pendapatan' ? 'text-emerald-400' : (t.type === 'Pengeluaran' ? 'text-rose-400' : 'text-cyan-400')}">
+              <td class="py-3 px-3 font-mono text-[11px] text-slate-400 whitespace-nowrap">${t.date}</td>
+              <td class="py-3 px-3"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeClass}">${t.type}</span></td>
+              <td class="py-3 px-3 font-medium text-slate-300">${t.category}</td>
+              <td class="py-3 px-3 text-slate-400">${t.account}</td>
+              <td class="py-3 px-3 text-slate-400 max-w-xs truncate">${t.notes}</td>
+              <td class="py-3 px-3 text-right font-black font-mono ${t.type === 'Pendapatan' ? 'text-emerald-400' : (t.type === 'Pengeluaran' ? 'text-rose-400' : 'text-cyan-400')} whitespace-nowrap">
                 Rp ${parseFloat(t.amount).toLocaleString()}
+              </td>
+              <td class="py-3 px-3 text-center whitespace-nowrap">
+                ${t.type !== 'Transfer' ? `
+                  <button onclick="openEditTxModal('${t.id}')" class="p-1.5 text-amber-400 hover:bg-amber-400/10 rounded-lg transition-all" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                  <button onclick="deleteTx('${t.id}')" class="p-1.5 text-rose-400 hover:bg-rose-400/10 rounded-lg transition-all ml-1" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                ` : '-'}
               </td>
             </tr>
           `;
         }).join('');
       }
 
-      // Populate Options Akun
+      // Populate Account Options
       const optionsHTML = accounts.map(a => `<option value="${a.name}">${a.name} (Rp ${parseFloat(a.balance).toLocaleString()})</option>`).join('');
       document.getElementById('txAccount').innerHTML = optionsHTML;
+      document.getElementById('editTxAccount').innerHTML = optionsHTML;
       document.getElementById('transferFromAccount').innerHTML = optionsHTML;
       document.getElementById('transferToAccount').innerHTML = optionsHTML;
 
-      // Render Kartu Akun
+      // Render Account Cards
       const cards = document.getElementById('accountCardsList');
       cards.innerHTML = accounts.map(a => `
-        <div class="p-6 rounded-2xl glass-card relative overflow-hidden">
-          <div class="flex justify-between items-start">
+        <div class="p-5 sm:p-6 rounded-2xl glass-card relative overflow-hidden flex justify-between items-center">
+          <div>
             <span class="text-[9px] font-extrabold text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full uppercase tracking-widest">${a.type}</span>
-            <i class="fa-solid fa-vault text-slate-600"></i>
+            <h3 class="font-bold text-sm text-white mt-2">${a.name}</h3>
+            <p class="text-xl sm:text-2xl font-black mt-1 font-mono text-slate-100">Rp ${parseFloat(a.balance).toLocaleString()}</p>
           </div>
-          <h3 class="font-bold text-sm text-white mt-3">${a.name}</h3>
-          <p class="text-2xl font-black mt-2 font-mono text-slate-100">Rp ${parseFloat(a.balance).toLocaleString()}</p>
+          <button onclick="openEditAccModal('${a.id}')" class="p-3 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 rounded-xl border border-amber-500/20 transition-all text-xs font-bold uppercase tracking-wider flex items-center gap-1">
+            <i class="fa-solid fa-pen-to-square"></i> Edit
+          </button>
         </div>
       `).join('');
 
@@ -755,95 +1018,161 @@
 
       const healthScoreEl = document.getElementById('healthScore');
       const healthDescEl = document.getElementById('healthDesc');
-      const execSummary = document.getElementById('executiveSummary');
 
       if (totals.net >= 0 && expenseRatio <= 70) {
         healthScoreEl.innerText = 'SANGAT SEHAT';
         healthScoreEl.className = 'text-3xl font-black text-emerald-400 mt-2';
-        healthDescEl.innerText = 'Profitabilitas tinggi dan beban operasional terkontrol dengan baik.';
+        healthDescEl.innerText = 'Profitabilitas tinggi dan beban operasional efisien.';
       } else if (totals.net >= 0) {
         healthScoreEl.innerText = 'STABIL';
         healthScoreEl.className = 'text-3xl font-black text-amber-400 mt-2';
-        healthDescEl.innerText = 'Perusahaan mencetak laba, tetapi rasio pengeluaran cukup tinggi.';
+        healthDescEl.innerText = 'Mencetak laba, tetapi rasio pengeluaran tergolong tinggi.';
       } else {
-        healthScoreEl.innerText = 'PERINGATAN (DEFISIT)';
+        healthScoreEl.innerText = 'DEFISIT';
         healthScoreEl.className = 'text-3xl font-black text-rose-400 mt-2';
-        healthDescEl.innerText = 'Beban operasional melebihi pendapatan. Perlu evaluasi anggaran.';
+        healthDescEl.innerText = 'Beban operasional melebihi pendapatan masuk.';
       }
 
-      execSummary.innerHTML = `
+      document.getElementById('executiveSummary').innerHTML = `
         <div class="p-4 rounded-xl bg-corporate-900 border border-corporate-border">
-          <p class="font-bold text-amber-400 mb-1"><i class="fa-solid fa-chart-line"></i> Analisis Profitabilitas:</p>
-          <p>Margin Laba Bersih saat ini berada pada tingkat <strong>${npm}%</strong>. Setiap Rp 1.000 pendapatan menghasilkan laba bersih Rp ${Math.max(0, Math.round(npm * 10))}.</p>
+          <p class="font-bold text-amber-400 mb-1"><i class="fa-solid fa-chart-line"></i> Margin Laba Operasional:</p>
+          <p>Net Profit Margin berada di angka <strong>${npm}%</strong> dari akumulasi pendapatan sebesar Rp ${totals.income.toLocaleString()}.</p>
         </div>
         <div class="p-4 rounded-xl bg-corporate-900 border border-corporate-border">
-          <p class="font-bold text-cyan-400 mb-1"><i class="fa-solid fa-scale-balanced"></i> Likuiditas Kas:</p>
-          <p>Total portofolio kas dan bank siap pakai sebesar <strong>Rp ${totals.assets.toLocaleString()}</strong> secara konsolidasi.</p>
+          <p class="font-bold text-cyan-400 mb-1"><i class="fa-solid fa-vault"></i> Konsolidasi Asset Kas:</p>
+          <p>Total cadangan kas dan likuiditas bank siap pakai saat ini sebesar <strong>Rp ${totals.assets.toLocaleString()}</strong>.</p>
         </div>
       `;
     }
 
+    // -----------------------------------------------------------------
+    // 9. RENDER LAPORAN KEUANGAN RESMI PERUSAHAAN (LENGKAP)
+    // -----------------------------------------------------------------
     function renderPrintableReport() {
       const totals = getTotals();
       const reportDate = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
 
+      // Kelompokkan Beban berdasarkan Kategori
+      const expenseCategories = {};
+      const incomeCategories = {};
+
+      transactions.forEach(t => {
+        if (t.type === 'Pengeluaran') {
+          expenseCategories[t.category] = (expenseCategories[t.category] || 0) + parseFloat(t.amount);
+        }
+        if (t.type === 'Pendapatan') {
+          incomeCategories[t.category] = (incomeCategories[t.category] || 0) + parseFloat(t.amount);
+        }
+      });
+
       document.getElementById('printableReport').innerHTML = `
-        <div class="border-b-2 border-slate-900 pb-6 mb-8 flex justify-between items-center">
+        <div class="border-b-2 border-slate-900 pb-6 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
-            <h1 class="text-2xl font-black uppercase text-slate-900 tracking-wider">PT AAAIIM ONEFINANCE GLOBAL</h1>
-            <p class="text-xs text-slate-600">Enterprise Capital & Financial Management Portal</p>
-            <p class="text-xs text-slate-500 mt-1">Laporan Disusun: ${reportDate}</p>
+            <h1 class="text-xl sm:text-2xl font-black uppercase text-slate-900 tracking-wider">PT AAAIIM ONEFINANCE GLOBAL</h1>
+            <p class="text-xs text-slate-600">Laporan Keuangan Konsolidasi Perusahaan (Enterprise Financial Statement)</p>
+            <p class="text-xs text-slate-500 mt-1">Periode s/d: ${reportDate}</p>
           </div>
-          <div class="text-right">
-            <span class="px-3 py-1 bg-slate-100 text-slate-800 border border-slate-300 rounded text-xs font-bold uppercase">Laporan Resmi Laba/Rugi</span>
+          <div class="text-left sm:text-right">
+            <span class="px-3 py-1 bg-slate-100 text-slate-800 border border-slate-300 rounded text-xs font-bold uppercase">Dokumen Resmi Perusahaan</span>
           </div>
         </div>
 
-        <div class="space-y-6 text-sm">
+        <div class="space-y-8 text-xs sm:text-sm">
+          <!-- 1. LAPORAN LABA RUGI -->
           <div>
-            <h3 class="font-bold text-slate-900 uppercase border-b border-slate-200 pb-2 mb-3">I. Ringkasan Kinerja Keuangan</h3>
+            <h3 class="font-bold text-slate-900 uppercase border-b-2 border-slate-800 pb-1 mb-3">1. LAPORAN LABA RUGI (INCOME STATEMENT)</h3>
             <table class="w-full text-left border-collapse">
-              <tr class="border-b border-slate-200">
-                <td class="py-2.5 text-slate-700">Total Pendapatan Operasional</td>
-                <td class="py-2.5 font-mono text-right font-bold text-emerald-700">Rp ${totals.income.toLocaleString()}</td>
-              </tr>
-              <tr class="border-b border-slate-200">
-                <td class="py-2.5 text-slate-700">Total Beban & Pengeluaran Operasional</td>
-                <td class="py-2.5 font-mono text-right font-bold text-rose-700">(Rp ${totals.expense.toLocaleString()})</td>
-              </tr>
-              <tr class="border-b-2 border-slate-900 font-bold bg-slate-50">
-                <td class="py-3 text-slate-900">LABA (RUGI) BERSIH OPERASIONAL</td>
-                <td class="py-3 font-mono text-right text-slate-900">Rp ${totals.net.toLocaleString()}</td>
-              </tr>
-            </table>
-          </div>
-
-          <div>
-            <h3 class="font-bold text-slate-900 uppercase border-b border-slate-200 pb-2 mb-3">II. Konsolidasi Kas & Bank</h3>
-            <table class="w-full text-left border-collapse">
-              ${accounts.map(a => `
-                <tr class="border-b border-slate-200">
-                  <td class="py-2 text-slate-700">${a.name} (${a.type})</td>
-                  <td class="py-2 font-mono text-right text-slate-900">Rp ${parseFloat(a.balance || 0).toLocaleString()}</td>
+              <thead>
+                <tr class="border-b border-slate-300 text-slate-600 font-bold uppercase text-[10px]">
+                  <th class="py-1">Uraian Transaksi</th>
+                  <th class="py-1 text-right">Jumlah (IDR)</th>
                 </tr>
-              `).join('')}
-              <tr class="font-bold bg-slate-50 border-t border-slate-900">
-                <td class="py-2.5 text-slate-900">TOTAL ASSET KAS & BANK</td>
-                <td class="py-2.5 font-mono text-right text-slate-900">Rp ${totals.assets.toLocaleString()}</td>
-              </tr>
+              </thead>
+              <tbody>
+                <tr class="font-bold text-slate-900 bg-slate-50">
+                  <td class="py-2">PENDAPATAN OPERASIONAL</td>
+                  <td class="py-2 text-right"></td>
+                </tr>
+                ${Object.keys(incomeCategories).length > 0 ? Object.keys(incomeCategories).map(cat => `
+                  <tr class="border-b border-slate-200">
+                    <td class="py-1.5 pl-4 text-slate-700">Pendapatan - ${cat}</td>
+                    <td class="py-1.5 text-right font-mono">Rp ${incomeCategories[cat].toLocaleString()}</td>
+                  </tr>
+                `).join('') : `
+                  <tr class="border-b border-slate-200">
+                    <td class="py-1.5 pl-4 text-slate-700">Pendapatan Penjualan / Usaha</td>
+                    <td class="py-1.5 text-right font-mono">Rp ${totals.income.toLocaleString()}</td>
+                  </tr>
+                `}
+                <tr class="border-b border-slate-300 font-bold text-emerald-800">
+                  <td class="py-2">TOTAL PENDAPATAN OPERASIONAL (A)</td>
+                  <td class="py-2 text-right font-mono">Rp ${totals.income.toLocaleString()}</td>
+                </tr>
+
+                <tr class="font-bold text-slate-900 bg-slate-50">
+                  <td class="py-2 pt-4">BEBAN OPERASIONAL & USAHA</td>
+                  <td class="py-2 text-right"></td>
+                </tr>
+                ${Object.keys(expenseCategories).length > 0 ? Object.keys(expenseCategories).map(cat => `
+                  <tr class="border-b border-slate-200">
+                    <td class="py-1.5 pl-4 text-slate-700">Beban - ${cat}</td>
+                    <td class="py-1.5 text-right font-mono text-rose-700">(Rp ${expenseCategories[cat].toLocaleString()})</td>
+                  </tr>
+                `).join('') : `
+                  <tr class="border-b border-slate-200">
+                    <td class="py-1.5 pl-4 text-slate-700">Beban Operasional Umum</td>
+                    <td class="py-1.5 text-right font-mono text-rose-700">(Rp ${totals.expense.toLocaleString()})</td>
+                  </tr>
+                `}
+                <tr class="border-b border-slate-300 font-bold text-rose-800">
+                  <td class="py-2">TOTAL BEBAN OPERASIONAL (B)</td>
+                  <td class="py-2 text-right font-mono">(Rp ${totals.expense.toLocaleString()})</td>
+                </tr>
+
+                <tr class="border-b-2 border-slate-900 font-black text-base bg-slate-100">
+                  <td class="py-3 text-slate-900">LABA (RUGI) BERSIH OPERASIONAL (A - B)</td>
+                  <td class="py-3 text-right font-mono ${totals.net >= 0 ? 'text-emerald-800' : 'text-rose-800'}">Rp ${totals.net.toLocaleString()}</td>
+                </tr>
+              </tbody>
             </table>
           </div>
 
-          <div class="pt-12 grid grid-cols-2 text-center text-xs text-slate-600">
+          <!-- 2. LAPORAN POSISI KEUANGAN (NERACA) -->
+          <div>
+            <h3 class="font-bold text-slate-900 uppercase border-b-2 border-slate-800 pb-1 mb-3">2. POSISI KEUANGAN & NERACA KAS (BALANCE SHEET)</h3>
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="border-b border-slate-300 text-slate-600 font-bold uppercase text-[10px]">
+                  <th class="py-1">Akun Asset Kas & Rekening Bank</th>
+                  <th class="py-1 text-right">Saldo Terkini (IDR)</th>
+                </tr>
+              </thead>
+              <tbody>
+                ${accounts.map(a => `
+                  <tr class="border-b border-slate-200">
+                    <td class="py-2 text-slate-700 pl-2">${a.name} <span class="text-[10px] text-slate-500">(${a.type})</span></td>
+                    <td class="py-2 font-mono text-right text-slate-900">Rp ${parseFloat(a.balance || 0).toLocaleString()}</td>
+                  </tr>
+                `).join('')}
+                <tr class="font-bold bg-slate-100 border-t-2 border-slate-900 text-sm">
+                  <td class="py-2.5 text-slate-900">TOTAL ASET KAS LIKUID PERUSAHAAN</td>
+                  <td class="py-2.5 font-mono text-right text-slate-900">Rp ${totals.assets.toLocaleString()}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- TANDA TANGAN OTORISASI -->
+          <div class="pt-8 grid grid-cols-2 text-center text-xs text-slate-600 border-t border-slate-200">
             <div>
-              <p>Dibuat Oleh,</p>
-              <div class="h-16"></div>
+              <p>Disusun Oleh,</p>
+              <div class="h-14"></div>
               <p class="font-bold text-slate-900 underline">${currentUser ? currentUser.name : 'Staf Keuangan'}</p>
               <p>Departemen Keuangan</p>
             </div>
             <div>
               <p>Disetujui Oleh,</p>
-              <div class="h-16"></div>
+              <div class="h-14"></div>
               <p class="font-bold text-slate-900 underline">Direktur Utama / CFO</p>
               <p>PT AAAIIM OneFinance</p>
             </div>
@@ -857,14 +1186,18 @@
       document.getElementById('txHistoryList').innerHTML = nonTransfers.length === 0 ? 
         '<p class="text-xs text-slate-500 text-center py-4">Belum ada transaksi operasional.</p>' :
         nonTransfers.map(t => `
-          <div class="p-4 rounded-xl border border-corporate-border glass-input flex justify-between items-center">
+          <div class="p-4 rounded-xl border border-corporate-border glass-input flex justify-between items-center gap-2">
             <div>
               <h4 class="font-bold text-xs text-slate-200">${t.notes !== '-' ? t.notes : t.category}</h4>
-              <p class="text-[10px] text-slate-400 mt-0.5">${t.date} • ${t.account}</p>
+              <p class="text-[10px] text-slate-400 mt-0.5">${t.date} • ${t.account} • <span class="font-semibold text-amber-400">${t.category}</span></p>
             </div>
-            <span class="font-black text-xs font-mono ${t.type === 'Pendapatan' ? 'text-emerald-400' : 'text-rose-400'}">
-              Rp ${parseFloat(t.amount).toLocaleString()}
-            </span>
+            <div class="flex items-center gap-3">
+              <span class="font-black text-xs font-mono ${t.type === 'Pendapatan' ? 'text-emerald-400' : 'text-rose-400'} whitespace-nowrap">
+                Rp ${parseFloat(t.amount).toLocaleString()}
+              </span>
+              <button onclick="openEditTxModal('${t.id}')" class="p-1.5 text-amber-400 hover:bg-amber-400/10 rounded-lg transition-all" title="Edit"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="deleteTx('${t.id}')" class="p-1.5 text-rose-400 hover:bg-rose-400/10 rounded-lg transition-all" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+            </div>
           </div>
         `).join('');
 
