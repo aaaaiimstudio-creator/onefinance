@@ -296,6 +296,10 @@
         <button onclick="switchTab('pencatatan')" id="nav-pencatatan" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all">
           <i class="fa-solid fa-pen-to-square"></i> Jurnal Transaksi
         </button>
+        <!-- TAB BARU: HUTANG & PIUTANG -->
+        <button onclick="switchTab('hutangpiutang')" id="nav-hutangpiutang" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all">
+          <i class="fa-solid fa-hand-holding-dollar"></i> Hutang & Piutang
+        </button>
         <button onclick="switchTab('transfer')" id="nav-transfer" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all">
           <i class="fa-solid fa-right-left"></i> Transfer Antar Akun
         </button>
@@ -468,6 +472,88 @@
         </div>
       </section>
 
+      <!-- ================= TAB BARU: HUTANG & PIUTANG ================= -->
+      <section id="tab-hutangpiutang" class="tab-content hidden space-y-6">
+        <!-- Ringkasan KPI Hutang & Piutang -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-rose-500">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Total Hutang Usaha (Kewajiban Belum Lunas)</span>
+            <h3 class="text-2xl font-black text-rose-400 mt-2" id="kpiTotalHutang">Rp 0</h3>
+            <p class="text-xs text-slate-400 mt-1">Kewajiban pembayaran kepada pihak ketiga.</p>
+          </div>
+
+          <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-emerald-500">
+            <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest block">Total Piutang Usaha (Tagihan Belum Lunas)</span>
+            <h3 class="text-2xl font-black text-emerald-400 mt-2" id="kpiTotalPiutang">Rp 0</h3>
+            <p class="text-xs text-slate-400 mt-1">Hak penerimaan dana dari pihak/klien lain.</p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <!-- Form Tambah Hutang/Piutang -->
+          <div class="glass-card p-5 sm:p-6 rounded-2xl h-fit">
+            <h2 class="text-base font-bold text-white tracking-wide uppercase mb-1">Catat Hutang / Piutang</h2>
+            <p class="text-xs text-slate-400 mb-6">Pencatatan pos kewajiban & hak penerimaan dana</p>
+
+            <form id="debtForm" onsubmit="handleSaveDebt(event)" class="space-y-4">
+              <div>
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Jenis Catatan</label>
+                <select id="debtType" class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+                  <option value="Hutang">Hutang (Kewajiban Kita Pay)</option>
+                  <option value="Piutang">Piutang (Tagihan Ke Pihak Lain)</option>
+                </select>
+              </div>
+
+              <div>
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nama Pihak / Mitra (Debitur/Kreditur)</label>
+                <input type="text" id="debtPerson" placeholder="Contoh: PT Mitra Jaya / Bpk. Ahmad" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+              </div>
+
+              <div>
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nominal (Rp)</label>
+                <input type="number" id="debtAmount" placeholder="0" min="1" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+              </div>
+
+              <div>
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Jatuh Tempo</label>
+                <input type="date" id="debtDueDate" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+              </div>
+
+              <div>
+                <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Keterangan / Memo</label>
+                <textarea id="debtNotes" rows="2" placeholder="Catatan keperluan hutang/piutang..." class="w-full p-3 rounded-xl glass-input text-xs outline-none"></textarea>
+              </div>
+
+              <button type="submit" id="btnSaveDebt" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
+                <i class="fa-solid fa-plus-circle"></i> Simpan Catatan
+              </button>
+            </form>
+          </div>
+
+          <!-- Tabel Riwayat Hutang & Piutang -->
+          <div class="lg:col-span-2 glass-card p-5 sm:p-6 rounded-2xl">
+            <h2 class="text-base font-bold text-white tracking-wide uppercase mb-6 pb-4 border-b border-corporate-border">Daftar Hutang & Piutang</h2>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse min-w-[600px]">
+                <thead>
+                  <tr class="border-b border-corporate-border text-[10px] sm:text-[11px] text-slate-400 uppercase tracking-wider font-semibold">
+                    <th class="py-3 px-3">Jenis</th>
+                    <th class="py-3 px-3">Mitra / Pihak</th>
+                    <th class="py-3 px-3">Jatuh Tempo</th>
+                    <th class="py-3 px-3 text-right">Nominal</th>
+                    <th class="py-3 px-3 text-center">Status</th>
+                    <th class="py-3 px-3 text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="debtTableBody" class="divide-y divide-corporate-border text-xs">
+                  <!-- Dynamic Data -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <!-- ================= TAB 4: TRANSFER ANTAAR AKUN ================= -->
       <section id="tab-transfer" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="glass-card p-5 sm:p-6 rounded-2xl h-fit">
@@ -600,7 +686,7 @@
       messagingSenderId: "111442380622",
       appId: "1:111442380622:web:9106c659173ed914bd401f",
       measurementId: "G-ZFTSGN3YR9"
-  };
+    };
 
     firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
@@ -608,11 +694,13 @@
     // State Variables
     let transactions = [];
     let accounts = [];
+    let debts = []; // Data Hutang & Piutang
     let currentUser = null;
 
     const todayDate = new Date().toISOString().split('T')[0];
     document.getElementById('txDate').value = todayDate;
     document.getElementById('transferDate').value = todayDate;
+    if(document.getElementById('debtDueDate')) document.getElementById('debtDueDate').value = todayDate;
 
     // -----------------------------------------------------------------
     // 2. NIGHT MODE / DARK MODE TOGGLE
@@ -679,7 +767,7 @@
 
     function applyRolePermissions() {
       const isAuditor = currentUser && currentUser.role === 'auditor';
-      ['btnSaveTx', 'btnSaveTransfer', 'btnSaveAcc'].forEach(id => {
+      ['btnSaveTx', 'btnSaveTransfer', 'btnSaveAcc', 'btnSaveDebt'].forEach(id => {
         const btn = document.getElementById(id);
         if (btn) {
           btn.disabled = isAuditor;
@@ -711,6 +799,18 @@
         });
       } else {
         db.ref('accounts/default').set({ name: 'Kas Utama', type: 'Kas', balance: 0 });
+      }
+      renderDashboard();
+    });
+
+    // Realtime Listener untuk Hutang & Piutang
+    db.ref('debts').on('value', (snapshot) => {
+      const data = snapshot.val();
+      debts = [];
+      if (data) {
+        Object.keys(data).forEach(key => {
+          debts.unshift({ id: key, ...data[key] });
+        });
       }
       renderDashboard();
     });
@@ -825,7 +925,77 @@
     }
 
     // -----------------------------------------------------------------
-    // 6. CRUD AKUN / REKENING (EDIT NAMA & SALDO)
+    // 6. CRUD & LOGIKA HUTANG PIUTANG
+    // -----------------------------------------------------------------
+    function handleSaveDebt(e) {
+      e.preventDefault();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+
+      const newDebt = {
+        type: document.getElementById('debtType').value,
+        person: document.getElementById('debtPerson').value.trim(),
+        amount: parseFloat(document.getElementById('debtAmount').value),
+        dueDate: document.getElementById('debtDueDate').value,
+        notes: document.getElementById('debtNotes').value || '-',
+        status: 'Belum Lunas',
+        createdDate: new Date().toISOString().split('T')[0]
+      };
+
+      db.ref('debts').push(newDebt);
+      document.getElementById('debtPerson').value = '';
+      document.getElementById('debtAmount').value = '';
+      document.getElementById('debtNotes').value = '';
+      showToast('✅ Catatan Hutang/Piutang Berhasil Disimpan!');
+    }
+
+    function markDebtPaid(id) {
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      const item = debts.find(d => d.id === id);
+      if (!item) return;
+
+      if (accounts.length === 0) return showToast('❌ Buat akun kas/bank terlebih dahulu!');
+
+      const targetAccountName = accounts[0].name; // Menggunakan akun kas/bank default pertama
+      const selectedAccount = accounts.find(a => a.name === targetAccountName);
+
+      if (confirm(`Pelunasan ${item.type} sebesar Rp ${item.amount.toLocaleString()} akan dicatat pada kas/bank "${targetAccountName}". Lanjutkan?`)) {
+        // Update status di tabel debts
+        db.ref('debts/' + id).update({ status: 'Lunas' });
+
+        // Tambahkan otomatis ke jurnal transaksi
+        const isHutang = item.type === 'Hutang';
+        const txType = isHutang ? 'Pengeluaran' : 'Pendapatan';
+        
+        const autoTx = {
+          type: txType,
+          amount: item.amount,
+          account: targetAccountName,
+          category: isHutang ? 'Pelunasan Hutang' : 'Pelunasan Piutang',
+          date: new Date().toISOString().split('T')[0],
+          notes: `Pelunasan ${item.type}: ${item.person} (${item.notes})`
+        };
+
+        db.ref('transactions').push(autoTx);
+
+        // Update saldo akun kas terkait
+        if (selectedAccount) {
+          const adj = isHutang ? -item.amount : item.amount;
+          db.ref('accounts/' + selectedAccount.id).update({ balance: parseFloat(selectedAccount.balance || 0) + adj });
+        }
+
+        showToast(`✅ ${item.type} Berhasil Dilunasi!`);
+      }
+    }
+
+    function deleteDebt(id) {
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      if (!confirm('Apakah Anda yakin ingin menghapus catatan ini?')) return;
+      db.ref('debts/' + id).remove();
+      showToast('🗑️ Catatan Berhasil Dihapus!');
+    }
+
+    // -----------------------------------------------------------------
+    // 7. CRUD AKUN / REKENING (EDIT NAMA & SALDO)
     // -----------------------------------------------------------------
     function handleSaveAccount(e) {
       e.preventDefault();
@@ -891,7 +1061,7 @@
     }
 
     // -----------------------------------------------------------------
-    // 7. TRANSFER DANA
+    // 8. TRANSFER DANA
     // -----------------------------------------------------------------
     function handleSaveTransfer(e) {
       e.preventDefault();
@@ -931,7 +1101,7 @@
     }
 
     // -----------------------------------------------------------------
-    // 8. RENDER UI & ANALISIS
+    // 9. RENDER UI & ANALISIS
     // -----------------------------------------------------------------
     function getTotals() {
       let income = 0, expense = 0, assets = 0;
@@ -940,7 +1110,17 @@
         if (t.type === 'Pengeluaran') expense += parseFloat(t.amount || 0);
       });
       accounts.forEach(a => assets += parseFloat(a.balance || 0));
-      return { income, expense, net: income - expense, assets };
+
+      let totalHutang = 0;
+      let totalPiutang = 0;
+      debts.forEach(d => {
+        if (d.status === 'Belum Lunas') {
+          if (d.type === 'Hutang') totalHutang += parseFloat(d.amount || 0);
+          if (d.type === 'Piutang') totalPiutang += parseFloat(d.amount || 0);
+        }
+      });
+
+      return { income, expense, net: income - expense, assets, totalHutang, totalPiutang };
     }
 
     function renderDashboard() {
@@ -949,6 +1129,9 @@
       document.getElementById('kpiExpense').innerText = 'Rp ' + totals.expense.toLocaleString();
       document.getElementById('kpiNet').innerText = 'Rp ' + totals.net.toLocaleString();
       document.getElementById('kpiAssets').innerText = 'Rp ' + totals.assets.toLocaleString();
+
+      if(document.getElementById('kpiTotalHutang')) document.getElementById('kpiTotalHutang').innerText = 'Rp ' + totals.totalHutang.toLocaleString();
+      if(document.getElementById('kpiTotalPiutang')) document.getElementById('kpiTotalPiutang').innerText = 'Rp ' + totals.totalPiutang.toLocaleString();
 
       // Render Tabel Dashboard
       const tbody = document.getElementById('txTableBody');
@@ -979,6 +1162,38 @@
             </tr>
           `;
         }).join('');
+      }
+
+      // Render Tabel Hutang & Piutang
+      const debtTbody = document.getElementById('debtTableBody');
+      if (debtTbody) {
+        if (debts.length === 0) {
+          debtTbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500">Belum ada catatan hutang atau piutang.</td></tr>`;
+        } else {
+          debtTbody.innerHTML = debts.map(d => {
+            const isUnpaid = d.status === 'Belum Lunas';
+            const badgeClass = isUnpaid ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+            const typeBadge = d.type === 'Hutang' ? 'text-rose-400' : 'text-emerald-400';
+
+            return `
+              <tr class="hover:bg-corporate-800/40 transition-all">
+                <td class="py-3 px-3"><span class="font-bold ${typeBadge}">${d.type}</span></td>
+                <td class="py-3 px-3 font-medium text-slate-200">${d.person} <br><span class="text-[10px] text-slate-400">${d.notes}</span></td>
+                <td class="py-3 px-3 font-mono text-slate-400">${d.dueDate}</td>
+                <td class="py-3 px-3 text-right font-black font-mono text-white">Rp ${parseFloat(d.amount).toLocaleString()}</td>
+                <td class="py-3 px-3 text-center"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeClass}">${d.status}</span></td>
+                <td class="py-3 px-3 text-center whitespace-nowrap">
+                  ${isUnpaid ? `
+                    <button onclick="markDebtPaid('${d.id}')" class="px-2 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg text-[10px] font-bold uppercase transition-all mr-1">
+                      <i class="fa-solid fa-check"></i> Lunasi
+                    </button>
+                  ` : ''}
+                  <button onclick="deleteDebt('${d.id}')" class="p-1.5 text-rose-400 hover:bg-rose-400/10 rounded-lg transition-all" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                </td>
+              </tr>
+            `;
+          }).join('');
+        }
       }
 
       // Populate Account Options
@@ -1046,7 +1261,7 @@
     }
 
     // -----------------------------------------------------------------
-    // 9. RENDER LAPORAN KEUANGAN RESMI PERUSAHAAN (LENGKAP)
+    // 10. RENDER LAPORAN KEUANGAN RESMI PERUSAHAAN (DENGAN NERACA HUTANG/PIUTANG)
     // -----------------------------------------------------------------
     function renderPrintableReport() {
       const totals = getTotals();
@@ -1064,6 +1279,8 @@
           incomeCategories[t.category] = (incomeCategories[t.category] || 0) + parseFloat(t.amount);
         }
       });
+
+      const totalAsetKeseluruhan = totals.assets + totals.totalPiutang;
 
       document.getElementById('printableReport').innerHTML = `
         <div class="border-b-2 border-slate-900 pb-6 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -1137,29 +1354,54 @@
             </table>
           </div>
 
-          <!-- 2. LAPORAN POSISI KEUANGAN (NERACA) -->
+          <!-- 2. LAPORAN POSISI KEUANGAN (NERACA AKUNTANSI) -->
           <div>
-            <h3 class="font-bold text-slate-900 uppercase border-b-2 border-slate-800 pb-1 mb-3">2. POSISI KEUANGAN & NERACA KAS (BALANCE SHEET)</h3>
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="border-b border-slate-300 text-slate-600 font-bold uppercase text-[10px]">
-                  <th class="py-1">Akun Asset Kas & Rekening Bank</th>
-                  <th class="py-1 text-right">Saldo Terkini (IDR)</th>
-                </tr>
-              </thead>
-              <tbody>
-                ${accounts.map(a => `
-                  <tr class="border-b border-slate-200">
-                    <td class="py-2 text-slate-700 pl-2">${a.name} <span class="text-[10px] text-slate-500">(${a.type})</span></td>
-                    <td class="py-2 font-mono text-right text-slate-900">Rp ${parseFloat(a.balance || 0).toLocaleString()}</td>
-                  </tr>
-                `).join('')}
-                <tr class="font-bold bg-slate-100 border-t-2 border-slate-900 text-sm">
-                  <td class="py-2.5 text-slate-900">TOTAL ASET KAS LIKUID PERUSAHAAN</td>
-                  <td class="py-2.5 font-mono text-right text-slate-900">Rp ${totals.assets.toLocaleString()}</td>
-                </tr>
-              </tbody>
-            </table>
+            <h3 class="font-bold text-slate-900 uppercase border-b-2 border-slate-800 pb-1 mb-3">2. POSISI KEUANGAN & NERACA (BALANCE SHEET)</h3>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- ASET / AKTIVA -->
+              <div>
+                <h4 class="font-bold text-slate-800 border-b border-slate-300 pb-1 mb-2">ASET (AKTIVA)</h4>
+                <table class="w-full text-left border-collapse">
+                  <tbody>
+                    <tr class="font-bold text-slate-800 bg-slate-50"><td colspan="2" class="py-1">Aset Kas & Bank</td></tr>
+                    ${accounts.map(a => `
+                      <tr class="border-b border-slate-200">
+                        <td class="py-1 text-slate-700 pl-3">${a.name}</td>
+                        <td class="py-1 font-mono text-right text-slate-900">Rp ${parseFloat(a.balance || 0).toLocaleString()}</td>
+                      </tr>
+                    `).join('')}
+                    <tr class="font-bold text-slate-800 bg-slate-50"><td colspan="2" class="py-1 pt-2">Piutang Usaha</td></tr>
+                    <tr class="border-b border-slate-200">
+                      <td class="py-1 text-slate-700 pl-3">Total Tagihan Piutang Belum Lunas</td>
+                      <td class="py-1 font-mono text-right text-slate-900">Rp ${totals.totalPiutang.toLocaleString()}</td>
+                    </tr>
+                    <tr class="font-bold bg-slate-100 border-t-2 border-slate-800">
+                      <td class="py-2 text-slate-900">TOTAL ASET (AKTIVA)</td>
+                      <td class="py-2 font-mono text-right text-emerald-800">Rp ${totalAsetKeseluruhan.toLocaleString()}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- KEWAJIBAN / PASSIVA -->
+              <div>
+                <h4 class="font-bold text-slate-800 border-b border-slate-300 pb-1 mb-2">KEWAJIBAN (PASSIVA)</h4>
+                <table class="w-full text-left border-collapse">
+                  <tbody>
+                    <tr class="font-bold text-slate-800 bg-slate-50"><td colspan="2" class="py-1">Kewajiban Jangka Pendek</td></tr>
+                    <tr class="border-b border-slate-200">
+                      <td class="py-1 text-slate-700 pl-3">Total Hutang Usaha Belum Lunas</td>
+                      <td class="py-1 font-mono text-right text-slate-900">Rp ${totals.totalHutang.toLocaleString()}</td>
+                    </tr>
+                    <tr class="font-bold bg-slate-100 border-t-2 border-slate-800">
+                      <td class="py-2 text-slate-900">TOTAL KEWAJIBAN (PASSIVA)</td>
+                      <td class="py-2 font-mono text-right text-rose-800">Rp ${totals.totalHutang.toLocaleString()}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
           </div>
 
           <!-- TANDA TANGAN OTORISASI -->
@@ -1228,8 +1470,10 @@
 
       document.getElementById('tab-' + tabId).classList.remove('hidden');
       const activeBtn = document.getElementById('nav-' + tabId);
-      activeBtn.classList.remove('border-transparent', 'text-slate-400');
-      activeBtn.classList.add('border-amber-400', 'text-amber-400', 'font-semibold');
+      if(activeBtn) {
+        activeBtn.classList.remove('border-transparent', 'text-slate-400');
+        activeBtn.classList.add('border-amber-400', 'text-amber-400', 'font-semibold');
+      }
     }
 
     function showToast(msg) {
