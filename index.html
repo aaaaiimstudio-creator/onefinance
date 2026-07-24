@@ -14,6 +14,10 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 
+  <!-- Firebase SDK -->
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
+
   <script>
     tailwind.config = {
       darkMode: 'class',
@@ -41,16 +45,12 @@
   </script>
 
   <style>
-    /* Premium Styling Extensions */
     body { font-family: 'Inter', sans-serif; background-color: #060913; color: #f1f5f9; }
-    
-    /* Custom Scrollbar */
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: #060913; }
     ::-webkit-scrollbar-thumb { background: #1e2d4a; border-radius: 10px; }
     ::-webkit-scrollbar-thumb:hover { background: #D4AF37; }
 
-    /* Glassmorphism Cards */
     .glass-card {
       background: rgba(11, 17, 32, 0.75);
       backdrop-filter: blur(16px);
@@ -58,12 +58,10 @@
       border: 1px solid rgba(255, 255, 255, 0.08);
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
     }
-
     .glass-card-gold {
       background: linear-gradient(135deg, rgba(212, 175, 55, 0.05) 0%, rgba(11, 17, 32, 0.8) 100%);
       border: 1px solid rgba(212, 175, 55, 0.2);
     }
-
     .glass-input {
       background: rgba(6, 9, 19, 0.6);
       border: 1px solid rgba(255, 255, 255, 0.1);
@@ -73,113 +71,19 @@
       border-color: #D4AF37;
       box-shadow: 0 0 15px rgba(212, 175, 55, 0.2);
     }
-
-    /* Gold Glow FX */
-    .gold-glow {
-      box-shadow: 0 0 25px rgba(212, 175, 55, 0.25);
-    }
   </style>
 </head>
 <body class="min-h-screen text-slate-200 antialiased selection:bg-amber-500 selection:text-black">
 
-  <!-- Toast Notification System -->
+  <!-- Toast Notification -->
   <div id="toast" class="fixed top-6 right-6 z-50 hidden flex items-center gap-3 glass-card border-l-4 border-l-amber-400 text-white px-5 py-4 rounded-xl shadow-2xl text-sm font-medium transition-all">
     <i class="fa-solid fa-shield-check text-amber-400 text-lg"></i>
     <span id="toastMsg">Notifikasi Enterprise</span>
   </div>
 
-  <!-- ================================================================= -->
-  <!-- 1. AUTHENTICATION SECTION (PREMIUM ENTERPRISE PORTAL) -->
-  <!-- ================================================================= -->
-  <div id="authScreen" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#060913] bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(212,175,55,0.15),rgba(255,255,255,0))]">
-    <div class="w-full max-w-md p-8 sm:p-10 rounded-3xl glass-card relative overflow-hidden">
-      
-      <!-- Top Accent Glow Line -->
-      <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-amber-400 to-transparent"></div>
-
-      <!-- Corporate Logo & Header -->
-      <div class="text-center mb-8">
-        <div class="inline-flex p-4 rounded-2xl bg-gradient-to-b from-amber-500/20 to-transparent border border-amber-500/30 text-amber-400 mb-4 gold-glow">
-          <i class="fa-solid fa-building-columns text-3xl"></i>
-        </div>
-        <h2 class="text-2xl font-extrabold tracking-tight text-white uppercase tracking-wider">
-          AAAIIM <span class="text-amber-400">OneFinance</span>
-        </h2>
-        <p class="text-xs text-slate-400 mt-2 font-medium tracking-wide" id="authSubtitle">Institutional Financial Portal & Capital Control</p>
-      </div>
-
-      <!-- FORM LOGIN -->
-      <form id="loginForm" onsubmit="handleLogin(event)" class="space-y-5">
-        <div>
-          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Email Perusahaan</label>
-          <div class="relative">
-            <i class="fa-solid fa-envelope-open absolute left-4 top-3.5 text-slate-500 text-xs"></i>
-            <input type="email" id="loginEmail" placeholder="corporate@company.com" required class="w-full pl-11 pr-4 py-3 rounded-xl glass-input text-xs text-slate-100 outline-none">
-          </div>
-        </div>
-
-        <div>
-          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Kata Sandi Akses</label>
-          <div class="relative">
-            <i class="fa-solid fa-key absolute left-4 top-3.5 text-slate-500 text-xs"></i>
-            <input type="password" id="loginPassword" placeholder="••••••••••••" required class="w-full pl-11 pr-4 py-3 rounded-xl glass-input text-xs text-slate-100 outline-none">
-          </div>
-        </div>
-
-        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl transition-all duration-300 shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
-          <i class="fa-solid fa-lock"></i> Otorisasi Masuk
-        </button>
-
-        <p class="text-xs text-center text-slate-500 mt-6">
-          Belum terdaftar di sistem? 
-          <button type="button" onclick="toggleAuthMode('register')" class="text-amber-400 font-semibold hover:underline">Registrasi Entitas</button>
-        </p>
-      </form>
-
-      <!-- FORM REGISTRASI -->
-      <form id="registerForm" onsubmit="handleRegister(event)" class="space-y-5 hidden">
-        <div>
-          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Nama Lengkap Pejabat</label>
-          <div class="relative">
-            <i class="fa-solid fa-user-tie absolute left-4 top-3.5 text-slate-500 text-xs"></i>
-            <input type="text" id="regName" placeholder="Nama Anda / Jabatan" required class="w-full pl-11 pr-4 py-3 rounded-xl glass-input text-xs text-slate-100 outline-none">
-          </div>
-        </div>
-
-        <div>
-          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Email Resmi</label>
-          <div class="relative">
-            <i class="fa-solid fa-envelope absolute left-4 top-3.5 text-slate-500 text-xs"></i>
-            <input type="email" id="regEmail" placeholder="nama@perusahaan.com" required class="w-full pl-11 pr-4 py-3 rounded-xl glass-input text-xs text-slate-100 outline-none">
-          </div>
-        </div>
-
-        <div>
-          <label class="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Buat Kata Sandi</label>
-          <div class="relative">
-            <i class="fa-solid fa-shield-halved absolute left-4 top-3.5 text-slate-500 text-xs"></i>
-            <input type="password" id="regPassword" placeholder="••••••••••••" required class="w-full pl-11 pr-4 py-3 rounded-xl glass-input text-xs text-slate-100 outline-none">
-          </div>
-        </div>
-
-        <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-400 hover:to-emerald-500 text-slate-950 font-bold rounded-xl transition-all duration-300 shadow-lg shadow-emerald-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
-          <i class="fa-solid fa-id-card"></i> Buat Akun Enterprise
-        </button>
-
-        <p class="text-xs text-center text-slate-500 mt-6">
-          Sudah memiliki kredensial? 
-          <button type="button" onclick="toggleAuthMode('login')" class="text-amber-400 font-semibold hover:underline">Kembali ke Login</button>
-        </p>
-      </form>
-
-    </div>
-  </div>
-
-  <!-- ================================================================= -->
-  <!-- 2. MAIN APPLICATION CONTENT (ENTERPRISE DASHBOARD) -->
-  <!-- ================================================================= -->
-  <div id="mainApp" class="hidden">
-    <!-- HEADER / NAVIGATION -->
+  <!-- MAIN APPLICATION CONTENT -->
+  <div id="mainApp">
+    <!-- HEADER -->
     <header class="sticky top-0 z-40 border-b border-corporate-border glass-card bg-corporate-950/80">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
         <div class="flex items-center gap-4">
@@ -189,26 +93,21 @@
           <div>
             <h1 class="text-lg font-extrabold tracking-wider uppercase text-white flex items-center gap-2">
               AAAIIM <span class="text-amber-400">OneFinance</span>
-              <span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full font-semibold">ENTERPRISE</span>
+              <span class="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full font-semibold">SHARED CLOUD</span>
             </h1>
-            <p class="text-[10px] text-slate-400 font-medium tracking-widest uppercase">Institutional Financial System</p>
+            <p class="text-[10px] text-slate-400 font-medium tracking-widest uppercase">Global Shared Financial Portal</p>
           </div>
         </div>
 
         <div class="flex items-center gap-4">
           <div class="flex items-center gap-3 pl-4 border-l border-corporate-border">
-            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 flex items-center justify-center font-black text-xs shadow-lg shadow-amber-500/10" id="avatarInitials">
-              US
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-amber-500 to-amber-300 text-slate-950 flex items-center justify-center font-black text-xs shadow-lg shadow-amber-500/10">
+              PUB
             </div>
             <div class="hidden md:block text-left">
-              <span class="text-xs font-bold block text-slate-200" id="profileDisplayName">User Corporate</span>
-              <span class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-circle text-[6px]"></i> Sesi Terverifikasi</span>
+              <span class="text-xs font-bold block text-slate-200">Public Shared Session</span>
+              <span class="text-[10px] text-emerald-400 font-semibold flex items-center gap-1"><i class="fa-solid fa-wifi text-[6px]"></i> Terhubung ke Cloud</span>
             </div>
-            
-            <!-- Tombol Keluar / Logout -->
-            <button onclick="handleLogout()" title="Otorisasi Keluar" class="ml-2 p-2.5 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-xl border border-transparent hover:border-rose-500/20 transition-all">
-              <i class="fa-solid fa-power-off text-sm"></i>
-            </button>
           </div>
         </div>
       </div>
@@ -221,14 +120,15 @@
         <button onclick="switchTab('pencatatan')" id="nav-pencatatan" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
           <i class="fa-solid fa-pen-to-square"></i> Jurnal Transaksi
         </button>
+        <!-- TAB BARU KHUSUS TRANSFER -->
+        <button onclick="switchTab('transfer')" id="nav-transfer" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
+          <i class="fa-solid fa-right-left"></i> Transfer Antar Akun
+        </button>
         <button onclick="switchTab('akun')" id="nav-akun" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
           <i class="fa-solid fa-vault"></i> Manajemen Kas & Rekening
         </button>
         <button onclick="switchTab('laporan')" id="nav-laporan" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
           <i class="fa-solid fa-file-invoice-dollar"></i> Laporan Keuangan
-        </button>
-        <button onclick="switchTab('analisis')" id="nav-analisis" class="tab-btn border-b-2 border-transparent text-slate-400 hover:text-slate-200 flex items-center gap-2 px-5 py-3.5 text-xs tracking-wider uppercase whitespace-nowrap transition-all">
-          <i class="fa-solid fa-chart-line"></i> Analisis Capital
         </button>
       </div>
     </header>
@@ -239,14 +139,13 @@
       <!-- ================= TAB 1: DASHBOARD ================= -->
       <section id="tab-dashboard" class="tab-content space-y-6">
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-          
           <div class="glass-card p-6 rounded-2xl relative overflow-hidden">
             <div class="flex justify-between items-start">
               <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Arus Masuk</span>
               <div class="p-2.5 bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 rounded-xl"><i class="fa-solid fa-arrow-trend-up"></i></div>
             </div>
             <h3 class="text-2xl font-black mt-3 text-white tracking-tight" id="kpiIncome">Rp 0</h3>
-            <p class="text-[11px] text-emerald-400/80 mt-2 font-medium flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Konsolidasi Real-time</p>
+            <p class="text-[11px] text-emerald-400/80 mt-2 font-medium flex items-center gap-1"><i class="fa-solid fa-circle-check"></i> Real-time Sync</p>
           </div>
 
           <div class="glass-card p-6 rounded-2xl relative overflow-hidden">
@@ -269,28 +168,19 @@
 
           <div class="glass-card p-6 rounded-2xl relative overflow-hidden">
             <div class="flex justify-between items-start">
-              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Financial Health Index</span>
-              <div class="p-2.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-xl"><i class="fa-solid fa-heart-pulse"></i></div>
+              <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">Total Kas & Bank</span>
+              <div class="p-2.5 bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-xl"><i class="fa-solid fa-vault"></i></div>
             </div>
-            <h3 class="text-2xl font-black mt-3 text-white tracking-tight" id="kpiHealth">0 / 100</h3>
-            <p class="text-[11px] text-cyan-400 mt-2 font-medium">Audit System Rating</p>
+            <h3 class="text-2xl font-black mt-3 text-white tracking-tight" id="kpiAssets">Rp 0</h3>
+            <p class="text-[11px] text-cyan-400 mt-2 font-medium">Konsolidasi Rekening</p>
           </div>
-
         </div>
 
         <div class="glass-card p-6 rounded-2xl">
           <div class="flex flex-col md:flex-row justify-between md:items-center gap-4 mb-6 pb-4 border-b border-corporate-border">
             <div>
-              <h2 class="text-base font-bold text-white tracking-wide uppercase">Konsolidasi Transaksi Terakhir</h2>
-              <p class="text-xs text-slate-400 mt-0.5">Audit log transaksi otomatis dengan keamanan tersimpan</p>
-            </div>
-            <div class="flex flex-wrap gap-3">
-              <input type="text" id="searchInput" oninput="renderDashboard()" placeholder="Cari memo / deskripsi..." class="px-4 py-2 rounded-xl glass-input text-xs text-slate-100 outline-none w-48 focus:w-64 transition-all">
-              <select id="typeFilter" onchange="renderDashboard()" class="px-4 py-2 rounded-xl glass-input text-xs text-slate-100 outline-none">
-                <option value="Semua">Semua Arus Kas</option>
-                <option value="Pendapatan">Pendapatan (+)</option>
-                <option value="Pengeluaran">Pengeluaran (-)</option>
-              </select>
+              <h2 class="text-base font-bold text-white tracking-wide uppercase">Jurnal Transaksi Cloud</h2>
+              <p class="text-xs text-slate-400 mt-0.5">Semua data disinkronkan langsung dari seluruh pengguna link</p>
             </div>
           </div>
 
@@ -298,35 +188,34 @@
             <table class="w-full text-left border-collapse">
               <thead>
                 <tr class="border-b border-corporate-border text-[11px] text-slate-400 uppercase tracking-wider font-semibold">
-                  <th class="py-3 px-4">Tanggal Audited</th>
-                  <th class="py-3 px-4">Klasifikasi</th>
-                  <th class="py-3 px-4">Kategori Pos</th>
-                  <th class="py-3 px-4">Entitas Akun</th>
-                  <th class="py-3 px-4">Keterangan Jurnal</th>
+                  <th class="py-3 px-4">Tanggal</th>
+                  <th class="py-3 px-4">Tipe</th>
+                  <th class="py-3 px-4">Kategori / Jalur</th>
+                  <th class="py-3 px-4">Akun</th>
+                  <th class="py-3 px-4">Keterangan</th>
                   <th class="py-3 px-4 text-right">Nominal (IDR)</th>
                 </tr>
               </thead>
               <tbody id="txTableBody" class="divide-y divide-corporate-border text-xs">
-                <!-- Render via JS -->
+                <!-- Data Realtime dari Firebase -->
               </tbody>
             </table>
           </div>
         </div>
       </section>
 
-      <!-- ================= TAB 2: PENCATATAN ================= -->
+      <!-- ================= TAB 2: PENCATATAN (PENDAPATAN/PENGELUARAN) ================= -->
       <section id="tab-pencatatan" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="glass-card p-6 rounded-2xl h-fit">
           <h2 class="text-base font-bold text-white tracking-wide uppercase mb-1">Entri Jurnal Baru</h2>
-          <p class="text-xs text-slate-400 mb-6">Input data transaksi dengan standar akuntansi enterprise</p>
+          <p class="text-xs text-slate-400 mb-6">Pencatatan Operasional Pendapatan / Pengeluaran</p>
 
           <form id="txForm" onsubmit="handleSaveTx(event)" class="space-y-4">
             <div>
               <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Tipe Transaksi</label>
               <select id="txType" class="w-full p-3 rounded-xl glass-input text-xs outline-none">
-                <option value="Pendapatan">Pendapatan Operational (+)</option>
-                <option value="Pengeluaran">Beban / Pengeluaran (-)</option>
-                <option value="Transfer">Transfer Antar Akun</option>
+                <option value="Pendapatan">Pendapatan (+)</option>
+                <option value="Pengeluaran">Pengeluaran (-)</option>
               </select>
             </div>
 
@@ -336,15 +225,15 @@
             </div>
 
             <div>
-              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Entitas Akun Sumber/Tujuan</label>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Entitas Akun</label>
               <select id="txAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
-                <!-- Render via JS -->
+                <!-- Dynamic Options -->
               </select>
             </div>
 
             <div>
               <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Kategori Pos</label>
-              <input type="text" id="txCategory" placeholder="Penjualan, Payroll, Vendor, Operasional" class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+              <input type="text" id="txCategory" placeholder="Penjualan, Operasional, Payroll" class="w-full p-3 rounded-xl glass-input text-xs outline-none">
             </div>
 
             <div>
@@ -353,25 +242,80 @@
             </div>
 
             <div>
-              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Memo / Catatan Audited</label>
-              <textarea id="txNotes" rows="2" placeholder="Rincian deskripsi transaksi..." class="w-full p-3 rounded-xl glass-input text-xs outline-none"></textarea>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Memo / Catatan</label>
+              <textarea id="txNotes" rows="2" placeholder="Catatan transaksi..." class="w-full p-3 rounded-xl glass-input text-xs outline-none"></textarea>
             </div>
 
             <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
-              <i class="fa-solid fa-file-signature"></i> Otorisasi & Simpan Transaksi
+              <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Jurnal
             </button>
           </form>
         </div>
 
         <div class="lg:col-span-2 glass-card p-6 rounded-2xl">
           <div class="flex justify-between items-center mb-6 pb-4 border-b border-corporate-border">
-            <h2 class="text-base font-bold text-white tracking-wide uppercase">Audit Trail & Riwayat Jurnal</h2>
-            <button onclick="clearAllData()" class="text-xs text-rose-400 hover:underline flex items-center gap-1.5 font-semibold">
-              <i class="fa-solid fa-trash-can"></i> Reset Database
-            </button>
+            <h2 class="text-base font-bold text-white tracking-wide uppercase">Riwayat Transaksi Terupdate</h2>
           </div>
           <div id="txHistoryList" class="space-y-3">
-            <!-- Render via JS -->
+            <!-- Dynamic list -->
+          </div>
+        </div>
+      </section>
+
+      <!-- ================= TAB BARU: TRANSFER ANTAAR AKUN ================= -->
+      <section id="tab-transfer" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div class="glass-card p-6 rounded-2xl h-fit">
+          <h2 class="text-base font-bold text-white tracking-wide uppercase mb-1">Transfer Dana Antar Rekening</h2>
+          <p class="text-xs text-slate-400 mb-6">Pemindahan saldo kas internal perusahaan</p>
+
+          <form id="transferForm" onsubmit="handleSaveTransfer(event)" class="space-y-4">
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Rekening Sumber (Pengirim)</label>
+              <select id="transferFromAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none border-rose-500/30">
+                <!-- Dynamic Options -->
+              </select>
+            </div>
+
+            <div class="flex justify-center my-1">
+              <div class="p-2 bg-amber-500/10 text-amber-400 rounded-full border border-amber-500/20">
+                <i class="fa-solid fa-arrow-down text-sm"></i>
+              </div>
+            </div>
+
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Rekening Tujuan (Penerima)</label>
+              <select id="transferToAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none border-emerald-500/30">
+                <!-- Dynamic Options -->
+              </select>
+            </div>
+
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nominal Transfer (Rp)</label>
+              <input type="number" id="transferAmount" placeholder="0" min="1" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+            </div>
+
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Tanggal Transfer</label>
+              <input type="date" id="transferDate" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+            </div>
+
+            <div>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Keterangan / Memo Transfer</label>
+              <textarea id="transferNotes" rows="2" placeholder="Contoh: Pengisian petty cash, rebalancing kas..." class="w-full p-3 rounded-xl glass-input text-xs outline-none"></textarea>
+            </div>
+
+            <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-cyan-500 to-cyan-600 hover:from-cyan-400 hover:to-cyan-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-cyan-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
+              <i class="fa-solid fa-right-left"></i> Proses Pemindahan Dana
+            </button>
+          </form>
+        </div>
+
+        <div class="lg:col-span-2 glass-card p-6 rounded-2xl">
+          <div class="flex justify-between items-center mb-6 pb-4 border-b border-corporate-border">
+            <h2 class="text-base font-bold text-white tracking-wide uppercase">Riwayat Transfer Antar Rekening</h2>
+          </div>
+          <div id="transferHistoryList" class="space-y-3">
+            <!-- Dynamic list history transfer -->
           </div>
         </div>
       </section>
@@ -379,174 +323,342 @@
       <!-- ================= TAB 3: AKUN & KAS ================= -->
       <section id="tab-akun" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div class="glass-card p-6 rounded-2xl h-fit">
-          <h2 class="text-base font-bold text-white tracking-wide uppercase mb-1">Registrasi Akun Perusahaan</h2>
-          <p class="text-xs text-slate-400 mb-6">Tambah entitas Kas, Rekening Bank, atau Treasury</p>
+          <h2 class="text-base font-bold text-white tracking-wide uppercase mb-1">Tambah Akun/Bank</h2>
+          <p class="text-xs text-slate-400 mb-6">Tambah entitas Kas baru secara global</p>
 
           <form id="accForm" onsubmit="handleSaveAccount(event)" class="space-y-4">
             <div>
               <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nama Akun / Bank</label>
-              <input type="text" id="accName" placeholder="Rekening Utama BCA, Kas Operasional" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
+              <input type="text" id="accName" placeholder="BCA Utama, Kas Kecil" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
             </div>
 
             <div>
-              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Tipe Instrumen Kas</label>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Tipe Instrumen</label>
               <select id="accType" class="w-full p-3 rounded-xl glass-input text-xs outline-none">
-                <option value="Kas">Kas Tunai (Petty Cash)</option>
-                <option value="Bank">Rekening Bank Perusahaan</option>
-                <option value="E-Wallet">Treasury / E-Wallet System</option>
+                <option value="Kas">Kas Tunai</option>
+                <option value="Bank">Rekening Bank</option>
+                <option value="E-Wallet">E-Wallet / Digital</option>
               </select>
             </div>
 
             <div>
-              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Saldo Deposit Awal (Rp)</label>
+              <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Saldo Awal (Rp)</label>
               <input type="number" id="accBalance" placeholder="0" class="w-full p-3 rounded-xl glass-input text-xs outline-none">
             </div>
 
             <button type="submit" class="w-full py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 font-bold rounded-xl transition-all shadow-lg shadow-amber-500/20 flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
-              <i class="fa-solid fa-plus-circle"></i> Tambah Entitas Akun
+              <i class="fa-solid fa-plus-circle"></i> Tambah Akun Cloud
             </button>
           </form>
         </div>
 
         <div class="lg:col-span-2 glass-card p-6 rounded-2xl">
-          <h2 class="text-base font-bold text-white tracking-wide uppercase mb-6 pb-4 border-b border-corporate-border">Portofolio Akun Keuangan Aktif</h2>
+          <h2 class="text-base font-bold text-white tracking-wide uppercase mb-6 pb-4 border-b border-corporate-border">Portofolio Rekening Aktif</h2>
           <div id="accountCardsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <!-- Render via JS -->
+            <!-- Dynamic list -->
           </div>
         </div>
       </section>
 
-      <!-- ================= TAB 4: LAPORAN KEUANGAN ================= -->
+      <!-- ================= TAB 4: LAPORAN ================= -->
       <section id="tab-laporan" class="tab-content hidden space-y-6">
-        <div class="glass-card p-4 rounded-2xl flex flex-col md:flex-row justify-between items-center gap-4">
-          <div class="flex flex-wrap gap-2">
-            <button onclick="setReportSubTab('labarugi')" id="sub-labarugi" class="report-subtab px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-500 text-slate-950">Laba Rugi (Income Statement)</button>
-            <button onclick="setReportSubTab('neraca')" id="sub-neraca" class="report-subtab px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-corporate-800 text-slate-400">Neraca (Balance Sheet)</button>
-          </div>
-          <div class="flex items-center gap-2">
-            <button onclick="showToast('Dokumen PDF Laporan berhasil diproses')" class="px-4 py-2 rounded-xl text-xs font-semibold glass-input hover:border-amber-400 text-slate-200 flex items-center gap-2"><i class="fa-solid fa-file-pdf text-rose-400"></i> Export PDF</button>
-            <button onclick="showToast('Dokumen Excel berhasil diexport')" class="px-4 py-2 rounded-xl text-xs font-semibold glass-input hover:border-amber-400 text-slate-200 flex items-center gap-2"><i class="fa-solid fa-file-excel text-emerald-400"></i> Export Excel</button>
-          </div>
-        </div>
-
         <div class="glass-card p-8 sm:p-12 rounded-2xl" id="reportDisplay">
-          <!-- Render via JS -->
-        </div>
-      </section>
-
-      <!-- ================= TAB 5: ANALISIS ================= -->
-      <section id="tab-analisis" class="tab-content hidden space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="glass-card p-8 rounded-2xl text-center flex flex-col items-center justify-center">
-            <h3 class="text-xs font-bold text-slate-400 uppercase tracking-widest">Financial Health Score Index</h3>
-            <div class="my-6 relative flex items-center justify-center w-36 h-36 rounded-full border-4 border-amber-500/30 bg-amber-500/5 text-4xl font-black text-amber-400 gold-glow" id="gaugeScore">
-              0%
-            </div>
-            <p class="text-xs text-slate-400 font-medium" id="gaugeStatus">Memuat kalkulasi audit...</p>
-          </div>
-
-          <div class="md:col-span-2 glass-card p-8 rounded-2xl">
-            <h3 class="text-base font-bold text-white tracking-wide uppercase mb-4 pb-3 border-b border-corporate-border">Rekomendasi Strategic Capital</h3>
-            <div class="space-y-4" id="insightsList">
-              <!-- Render via JS -->
-            </div>
-          </div>
+          <!-- Dynamic report -->
         </div>
       </section>
 
     </main>
   </div>
 
-  <!-- JAVASCRIPT LOGIC (AUTENTIKASI & SYSTEM) -->
+  <!-- FIREBASE & APPLICATION LOGIC -->
   <script>
-    // LocalStorage Persistent Data
-    let users = JSON.parse(localStorage.getItem('aaaiim_users')) || [];
-    let currentUser = JSON.parse(localStorage.getItem('aaaiim_current_user')) || null;
-    let transactions = JSON.parse(localStorage.getItem('aaaiim_txs')) || [];
-    let accounts = JSON.parse(localStorage.getItem('aaaiim_accounts')) || [
-      { id: '1', name: 'Kas Utama Enterprise', type: 'Kas', balance: 0 }
-    ];
-    let activeReportTab = 'labarugi';
+    // -----------------------------------------------------------------
+    // 1. ISIKAN KONFIGURASI FIREBASE ANDA DI SINI
+    // -----------------------------------------------------------------
+    const firebaseConfig = {
+      apiKey: "PASTE_API_KEY_ANDA_DI_SINI",
+      authDomain: "PROJECT_ID_ANDA.firebaseapp.com",
+      databaseURL: "https://PROJECT_ID_ANDA-default-rtdb.firebaseio.com",
+      projectId: "PROJECT_ID_ANDA",
+      storageBucket: "PROJECT_ID_ANDA.appspot.com",
+      messagingSenderId: "SENDER_ID",
+      appId: "APP_ID"
+    };
 
-    document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
+    // Inisialisasi Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.database();
 
-    // Check Auth Status
-    function checkAuthStatus() {
-      if (currentUser) {
-        document.getElementById('authScreen').classList.add('hidden');
-        document.getElementById('mainApp').classList.remove('hidden');
-        document.getElementById('profileDisplayName').innerText = currentUser.name;
-        document.getElementById('avatarInitials').innerText = currentUser.name.slice(0, 2).toUpperCase();
-        renderDashboard();
-      } else {
-        document.getElementById('authScreen').classList.remove('hidden');
-        document.getElementById('mainApp').classList.add('hidden');
+    // Variable State Data
+    let transactions = [];
+    let accounts = [];
+
+    const todayDate = new Date().toISOString().split('T')[0];
+    document.getElementById('txDate').value = todayDate;
+    document.getElementById('transferDate').value = todayDate;
+
+    // -----------------------------------------------------------------
+    // 2. REALTIME LISTENERS
+    // -----------------------------------------------------------------
+    
+    // Listener Transaksi & Transfer
+    db.ref('transactions').on('value', (snapshot) => {
+      const data = snapshot.val();
+      transactions = [];
+      if (data) {
+        Object.keys(data).forEach(key => {
+          transactions.unshift({ id: key, ...data[key] });
+        });
       }
-    }
+      renderDashboard();
+    });
 
-    function toggleAuthMode(mode) {
-      if (mode === 'register') {
-        document.getElementById('loginForm').classList.add('hidden');
-        document.getElementById('registerForm').classList.remove('hidden');
-        document.getElementById('authSubtitle').innerText = 'Pendaftaran Akun Entitas Baru';
+    // Listener Akun/Rekening
+    db.ref('accounts').on('value', (snapshot) => {
+      const data = snapshot.val();
+      accounts = [];
+      if (data) {
+        Object.keys(data).forEach(key => {
+          accounts.push({ id: key, ...data[key] });
+        });
       } else {
-        document.getElementById('registerForm').classList.add('hidden');
-        document.getElementById('loginForm').classList.remove('hidden');
-        document.getElementById('authSubtitle').innerText = 'Institutional Financial Portal & Capital Control';
+        db.ref('accounts/default').set({ name: 'Kas Utama', type: 'Kas', balance: 0 });
       }
-    }
+      renderDashboard();
+    });
 
-    function handleRegister(e) {
+    // -----------------------------------------------------------------
+    // 3. EVENT HANDLERS (TERMASUK FITUR TRANSFER BARU)
+    // -----------------------------------------------------------------
+
+    // Simpan Transaksi Pendapatan/Pengeluaran biasa
+    function handleSaveTx(e) {
       e.preventDefault();
-      const name = document.getElementById('regName').value;
-      const email = document.getElementById('regEmail').value;
-      const password = document.getElementById('regPassword').value;
+      const accountName = document.getElementById('txAccount').value;
+      const amount = parseFloat(document.getElementById('txAmount').value);
+      const type = document.getElementById('txType').value;
 
-      if (users.find(u => u.email === email)) {
-        showToast('Email entitas telah terdaftar!');
+      const newTx = {
+        type: type,
+        amount: amount,
+        account: accountName,
+        category: document.getElementById('txCategory').value || 'Umum',
+        date: document.getElementById('txDate').value,
+        notes: document.getElementById('txNotes').value || '-'
+      };
+
+      db.ref('transactions').push(newTx);
+
+      const targetAcc = accounts.find(a => a.name === accountName);
+      if (targetAcc) {
+        const adjustment = type === 'Pendapatan' ? amount : -amount;
+        const newBalance = parseFloat(targetAcc.balance || 0) + adjustment;
+        db.ref('accounts/' + targetAcc.id).update({ balance: newBalance });
+      }
+
+      document.getElementById('txAmount').value = '';
+      document.getElementById('txNotes').value = '';
+      showToast('Jurnal Transaksi Disimpan!');
+    }
+
+    // SIMPAN KHUSUS TRANSFER ANTAAR AKUN
+    function handleSaveTransfer(e) {
+      e.preventDefault();
+      const fromAccName = document.getElementById('transferFromAccount').value;
+      const toAccName = document.getElementById('transferToAccount').value;
+      const amount = parseFloat(document.getElementById('transferAmount').value);
+      const date = document.getElementById('transferDate').value;
+      const notes = document.getElementById('transferNotes').value || 'Transfer Kas Internal';
+
+      if (fromAccName === toAccName) {
+        showToast('❌ Rekening sumber dan tujuan tidak boleh sama!');
         return;
       }
 
-      const newUser = { id: Date.now().toString(), name, email, password };
-      users.push(newUser);
-      localStorage.setItem('aaaiim_users', JSON.stringify(users));
-      currentUser = newUser;
-      localStorage.setItem('aaaiim_current_user', JSON.stringify(currentUser));
+      const sourceAcc = accounts.find(a => a.name === fromAccName);
+      const targetAcc = accounts.find(a => a.name === toAccName);
 
-      showToast('Otorisasi Pendaftaran Berhasil');
-      checkAuthStatus();
+      if (!sourceAcc || !targetAcc) {
+        showToast('❌ Rekening tidak valid.');
+        return;
+      }
+
+      if (parseFloat(sourceAcc.balance || 0) < amount) {
+        if (!confirm('⚠️ Saldo rekening sumber tidak mencukupi. Lanjutkan transaksi?')) {
+          return;
+        }
+      }
+
+      // Catat sebagai transaksi bertipe "Transfer"
+      const transferTx = {
+        type: 'Transfer',
+        amount: amount,
+        account: `${fromAccName} ➔ ${toAccName}`,
+        fromAccount: fromAccName,
+        toAccount: toAccName,
+        category: 'Transfer Internal',
+        date: date,
+        notes: notes
+      };
+
+      db.ref('transactions').push(transferTx);
+
+      // Kurangi saldo rekening pengirim & Tambah saldo rekening penerima
+      db.ref('accounts/' + sourceAcc.id).update({
+        balance: parseFloat(sourceAcc.balance || 0) - amount
+      });
+
+      db.ref('accounts/' + targetAcc.id).update({
+        balance: parseFloat(targetAcc.balance || 0) + amount
+      });
+
+      document.getElementById('transferAmount').value = '';
+      document.getElementById('transferNotes').value = '';
+      showToast('✅ Transfer Dana Antar Rekening Berhasil!');
     }
 
-    function handleLogin(e) {
+    function handleSaveAccount(e) {
       e.preventDefault();
-      const email = document.getElementById('loginEmail').value;
-      const password = document.getElementById('loginPassword').value;
+      const newAcc = {
+        name: document.getElementById('accName').value,
+        type: document.getElementById('accType').value,
+        balance: parseFloat(document.getElementById('accBalance').value) || 0
+      };
 
-      const user = users.find(u => u.email === email && u.password === password);
-      if (user) {
-        currentUser = user;
-        localStorage.setItem('aaaiim_current_user', JSON.stringify(currentUser));
-        showToast('Sesi Berhasil Diverifikasi');
-        checkAuthStatus();
+      db.ref('accounts').push(newAcc);
+      document.getElementById('accName').value = '';
+      document.getElementById('accBalance').value = '';
+      showToast('Akun Baru Berhasil Ditambahkan!');
+    }
+
+    // -----------------------------------------------------------------
+    // 4. RENDER UI FUNCTIONS
+    // -----------------------------------------------------------------
+
+    function getTotals() {
+      let income = 0, expense = 0, assets = 0;
+      transactions.forEach(t => {
+        if (t.type === 'Pendapatan') income += parseFloat(t.amount || 0);
+        if (t.type === 'Pengeluaran') expense += parseFloat(t.amount || 0);
+      });
+      accounts.forEach(a => assets += parseFloat(a.balance || 0));
+      return { income, expense, net: income - expense, assets };
+    }
+
+    function renderDashboard() {
+      const totals = getTotals();
+      document.getElementById('kpiIncome').innerText = 'Rp ' + totals.income.toLocaleString();
+      document.getElementById('kpiExpense').innerText = 'Rp ' + totals.expense.toLocaleString();
+      document.getElementById('kpiNet').innerText = 'Rp ' + totals.net.toLocaleString();
+      document.getElementById('kpiAssets').innerText = 'Rp ' + totals.assets.toLocaleString();
+
+      // Render Tabel Transaksi Konsolidasi
+      const tbody = document.getElementById('txTableBody');
+      if (transactions.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500">Belum ada transaksi di cloud.</td></tr>`;
       } else {
-        showToast('Kredensial atau Kata Sandi Salah!');
+        tbody.innerHTML = transactions.map(t => {
+          let badgeClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+          if (t.type === 'Pengeluaran') badgeClass = 'bg-rose-500/10 text-rose-400 border-rose-500/20';
+          if (t.type === 'Transfer') badgeClass = 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
+
+          return `
+            <tr class="hover:bg-corporate-800/40 transition-all">
+              <td class="py-3.5 px-4 font-mono text-[11px] text-slate-400">${t.date}</td>
+              <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold border ${badgeClass}">${t.type}</span></td>
+              <td class="py-3.5 px-4 font-medium text-slate-300">${t.category}</td>
+              <td class="py-3.5 px-4 text-slate-400">${t.account}</td>
+              <td class="py-3.5 px-4 text-slate-400">${t.notes}</td>
+              <td class="py-3.5 px-4 text-right font-black font-mono ${t.type === 'Pendapatan' ? 'text-emerald-400' : (t.type === 'Pengeluaran' ? 'text-rose-400' : 'text-cyan-400')}">
+                Rp ${parseFloat(t.amount).toLocaleString()}
+              </td>
+            </tr>
+          `;
+        }).join('');
       }
+
+      // Populate Options Akun
+      const optionsHTML = accounts.map(a => `<option value="${a.name}">${a.name} (Rp ${parseFloat(a.balance).toLocaleString()})</option>`).join('');
+      document.getElementById('txAccount').innerHTML = optionsHTML;
+      document.getElementById('transferFromAccount').innerHTML = optionsHTML;
+      document.getElementById('transferToAccount').innerHTML = optionsHTML;
+
+      // Render Kartu Akun
+      const cards = document.getElementById('accountCardsList');
+      cards.innerHTML = accounts.map(a => `
+        <div class="p-6 rounded-2xl glass-card relative overflow-hidden">
+          <div class="flex justify-between items-start">
+            <span class="text-[9px] font-extrabold text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full uppercase tracking-widest">${a.type}</span>
+            <i class="fa-solid fa-vault text-slate-600"></i>
+          </div>
+          <h3 class="font-bold text-sm text-white mt-3">${a.name}</h3>
+          <p class="text-2xl font-black mt-2 font-mono text-slate-100">Rp ${parseFloat(a.balance).toLocaleString()}</p>
+        </div>
+      `).join('');
+
+      // Render History Lists
+      renderHistoryLists();
+      renderReport();
     }
 
-    function handleLogout() {
-      if (confirm('Konfirmasi keluar dari portal perusahaan?')) {
-        currentUser = null;
-        localStorage.removeItem('aaaiim_current_user');
-        checkAuthStatus();
-        showToast('Sesi Berhasil Diakhiri');
-      }
+    function renderHistoryLists() {
+      // History Jurnal Operasional (Tanpa Transfer)
+      const nonTransfers = transactions.filter(t => t.type !== 'Transfer');
+      document.getElementById('txHistoryList').innerHTML = nonTransfers.length === 0 ? 
+        '<p class="text-xs text-slate-500 text-center py-4">Belum ada transaksi operasional.</p>' :
+        nonTransfers.map(t => `
+          <div class="p-4 rounded-xl border border-corporate-border glass-input flex justify-between items-center">
+            <div>
+              <h4 class="font-bold text-xs text-slate-200">${t.notes !== '-' ? t.notes : t.category}</h4>
+              <p class="text-[10px] text-slate-400 mt-0.5">${t.date} • ${t.account}</p>
+            </div>
+            <span class="font-black text-xs font-mono ${t.type === 'Pendapatan' ? 'text-emerald-400' : 'text-rose-400'}">
+              Rp ${parseFloat(t.amount).toLocaleString()}
+            </span>
+          </div>
+        `).join('');
+
+      // History Khusus Transfer
+      const transfers = transactions.filter(t => t.type === 'Transfer');
+      document.getElementById('transferHistoryList').innerHTML = transfers.length === 0 ?
+        '<p class="text-xs text-slate-500 text-center py-4">Belum ada riwayat transfer antar akun.</p>' :
+        transfers.map(t => `
+          <div class="p-4 rounded-xl border border-corporate-border glass-input flex justify-between items-center">
+            <div>
+              <h4 class="font-bold text-xs text-cyan-400 flex items-center gap-1.5">
+                <i class="fa-solid fa-right-left text-[10px]"></i> ${t.fromAccount} <i class="fa-solid fa-arrow-right text-[10px] text-slate-500"></i> ${t.toAccount}
+              </h4>
+              <p class="text-[10px] text-slate-400 mt-1">${t.date} • ${t.notes}</p>
+            </div>
+            <span class="font-black text-xs font-mono text-cyan-400">
+              Rp ${parseFloat(t.amount).toLocaleString()}
+            </span>
+          </div>
+        `).join('');
     }
 
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toastMsg').innerText = msg;
-      toast.classList.remove('hidden');
-      setTimeout(() => toast.classList.add('hidden'), 3000);
+    function renderReport() {
+      const totals = getTotals();
+      document.getElementById('reportDisplay').innerHTML = `
+        <div class="text-center pb-8 border-b border-corporate-border mb-8">
+          <h2 class="text-lg font-extrabold text-white uppercase tracking-widest">LAPORAN KEUANGAN KONSOLIDASI (CLOUD)</h2>
+          <p class="text-xs text-slate-400 mt-1">AAAIIM Global Shared Statement</p>
+        </div>
+        <div class="max-w-xl mx-auto space-y-4 text-xs">
+          <div class="flex justify-between py-3 border-b border-corporate-border font-bold text-emerald-400">
+            <span>TOTAL PENDAPATAN</span>
+            <span class="font-mono">Rp ${totals.income.toLocaleString()}</span>
+          </div>
+          <div class="flex justify-between py-3 border-b border-corporate-border font-bold text-rose-400">
+            <span>TOTAL PENGELUARAN</span>
+            <span class="font-mono">(Rp ${totals.expense.toLocaleString()})</span>
+          </div>
+          <div class="flex justify-between py-4 border-t-2 border-amber-500/30 font-black text-sm text-white">
+            <span class="text-amber-400">LABA BERSIH OPERASIONAL</span>
+            <span class="font-mono ${totals.net >= 0 ? 'text-emerald-400' : 'text-rose-400'}">Rp ${totals.net.toLocaleString()}</span>
+          </div>
+        </div>
+      `;
     }
 
     function switchTab(tabId) {
@@ -562,217 +674,12 @@
       activeBtn.classList.add('border-amber-400', 'text-amber-400', 'font-semibold');
     }
 
-    function getTotals() {
-      let income = 0, expense = 0, assets = 0;
-      transactions.forEach(t => {
-        if (t.type === 'Pendapatan') income += parseFloat(t.amount);
-        if (t.type === 'Pengeluaran') expense += parseFloat(t.amount);
-      });
-      accounts.forEach(a => assets += parseFloat(a.balance));
-      const net = income - expense;
-      const health = assets > 0 ? Math.min(100, Math.max(0, Math.round(((assets - expense) / assets) * 100))) : 0;
-      return { income, expense, net, assets, health };
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      document.getElementById('toastMsg').innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3500);
     }
-
-    function renderDashboard() {
-      const totals = getTotals();
-      document.getElementById('kpiIncome').innerText = 'Rp ' + totals.income.toLocaleString();
-      document.getElementById('kpiExpense').innerText = 'Rp ' + totals.expense.toLocaleString();
-      document.getElementById('kpiNet').innerText = 'Rp ' + totals.net.toLocaleString();
-      document.getElementById('kpiHealth').innerText = totals.health + ' / 100';
-
-      const search = document.getElementById('searchInput').value.toLowerCase();
-      const typeFilter = document.getElementById('typeFilter').value;
-
-      const filtered = transactions.filter(t => {
-        const matchType = typeFilter === 'Semua' || t.type === typeFilter;
-        const matchSearch = (t.notes || '').toLowerCase().includes(search) || (t.category || '').toLowerCase().includes(search);
-        return matchType && matchSearch;
-      });
-
-      const tbody = document.getElementById('txTableBody');
-      if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500">Belum ada jurnal transaksi tercatat.</td></tr>`;
-      } else {
-        tbody.innerHTML = filtered.map(t => `
-          <tr class="hover:bg-corporate-800/40 transition-all">
-            <td class="py-3.5 px-4 font-mono text-[11px] text-slate-400">${t.date}</td>
-            <td class="py-3.5 px-4"><span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${t.type === 'Pendapatan' ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-400 border border-rose-500/20'}">${t.type}</span></td>
-            <td class="py-3.5 px-4 font-medium text-slate-300">${t.category || '-'}</td>
-            <td class="py-3.5 px-4 text-slate-400">${t.account}</td>
-            <td class="py-3.5 px-4 text-slate-400">${t.notes || '-'}</td>
-            <td class="py-3.5 px-4 text-right font-black font-mono ${t.type === 'Pendapatan' ? 'text-emerald-400' : 'text-rose-400'}">Rp ${parseFloat(t.amount).toLocaleString()}</td>
-          </tr>
-        `).join('');
-      }
-
-      renderHistoryList();
-      renderAccounts();
-      renderReport();
-      renderAnalytics();
-    }
-
-    function renderHistoryList() {
-      const list = document.getElementById('txHistoryList');
-      if (transactions.length === 0) {
-        list.innerHTML = `<p class="text-xs text-slate-500 text-center py-6">Tidak ada catatan aktivitas jurnal.</p>`;
-      } else {
-        list.innerHTML = transactions.map(t => `
-          <div class="p-4 rounded-xl border border-corporate-border glass-input flex justify-between items-center">
-            <div>
-              <h4 class="font-bold text-xs text-slate-200">${t.notes || t.category || t.type}</h4>
-              <p class="text-[10px] text-slate-400 mt-0.5">${t.date} • ${t.account}</p>
-            </div>
-            <span class="font-black text-xs font-mono ${t.type === 'Pendapatan' ? 'text-emerald-400' : 'text-rose-400'}">
-              Rp ${parseFloat(t.amount).toLocaleString()}
-            </span>
-          </div>
-        `).join('');
-      }
-    }
-
-    function renderAccounts() {
-      const select = document.getElementById('txAccount');
-      select.innerHTML = accounts.map(a => `<option value="${a.name}">${a.name} (Rp ${parseFloat(a.balance).toLocaleString()})</option>`).join('');
-
-      const cards = document.getElementById('accountCardsList');
-      cards.innerHTML = accounts.map(a => `
-        <div class="p-6 rounded-2xl glass-card relative overflow-hidden">
-          <div class="flex justify-between items-start">
-            <span class="text-[9px] font-extrabold text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded-full uppercase tracking-widest">${a.type}</span>
-            <i class="fa-solid fa-vault text-slate-600"></i>
-          </div>
-          <h3 class="font-bold text-sm text-white mt-3">${a.name}</h3>
-          <p class="text-2xl font-black mt-2 font-mono text-slate-100">Rp ${parseFloat(a.balance).toLocaleString()}</p>
-        </div>
-      `).join('');
-    }
-
-    function handleSaveTx(e) {
-      e.preventDefault();
-      const newTx = {
-        id: Date.now().toString(),
-        type: document.getElementById('txType').value,
-        amount: parseFloat(document.getElementById('txAmount').value),
-        account: document.getElementById('txAccount').value,
-        category: document.getElementById('txCategory').value,
-        date: document.getElementById('txDate').value,
-        notes: document.getElementById('txNotes').value
-      };
-
-      transactions.unshift(newTx);
-      accounts = accounts.map(a => {
-        if (a.name === newTx.account) {
-          const adj = newTx.type === 'Pendapatan' ? newTx.amount : -newTx.amount;
-          return { ...a, balance: parseFloat(a.balance) + adj };
-        }
-        return a;
-      });
-
-      localStorage.setItem('aaaiim_txs', JSON.stringify(transactions));
-      localStorage.setItem('aaaiim_accounts', JSON.stringify(accounts));
-
-      document.getElementById('txAmount').value = '';
-      document.getElementById('txNotes').value = '';
-      showToast('Jurnal Berhasil Disimpan');
-      renderDashboard();
-    }
-
-    function handleSaveAccount(e) {
-      e.preventDefault();
-      const newAcc = {
-        id: Date.now().toString(),
-        name: document.getElementById('accName').value,
-        type: document.getElementById('accType').value,
-        balance: parseFloat(document.getElementById('accBalance').value) || 0
-      };
-
-      accounts.push(newAcc);
-      localStorage.setItem('aaaiim_accounts', JSON.stringify(accounts));
-      document.getElementById('accName').value = '';
-      document.getElementById('accBalance').value = '';
-      showToast('Entitas Akun Baru Terdaftar');
-      renderDashboard();
-    }
-
-    function setReportSubTab(tab) {
-      activeReportTab = tab;
-      document.querySelectorAll('.report-subtab').forEach(b => b.className = 'report-subtab px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-corporate-800 text-slate-400');
-      document.getElementById('sub-' + tab).className = 'report-subtab px-4 py-2 rounded-xl text-xs font-bold uppercase tracking-wider bg-amber-500 text-slate-950';
-      renderReport();
-    }
-
-    function renderReport() {
-      const totals = getTotals();
-      const container = document.getElementById('reportDisplay');
-
-      if (activeReportTab === 'labarugi') {
-        container.innerHTML = `
-          <div class="text-center pb-8 border-b border-corporate-border mb-8">
-            <h2 class="text-lg font-extrabold text-white uppercase tracking-widest">LAPORAN LABA RUGI OPERASIONAL</h2>
-            <p class="text-xs text-slate-400 mt-1">AAAIIM Enterprise Consolidated Financial Statement</p>
-          </div>
-          <div class="max-w-xl mx-auto space-y-4 text-xs">
-            <div class="flex justify-between py-3 border-b border-corporate-border font-bold text-emerald-400">
-              <span class="uppercase tracking-wider">Pendapatan Operasional</span>
-              <span class="font-mono">Rp ${totals.income.toLocaleString()}</span>
-            </div>
-            <div class="flex justify-between py-3 border-b border-corporate-border font-bold text-rose-400">
-              <span class="uppercase tracking-wider">Beban & Pengeluaran</span>
-              <span class="font-mono">(Rp ${totals.expense.toLocaleString()})</span>
-            </div>
-            <div class="flex justify-between py-4 border-t-2 border-amber-500/30 font-black text-sm text-white">
-              <span class="uppercase tracking-widest text-amber-400">Laba Bersih Perusahaan</span>
-              <span class="font-mono ${totals.net >= 0 ? 'text-emerald-400' : 'text-rose-400'}">Rp ${totals.net.toLocaleString()}</span>
-            </div>
-          </div>
-        `;
-      } else {
-        container.innerHTML = `
-          <div class="text-center pb-8 border-b border-corporate-border mb-8">
-            <h2 class="text-lg font-extrabold text-white uppercase tracking-widest">NERACA KEUANGAN (BALANCE SHEET)</h2>
-            <p class="text-xs text-slate-400 mt-1">AAAIIM Financial Capital Audit</p>
-          </div>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-8 text-xs">
-            <div class="p-4 rounded-xl glass-input">
-              <h4 class="font-bold text-amber-400 border-b border-corporate-border pb-2 mb-3 uppercase tracking-wider">AKTIVA (ASET LANCAR)</h4>
-              <div class="flex justify-between py-1.5 font-mono text-slate-300"><span>Kas & Bank Konsolidasi</span><span>Rp ${totals.assets.toLocaleString()}</span></div>
-              <div class="flex justify-between font-black pt-3 border-t border-corporate-border text-white"><span>TOTAL AKTIVA</span><span class="font-mono">Rp ${totals.assets.toLocaleString()}</span></div>
-            </div>
-            <div class="p-4 rounded-xl glass-input">
-              <h4 class="font-bold text-cyan-400 border-b border-corporate-border pb-2 mb-3 uppercase tracking-wider">PASIVA (MODAL / EKUITAS)</h4>
-              <div class="flex justify-between py-1.5 font-mono text-slate-300"><span>Modal / Ekuitas Bersih</span><span>Rp ${totals.assets.toLocaleString()}</span></div>
-              <div class="flex justify-between font-black pt-3 border-t border-corporate-border text-white"><span>TOTAL PASIVA</span><span class="font-mono">Rp ${totals.assets.toLocaleString()}</span></div>
-            </div>
-          </div>
-        `;
-      }
-    }
-
-    function renderAnalytics() {
-      const totals = getTotals();
-      document.getElementById('gaugeScore').innerText = totals.health + '%';
-      document.getElementById('gaugeStatus').innerText = totals.health > 70 ? 'Likuiditas Sangat Baik' : 'Peringatan Kontrol Kas';
-
-      document.getElementById('insightsList').innerHTML = `
-        <div class="p-5 rounded-xl border border-amber-500/20 bg-amber-500/5 text-xs">
-          <span class="font-bold block text-amber-400 mb-1 flex items-center gap-2"><i class="fa-solid fa-chart-pie"></i> Analisis Liquidity Reserve</span>
-          <p class="text-slate-300">Total cadangan likuiditas tercatat sebesar Rp ${totals.assets.toLocaleString()}. Pertahankan cadangan minimal untuk mitigasi risiko operasional.</p>
-        </div>
-      `;
-    }
-
-    function clearAllData() {
-      if (confirm('⚠️ PERINGATAN: Menghapus seluruh basis data transaksi? Data tidak dapat dikembalikan.')) {
-        transactions = [];
-        localStorage.removeItem('aaaiim_txs');
-        renderDashboard();
-        showToast('Database Berhasil Dibersihkan');
-      }
-    }
-
-    // Eksekusi Pemeriksaan Sesi
-    checkAuthStatus();
   </script>
 </body>
 </html>
