@@ -1,0 +1,1157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aplikasi Pencatatan Keuangan Trip Jogja by AAAIIM ONEFINANCE</title>
+    <style>
+        :root {
+            --primary-color: #800020; /* Deep Maroon */
+            --primary-hover: #5d0017;
+            --primary-light: #fdf2f4;
+            --primary-border: #f3c2cd;
+            --secondary-color: #0f172a;
+            --accent-color: #e11d48;
+            --success-color: #059669;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            padding: 28px 16px;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        /* Login Container Styling */
+        .auth-container {
+            max-width: 400px;
+            margin: 60px auto;
+            background: var(--card-bg);
+            padding: 32px;
+            border-radius: 20px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05);
+            text-align: center;
+        }
+
+        .auth-container h2 {
+            color: var(--primary-color);
+            margin-bottom: 8px;
+        }
+
+        .auth-container p {
+            font-size: 13px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 8px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            background: #f1f5f9;
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .auth-tab.active {
+            background: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+
+        /* App Section Display Control */
+        #app-content {
+            display: none;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary-color) 0%, #4a0012 100%);
+            color: white;
+            padding: 32px;
+            border-radius: 20px;
+            margin-bottom: 24px;
+            box-shadow: 0 12px 28px -6px rgba(128, 0, 32, 0.3);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 16px;
+        }
+
+        header h1 {
+            font-size: 26px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        header p {
+            font-size: 14px;
+            opacity: 0.88;
+            margin-top: 6px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .header-badge {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(8px);
+            padding: 8px 16px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 700;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            letter-spacing: 0.5px;
+        }
+
+        .summary-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background-color: var(--card-bg);
+            padding: 22px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.02);
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background-color: var(--primary-color);
+        }
+
+        .stat-card .label {
+            font-size: 12px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .value {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-top: 8px;
+        }
+
+        .grid-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 900px) {
+            .grid-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            padding: 24px;
+            border-radius: 18px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
+        }
+
+        .card-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 18px;
+            color: var(--secondary-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 11px 14px;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.2s ease;
+            background-color: #fafafa;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-color);
+            background-color: #ffffff;
+            box-shadow: 0 0 0 3px rgba(128, 0, 32, 0.12);
+        }
+
+        .method-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+        }
+
+        .method-option {
+            position: relative;
+        }
+
+        .method-option input[type="radio"] {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .method-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 10px 8px;
+            border: 1.5px solid var(--border-color);
+            border-radius: 10px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+            background-color: #ffffff;
+            gap: 4px;
+        }
+
+        .method-option input[type="radio"]:checked + .method-btn {
+            border-color: var(--primary-color);
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+        }
+
+        .checkbox-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background-color: #f1f5f9;
+            padding: 8px 14px;
+            border-radius: 8px;
+            font-size: 13px;
+            font-weight: 500;
+            cursor: pointer;
+            border: 1px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .checkbox-label:has(input:checked) {
+            background-color: var(--primary-light);
+            border-color: var(--primary-border);
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .btn {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: 100%;
+            font-size: 14px;
+            box-shadow: 0 4px 12px rgba(128, 0, 32, 0.15);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background-color: var(--secondary-color);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background-color: #1e293b;
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.4);
+            box-shadow: none;
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-inline { width: auto; }
+        .btn-xs { padding: 4px 8px; font-size: 11px; border-radius: 6px; }
+
+        .input-inline { display: flex; gap: 10px; }
+
+        .tags-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        .tag {
+            background-color: var(--primary-light);
+            color: var(--primary-color);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border: 1px solid var(--primary-border);
+        }
+
+        .tag .remove-btn {
+            cursor: pointer;
+            color: var(--accent-color);
+            font-weight: bold;
+            font-size: 16px;
+            line-height: 1;
+        }
+
+        .method-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .method-cash { background-color: #ecfdf5; color: #047857; border: 1px solid #a7f3d0; }
+        .method-transfer { background-color: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
+        .method-qris { background-color: #fef3c7; color: #b45309; border: 1px solid #fde68a; }
+
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            font-size: 14px;
+        }
+
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background-color: #f8fafc;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .badge-success { background-color: #d1fae5; color: #065f46; }
+        .badge-danger { background-color: #ffe4e6; color: #9f1239; }
+
+        .settlement-card-wrapper {
+            background: #ffffff;
+            border-left: 4px solid var(--primary-color);
+            margin-bottom: 12px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+            border: 1px solid var(--border-color);
+            border-left-width: 4px;
+            overflow: hidden;
+        }
+
+        .settlement-main {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .settlement-analysis-btn {
+            background: none;
+            border: none;
+            color: var(--primary-color);
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            padding: 6px 12px;
+            border-radius: 6px;
+            background-color: var(--primary-light);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            transition: all 0.2s ease;
+        }
+
+        .settlement-analysis-btn:hover { background-color: #fce4e8; }
+
+        .settlement-analysis-box {
+            display: none;
+            background-color: #f8fafc;
+            padding: 12px 16px;
+            border-top: 1px dashed var(--border-color);
+            font-size: 12px;
+            color: var(--text-main);
+            line-height: 1.5;
+        }
+
+        .settlement-analysis-box.active { display: block; }
+
+        .analysis-step {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+        }
+
+        .analysis-step:last-child { margin-bottom: 0; }
+        .analysis-step strong { color: var(--primary-color); }
+
+        .detail-row { background-color: #fcfcfd; display: none; }
+        .detail-row.active { display: table-row; }
+
+        .detail-box {
+            padding: 12px 16px;
+            background-color: #f1f5f9;
+            border-radius: 8px;
+            font-size: 12px;
+        }
+
+        .detail-box ul { list-style: none; margin-top: 6px; }
+        .detail-box li {
+            padding: 4px 0;
+            border-bottom: 1px dashed #cbd5e1;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .detail-box li:last-child { border-bottom: none; }
+
+        .empty-state {
+            text-align: center;
+            color: var(--text-muted);
+            padding: 24px;
+            font-style: italic;
+        }
+
+        .action-icon {
+            cursor: pointer;
+            color: var(--accent-color);
+            font-weight: 600;
+            font-size: 13px;
+        }
+
+        .action-icon:hover { text-decoration: underline; }
+
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            padding: 20px;
+            color: var(--text-muted);
+            font-size: 13px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        footer strong { color: var(--primary-color); }
+
+        @media print {
+            body { background: white; padding: 0; }
+            header .header-actions, .btn, .action-icon, #transaction-form, .form-group, .settlement-analysis-btn { display: none !important; }
+            .card { box-shadow: none; border: 1px solid #ccc; margin-bottom: 16px; }
+            .grid-container { display: block; }
+            .detail-row, .settlement-analysis-box { display: table-row !important; }
+            .settlement-analysis-box { display: block !important; }
+            footer { border-top: none; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SECTION HALAMAN LOGIN / REGISTER -->
+    <div id="auth-section" class="auth-container">
+        <h2>🏯 Trip Jogja Login</h2>
+        <p>Akses khusus anggota terdaftar by AAAIIM ONEFINANCE</p>
+
+        <div class="auth-tabs">
+            <button id="tab-login" class="auth-tab active" onclick="switchTab('login')">Login</button>
+            <button id="tab-register" class="auth-tab" onclick="switchTab('register')">Register</button>
+        </div>
+
+        <form id="auth-form" onsubmit="handleAuth(event)">
+            <div class="form-group" style="text-align:left;">
+                <label>Email</label>
+                <input type="email" id="auth-email" class="form-control" placeholder="nama@email.com" required>
+            </div>
+            <div class="form-group" style="text-align:left;">
+                <label>Password</label>
+                <input type="password" id="auth-password" class="form-control" placeholder="Minimal 6 karakter" required minlength="6">
+            </div>
+            <button type="submit" id="auth-submit-btn" class="btn">Masuk</button>
+        </form>
+    </div>
+
+    <!-- SECTION APLIKASI UTAMA (Di-render jika sudah login) -->
+    <div id="app-content">
+        <header>
+            <div>
+                <h1>🏯 Keuangan Trip Jogja</h1>
+                <p>Pencatatan pengeluaran bersama & perhitungan iuran proporsional</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-outline btn-inline" onclick="exportToCSV()">📥 Unduh CSV</button>
+                <button class="btn btn-outline btn-inline" onclick="window.print()">🖨️ Cetak / PDF</button>
+                <button class="btn btn-outline btn-inline" onclick="logout()" style="background: rgba(225,29,72,0.3); border-color: rgba(225,29,72,0.5);">🚪 Logout</button>
+                <div class="header-badge">BY AAAIIM ONEFINANCE ✨</div>
+            </div>
+        </header>
+
+        <div class="summary-stats">
+            <div class="stat-card">
+                <div class="label">Total Pengeluaran</div>
+                <div class="value" id="total-pengeluaran">Rp 0</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Jumlah Anggota</div>
+                <div class="value" id="total-anggota">0 Orang</div>
+            </div>
+            <div class="stat-card">
+                <div class="label">Rata-rata / Anggota</div>
+                <div class="value" id="rerata-pengeluaran">Rp 0</div>
+            </div>
+        </div>
+
+        <div class="grid-container">
+            <div>
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-title">1. Daftar Anggota Team</div>
+                    <div class="form-group input-inline">
+                        <input type="text" id="member-name-input" class="form-control" placeholder="Nama Anggota (mis: Budi)">
+                        <button class="btn btn-secondary btn-inline" onclick="addMember()">Tambah</button>
+                    </div>
+                    <div class="tags-list" id="members-list"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">2. Catat Transaksi Baru</div>
+                    <form id="transaction-form" onsubmit="addTransaction(event)">
+                        <div class="form-group">
+                            <label for="item-title">Keperluan / Transaksi</label>
+                            <input type="text" id="item-title" class="form-control" placeholder="Misal: Bensin, Tiket Candi, Makan Malam" required>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="item-amount">Nominal / Total Biaya (Rp)</label>
+                            <input type="number" id="item-amount" class="form-control" placeholder="150000" required min="1">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="item-payer">Ditalangi / Dibayar Oleh</label>
+                            <select id="item-payer" class="form-control" required></select>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Metode Pembayaran saat Nalangi</label>
+                            <div class="method-selector">
+                                <label class="method-option">
+                                    <input type="radio" name="payment-method" value="Cash" checked>
+                                    <div class="method-btn">💵 Cash</div>
+                                </label>
+                                <label class="method-option">
+                                    <input type="radio" name="payment-method" value="Transfer">
+                                    <div class="method-btn">💳 Transfer</div>
+                                </label>
+                                <label class="method-option">
+                                    <input type="radio" name="payment-method" value="QRIS">
+                                    <div class="method-btn">📱 QRIS</div>
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Ditanggung Oleh (Siapa saja yang ikut nikmati?)</label>
+                            <div class="checkbox-group" id="beneficiaries-checkboxes"></div>
+                        </div>
+
+                        <button type="submit" class="btn">Simpan Transaksi</button>
+                    </form>
+                </div>
+            </div>
+
+            <div>
+                <div class="card" style="margin-bottom: 24px;">
+                    <div class="card-title">3. Ringkasan & Rincian Per Anggota</div>
+                    <div style="overflow-x: auto;">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Nalangin</th>
+                                    <th>Beban</th>
+                                    <th>Status Sisa</th>
+                                    <th>Detail</th>
+                                </tr>
+                            </thead>
+                            <tbody id="member-summary-tbody">
+                                <tr><td colspan="5" class="empty-state">Belum ada data anggota</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title">4. Skema Pelunasan Ringkas</div>
+                    <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 14px;">
+                        Petunjuk transfer paling efisien agar tidak perlu banyak transaksi bolak-balik:
+                    </p>
+                    <div id="settlement-instructions">
+                        <div class="empty-state">Belum ada kalkulasi settlement</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-title">
+                Riwayat Seluruh Transaksi
+                <div style="display:flex; gap: 8px;">
+                    <button class="btn btn-secondary btn-inline" style="font-size: 12px; padding: 6px 14px;" onclick="exportToCSV()">📥 Ekspor CSV</button>
+                    <button class="btn btn-secondary btn-inline" style="font-size: 12px; padding: 6px 14px;" onclick="resetAllData()">Reset Data</button>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Keperluan</th>
+                            <th>Biaya</th>
+                            <th>Ditalangi Oleh</th>
+                            <th>Metode Bayar</th>
+                            <th>Ditanggung Oleh</th>
+                            <th>Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="transactions-tbody">
+                        <tr><td colspan="7" class="empty-state">Belum ada pengeluaran dicatat</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <footer>
+            <p>Aplikasi Pencatatan Keuangan Trip Jogja — Powered <strong>BY AAAIIM ONEFINANCE</strong></p>
+        </footer>
+    </div>
+
+    <!-- MOUNT FIREBASE SDK (MODULAR VERSION 10+) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { 
+            getAuth, 
+            signInWithEmailAndPassword, 
+            createUserWithEmailAndPassword, 
+            onAuthStateChanged, 
+            signOut 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+        import { 
+            getFirestore, 
+            doc, 
+            setDoc, 
+            onSnapshot 
+        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // === GANTI KONFIGURASI FIREBASE DI SINI ===
+        const firebaseConfig = {
+            apiKey: "AIzaSyXXXXXXXXXXXXXXX",
+            authDomain: "project-id.firebaseapp.com",
+            projectId: "project-id",
+            storageBucket: "project-id.appspot.com",
+            messagingSenderId: "000000000",
+            appId: "1:000000000:web:xxxxxxxxxxxx"
+        };
+
+        // Inisialisasi Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        // State Global Data
+        window.members = [];
+        window.transactions = [];
+        let authMode = 'login';
+
+        // Switch Auth Tab (Login/Register)
+        window.switchTab = function(mode) {
+            authMode = mode;
+            document.getElementById('tab-login').classList.toggle('active', mode === 'login');
+            document.getElementById('tab-register').classList.toggle('active', mode === 'register');
+            document.getElementById('auth-submit-btn').innerText = mode === 'login' ? 'Masuk' : 'Daftar Akun Baru';
+        };
+
+        // Handle Login & Register
+        window.handleAuth = async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('auth-email').value;
+            const password = document.getElementById('auth-password').value;
+
+            try {
+                if (authMode === 'login') {
+                    await signInWithEmailAndPassword(auth, email, password);
+                } else {
+                    await createUserWithEmailAndPassword(auth, email, password);
+                    alert("Akun berhasil dibuat!");
+                }
+            } catch (error) {
+                alert("Gagal: " + error.message);
+            }
+        };
+
+        // Handle Logout
+        window.logout = function() {
+            signOut(auth);
+        };
+
+        // Monitor Status Auth & Listener Realtime Firestore
+        onAuthStateChanged(auth, (user) => {
+            if (user) {
+                document.getElementById('auth-section').style.display = 'none';
+                document.getElementById('app-content').style.display = 'block';
+
+                // Listen perubahan data Firestore secara Realtime
+                onSnapshot(doc(db, "trip_data", "shared_trip"), (docSnap) => {
+                    if (docSnap.exists()) {
+                        const data = docSnap.data();
+                        window.members = data.members || [];
+                        window.transactions = data.transactions || [];
+                    } else {
+                        // Jika dokumen belum ada, inisialisasi awal
+                        syncToFirestore();
+                    }
+                    renderMembers();
+                    calculateAndRender();
+                });
+
+            } else {
+                document.getElementById('auth-section').style.display = 'block';
+                document.getElementById('app-content').style.display = 'none';
+            }
+        });
+
+        // Simpan data otomatis ke Firestore Cloud
+        async function syncToFirestore() {
+            try {
+                await setDoc(doc(db, "trip_data", "shared_trip"), {
+                    members: window.members,
+                    transactions: window.transactions
+                });
+            } catch (err) {
+                console.error("Gagal sync ke Firestore:", err);
+            }
+        }
+
+        // --- BINDING FUNGSI APLIKASI KE FIREBASE SNAPSHOT ---
+        window.addMember = function() {
+            const input = document.getElementById("member-name-input");
+            const name = input.value.trim();
+            if (name && !window.members.includes(name)) {
+                window.members.push(name);
+                input.value = "";
+                syncToFirestore();
+            }
+        };
+
+        window.removeMember = function(index) {
+            window.members.splice(index, 1);
+            syncToFirestore();
+        };
+
+        window.addTransaction = function(e) {
+            e.preventDefault();
+            const title = document.getElementById("item-title").value.trim();
+            const amount = parseFloat(document.getElementById("item-amount").value);
+            const payer = document.getElementById("item-payer").value;
+            const method = document.querySelector('input[name="payment-method"]:checked').value;
+            const checkboxes = document.querySelectorAll("#beneficiaries-checkboxes input[type='checkbox']:checked");
+            const beneficiaries = Array.from(checkboxes).map(cb => cb.value);
+
+            if (!payer) return alert("Pilih siapa yang menalangi pembayaran!");
+            if (beneficiaries.length === 0) return alert("Pilih minimal 1 orang yang menanggung pengeluaran ini!");
+
+            window.transactions.push({
+                id: Date.now(),
+                title,
+                amount,
+                payer,
+                method,
+                beneficiaries
+            });
+
+            document.getElementById("item-title").value = "";
+            document.getElementById("item-amount").value = "";
+            syncToFirestore();
+        };
+
+        window.deleteTransaction = function(id) {
+            window.transactions = window.transactions.filter(t => t.id !== id);
+            syncToFirestore();
+        };
+
+        window.resetAllData = function() {
+            if (confirm("Apakah Anda yakin ingin menghapus semua data? Data akan terhapus di seluruh perangkat!")) {
+                window.transactions = [];
+                window.members = [];
+                syncToFirestore();
+            }
+        };
+
+        // --- HELPER RENDERING UI ---
+        function formatRp(amount) {
+            return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(Math.round(amount));
+        }
+
+        function renderMembers() {
+            const listContainer = document.getElementById("members-list");
+            listContainer.innerHTML = "";
+
+            window.members.forEach((member, index) => {
+                const tag = document.createElement("div");
+                tag.className = "tag";
+                tag.innerHTML = `${member} <span class="remove-btn" onclick="removeMember(${index})">&times;</span>`;
+                listContainer.appendChild(tag);
+            });
+
+            document.getElementById("total-anggota").textContent = `${window.members.length} Orang`;
+            renderPayerOptions();
+            renderBeneficiaries();
+        }
+
+        function renderPayerOptions() {
+            const payerSelect = document.getElementById("item-payer");
+            payerSelect.innerHTML = window.members.length === 0 ? '<option value="">-- Tambahkan Anggota Dulu --</option>' : '';
+            window.members.forEach(member => {
+                const opt = document.createElement("option");
+                opt.value = member;
+                opt.textContent = member;
+                payerSelect.appendChild(opt);
+            });
+        }
+
+        function renderBeneficiaries() {
+            const container = document.getElementById("beneficiaries-checkboxes");
+            container.innerHTML = window.members.length === 0 ? '<span style="font-size:12px; color:var(--text-muted);">Belum ada anggota</span>' : '';
+            window.members.forEach(member => {
+                const label = document.createElement("label");
+                label.className = "checkbox-label";
+                label.innerHTML = `<input type="checkbox" value="${member}" checked> ${member}`;
+                container.appendChild(label);
+            });
+        }
+
+        window.toggleDetailRow = function(idx) {
+            const row = document.getElementById(`detail-row-${idx}`);
+            if (row) row.classList.toggle('active');
+        };
+
+        window.toggleSettlementAnalysis = function(idx) {
+            const box = document.getElementById(`settlement-analysis-${idx}`);
+            if (box) box.classList.toggle('active');
+        };
+
+        function calculateAndRender() {
+            let totalSpent = 0;
+            let memberPaid = {};
+            let memberOwed = {};
+            let memberBreakdown = {};
+
+            window.members.forEach(m => {
+                memberPaid[m] = 0;
+                memberOwed[m] = 0;
+                memberBreakdown[m] = [];
+            });
+
+            window.transactions.forEach(t => {
+                totalSpent += t.amount;
+                if (memberPaid[t.payer] !== undefined) memberPaid[t.payer] += t.amount;
+
+                const activeBeneficiaries = t.beneficiaries.filter(b => window.members.includes(b));
+                if (activeBeneficiaries.length > 0) {
+                    const costPerPerson = t.amount / activeBeneficiaries.length;
+                    activeBeneficiaries.forEach(b => {
+                        if (memberOwed[b] !== undefined) {
+                            memberOwed[b] += costPerPerson;
+                            memberBreakdown[b].push({
+                                title: t.title,
+                                payer: t.payer,
+                                cost: costPerPerson,
+                                totalCost: t.amount,
+                                count: activeBeneficiaries.length
+                            });
+                        }
+                    });
+                }
+            });
+
+            document.getElementById("total-pengeluaran").textContent = formatRp(totalSpent);
+            const avg = window.members.length > 0 ? totalSpent / window.members.length : 0;
+            document.getElementById("rerata-pengeluaran").textContent = formatRp(avg);
+
+            const summaryTbody = document.getElementById("member-summary-tbody");
+            summaryTbody.innerHTML = "";
+
+            let netBalances = {};
+
+            if (window.members.length === 0) {
+                summaryTbody.innerHTML = '<tr><td colspan="5" class="empty-state">Belum ada anggota</td></tr>';
+            } else {
+                window.members.forEach((m, idx) => {
+                    const paid = memberPaid[m] || 0;
+                    const owed = memberOwed[m] || 0;
+                    const net = paid - owed;
+                    netBalances[m] = net;
+
+                    let statusBadge = "";
+                    if (net > 1) {
+                        statusBadge = `<span class="badge badge-success">Terima ${formatRp(net)}</span>`;
+                    } else if (net < -1) {
+                        statusBadge = `<span class="badge badge-danger">Bayar ${formatRp(Math.abs(net))}</span>`;
+                    } else {
+                        statusBadge = `<span class="badge" style="background:#f1f5f9; color:#475569;">Lunas</span>`;
+                    }
+
+                    let breakdownList = memberBreakdown[m].length > 0 
+                        ? memberBreakdown[m].map(item => `
+                            <li>
+                                <span><strong>${item.title}</strong> (ditalangi ${item.payer})</span>
+                                <span>${formatRp(item.cost)} <small style="color:var(--text-muted)">(${formatRp(item.totalCost)} / ${item.count})</small></span>
+                            </li>
+                          `).join('')
+                        : '<li><span>Tidak ada beban transaksi</span></li>';
+
+                    const mainRow = document.createElement("tr");
+                    mainRow.innerHTML = `
+                        <td><strong>${m}</strong></td>
+                        <td>${formatRp(paid)}</td>
+                        <td>${formatRp(owed)}</td>
+                        <td>${statusBadge}</td>
+                        <td><button class="btn btn-secondary btn-xs" onclick="toggleDetailRow(${idx})">🔍 Detail</button></td>
+                    `;
+                    summaryTbody.appendChild(mainRow);
+
+                    const detailRow = document.createElement("tr");
+                    detailRow.id = `detail-row-${idx}`;
+                    detailRow.className = "detail-row";
+                    detailRow.innerHTML = `
+                        <td colspan="5">
+                            <div class="detail-box">
+                                <strong>📌 Rincian Transaksi yang Diikuti ${m}:</strong>
+                                <ul>${breakdownList}</ul>
+                            </div>
+                        </td>
+                    `;
+                    summaryTbody.appendChild(detailRow);
+                });
+            }
+
+            renderSettlements(netBalances, memberPaid, memberOwed, memberBreakdown);
+
+            const txTbody = document.getElementById("transactions-tbody");
+            txTbody.innerHTML = "";
+
+            if (window.transactions.length === 0) {
+                txTbody.innerHTML = '<tr><td colspan="7" class="empty-state">Belum ada pengeluaran dicatat</td></tr>';
+            } else {
+                window.transactions.forEach((t, idx) => {
+                    const row = document.createElement("tr");
+                    const activeBeneficiaries = t.beneficiaries.filter(b => window.members.includes(b));
+                    const beneficiariesText = activeBeneficiaries.length === window.members.length ? "Semua Anggota" : activeBeneficiaries.join(", ");
+                    
+                    let methodClass = "method-cash";
+                    let methodIcon = "💵";
+                    if (t.method === "Transfer") { methodClass = "method-transfer"; methodIcon = "💳"; }
+                    if (t.method === "QRIS") { methodClass = "method-qris"; methodIcon = "📱"; }
+
+                    row.innerHTML = `
+                        <td>${idx + 1}</td>
+                        <td><strong>${t.title}</strong></td>
+                        <td>${formatRp(t.amount)}</td>
+                        <td><span class="badge" style="background:#f1f5f9; color:#1e293b;">${t.payer}</span></td>
+                        <td><span class="method-badge ${methodClass}">${methodIcon} ${t.method}</span></td>
+                        <td><small>${beneficiariesText}</small></td>
+                        <td><span class="action-icon" onclick="deleteTransaction(${t.id})">Hapus</span></td>
+                    `;
+                    txTbody.appendChild(row);
+                });
+            }
+        }
+
+        function renderSettlements(netBalances, memberPaid, memberOwed, memberBreakdown) {
+            const container = document.getElementById("settlement-instructions");
+            container.innerHTML = "";
+
+            let debtors = [];
+            let creditors = [];
+
+            for (let member in netBalances) {
+                let amount = netBalances[member];
+                if (amount < -1) {
+                    debtors.push({ name: member, amount: Math.abs(amount), initialDebt: Math.abs(amount) });
+                } else if (amount > 1) {
+                    creditors.push({ name: member, amount: amount, initialCredit: amount });
+                }
+            }
+
+            if (debtors.length === 0 && creditors.length === 0) {
+                container.innerHTML = '<div class="empty-state">Semua tagihan pas / lunas! Tidak ada transfer.</div>';
+                return;
+            }
+
+            let i = 0, j = 0, idx = 0;
+            while (i < debtors.length && j < creditors.length) {
+                let debtor = debtors[i];
+                let creditor = creditors[j];
+                let payment = Math.min(debtor.amount, creditor.amount);
+
+                let directItems = memberBreakdown[debtor.name] ? memberBreakdown[debtor.name].filter(item => item.payer === creditor.name) : [];
+                let directItemsText = directItems.length > 0 
+                    ? directItems.map(item => `${item.title} (${formatRp(item.cost)})`).join(", ") 
+                    : "Pengalihan saldo agar transaksi antar-anggota lebih ringkas";
+
+                const wrapper = document.createElement("div");
+                wrapper.className = "settlement-card-wrapper";
+                wrapper.innerHTML = `
+                    <div class="settlement-main">
+                        <div><strong>${debtor.name}</strong> ➔ <strong>${creditor.name}</strong></div>
+                        <div style="display:flex; align-items:center; gap:10px;">
+                            <span style="font-weight:800; color:var(--primary-color); font-size:15px;">${formatRp(payment)}</span>
+                            <button class="settlement-analysis-btn" onclick="toggleSettlementAnalysis(${idx})">🔍 Alasan</button>
+                        </div>
+                    </div>
+                    <div class="settlement-analysis-box" id="settlement-analysis-${idx}">
+                        <div class="analysis-step">• <strong>Kekurangan ${debtor.name}:</strong> Sisa total tagihan ${debtor.name} adalah <strong>${formatRp(debtor.initialDebt)}</strong>.</div>
+                        <div class="analysis-step">• <strong>Transaksi Terkait:</strong> Ditalangi oleh ${creditor.name} [<em>${directItemsText}</em>].</div>
+                        <div class="analysis-step" style="background: var(--primary-light); border-color: var(--primary-border);">
+                            ✅ Transfer <strong>${formatRp(payment)}</strong> ke ${creditor.name} akan langsung melunasi kewajiban ${debtor.name}.
+                        </div>
+                    </div>
+                `;
+                container.appendChild(wrapper);
+
+                debtor.amount -= payment;
+                creditor.amount -= payment;
+
+                if (Math.abs(debtor.amount) < 1) i++;
+                if (Math.abs(creditor.amount) < 1) j++;
+                idx++;
+            }
+        }
+
+        window.exportToCSV = function() {
+            if (window.transactions.length === 0) return alert("Tidak ada data transaksi untuk diunduh!");
+
+            const today = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
+            let csvContent = "data:text/csv;charset=utf-8,LAPORAN KEUANGAN TRIP JOGJA - BY AAAIIM ONEFINANCE\n";
+            csvContent += `Tanggal Unduh: ${today}\n\nNo,Keperluan,Nominal,Ditalangi Oleh,Metode Pembayaran,Ditanggung Oleh\n`;
+
+            window.transactions.forEach((t, idx) => {
+                const activeBeneficiaries = t.beneficiaries.filter(b => window.members.includes(b)).join("; ");
+                const title = `"${t.title.replace(/"/g, '""')}"`;
+                csvContent += `${idx + 1},${title},${t.amount},"${t.payer}","${t.method}","${activeBeneficiaries}"\n`;
+            });
+
+            const link = document.createElement("a");
+            link.setAttribute("href", encodeURI(csvContent));
+            link.setAttribute("download", "Laporan_Keuangan_Trip_AAAIIM_ONEFINANCE.csv");
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        };
+    </script>
+</body>
+</html>
