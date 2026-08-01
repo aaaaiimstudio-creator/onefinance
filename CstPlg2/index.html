@@ -3,39 +3,43 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aps Travel One Finance - Local Storage</title>
+    <title>Aps Travel One Finance - Pro Edition</title>
 
     <style>
         :root {
-            --primary: #1e3a8a;
-            --primary-hover: #1e40af;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
             --primary-light: #eff6ff;
-            --primary-border: #bfdbfe;
+            --primary-border: #93c5fd;
             --accent: #f43f5e;
             --success: #059669;
             --warning: #d97706;
-            --bg-color: #f8fafc;
+            --bg-color: #f1f5f9;
             --card-bg: #ffffff;
-            --border-color: #e2e8f0;
+            --border-color: #cbd5e1;
             --text-main: #0f172a;
-            --text-muted: #64748b;
+            --text-muted: #475569;
             --input-bg: #f8fafc;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 10px 25px -5px rgba(37, 99, 235, 0.1);
         }
 
         [data-theme="dark"] {
-            --primary: #3b82f6;
-            --primary-hover: #60a5fa;
-            --primary-light: #172554;
-            --primary-border: #1e3a8a;
+            --primary: #38bdf8;
+            --primary-hover: #0ea5e9;
+            --primary-light: #082f49;
+            --primary-border: #0369a1;
             --accent: #fb7185;
             --success: #34d399;
             --warning: #fbbf24;
-            --bg-color: #020617;
+            --bg-color: #030712;
             --card-bg: #0f172a;
             --border-color: #1e293b;
             --text-main: #f8fafc;
-            --text-muted: #94a3b8;
+            --text-muted: #cbd5e1;
             --input-bg: #1e293b;
+            --shadow-sm: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 10px 25px -5px rgba(56, 189, 248, 0.15);
         }
 
         * {
@@ -65,13 +69,14 @@
             padding: 0 16px;
         }
 
+        /* LOGIN SCREEN DESIGN */
         #login-screen {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(135deg, #090d16 0%, #1e3a8a 50%, #172554 100%);
+            background: linear-gradient(135deg, #020617 0%, #1e3a8a 50%, #0f172a 100%);
             display: flex;
             justify-content: center;
             align-items: center;
@@ -80,192 +85,122 @@
         }
 
         .login-glass {
-            background: rgba(15, 23, 42, 0.85);
+            background: rgba(15, 23, 42, 0.9);
             backdrop-filter: blur(20px);
             -webkit-backdrop-filter: blur(20px);
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
             width: 100%;
             max-width: 420px;
             padding: 40px 30px;
             border-radius: 28px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
-            color: white;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.7);
+            color: #ffffff;
             text-align: center;
         }
 
-        .login-glass h1 {
-            font-size: 24px;
-            font-weight: 800;
-            margin-bottom: 6px;
-        }
-
-        .login-glass p {
-            font-size: 13px;
-            opacity: 0.8;
-            margin-bottom: 20px;
-        }
-
-        .login-brand-sub {
-            font-size: 11px;
-            letter-spacing: 1px;
-            color: #93c5fd;
-            text-transform: uppercase;
-            font-weight: 700;
-            margin-bottom: 16px;
-        }
+        .login-glass h1 { font-size: 26px; font-weight: 800; margin-bottom: 6px; color: #ffffff; }
+        .login-glass p { font-size: 13px; color: #cbd5e1; margin-bottom: 20px; }
+        .login-brand-sub { font-size: 11px; letter-spacing: 1.5px; color: #38bdf8; text-transform: uppercase; font-weight: 800; margin-bottom: 16px; }
 
         .trust-badge-box {
-            background: rgba(59, 130, 246, 0.15);
-            border: 1px solid rgba(59, 130, 246, 0.3);
-            padding: 10px 14px;
+            background: rgba(56, 189, 248, 0.15);
+            border: 1px solid rgba(56, 189, 248, 0.4);
+            padding: 12px 16px;
             border-radius: 12px;
-            font-size: 11px;
+            font-size: 12px;
             margin-bottom: 20px;
             text-align: left;
-            color: #93c5fd;
+            color: #e0f2fe;
+            line-height: 1.5;
         }
 
         .login-glass input {
             width: 100%;
-            padding: 12px 16px;
+            padding: 14px 16px;
             background: rgba(255, 255, 255, 0.08);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.25);
             border-radius: 12px;
-            color: white;
+            color: #ffffff;
             font-size: 14px;
             outline: none;
-            margin-bottom: 12px;
+            margin-bottom: 14px;
         }
 
-        .login-glass input::placeholder {
-            color: rgba(255, 255, 255, 0.5);
-        }
+        .login-glass input::placeholder { color: rgba(255, 255, 255, 0.5); }
+        .login-glass input:focus { border-color: #38bdf8; }
 
         .login-glass button {
             width: 100%;
-            padding: 12px;
-            background: #3b82f6;
+            padding: 14px;
+            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
             color: white;
             border: none;
             border-radius: 12px;
             font-weight: 700;
             font-size: 14px;
             cursor: pointer;
-            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.4);
             transition: transform 0.2s ease;
         }
+        .login-glass button:hover { transform: translateY(-2px); }
 
-        .login-glass button:hover {
-            transform: translateY(-2px);
-            background: #2563eb;
-        }
+        .error-msg { color: #fb7185; font-size: 12px; margin-bottom: 10px; display: none; font-weight: 600; }
 
-        .error-msg {
-            color: #fb7185;
-            font-size: 12px;
-            margin-bottom: 10px;
-            display: none;
-        }
+        #app-wrapper { display: none; padding: 24px 0; width: 100%; }
 
-        #app-wrapper {
-            display: none;
-            padding: 24px 0;
-            width: 100%;
-        }
-
+        /* NAVBAR */
         .navbar {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
-            padding: 14px 20px;
+            padding: 14px 24px;
             border-radius: 20px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 24px;
-            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.02);
+            box-shadow: var(--shadow-sm);
             position: sticky;
             top: 16px;
             z-index: 100;
         }
 
-        .nav-brand {
-            display: flex;
-            flex-direction: column;
-        }
+        .nav-brand h2 { font-size: 18px; font-weight: 800; color: var(--primary); }
+        .nav-brand span { font-size: 10px; color: var(--text-muted); letter-spacing: 0.8px; font-weight: 700; text-transform: uppercase; }
 
-        .nav-brand h2 {
-            font-size: 16px;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .nav-brand span {
-            font-size: 9px;
-            color: var(--text-muted);
-            letter-spacing: 0.5px;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .nav-tools {
-            display: flex;
-            gap: 6px;
-            align-items: center;
-        }
+        .nav-tools { display: flex; gap: 8px; align-items: center; }
 
         .nav-btn {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-main);
-            padding: 8px 12px;
-            border-radius: 10px;
+            padding: 9px 14px;
+            border-radius: 12px;
             font-size: 12px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px;
             white-space: nowrap;
         }
 
-        .nav-btn.active {
-            background: var(--primary);
-            color: white;
-            border-color: var(--primary);
-        }
+        .nav-btn.active { background: var(--primary); color: white; border-color: var(--primary); box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3); }
 
         .page-section { display: none; }
         .page-section.active { display: block; }
 
+        /* HERO BANNER */
         .hero-banner {
-            background: linear-gradient(135deg, #0f172a 0%, #1e3a8a 60%, #172554 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #2563eb 60%, #1d4ed8 100%);
             color: white;
             padding: 40px 32px;
             border-radius: 24px;
             margin-bottom: 24px;
-            box-shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: var(--shadow-md);
+            border: 1px solid rgba(255, 255, 255, 0.15);
         }
-
-        .hero-banner h1 { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
-        .hero-banner p { font-size: 13px; opacity: 0.9; line-height: 1.5; }
-
-        .trust-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
-            margin-bottom: 24px;
-        }
-
-        .trust-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            padding: 18px;
-            border-radius: 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
+        .hero-banner h1 { font-size: 26px; font-weight: 800; margin-bottom: 8px; color: #ffffff; }
+        .hero-banner p { font-size: 14px; color: #e0f2fe; line-height: 1.6; }
 
         .dashboard-grid {
             display: grid;
@@ -279,31 +214,26 @@
             padding: 24px;
             border-radius: 20px;
             cursor: pointer;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
-            transition: all 0.2s ease;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.25s ease;
         }
+        .menu-card:hover { transform: translateY(-4px); border-color: var(--primary); box-shadow: var(--shadow-md); }
+        .menu-card h3 { font-size: 16px; font-weight: 800; margin-bottom: 6px; color: var(--text-main); }
+        .menu-card p { font-size: 12px; color: var(--text-muted); line-height: 1.5; }
 
-        .menu-card:hover {
-            transform: translateY(-3px);
-            border-color: var(--primary);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.05);
-        }
-
-        .menu-card h3 { font-size: 16px; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
-        .menu-card p { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
-
+        /* CARDS & CONTAINERS */
         .card {
             background-color: var(--card-bg);
             padding: 24px;
-            border-radius: 18px;
+            border-radius: 20px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            box-shadow: var(--shadow-sm);
             margin-bottom: 20px;
         }
 
         .card-title {
-            font-size: 15px;
-            font-weight: 700;
+            font-size: 16px;
+            font-weight: 800;
             margin-bottom: 16px;
             color: var(--text-main);
             display: flex;
@@ -313,26 +243,28 @@
             gap: 8px;
         }
 
-        .form-group { margin-bottom: 14px; }
-        .form-group label { display: block; font-size: 12px; font-weight: 600; margin-bottom: 6px; color: var(--text-main); }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; font-size: 12px; font-weight: 700; margin-bottom: 6px; color: var(--text-main); }
+        
         .form-control {
             width: 100%;
-            padding: 10px 14px;
+            padding: 12px 16px;
             border: 1px solid var(--border-color);
-            border-radius: 10px;
+            border-radius: 12px;
             font-size: 13px;
             outline: none;
             background-color: var(--input-bg);
             color: var(--text-main);
+            font-weight: 600;
         }
-        .form-control:focus { border-color: var(--primary); }
+        .form-control:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15); }
 
         .btn {
             background-color: var(--primary);
             color: white;
             border: none;
-            padding: 10px 16px;
-            border-radius: 10px;
+            padding: 12px 18px;
+            border-radius: 12px;
             font-weight: 700;
             cursor: pointer;
             width: 100%;
@@ -341,54 +273,43 @@
             align-items: center;
             justify-content: center;
             gap: 6px;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
         }
         .btn:hover { background-color: var(--primary-hover); }
-        .btn-success { background-color: var(--success); }
+        .btn-success { background-color: var(--success); box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25); }
         .btn-success:hover { background-color: #047857; }
         .btn-warning { background-color: var(--warning); color: white; }
         .btn-warning:hover { background-color: #b45309; }
-        .btn-danger { background-color: var(--accent); }
+        .btn-danger { background-color: var(--accent); box-shadow: 0 4px 12px rgba(244, 63, 94, 0.25); }
         .btn-danger:hover { background-color: #e11d48; }
+        .btn-sm { padding: 6px 12px; font-size: 11px; border-radius: 8px; width: auto; box-shadow: none; }
 
-        .btn-sm {
-            padding: 6px 10px;
-            font-size: 11px;
-            border-radius: 6px;
-            width: auto;
-        }
-
-        .table-responsive {
-            width: 100%;
-            overflow-x: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
+        /* TABLES & BADGES */
+        .table-responsive { width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; }
         table { width: 100%; border-collapse: collapse; font-size: 13px; white-space: nowrap; }
-        th, td { padding: 12px 14px; text-align: left; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
-        th { background-color: var(--input-bg); color: var(--text-muted); font-size: 11px; text-transform: uppercase; font-weight: 700; }
+        th, td { padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--border-color); color: var(--text-main); }
+        th { background-color: var(--input-bg); color: var(--text-muted); font-size: 11px; text-transform: uppercase; font-weight: 800; letter-spacing: 0.5px; }
         
-        .badge { padding: 4px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; }
-        .badge-success { background: rgba(5, 150, 105, 0.15); color: var(--success); }
-        .badge-danger { background: rgba(244, 63, 94, 0.15); color: var(--accent); }
-        .empty-state { text-align: center; color: var(--text-muted); padding: 20px; font-style: italic; font-size: 13px; }
+        .badge { padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; display: inline-block; }
+        .badge-success { background: rgba(5, 150, 105, 0.18); color: var(--success); border: 1px solid rgba(5, 150, 105, 0.3); }
+        .badge-danger { background: rgba(244, 63, 94, 0.18); color: var(--accent); border: 1px solid rgba(244, 63, 94, 0.3); }
+        .empty-state { text-align: center; color: var(--text-muted); padding: 24px; font-style: italic; font-size: 13px; font-weight: 600; }
 
-        .action-btns {
-            display: flex;
-            gap: 6px;
-        }
+        .action-btns { display: flex; gap: 6px; }
 
         .cloud-indicator {
             font-size: 10px;
             background: rgba(5, 150, 105, 0.15);
             color: var(--success);
-            padding: 3px 8px;
-            border-radius: 6px;
-            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 8px;
+            font-weight: 800;
             display: inline-flex;
             align-items: center;
             gap: 4px;
         }
 
+        /* MOBILE NAVIGATION */
         .mobile-bottom-nav {
             display: none;
             position: fixed;
@@ -397,11 +318,11 @@
             width: 100%;
             background: var(--card-bg);
             border-top: 1px solid var(--border-color);
-            padding: 8px 12px;
+            padding: 10px 12px;
             z-index: 1000;
             justify-content: space-around;
             align-items: center;
-            box-shadow: 0 -4px 12px rgba(0,0,0,0.05);
+            box-shadow: 0 -10px 25px rgba(0,0,0,0.1);
         }
 
         .mobile-nav-item {
@@ -410,15 +331,14 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 2px;
+            gap: 3px;
             color: var(--text-muted);
             font-size: 10px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
             padding: 4px;
         }
-
-        .mobile-nav-item span.icon { font-size: 18px; }
+        .mobile-nav-item span.icon { font-size: 20px; }
         .mobile-nav-item.active { color: var(--primary); }
 
         footer {
@@ -429,18 +349,14 @@
             font-size: 12px;
             border-top: 1px solid var(--border-color);
             padding-top: 20px;
+            font-weight: 600;
         }
-
-        footer span {
-            font-weight: 800;
-            color: var(--primary);
-            text-transform: uppercase;
-        }
+        footer span { font-weight: 800; color: var(--primary); text-transform: uppercase; }
 
         @media (max-width: 900px) {
             .navbar .nav-tools { display: none; }
             .mobile-bottom-nav { display: flex; }
-            #app-wrapper { padding-bottom: 80px; }
+            #app-wrapper { padding-bottom: 90px; }
         }
     </style>
 </head>
@@ -450,17 +366,18 @@
         <!-- LOGIN SCREEN -->
         <div id="login-screen">
             <div class="login-glass">
-                <h1>🛡️ Aps Travel</h1>
+                <h1>🛡️ Aps Travel Pro</h1>
                 <div class="login-brand-sub">By AAAIIM ONEFINENCE</div>
-                <p>Penyimpanan Mode Lokal (Offline)</p>
+                <p>Sistem Keuangan & Logistik Perjalanan Pintar</p>
                 <div class="trust-badge-box">
-                    💾 <strong>Akun Login Lokal:</strong><br>  User: <code>admin</code><br>  Pass: <code>123</code>
+                    💾 <strong>Akun Login Akses Lokal:</strong><br>
+                    User: <code>admin</code> | Pass: <code>123</code>
                 </div>
-                <div id="login-error" class="error-msg">User atau Password salah!</div>
+                <div id="login-error" class="error-msg">⚠️ User atau Password salah!</div>
                 <form onsubmit="handleLogin(event)">
                     <input type="text" id="login-user" placeholder="Username" required value="admin">
                     <input type="password" id="login-pass" placeholder="Password" required value="123">
-                    <button type="submit" id="btn-login-submit">Masuk Ke Aplikasi ⚡</button>
+                    <button type="submit">Masuk Ke Sistem ⚡</button>
                 </form>
             </div>
         </div>
@@ -470,7 +387,7 @@
             <header class="navbar">
                 <div class="nav-brand">
                     <h2>Aps Travel</h2>
-                    <span>By AAAIIM ONEFINENCE <span class="cloud-indicator">💾 Local Saved</span></span>
+                    <span>By AAAIIM ONEFINENCE <span class="cloud-indicator">💾 Secure Local</span></span>
                 </div>
                 <div class="nav-tools">
                     <button class="nav-btn active" id="btn-nav-dashboard" onclick="switchPage('dashboard')">🏠 Dasbor</button>
@@ -479,104 +396,87 @@
                     <button class="nav-btn" id="btn-nav-checklist" onclick="switchPage('checklist')">🎒 Packing</button>
                     <button class="nav-btn" id="btn-nav-emergency" onclick="switchPage('emergency')">☎️ Darurat</button>
                     <button class="nav-btn" id="btn-nav-notes" onclick="switchPage('notes')">📝 Catatan</button>
-                    <button class="nav-btn" onclick="toggleDarkMode()">🌓</button>
-                    <button class="nav-btn" onclick="handleLogout()" style="color: var(--accent);">🔒</button>
+                    <button class="nav-btn" onclick="toggleDarkMode()">🌓 Ganti Tema</button>
+                    <button class="nav-btn" onclick="handleLogout()" style="color: var(--accent);">🔒 Keluar</button>
                 </div>
             </header>
 
             <!-- 1. DASHBOARD HUB -->
             <section id="page-dashboard" class="page-section active">
                 <div class="hero-banner">
-                    <h1>Solusi Pencatatan Keuangan Trip Anda 🌍</h1>
-                    <p>Tersimpan secara Aman di Perangkat Anda. Data tetap tersimpan meskipun browser ditutup.</p>
-                </div>
-
-                <div class="trust-grid">
-                    <div class="trust-card">
-                        <span style="font-size: 24px;">💾</span>
-                        <div>
-                            <h4 style="font-size: 13px; font-weight: 700;">Local Storage Safe</h4>
-                            <p style="font-size: 11px; color: var(--text-muted);">Data tersimpan aman di browser Anda</p>
-                        </div>
-                    </div>
-                    <div class="trust-card">
-                        <span style="font-size: 24px;">⚡</span>
-                        <div>
-                            <h4 style="font-size: 13px; font-weight: 700;">Auto Settlement</h4>
-                            <p style="font-size: 11px; color: var(--text-muted);">Perhitungan kas grup transparan</p>
-                        </div>
-                    </div>
+                    <h1>Kelola Keuangan & Logistik Trip Tanpa Beban 🌍</h1>
+                    <p>Sistem pencatatan otomatis berbasis penyimpanan lokal yang transparan, aman, dan siap diakses kapan saja tanpa koneksi internet.</p>
                 </div>
 
                 <div class="dashboard-grid">
                     <div class="menu-card" onclick="switchPage('finance')">
-                        <span style="font-size: 26px;">💰</span>
-                        <h3 style="margin-top: 10px;">Keuangan & Talangan</h3>
-                        <p>Catat dana talangan, unduh laporan, serta atur riwayat transaksi dengan mudah.</p>
+                        <span style="font-size: 28px;">💰</span>
+                        <h3 style="margin-top: 10px;">Manajemen Keuangan & Alasan Pelunasan</h3>
+                        <p>Analisis talangan mendalam, rincian pengeluaran per individu, serta alasan krusial mengapa pelunasan harus segera diselesaikan.</p>
                     </div>
                     <div class="menu-card" onclick="switchPage('plan')">
-                        <span style="font-size: 26px;">🗺️</span>
+                        <span style="font-size: 28px;">🗺️</span>
                         <h3 style="margin-top: 10px;">Plan Itinerary</h3>
-                        <p>Susun jadwal harian, destinasi wisata, dan aktivitas grup dengan rapi.</p>
+                        <p>Susun rute perjalanan, destinasi wisata, dan jadwal harian grup dengan rapi.</p>
                     </div>
                     <div class="menu-card" onclick="switchPage('checklist')">
-                        <span style="font-size: 26px;">🎒</span>
+                        <span style="font-size: 28px;">🎒</span>
                         <h3 style="margin-top: 10px;">Checklist Logistik</h3>
-                        <p>Bagi tugas bawaan barang agar tidak ada perlengkapan yang tertinggal.</p>
+                        <p>Bagi tugas bawaan barang bersama agar tidak ada perlengkapan tertinggal.</p>
                     </div>
                     <div class="menu-card" onclick="switchPage('emergency')">
-                        <span style="font-size: 26px;">☎️</span>
+                        <span style="font-size: 28px;">☎️</span>
                         <h3 style="margin-top: 10px;">Kontak Darurat</h3>
-                        <p>Simpan nomor penting lokal, kepolisian, atau layanan medis terdekat.</p>
+                        <p>Simpan nomor penting kepolisian, medis, atau layanan bantuan cepat.</p>
                     </div>
                     <div class="menu-card" onclick="switchPage('notes')">
-                        <span style="font-size: 26px;">📝</span>
+                        <span style="font-size: 28px;">📝</span>
                         <h3 style="margin-top: 10px;">Catatan & Kuliner</h3>
-                        <p>Tulis ide spot foto, rekomendasi makanan, dan catatan bebas untuk grup.</p>
+                        <p>Catat rekomendasi kuliner lokal, spot foto terbaik, dan catatan penting lainnya.</p>
                     </div>
                 </div>
             </section>
 
-            <!-- 2. FINANCE TOOL -->
+            <!-- 2. FINANCE TOOL (ENHANCED) -->
             <section id="page-finance" class="page-section">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; flex-wrap: wrap; gap: 10px;">
-                    <h3 style="font-size: 16px; font-weight: 800;">Manajemen Keuangan Trip</h3>
-                    <button class="btn btn-success" style="width: auto;" onclick="downloadFinancialReport()">📥 Unduh Laporan Keuangan</button>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 12px;">
+                    <h3 style="font-size: 18px; font-weight: 800;">Analisis Keuangan & Alasan Pelunasan</h3>
+                    <button class="btn btn-success" style="width: auto;" onclick="downloadFinancialReport()">📥 Unduh Laporan Lengkap (.txt)</button>
                 </div>
 
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 20px;">
-                    <div class="card" style="margin:0; padding:14px;">
-                        <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">TOTAL PENGELUARAN</div>
-                        <div style="font-size: 15px; font-weight: 800; margin-top: 4px;" id="total-pengeluaran">Rp 0</div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px; margin-bottom: 24px;">
+                    <div class="card" style="margin:0; padding:18px;">
+                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 800;">TOTAL PENGELUARAN GRUP</div>
+                        <div style="font-size: 18px; font-weight: 800; margin-top: 6px; color: var(--primary);" id="total-pengeluaran">Rp 0</div>
                     </div>
-                    <div class="card" style="margin:0; padding:14px;">
-                        <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">JUMLAH ANGGOTA</div>
-                        <div style="font-size: 15px; font-weight: 800; margin-top: 4px;" id="total-anggota">0 Orang</div>
+                    <div class="card" style="margin:0; padding:18px;">
+                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 800;">TOTAL ANGGOTA</div>
+                        <div style="font-size: 18px; font-weight: 800; margin-top: 6px;" id="total-anggota">0 Orang</div>
                     </div>
-                    <div class="card" style="margin:0; padding:14px;">
-                        <div style="font-size: 10px; color: var(--text-muted); font-weight: 700;">RATA-RATA / ORANG</div>
-                        <div style="font-size: 15px; font-weight: 800; margin-top: 4px;" id="rerata-pengeluaran">Rp 0</div>
+                    <div class="card" style="margin:0; padding:18px;">
+                        <div style="font-size: 11px; color: var(--text-muted); font-weight: 800;">BEBAN RATA-RATA / ORANG</div>
+                        <div style="font-size: 18px; font-weight: 800; margin-top: 6px;" id="rerata-pengeluaran">Rp 0</div>
                     </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">Anggota Team Trip</div>
-                    <div style="display: flex; gap: 8px;">
-                        <input type="text" id="member-name-input" class="form-control" placeholder="Nama Anggota">
-                        <button class="btn" style="width: auto;" onclick="addMember()">Tambah</button>
-                    </div>
-                    <div id="members-list" style="display:flex; flex-wrap:wrap; gap:6px; margin-top:10px;"></div>
                 </div>
 
                 <div class="card">
-                    <div class="card-title" id="form-trans-title">Catat Transaksi Talangan</div>
+                    <div class="card-title">Daftar Anggota Trip</div>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="member-name-input" class="form-control" placeholder="Nama Anggota Baru">
+                        <button class="btn" style="width: auto;" onclick="addMember()">Tambah Anggota</button>
+                    </div>
+                    <div id="members-list" style="display:flex; flex-wrap:wrap; gap:8px; margin-top:14px;"></div>
+                </div>
+
+                <div class="card">
+                    <div class="card-title" id="form-trans-title">Catat Transaksi Talangan Baru</div>
                     <form onsubmit="saveTransactionForm(event)">
                         <input type="hidden" id="edit-trans-id">
-                        <div class="form-group"><label>Keperluan</label><input type="text" id="item-title" class="form-control" placeholder="Contoh: Sewa Transport" required></div>
-                        <div class="form-group"><label>Nominal (Rp)</label><input type="number" id="item-amount" class="form-control" placeholder="250000" required min="1"></div>
-                        <div class="form-group"><label>Ditalangi Oleh</label><select id="item-payer" class="form-control" required></select></div>
-                        <div class="form-group"><label>Ditanggung Bersama</label><div id="beneficiaries-checkboxes" style="display:flex; flex-wrap:wrap; gap:6px;"></div></div>
-                        <div style="display: flex; gap: 8px;">
+                        <div class="form-group"><label>Keperluan / Nama Pengeluaran</label><input type="text" id="item-title" class="form-control" placeholder="Contoh: Sewa Transportasi / Tiket Masuk" required></div>
+                        <div class="form-group"><label>Nominal Total (Rp)</label><input type="number" id="item-amount" class="form-control" placeholder="Contoh: 300000" required min="1"></div>
+                        <div class="form-group"><label>Ditalangi / Dibayar Oleh</label><select id="item-payer" class="form-control" required></select></div>
+                        <div class="form-group"><label>Ditanggung Bersama Oleh</label><div id="beneficiaries-checkboxes" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:6px;"></div></div>
+                        <div style="display: flex; gap: 10px;">
                             <button type="submit" class="btn" id="btn-trans-submit">Simpan Transaksi</button>
                             <button type="button" class="btn btn-warning" id="btn-trans-cancel" style="display: none;" onclick="resetTransForm()">Batal</button>
                         </div>
@@ -584,34 +484,58 @@
                 </div>
 
                 <div class="card">
-                    <div class="card-title">Riwayat Transaksi</div>
+                    <div class="card-title">Riwayat Transaksi Grup</div>
                     <div class="table-responsive">
                         <table>
-                            <thead><tr><th>Keperluan</th><th>Nominal</th><th>Talangan</th><th>Aksi</th></tr></thead>
-                            <tbody id="transaction-history-tbody"><tr><td colspan="4" class="empty-state">Belum ada transaksi</td></tr></tbody>
+                            <thead><tr><th>Keperluan</th><th>Nominal</th><th>Talangan Oleh</th><th>Aksi</th></tr></thead>
+                            <tbody id="transaction-history-tbody"><tr><td colspan="4" class="empty-state">Belum ada transaksi tercatat</td></tr></tbody>
                         </table>
+                    </div>
+                </div>
+
+                <!-- RINCIAN & ALASAN MELUNASI YANG MENDALAM -->
+                <div class="card">
+                    <div class="card-title">
+                        <span>📊 Rincian Talangan & Status Saldo Anggota</span>
+                        <span style="font-size: 11px; font-weight: normal; color: var(--text-muted);">Perhitungan otomatis bersih (Talangan dikurangi porsi beban pribadi).</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table>
+                            <thead><tr><th>Nama Anggota</th><th>Total Talangan</th><th>Total Beban Porsi</th><th>Status Saldo Akhir</th></tr></thead>
+                            <tbody id="member-summary-tbody"><tr><td colspan="4" class="empty-state">Belum ada data anggota/transaksi</td></tr></tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="card" style="border: 2px solid var(--primary); background: var(--primary-light);">
+                    <div class="card-title" style="color: var(--primary);">
+                        <span>💡 Mengapa Harus Segera Melunasi Saldo ke User Ini? (Analisis & Alasan Krusial)</span>
+                    </div>
+                    <div style="font-size: 13px; line-height: 1.6; color: var(--text-main); margin-bottom: 16px;">
+                        Dalam manajemen keuangan kelompok (seperti *trip* bersama atau proyek kolektif), ketepatan waktu pelunasan antar anggota sangat menentukan kelancaran finansial secara keseluruhan. Berikut adalah alasan logis dan mendasar mengapa saldo negatif harus segera dilunasi kepada pihak penanggung (kreditor):
+                    </div>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
+                        <div style="background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <strong style="color: var(--primary); display: block; margin-bottom: 6px;">1. Menghindari Beban Finansial Sepihak</strong>
+                            <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">User yang menalangi menggunakan dana pribadinya menanggung risiko cash flow pribadi. Menunda pelunasan berarti membebani keuangan personal mereka secara tidak adil.</p>
+                        </div>
+                        <div style="background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <strong style="color: var(--primary); display: block; margin-bottom: 6px;">2. Mencegah Konflik & Menjaga Kepercayaan</strong>
+                            <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Ketidakjelasan pembayaran sering menjadi pemicu kesalahpahaman dalam kelompok. Pelunasan yang cepat memastikan transparansi dan menjaga hubungan baik.</p>
+                        </div>
+                        <div style="background: var(--card-bg); padding: 16px; border-radius: 12px; border: 1px solid var(--border-color);">
+                            <strong style="color: var(--primary); display: block; margin-bottom: 6px;">3. Efisiensi Skema Transfer Langsung</strong>
+                            <p style="font-size: 12px; color: var(--text-muted); line-height: 1.5;">Dengan melunasi langsung ke rekening yang tertera di bawah, rantai utang piutang antar anggota terputus dengan bersih tanpa perlu melibatkan pihak perantara.</p>
+                        </div>
                     </div>
                 </div>
 
                 <div class="card">
                     <div class="card-title">
-                        <span>Rincian Talangan & Status Anggota</span>
-                        <span style="font-size: 11px; font-weight: normal; color: var(--text-muted);">Menampilkan jumlah uang yang ditalangi dikurangi porsi beban masing-masing.</span>
+                        <span>⚡ Skema Pelunasan Instan (Siapa Bayar ke Siapa)</span>
+                        <span style="font-size: 11px; font-weight: normal; color: var(--text-muted);">Rekomendasi jalur transfer terpendek agar seluruh utang terselesaikan tuntas.</span>
                     </div>
-                    <div class="table-responsive">
-                        <table>
-                            <thead><tr><th>Nama</th><th>Total Nalangin</th><th>Total Beban</th><th>Status Saldo</th></tr></thead>
-                            <tbody id="member-summary-tbody"><tr><td colspan="4" class="empty-state">Belum ada data</td></tr></tbody>
-                        </table>
-                    </div>
-                </div>
-
-                <div class="card">
-                    <div class="card-title">
-                        <span>Skema Pelunasan Instan</span>
-                        <span style="font-size: 11px; font-weight: normal; color: var(--text-muted);">Alasan: Meringankan transfer agar langsung selesai tanpa melalui perantara pihak ketiga.</span>
-                    </div>
-                    <div id="settlement-instructions"><div class="empty-state">Belum ada kalkulasi</div></div>
+                    <div id="settlement-instructions"><div class="empty-state">Belum ada kalkulasi pelunasan yang diperlukan</div></div>
                 </div>
             </section>
 
@@ -623,16 +547,16 @@
                         <button class="btn btn-success btn-sm" onclick="downloadSectionData('plan')">📥 Unduh Plan</button>
                     </div>
                     <input type="hidden" id="edit-plan-id">
-                    <div class="form-group"><label>Nama Destinasi / Tempat</label><input type="text" id="plan-title" class="form-control" placeholder="Misal: Labuan Bajo / Bromo"></div>
-                    <div class="form-group"><label>Catatan / Waktu Kegiatan</label><textarea id="plan-desc" class="form-control" rows="3" placeholder="Jadwal kegiatan, jam kumpul..."></textarea></div>
-                    <div style="display: flex; gap: 8px;">
-                        <button class="btn" id="btn-plan-submit" onclick="savePlanItem()">Simpan Plan</button>
+                    <div class="form-group"><label>Nama Destinasi / Tempat</label><input type="text" id="plan-title" class="form-control" placeholder="Misal: Pantai Kuta / Gunung Bromo"></div>
+                    <div class="form-group"><label>Catatan / Waktu Kegiatan</label><textarea id="plan-desc" class="form-control" rows="3" placeholder="Jadwal keberangkatan, aktivitas, dll..."></textarea></div>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn" id="btn-plan-submit" onclick="savePlanItem()">Simpan Rencana</button>
                         <button class="btn btn-warning" id="btn-plan-cancel" style="display: none;" onclick="resetPlanForm()">Batal</button>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-title">Daftar Itinerary Perjalanan</div>
-                    <div id="plans-container"><div class="empty-state">Belum ada plan</div></div>
+                    <div id="plans-container"><div class="empty-state">Belum ada rencana destinasi</div></div>
                 </div>
             </section>
 
@@ -644,12 +568,12 @@
                         <button class="btn btn-success btn-sm" onclick="downloadSectionData('checklist')">📥 Unduh Packing</button>
                     </div>
                     <input type="hidden" id="edit-check-id">
-                    <div style="display: flex; gap: 8px;">
-                        <input type="text" id="check-item" class="form-control" placeholder="Nama barang (Misal: P3K)">
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="check-item" class="form-control" placeholder="Nama barang (Misal: Kotak P3K, Tenda, dll)">
                         <button class="btn" id="btn-check-submit" style="width: auto;" onclick="saveChecklist()">Tambah</button>
                         <button class="btn btn-warning btn-sm" id="btn-check-cancel" style="display: none;" onclick="resetCheckForm()">Batal</button>
                     </div>
-                    <div id="checklist-container" style="margin-top: 14px;"></div>
+                    <div id="checklist-container" style="margin-top: 16px;"></div>
                 </div>
             </section>
 
@@ -661,16 +585,16 @@
                         <button class="btn btn-success btn-sm" onclick="downloadSectionData('emergency')">📥 Unduh Kontak</button>
                     </div>
                     <input type="hidden" id="edit-em-id">
-                    <div class="form-group"><label>Nama Instansi / Kontak</label><input type="text" id="em-name" class="form-control" placeholder="Polsek Setempat / Rental"></div>
+                    <div class="form-group"><label>Nama Instansi / Kontak</label><input type="text" id="em-name" class="form-control" placeholder="Polsek Setempat / Rumah Sakit"></div>
                     <div class="form-group"><label>Nomor Telepon</label><input type="text" id="em-phone" class="form-control" placeholder="08123456789"></div>
-                    <div style="display: flex; gap: 8px;">
+                    <div style="display: flex; gap: 10px;">
                         <button class="btn" id="btn-em-submit" onclick="saveEmergency()">Simpan Kontak</button>
                         <button class="btn btn-warning" id="btn-em-cancel" style="display: none;" onclick="resetEmForm()">Batal</button>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-title">Daftar Kontak Tersimpan</div>
-                    <div id="emergency-container"><div class="empty-state">Belum ada kontak</div></div>
+                    <div id="emergency-container"><div class="empty-state">Belum ada kontak darurat</div></div>
                 </div>
             </section>
 
@@ -684,19 +608,19 @@
                     <input type="hidden" id="edit-note-id">
                     <div class="form-group"><label>Judul Catatan</label><input type="text" id="note-title" class="form-control" placeholder="Kuliner Wajib Coba"></div>
                     <div class="form-group"><label>Detail / Rekomendasi</label><textarea id="note-desc" class="form-control" rows="3" placeholder="Tulis rincian lokasi atau tips..."></textarea></div>
-                    <div style="display: flex; gap: 8px;">
+                    <div style="display: flex; gap: 10px;">
                         <button class="btn" id="btn-note-submit" onclick="saveNoteItem()">Simpan Catatan</button>
                         <button class="btn btn-warning" id="btn-note-cancel" style="display: none;" onclick="resetNoteForm()">Batal</button>
                     </div>
                 </div>
                 <div class="card">
                     <div class="card-title">Daftar Catatan Grup</div>
-                    <div id="notes-container"><div class="empty-state">Belum ada catatan</div></div>
+                    <div id="notes-container"><div class="empty-state">Belum ada catatan grup</div></div>
                 </div>
             </section>
 
             <footer>
-                <p>Aps Travel — Solusi pencatatan keuangan trip anda | 100% Terpercaya & Transparan<br>Powered By <span>AAAIIM ONEFINENCE</span></p>
+                <p>Aps Travel Pro — Solusi Manajemen Keuangan & Perjalanan Anda | 100% Aman & Transparan<br>Powered By <span>AAAIIM ONEFINENCE</span></p>
             </footer>
         </div>
     </div>
@@ -730,7 +654,6 @@
     </nav>
 
     <script>
-        // Kredensial Login Sederhana
         const LOCAL_USER = "admin";
         const LOCAL_PASS = "123";
 
@@ -739,9 +662,8 @@
         let plans = [];
         let checklists = [{id:1, text:"Kotak P3K & Obat Pribadi", done:false}, {id:2, text:"Kabel Roll & Charger", done:true}];
         let emergencies = [{id:1, name:"Polisi / Darurat Nasional", phone:"110"}, {id:2, name:"Ambulans / Medis", phone:"118"}];
-        let notes = [{id:1, title:"Kuliner Malam Populer", desc:"Mencoba nasi tempong khas di dekat alun-alun kota tujuan."}];
+        let notes = [{id:1, title:"Kuliner Malam Populer", desc:"Mencoba kuliner khas di dekat pusat kota tujuan."}];
 
-        // Penanganan Login Secara Lokal
         function handleLogin(e) {
             e.preventDefault();
             const u = document.getElementById("login-user").value.trim();
@@ -804,11 +726,10 @@
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(Math.round(amt)); 
         }
 
-        // FUNGSI PENYIMPANAN DAN MUAT DATA LOKAL (LocalStorage)
         function loadDataFromLocal() {
             document.documentElement.setAttribute("data-theme", localStorage.getItem("aps_theme") || "light");
 
-            const savedData = localStorage.getItem("aps_travel_data");
+            const savedData = localStorage.getItem("aps_travel_data_pro");
             if (savedData) {
                 const data = JSON.parse(savedData);
                 members = data.members || members;
@@ -825,15 +746,8 @@
         }
 
         function saveDataToLocal() {
-            const dataToSave = {
-                members: members,
-                transactions: transactions,
-                plans: plans,
-                checklists: checklists,
-                emergencies: emergencies,
-                notes: notes
-            };
-            localStorage.setItem("aps_travel_data", JSON.stringify(dataToSave));
+            const dataToSave = { members, transactions, plans, checklists, emergencies, notes };
+            localStorage.setItem("aps_travel_data_pro", JSON.stringify(dataToSave));
             renderAll();
         }
 
@@ -852,7 +766,6 @@
             }
         });
 
-        // Functions untuk Member
         function addMember() {
             const val = document.getElementById("member-name-input").value.trim();
             if(val && !members.includes(val)) { 
@@ -873,7 +786,7 @@
             const list = document.getElementById("members-list"); 
             list.innerHTML="";
             members.forEach((m)=> {
-                list.innerHTML += `<span style="background:var(--primary-light); color:var(--primary); padding:4px 10px; border-radius:12px; font-size:12px; font-weight:600; display:inline-flex; align-items:center; gap:6px;">${m} <button onclick="removeMember('${m}')" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:bold;">&times;</button></span>`;
+                list.innerHTML += `<span style="background:var(--primary-light); color:var(--primary); padding:6px 12px; border-radius:12px; font-size:12px; font-weight:700; display:inline-flex; align-items:center; gap:8px; border:1px solid var(--primary-border);">${m} <button onclick="removeMember('${m}')" style="background:none; border:none; color:var(--accent); cursor:pointer; font-weight:900; font-size:14px;">&times;</button></span>`;
             });
             
             const p = document.getElementById("item-payer"); 
@@ -882,10 +795,9 @@
             
             const cb = document.getElementById("beneficiaries-checkboxes"); 
             cb.innerHTML="";
-            members.forEach(m => cb.innerHTML += `<label style="font-size:12px; display:flex; gap:4px; align-items:center;"><input type="checkbox" value="${m}" checked> ${m}</label>`);
+            members.forEach(m => cb.innerHTML += `<label style="font-size:12px; display:flex; gap:6px; align-items:center; font-weight:600; cursor:pointer;"><input type="checkbox" value="${m}" checked style="width:16px; height:16px; accent-color:var(--primary);"> ${m}</label>`);
         }
 
-        // Functions Transaksi
         function saveTransactionForm(e) {
             e.preventDefault();
             const id = document.getElementById("edit-trans-id").value;
@@ -895,7 +807,7 @@
             const beneficiaries = Array.from(document.querySelectorAll("#beneficiaries-checkboxes input:checked")).map(el => el.value);
             
             if(!payer || !beneficiaries.length) {
-                alert("Pilih pembayar & minimal 1 penanggung!");
+                alert("Pilih pembayar dan minimal 1 penanggung beban!");
                 return;
             }
             
@@ -927,7 +839,7 @@
                 document.getElementById("form-trans-title").textContent = "Edit Transaksi Talangan";
                 document.getElementById("btn-trans-submit").textContent = "Update Transaksi";
                 document.getElementById("btn-trans-cancel").style.display = "inline-flex";
-                window.scrollTo({top: 300, behavior: 'smooth'});
+                window.scrollTo({top: 350, behavior: 'smooth'});
             }
         }
 
@@ -942,7 +854,7 @@
             document.getElementById("edit-trans-id").value = "";
             document.getElementById("item-title").value = "";
             document.getElementById("item-amount").value = "";
-            document.getElementById("form-trans-title").textContent = "Catat Transaksi Talangan";
+            document.getElementById("form-trans-title").textContent = "Catat Transaksi Talangan Baru";
             document.getElementById("btn-trans-submit").textContent = "Simpan Transaksi";
             document.getElementById("btn-trans-cancel").style.display = "none";
             document.querySelectorAll("#beneficiaries-checkboxes input").forEach(cb => cb.checked = true);
@@ -963,17 +875,17 @@
             });
 
             let report = "========================================\n";
-            report += "LAPORAN KEUANGAN APS TRAVEL - ONE FINANCE\n";
-            report += "Powered By AAAIIM ONEFINENCE (Local Saved)\n";
+            report += "LAPORAN KEUANGAN APS TRAVEL PRO\n";
+            report += "Powered By AAAIIM ONEFINENCE (Secure Local)\n";
             report += "========================================\n\n";
             report += `Total Pengeluaran: ${formatRp(total)}\n`;
             report += `Jumlah Anggota: ${members.length} Orang\n`;
-            report += `Rata-rata per Orang: ${formatRp(members.length ? total/members.length : 0)}\n\n`;
+            report += `Rata-rata Beban per Orang: ${formatRp(members.length ? total/members.length : 0)}\n\n`;
             
             report += "--- RINCIAN TRANSAKSI ---\n";
             if(transactions.length === 0) report += "Belum ada transaksi.\n";
             transactions.forEach((t, idx) => {
-                report += `${idx+1}. ${t.title} | ${formatRp(t.amount)} | Ditalangi: ${t.payer}\n`;
+                report += `${idx+1}. ${t.title} | ${formatRp(t.amount)} | Ditalangi: ${t.payer} | Untuk: ${t.beneficiaries.join(', ')}\n`;
             });
             report += "\n";
 
@@ -988,7 +900,7 @@
             let url = URL.createObjectURL(blob);
             let a = document.createElement('a');
             a.href = url;
-            a.download = `Laporan_Keuangan_Trip_${Date.now()}.txt`;
+            a.download = `Laporan_Keuangan_Pro_${Date.now()}.txt`;
             a.click();
             URL.revokeObjectURL(url);
         }
@@ -1000,24 +912,16 @@
 
             if(sectionType === 'plan') {
                 if(plans.length === 0) content += "Belum ada rencana destinasi.\n";
-                plans.forEach((p, i) => {
-                    content += `${i+1}. Tempat: ${p.t}\n   Catatan: ${p.d || '-'}\n\n`;
-                });
+                plans.forEach((p, i) => { content += `${i+1}. Tempat: ${p.t}\n   Catatan: ${p.d || '-'}\n\n`; });
             } else if(sectionType === 'checklist') {
                 if(checklists.length === 0) content += "Belum ada daftar perlengkapan.\n";
-                checklists.forEach((c, i) => {
-                    content += `${i+1}. [${c.done ? 'V' : ' '}] ${c.text}\n`;
-                });
+                checklists.forEach((c, i) => { content += `${i+1}. [${c.done ? 'V' : ' '}] ${c.text}\n`; });
             } else if(sectionType === 'emergency') {
                 if(emergencies.length === 0) content += "Belum ada kontak darurat.\n";
-                emergencies.forEach((e, i) => {
-                    content += `${i+1}. ${e.name} - ${e.phone}\n`;
-                });
+                emergencies.forEach((e, i) => { content += `${i+1}. ${e.name} - ${e.phone}\n`; });
             } else if(sectionType === 'notes') {
                 if(notes.length === 0) content += "Belum ada catatan.\n";
-                notes.forEach((n, i) => {
-                    content += `${i+1}. Judul: ${n.title}\n   Detail: ${n.desc || '-'}\n\n`;
-                });
+                notes.forEach((n, i) => { content += `${i+1}. Judul: ${n.title}\n   Detail: ${n.desc || '-'}\n\n`; });
             }
 
             let blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
@@ -1048,10 +952,10 @@
             document.getElementById("rerata-pengeluaran").textContent = formatRp(members.length ? total/members.length : 0);
             
             const histTbody = document.getElementById("transaction-history-tbody");
-            histTbody.innerHTML = transactions.length ? "" : '<tr><td colspan="4" class="empty-state">Belum ada transaksi</td></tr>';
+            histTbody.innerHTML = transactions.length ? "" : '<tr><td colspan="4" class="empty-state">Belum ada transaksi tercatat</td></tr>';
             transactions.forEach(t => {
                 histTbody.innerHTML += `<tr>
-                    <td><strong>${t.title}</strong><br><small style="color:var(--text-muted);">Untuk: ${t.beneficiaries.join(', ')}</small></td>
+                    <td><strong>${t.title}</strong><br><small style="color:var(--text-muted);">Ditanggung: ${t.beneficiaries.join(', ')}</small></td>
                     <td>${formatRp(t.amount)}</td>
                     <td>${t.payer}</td>
                     <td>
@@ -1070,7 +974,7 @@
             members.forEach(m => {
                 let net = paid[m] - owed[m]; 
                 netB[m] = net;
-                let badge = net > 1 ? `<span class="badge badge-success">Terima ${formatRp(net)}</span>` : (net < -1 ? `<span class="badge badge-danger">Bayar ${formatRp(Math.abs(net))}</span>` : `<span class="badge" style="background:var(--input-bg);">Lunas</span>`);
+                let badge = net > 1 ? `<span class="badge badge-success">Terima ${formatRp(net)}</span>` : (net < -1 ? `<span class="badge badge-danger">Bayar ${formatRp(Math.abs(net))}</span>` : `<span class="badge" style="background:var(--input-bg); border:1px solid var(--border-color);">Lunas</span>`);
                 tbody.innerHTML += `<tr><td><strong>${m}</strong></td><td>${formatRp(paid[m])}</td><td>${formatRp(owed[m])}</td><td>${badge}</td></tr>`;
             });
             
@@ -1084,14 +988,14 @@
             }
             
             if(!debtors.length && !creditors.length) {
-                setCont.innerHTML='<div class="empty-state">Semua saldo sudah lunas atau seimbang!</div>';
+                setCont.innerHTML='<div class="empty-state">Semua saldo anggota sudah lunas dan seimbang!</div>';
             } else {
                 let i=0, j=0;
                 while(i<debtors.length && j<creditors.length) {
                     let p = Math.min(debtors[i].a, creditors[j].a);
-                    setCont.innerHTML += `<div style="background:var(--input-bg); border:1px solid var(--border-color); padding:10px; border-radius:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; font-size:12px; flex-wrap:wrap; gap:6px;">
-                        <div><strong>${debtors[i].n}</strong> wajib transfer ke <strong>${creditors[j].n}</strong></div>
-                        <span style="font-weight:700; color:var(--primary);">${formatRp(p)}</span>
+                    setCont.innerHTML += `<div style="background:var(--input-bg); border:1px solid var(--border-color); padding:12px 16px; border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; font-size:13px; flex-wrap:wrap; gap:8px;">
+                        <div><strong>${debtors[i].n}</strong> wajib segera melunasi ke <strong>${creditors[j].n}</strong></div>
+                        <span style="font-weight:800; color:var(--primary); font-size:14px;">${formatRp(p)}</span>
                     </div>`;
                     debtors[i].a -= p; 
                     creditors[j].a -= p;
@@ -1101,12 +1005,11 @@
             }
         }
 
-        // Functions Itinerary
         function savePlanItem() {
             let id = document.getElementById("edit-plan-id").value;
             let t = document.getElementById("plan-title").value.trim();
             let d = document.getElementById("plan-desc").value.trim();
-            if(!t) return alert("Judul wajib diisi");
+            if(!t) return alert("Nama destinasi wajib diisi!");
 
             if(id) {
                 let idx = plans.findIndex(p => p.id == id);
@@ -1125,13 +1028,13 @@
                 document.getElementById("plan-title").value = p.t;
                 document.getElementById("plan-desc").value = p.d;
                 document.getElementById("form-plan-title").innerHTML = '<span>🗺️ Edit Rencana Destinasi</span>';
-                document.getElementById("btn-plan-submit").textContent = "Update Plan";
+                document.getElementById("btn-plan-submit").textContent = "Update Rencana";
                 document.getElementById("btn-plan-cancel").style.display = "inline-flex";
             }
         }
 
         function deletePlan(id) {
-            if(confirm("Hapus plan ini?")) {
+            if(confirm("Hapus rencana ini?")) {
                 plans = plans.filter(p => p.id != id);
                 saveDataToLocal();
             }
@@ -1142,15 +1045,15 @@
             document.getElementById("plan-title").value = "";
             document.getElementById("plan-desc").value = "";
             document.getElementById("form-plan-title").innerHTML = '<span>🗺️ Tambah Rencana Destinasi</span><button class="btn btn-success btn-sm" onclick="downloadSectionData(\'plan\')">📥 Unduh Plan</button>';
-            document.getElementById("btn-plan-submit").textContent = "Simpan Plan";
+            document.getElementById("btn-plan-submit").textContent = "Simpan Rencana";
             document.getElementById("btn-plan-cancel").style.display = "none";
         }
 
         function renderPlans() {
             let c = document.getElementById("plans-container"); 
-            c.innerHTML = plans.length ? "" : '<div class="empty-state">Belum ada plan</div>';
-            plans.forEach(p => c.innerHTML += `<div style="background:var(--input-bg); border:1px solid var(--border-color); padding:12px; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:flex-start;">
-                <div><strong style="font-size:13px;">📍 ${p.t}</strong><p style="font-size:12px; color:var(--text-muted); margin-top:4px;">${p.d || '-'}</p></div>
+            c.innerHTML = plans.length ? '' : '<div class="empty-state">Belum ada rencana destinasi</div>';
+            plans.forEach(p => c.innerHTML += `<div style="background:var(--input-bg); border:1px solid var(--border-color); padding:14px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:flex-start;">
+                <div><strong style="font-size:14px; color:var(--text-main);">📍 ${p.t}</strong><p style="font-size:12px; color:var(--text-muted); margin-top:6px; line-height:1.5;">${p.d || '-'}</p></div>
                 <div class="action-btns">
                     <button class="btn btn-warning btn-sm" onclick="editPlan(${p.id})">Edit</button>
                     <button class="btn btn-danger btn-sm" onclick="deletePlan(${p.id})">Hapus</button>
@@ -1158,11 +1061,10 @@
             </div>`);
         }
 
-        // Functions Checklist
         function saveChecklist() {
             let id = document.getElementById("edit-check-id").value;
             let val = document.getElementById("check-item").value.trim();
-            if(!val) return alert("Nama barang wajib diisi");
+            if(!val) return alert("Nama barang wajib diisi!");
 
             if(id) {
                 let item = checklists.find(i => i.id == id);
@@ -1210,9 +1112,9 @@
 
         function renderChecklist() {
             let c = document.getElementById("checklist-container"); 
-            c.innerHTML = checklists.length ? "" : '<div class="empty-state">Belum ada checklist</div>';
-            checklists.forEach(item => c.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; margin-bottom:8px; background:var(--input-bg); padding:8px 12px; border-radius:8px; border:1px solid var(--border-color);">
-                <label style="display:flex; gap:8px; align-items:center; cursor:pointer;"><input type="checkbox" ${item.done?"checked":""} onchange="toggleChecklistStatus(${item.id})"> <span style="${item.done?'text-decoration:line-through; opacity:0.6;':''}">${item.text}</span></label>
+            c.innerHTML = checklists.length ? '' : '<div class="empty-state">Belum ada daftar checklist</div>';
+            checklists.forEach(item => c.innerHTML += `<div style="display:flex; justify-content:space-between; align-items:center; font-size:13px; margin-bottom:8px; background:var(--input-bg); padding:10px 14px; border-radius:10px; border:1px solid var(--border-color);">
+                <label style="display:flex; gap:10px; align-items:center; cursor:pointer; font-weight:600;"><input type="checkbox" ${item.done?"checked":""} onchange="toggleChecklistStatus(${item.id})" style="width:16px; height:16px; accent-color:var(--primary);"> <span style="${item.done?'text-decoration:line-through; opacity:0.6;':''}">${item.text}</span></label>
                 <div class="action-btns">
                     <button class="btn btn-warning btn-sm" onclick="editChecklist(${item.id})">Edit</button>
                     <button class="btn btn-danger btn-sm" onclick="deleteChecklist(${item.id})">Hapus</button>
@@ -1220,12 +1122,11 @@
             </div>`);
         }
 
-        // Functions Emergency
         function saveEmergency() {
             let id = document.getElementById("edit-em-id").value;
             let name = document.getElementById("em-name").value.trim();
             let phone = document.getElementById("em-phone").value.trim();
-            if(!name || !phone) return alert("Nama dan nomor telepon wajib diisi");
+            if(!name || !phone) return alert("Nama dan nomor telepon wajib diisi!");
 
             if(id) {
                 let e = emergencies.find(item => item.id == id);
@@ -1267,9 +1168,9 @@
 
         function renderEmergency() {
             let c = document.getElementById("emergency-container"); 
-            c.innerHTML = emergencies.length ? "" : '<div class="empty-state">Belum ada kontak</div>';
-            emergencies.forEach(e => c.innerHTML += `<div style="background:var(--input-bg); border:1px solid var(--border-color); padding:10px; border-radius:8px; margin-bottom:6px; display:flex; justify-content:space-between; align-items:center; font-size:13px;">
-                <span>📞 <strong>${e.name}</strong> — <span style="color:var(--primary); font-weight:700;">${e.phone}</span></span>
+            c.innerHTML = emergencies.length ? '' : '<div class="empty-state">Belum ada kontak darurat</div>';
+            emergencies.forEach(e => c.innerHTML += `<div style="background:var(--input-bg); border:1px solid var(--border-color); padding:12px 16px; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; font-size:13px;">
+                <span>📞 <strong style="color:var(--text-main);">${e.name}</strong> — <span style="color:var(--primary); font-weight:800;">${e.phone}</span></span>
                 <div class="action-btns">
                     <button class="btn btn-warning btn-sm" onclick="editEmergency(${e.id})">Edit</button>
                     <button class="btn btn-danger btn-sm" onclick="deleteEmergency(${e.id})">Hapus</button>
@@ -1277,7 +1178,6 @@
             </div>`);
         }
 
-        // Functions Notes
         function saveNoteItem() {
             let id = document.getElementById("edit-note-id").value;
             let title = document.getElementById("note-title").value.trim();
@@ -1324,12 +1224,12 @@
 
         function renderNotes() {
             let c = document.getElementById("notes-container");
-            c.innerHTML = notes.length ? "" : '<div class="empty-state">Belum ada catatan</div>';
-            notes.forEach(n => c.innerHTML += `<div style="background:var(--input-bg); border:1px solid var(--border-color); padding:12px; border-radius:10px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:flex-start;">
-                <div><strong style="font-size:13px;">📌 ${n.title}</strong><p style="font-size:12px; color:var(--text-muted); margin-top:4px;">${n.desc || '-'}</p></div>
+            c.innerHTML = notes.length ? '' : '<div class="empty-state">Belum ada catatan grup</div>';
+            notes.forEach(n => c.innerHTML += `<div style="background:var(--input-bg); border:1px solid var(--border-color); padding:14px; border-radius:12px; margin-bottom:10px; display:flex; justify-content:space-between; align-items:flex-start;">
+                <div><strong style="font-size:14px; color:var(--text-main);">📌 ${n.title}</strong><p style="font-size:12px; color:var(--text-muted); margin-top:6px; line-height:1.5;">${n.desc || '-'}</p></div>
                 <div class="action-btns">
                     <button class="btn btn-warning btn-sm" onclick="editNote(${n.id})">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteNote(${n.id})">Hapus</button>
+                    <button class="btn btn-danger btn-sm" onclick="deleteNote(${n.id})">Hapus</td>
                 </div>
             </div>`);
         }
