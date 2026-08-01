@@ -293,6 +293,8 @@
         .badge { padding: 6px 12px; border-radius: 20px; font-size: 11px; font-weight: 800; display: inline-block; }
         .badge-success { background: rgba(5, 150, 105, 0.18); color: var(--success); border: 1px solid rgba(5, 150, 105, 0.3); }
         .badge-danger { background: rgba(244, 63, 94, 0.18); color: var(--accent); border: 1px solid rgba(244, 63, 94, 0.3); }
+        .badge-method { background: rgba(37, 99, 235, 0.12); color: var(--primary); border: 1px solid rgba(37, 99, 235, 0.25); font-size: 10px; padding: 4px 8px; border-radius: 8px; font-weight: 700; display: inline-block; margin-top: 4px;}
+        
         .empty-state { text-align: center; color: var(--text-muted); padding: 24px; font-style: italic; font-size: 13px; font-weight: 600; }
 
         .action-btns { display: flex; gap: 6px; }
@@ -475,6 +477,14 @@
                         <div class="form-group"><label>Keperluan / Nama Pengeluaran</label><input type="text" id="item-title" class="form-control" placeholder="Contoh: Sewa Transportasi / Tiket Masuk" required></div>
                         <div class="form-group"><label>Nominal Total (Rp)</label><input type="number" id="item-amount" class="form-control" placeholder="Contoh: 300000" required min="1"></div>
                         <div class="form-group"><label>Ditalangi / Dibayar Oleh</label><select id="item-payer" class="form-control" required></select></div>
+                        <div class="form-group">
+                            <label>Metode Talangan / Pembayaran</label>
+                            <select id="item-method" class="form-control" required>
+                                <option value="QRIS">QRIS</option>
+                                <option value="Transfer">Transfer</option>
+                                <option value="Cash">Cash</option>
+                            </select>
+                        </div>
                         <div class="form-group"><label>Ditanggung Bersama Oleh</label><div id="beneficiaries-checkboxes" style="display:flex; flex-wrap:wrap; gap:10px; margin-top:6px;"></div></div>
                         <div style="display: flex; gap: 10px;">
                             <button type="submit" class="btn" id="btn-trans-submit">Simpan Transaksi</button>
@@ -487,8 +497,8 @@
                     <div class="card-title">Riwayat Transaksi Grup</div>
                     <div class="table-responsive">
                         <table>
-                            <thead><tr><th>Keperluan</th><th>Nominal</th><th>Talangan Oleh</th><th>Aksi</th></tr></thead>
-                            <tbody id="transaction-history-tbody"><tr><td colspan="4" class="empty-state">Belum ada transaksi tercatat</td></tr></tbody>
+                            <thead><tr><th>Keperluan</th><th>Nominal</th><th>Talangan Oleh</th><th>Metode</th><th>Aksi</th></tr></thead>
+                            <tbody id="transaction-history-tbody"><tr><td colspan="5" class="empty-state">Belum ada transaksi tercatat</td></tr></tbody>
                         </table>
                     </div>
                 </div>
@@ -804,6 +814,7 @@
             const title = document.getElementById("item-title").value;
             const amount = parseFloat(document.getElementById("item-amount").value);
             const payer = document.getElementById("item-payer").value;
+            const method = document.getElementById("item-method").value;
             const beneficiaries = Array.from(document.querySelectorAll("#beneficiaries-checkboxes input:checked")).map(el => el.value);
             
             if(!payer || !beneficiaries.length) {
@@ -814,10 +825,10 @@
             if(id) {
                 let idx = transactions.findIndex(t => t.id == id);
                 if(idx !== -1) {
-                    transactions[idx] = { id: Number(id), title, amount, payer, beneficiaries };
+                    transactions[idx] = { id: Number(id), title, amount, payer, method, beneficiaries };
                 }
             } else {
-                transactions.push({ id: Date.now(), title, amount, payer, beneficiaries });
+                transactions.push({ id: Date.now(), title, amount, payer, method, beneficiaries });
             }
             
             saveDataToLocal();
@@ -831,6 +842,7 @@
                 document.getElementById("item-title").value = t.title;
                 document.getElementById("item-amount").value = t.amount;
                 document.getElementById("item-payer").value = t.payer;
+                document.getElementById("item-method").value = t.method || "QRIS";
                 
                 document.querySelectorAll("#beneficiaries-checkboxes input").forEach(cb => {
                     cb.checked = t.beneficiaries.includes(cb.value);
@@ -854,6 +866,7 @@
             document.getElementById("edit-trans-id").value = "";
             document.getElementById("item-title").value = "";
             document.getElementById("item-amount").value = "";
+            document.getElementById("item-method").value = "QRIS";
             document.getElementById("form-trans-title").textContent = "Catat Transaksi Talangan Baru";
             document.getElementById("btn-trans-submit").textContent = "Simpan Transaksi";
             document.getElementById("btn-trans-cancel").style.display = "none";
@@ -885,7 +898,7 @@
             report += "--- RINCIAN TRANSAKSI ---\n";
             if(transactions.length === 0) report += "Belum ada transaksi.\n";
             transactions.forEach((t, idx) => {
-                report += `${idx+1}. ${t.title} | ${formatRp(t.amount)} | Ditalangi: ${t.payer} | Untuk: ${t.beneficiaries.join(', ')}\n`;
+                report += `${idx+1}. ${t.title} | ${formatRp(t.amount)} | Metode: ${t.method || 'QRIS'} | Ditalangi: ${t.payer} | Untuk: ${t.beneficiaries.join(', ')}\n`;
             });
             report += "\n";
 
@@ -952,12 +965,14 @@
             document.getElementById("rerata-pengeluaran").textContent = formatRp(members.length ? total/members.length : 0);
             
             const histTbody = document.getElementById("transaction-history-tbody");
-            histTbody.innerHTML = transactions.length ? "" : '<tr><td colspan="4" class="empty-state">Belum ada transaksi tercatat</td></tr>';
+            histTbody.innerHTML = transactions.length ? '' : '<tr><td colspan="5" class="empty-state">Belum ada transaksi tercatat</td></tr>';
             transactions.forEach(t => {
+                let methodBadge = `<span class="badge-method">${t.method || 'QRIS'}</span>`;
                 histTbody.innerHTML += `<tr>
                     <td><strong>${t.title}</strong><br><small style="color:var(--text-muted);">Ditanggung: ${t.beneficiaries.join(', ')}</small></td>
                     <td>${formatRp(t.amount)}</td>
                     <td>${t.payer}</td>
+                    <td>${methodBadge}</td>
                     <td>
                         <div class="action-btns">
                             <button class="btn btn-warning btn-sm" onclick="editTransaction(${t.id})">Edit</button>
@@ -1229,7 +1244,7 @@
                 <div><strong style="font-size:14px; color:var(--text-main);">📌 ${n.title}</strong><p style="font-size:12px; color:var(--text-muted); margin-top:6px; line-height:1.5;">${n.desc || '-'}</p></div>
                 <div class="action-btns">
                     <button class="btn btn-warning btn-sm" onclick="editNote(${n.id})">Edit</button>
-                    <button class="btn btn-danger btn-sm" onclick="deleteNote(${n.id})">Hapus</td>
+                    <button class="btn btn-danger btn-sm" onclick="deleteNote(${n.id})">Hapus</button>
                 </div>
             </div>`);
         }
