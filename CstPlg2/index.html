@@ -3,12 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aps Travel One Finance - Cloud Sync (Firebase)</title>
-    
-    <!-- Firebase SDK (Compat Version untuk kemudahan integrasi script langsung) -->
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <title>Aps Travel One Finance - Local Storage</title>
 
     <style>
         :root {
@@ -392,7 +387,6 @@
             gap: 4px;
         }
 
-        /* Mobile Bottom Navigation */
         .mobile-bottom-nav {
             display: none;
             position: fixed;
@@ -422,13 +416,8 @@
             padding: 4px;
         }
 
-        .mobile-nav-item span.icon {
-            font-size: 18px;
-        }
-
-        .mobile-nav-item.active {
-            color: var(--primary);
-        }
+        .mobile-nav-item span.icon { font-size: 18px; }
+        .mobile-nav-item.active { color: var(--primary); }
 
         footer {
             margin-top: 40px;
@@ -447,15 +436,9 @@
         }
 
         @media (max-width: 900px) {
-            .navbar .nav-tools {
-                display: none;
-            }
-            .mobile-bottom-nav {
-                display: flex;
-            }
-            #app-wrapper {
-                padding-bottom: 80px;
-            }
+            .navbar .nav-tools { display: none; }
+            .mobile-bottom-nav { display: flex; }
+            #app-wrapper { padding-bottom: 80px; }
         }
     </style>
 </head>
@@ -467,17 +450,17 @@
             <div class="login-glass">
                 <h1>🛡️ Aps Travel</h1>
                 <div class="login-brand-sub">By AAAIIM ONEFINENCE</div>
-                <p>Sinkronisasi Cloud Realtime via Firebase</p>
+                <p>Penyimpanan Mode Lokal (Offline)</p>
                 <div class="trust-badge-box">
-                    ☁️ <strong>Akun Sinkronisasi Bersama:</strong><br>
+                    💾 <strong>Akun Login Lokal:</strong><br>
                     Email: <code>admin@apstravel.com</code><br>
                     Pass: <code>trip12345</code>
                 </div>
-                <div id="login-error" class="error-msg">Gagal masuk / Autentikasi salah!</div>
+                <div id="login-error" class="error-msg">Email atau Password salah!</div>
                 <form onsubmit="handleLogin(event)">
                     <input type="email" id="login-user" placeholder="Email Akun" required value="admin@apstravel.com">
                     <input type="password" id="login-pass" placeholder="Password" required value="trip12345">
-                    <button type="submit" id="btn-login-submit">Masuk & Sinkron ⚡</button>
+                    <button type="submit" id="btn-login-submit">Masuk Ke Aplikasi ⚡</button>
                 </form>
             </div>
         </div>
@@ -487,7 +470,7 @@
             <header class="navbar">
                 <div class="nav-brand">
                     <h2>Aps Travel</h2>
-                    <span>By AAAIIM ONEFINENCE <span class="cloud-indicator">☁️ Live Sync</span></span>
+                    <span>By AAAIIM ONEFINENCE <span class="cloud-indicator">💾 Local Saved</span></span>
                 </div>
                 <div class="nav-tools">
                     <button class="nav-btn active" id="btn-nav-dashboard" onclick="switchPage('dashboard')">🏠 Dasbor</button>
@@ -505,15 +488,15 @@
             <section id="page-dashboard" class="page-section active">
                 <div class="hero-banner">
                     <h1>Solusi Pencatatan Keuangan Trip Anda 🌍</h1>
-                    <p>Terhubung secara Cloud Realtime. Setiap perubahan di HP manapun akan langsung tersinkronisasi otomatis.</p>
+                    <p>Tersimpan secara Aman di Perangkat Anda. Data tetap tersimpan meskipun browser ditutup.</p>
                 </div>
 
                 <div class="trust-grid">
                     <div class="trust-card">
-                        <span style="font-size: 24px;">☁️</span>
+                        <span style="font-size: 24px;">💾</span>
                         <div>
-                            <h4 style="font-size: 13px; font-weight: 700;">Cloud Realtime Sync</h4>
-                            <p style="font-size: 11px; color: var(--text-muted);">Data antar HP & PC selalu sama persis</p>
+                            <h4 style="font-size: 13px; font-weight: 700;">Local Storage Safe</h4>
+                            <p style="font-size: 11px; color: var(--text-muted);">Data tersimpan aman di browser Anda</p>
                         </div>
                     </div>
                     <div class="trust-card">
@@ -729,24 +712,9 @@
     </nav>
 
     <script>
-        // --- KONFIGURASI FIREBASE ---
-        // Catatan: Ganti konfigurasi di bawah ini dengan milik project Firebase Anda sendiri jika diperlukan.
-        const firebaseConfig = {
-            apiKey: "AIzaSyDummyKeyForDemoPurposesOnly-12345",
-            authDomain: "aps-travel-onefinance.firebaseapp.com",
-            databaseURL: "https://aps-travel-onefinance-default-rtdb.firebaseio.com",
-            projectId: "aps-travel-onefinance",
-            storageBucket: "aps-travel-onefinance.appspot.com",
-            messagingSenderId: "1234567890",
-            appId: "1:1234567890:web:abcdef123456"
-        };
-
-        // Inisialisasi Firebase
-        if (!firebase.apps.length) {
-            firebase.initializeApp(firebaseConfig);
-        }
-        const auth = firebase.auth();
-        const db = firebase.database();
+        // Kredensial Login Lokal (Ganti sesuai keinginan Anda)
+        const LOCAL_USER = "admin@apstravel.com";
+        const LOCAL_PASS = "trip12345";
 
         let members = ["Andi", "Budi", "Citra"];
         let transactions = [];
@@ -755,52 +723,35 @@
         let emergencies = [{id:1, name:"Polisi / Darurat Nasional", phone:"110"}, {id:2, name:"Ambulans / Medis", phone:"118"}];
         let notes = [{id:1, title:"Kuliner Malam Populer", desc:"Mencoba nasi tempong khas di dekat alun-alun kota tujuan."}];
 
-        // Handle Login menggunakan Firebase Authentication
+        // Penanganan Login Secara Lokal
         function handleLogin(e) {
             e.preventDefault();
             const u = document.getElementById("login-user").value.trim();
             const p = document.getElementById("login-pass").value.trim();
             const errBox = document.getElementById("login-error");
-            const btnSubmit = document.getElementById("btn-login-submit");
 
-            btnSubmit.textContent = "Menghubungkan ke Cloud...";
-            btnSubmit.disabled = true;
-
-            // Coba login dengan Firebase Auth, jika akun belum ada maka buat otomatis untuk memudahkan demo
-            auth.signInWithEmailAndPassword(u, p)
-                .then((userCredential) => {
-                    onLoginSuccess();
-                })
-                .catch((error) => {
-                    // Jika user belum terdaftar, buat akun otomatis agar langsung bisa dipakai
-                    auth.createUserWithEmailAndPassword(u, p)
-                        .then((userCredential) => {
-                            onLoginSuccess();
-                        })
-                        .catch((err) => {
-                            errBox.style.display = "block";
-                            errBox.textContent = "Autentikasi gagal: " + err.message;
-                            btnSubmit.textContent = "Masuk & Sinkron ⚡";
-                            btnSubmit.disabled = false;
-                        });
-                });
+            if (u === LOCAL_USER && p === LOCAL_PASS) {
+                localStorage.setItem("aps_is_logged_in", "true");
+                onLoginSuccess();
+            } else {
+                errBox.style.display = "block";
+            }
         }
 
         function onLoginSuccess() {
             document.getElementById("login-screen").style.display = "none";
             document.getElementById("app-wrapper").style.display = "block";
             checkMobileNavDisplay();
-            initFirebaseListeners();
+            loadDataFromLocal();
         }
 
-        function handleLogout() { 
-            auth.signOut().then(() => {
-                location.reload(); 
-            });
+        function handleLogout() {
+            localStorage.removeItem("aps_is_logged_in");
+            location.reload();
         }
 
         function checkMobileNavDisplay() {
-            if (window.innerWidth <= 900 && auth.currentUser) {
+            if (window.innerWidth <= 900 && localStorage.getItem("aps_is_logged_in") === "true") {
                 document.getElementById("mobile-nav").style.display = "flex";
             } else {
                 document.getElementById("mobile-nav").style.display = "none";
@@ -835,56 +786,69 @@
             return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(Math.round(amt)); 
         }
 
-        // --- REALTIME LISTENER FIREBASE (Mendengarkan perubahan data dari HP lain) ---
-        function initFirebaseListeners() {
+        // FUNGSI PENYIMPANAN DAN MUAT DATA LOKAL (LocalStorage)
+        function loadDataFromLocal() {
             document.documentElement.setAttribute("data-theme", localStorage.getItem("aps_theme") || "light");
 
-            db.ref('trip_data').on('value', (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    members = data.members || ["Andi", "Budi", "Citra"];
-                    transactions = data.transactions || [];
-                    plans = data.plans || [];
-                    checklists = data.checklists || checklists;
-                    emergencies = data.emergencies || emergencies;
-                    notes = data.notes || notes;
-                } else {
-                    // Jika data kosong di cloud, inisialisasi awal
-                    saveDataToCloud();
-                }
-                renderMembers();
-                calculateFinance();
-                renderPlans();
-                renderChecklist();
-                renderEmergency();
-                renderNotes();
-            });
+            const savedData = localStorage.getItem("aps_travel_data");
+            if (savedData) {
+                const data = JSON.parse(savedData);
+                members = data.members || members;
+                transactions = data.transactions || [];
+                plans = data.plans || [];
+                checklists = data.checklists || checklists;
+                emergencies = data.emergencies || emergencies;
+                notes = data.notes || notes;
+            } else {
+                saveDataToLocal();
+            }
+
+            renderAll();
         }
 
-        // Cek status sesi login saat halaman dimuat
-        auth.onAuthStateChanged((user) => {
-            if (user) {
-                document.getElementById("login-screen").style.display = "none";
-                document.getElementById("app-wrapper").style.display = "block";
-                checkMobileNavDisplay();
-                initFirebaseListeners();
+        function saveDataToLocal() {
+            const dataToSave = {
+                members: members,
+                transactions: transactions,
+                plans: plans,
+                checklists: checklists,
+                emergencies: emergencies,
+                notes: notes
+            };
+            localStorage.setItem("aps_travel_data", JSON.stringify(dataToSave));
+            renderAll();
+        }
+
+        function renderAll() {
+            renderMembers();
+            calculateFinance();
+            renderPlans();
+            renderChecklist();
+            renderEmergency();
+            renderNotes();
+        }
+
+        // Cek Sesi Login Saat Aplikasi Dibuka
+        window.addEventListener('DOMContentLoaded', () => {
+            if (localStorage.getItem("aps_is_logged_in") === "true") {
+                onLoginSuccess();
             }
         });
 
-        // Members functions
+        // Functions untuk Member
         function addMember() {
             const val = document.getElementById("member-name-input").value.trim();
             if(val && !members.includes(val)) { 
                 members.push(val); 
                 document.getElementById("member-name-input").value=""; 
-                saveDataToCloud(); 
+                saveDataToLocal(); 
             }
         }
 
         function removeMember(name) {
             if(confirm(`Hapus anggota ${name}?`)) {
                 members = members.filter(m => m !== name);
-                saveDataToCloud();
+                saveDataToLocal();
             }
         }
 
@@ -904,7 +868,7 @@
             members.forEach(m => cb.innerHTML += `<label style="font-size:12px; display:flex; gap:4px; align-items:center;"><input type="checkbox" value="${m}" checked> ${m}</label>`);
         }
 
-        // Finance Transactions functions
+        // Functions Transaksi
         function saveTransactionForm(e) {
             e.preventDefault();
             const id = document.getElementById("edit-trans-id").value;
@@ -927,7 +891,7 @@
                 transactions.push({ id: Date.now(), title, amount, payer, beneficiaries });
             }
             
-            saveDataToCloud();
+            saveDataToLocal();
             resetTransForm();
         }
 
@@ -953,7 +917,7 @@
         function deleteTransaction(id) {
             if(confirm("Hapus transaksi ini?")) {
                 transactions = transactions.filter(t => t.id != id);
-                saveDataToCloud();
+                saveDataToLocal();
             }
         }
 
@@ -983,7 +947,7 @@
 
             let report = "========================================\n";
             report += "LAPORAN KEUANGAN APS TRAVEL - ONE FINANCE\n";
-            report += "Powered By AAAIIM ONEFINENCE (Cloud Sync)\n";
+            report += "Powered By AAAIIM ONEFINENCE (Local Saved)\n";
             report += "========================================\n\n";
             report += `Total Pengeluaran: ${formatRp(total)}\n`;
             report += `Jumlah Anggota: ${members.length} Orang\n`;
@@ -1081,7 +1045,7 @@
             }
         }
 
-        // Plan Itinerary functions
+        // Functions Itinerary
         function savePlanItem() {
             let id = document.getElementById("edit-plan-id").value;
             let t = document.getElementById("plan-title").value.trim();
@@ -1094,7 +1058,7 @@
             } else {
                 plans.push({ id: Date.now(), t, d });
             }
-            saveDataToCloud();
+            saveDataToLocal();
             resetPlanForm();
         }
 
@@ -1113,7 +1077,7 @@
         function deletePlan(id) {
             if(confirm("Hapus plan ini?")) {
                 plans = plans.filter(p => p.id != id);
-                saveDataToCloud();
+                saveDataToLocal();
             }
         }
 
@@ -1138,7 +1102,7 @@
             </div>`);
         }
 
-        // Checklist functions
+        // Functions Checklist
         function saveChecklist() {
             let id = document.getElementById("edit-check-id").value;
             let val = document.getElementById("check-item").value.trim();
@@ -1150,7 +1114,7 @@
             } else {
                 checklists.push({ id: Date.now(), text: val, done: false });
             }
-            saveDataToCloud();
+            saveDataToLocal();
             resetCheckForm();
         }
 
@@ -1168,7 +1132,7 @@
         function deleteChecklist(id) {
             if(confirm("Hapus item checklist ini?")) {
                 checklists = checklists.filter(i => i.id != id);
-                saveDataToCloud();
+                saveDataToLocal();
             }
         }
 
@@ -1176,7 +1140,7 @@
             let item = checklists.find(i => i.id == id);
             if(item) {
                 item.done = !item.done;
-                saveDataToCloud();
+                saveDataToLocal();
             }
         }
 
@@ -1200,7 +1164,7 @@
             </div>`);
         }
 
-        // Emergency functions
+        // Functions Emergency
         function saveEmergency() {
             let id = document.getElementById("edit-em-id").value;
             let name = document.getElementById("em-name").value.trim();
@@ -1213,7 +1177,7 @@
             } else {
                 emergencies.push({ id: Date.now(), name, phone });
             }
-            saveDataToCloud();
+            saveDataToLocal();
             resetEmForm();
         }
 
@@ -1232,7 +1196,7 @@
         function deleteEmergency(id) {
             if(confirm("Hapus kontak darurat ini?")) {
                 emergencies = emergencies.filter(e => e.id != id);
-                saveDataToCloud();
+                saveDataToLocal();
             }
         }
 
@@ -1257,7 +1221,7 @@
             </div>`);
         }
 
-        // Notes functions
+        // Functions Notes
         function saveNoteItem() {
             let id = document.getElementById("edit-note-id").value;
             let title = document.getElementById("note-title").value.trim();
@@ -1270,7 +1234,7 @@
             } else {
                 notes.push({ id: Date.now(), title, desc });
             }
-            saveDataToCloud();
+            saveDataToLocal();
             resetNoteForm();
         }
 
@@ -1289,7 +1253,7 @@
         function deleteNote(id) {
             if(confirm("Hapus catatan ini?")) {
                 notes = notes.filter(n => n.id != id);
-                saveDataToCloud();
+                saveDataToLocal();
             }
         }
 
@@ -1312,20 +1276,6 @@
                     <button class="btn btn-danger btn-sm" onclick="deleteNote(${n.id})">Hapus</button>
                 </div>
             </div>`);
-        }
-
-        // Fungsi Sinkronisasi Data ke Firebase Realtime Database
-        function saveDataToCloud() {
-            db.ref('trip_data').set({
-                members: members,
-                transactions: transactions,
-                plans: plans,
-                checklists: checklists,
-                emergencies: emergencies,
-                notes: notes
-            }).catch((error) => {
-                console.error("Gagal menyimpan ke cloud: ", error);
-            });
         }
     </script>
 </body>
