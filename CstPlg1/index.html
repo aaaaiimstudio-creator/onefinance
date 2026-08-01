@@ -341,14 +341,14 @@
       <!-- MAIN CONTAINER -->
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
-        <!-- ================= PANEL FILTER BULAN, TAHUN & RESET DATA ================= -->
-        <div class="glass-card p-4 sm:p-5 rounded-2xl mb-6 flex flex-col md:flex-row justify-between items-center gap-4 no-print border-l-4 border-l-amber-400">
-          <div class="flex flex-wrap items-center gap-3 w-full md:w-auto">
-            <div class="flex items-center gap-2">
-              <i class="fa-solid fa-filter text-amber-400 text-sm"></i>
-              <span class="text-xs font-bold uppercase tracking-wider text-white">Filter Periode:</span>
-            </div>
-            <select id="filterMonth" onchange="renderDashboard()" class="p-2.5 rounded-xl glass-input text-xs outline-none cursor-pointer">
+        <!-- ================= PANEL FILTER BULAN & TAHUN (HP & PC FRIENDLY) ================= -->
+        <div class="glass-card p-3 sm:p-4 rounded-2xl mb-6 flex items-center justify-between gap-3 no-print border-l-4 border-l-amber-400">
+          <div class="flex items-center gap-2 text-white">
+            <i class="fa-solid fa-filter text-amber-400 text-xs sm:text-sm"></i>
+            <span class="text-[11px] sm:text-xs font-bold uppercase tracking-wider">Filter Periode:</span>
+          </div>
+          <div class="flex items-center gap-2">
+            <select id="filterMonth" onchange="renderDashboard()" class="py-1.5 px-2.5 rounded-xl glass-input text-[11px] sm:text-xs outline-none cursor-pointer">
               <option value="ALL">Semua Bulan</option>
               <option value="01">Januari</option>
               <option value="02">Februari</option>
@@ -363,15 +363,9 @@
               <option value="11">November</option>
               <option value="12">Desember</option>
             </select>
-            <select id="filterYear" onchange="renderDashboard()" class="p-2.5 rounded-xl glass-input text-xs outline-none cursor-pointer">
+            <select id="filterYear" onchange="renderDashboard()" class="py-1.5 px-2.5 rounded-xl glass-input text-[11px] sm:text-xs outline-none cursor-pointer">
               <!-- Terisi Dinamis Lewat JS -->
             </select>
-          </div>
-
-          <div class="flex items-center justify-end gap-3 w-full md:w-auto">
-            <button onclick="resetDataKeuangan()" id="btnResetData" class="px-4 py-2.5 bg-rose-500/20 hover:bg-rose-500/30 text-rose-400 border border-rose-500/30 font-bold rounded-xl text-xs uppercase tracking-wider transition-all flex items-center gap-2">
-              <i class="fa-solid fa-rotate-left"></i> Reset Data Keuangan
-            </button>
           </div>
         </div>
 
@@ -730,9 +724,15 @@
     </div>
   </div>
 
-  <!-- ================= FOOTER / WATERMARK ================= -->
-  <footer class="text-center py-6 border-t border-corporate-border text-slate-400 text-xs tracking-widest font-bold uppercase no-print">
-    APP BY AAAIIM ONEFINANCE
+  <!-- ================= FOOTER / WATERMARK & TOMBOL RESET DATA KECIL ================= -->
+  <footer class="text-center py-6 border-t border-corporate-border no-print flex flex-col items-center justify-center gap-3">
+    <div class="text-slate-500 text-[11px] tracking-widest font-bold uppercase">
+      APP BY AAAIIM ONEFINANCE
+    </div>
+    <!-- Tombol Reset Data dibuat kecil, samar, dan diletakkan di bawah agar tidak mudah tertekan -->
+    <button onclick="resetDataKeuangan()" id="btnResetData" class="text-[10px] text-slate-600 hover:text-rose-400 opacity-60 hover:opacity-100 transition-all flex items-center gap-1.5 underline">
+      <i class="fa-solid fa-rotate-left text-[9px]"></i> Reset Data Keuangan
+    </button>
   </footer>
 
   <!-- FIREBASE & APPLICATION LOGIC -->
