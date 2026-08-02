@@ -224,15 +224,27 @@
       <div class="glass-card max-w-md w-full p-6 rounded-2xl border border-amber-500/20 shadow-2xl relative">
         <div class="flex justify-between items-center mb-4 border-b border-corporate-border pb-3">
           <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-            <i class="fa-solid fa-wallet text-amber-400"></i> Pilih Rekening Pelunasan
+            <i class="fa-solid fa-wallet text-amber-400"></i> Form Pelunasan Hutang / Piutang
           </h3>
           <button onclick="closePayDebtModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
         </div>
 
         <form onsubmit="confirmPayDebt(event)" class="space-y-4">
           <input type="hidden" id="payDebtId">
+          <input type="hidden" id="payDebtCurrentAmount">
           <div>
             <p class="text-xs text-slate-300 mb-3" id="payDebtInfo">Detail Pelunasan</p>
+            
+            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Nominal Pelunasan (Rp)</label>
+            <input type="number" id="payDebtAmountInput" min="1" required oninput="calculateDebtRemaining()" placeholder="Masukkan jumlah yang dibayar" class="w-full p-3 rounded-xl glass-input text-xs outline-none mb-3">
+            
+            <div class="p-3 bg-corporate-900/80 border border-amber-500/20 rounded-xl mb-3">
+              <p class="text-[11px] text-slate-400 flex justify-between">
+                <span>Sisa Tagihan / Hutang:</span>
+                <strong id="payDebtRemainingText" class="text-amber-400 font-mono">Rp 0</strong>
+              </p>
+            </div>
+
             <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1">Rekening Kas / Bank</label>
             <select id="payDebtAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none">
               <!-- Dynamic -->
@@ -877,6 +889,9 @@
       document.getElementById('userRoleDisplay').innerHTML = `<i class="fa-solid fa-shield text-[8px]"></i> ${currentUser.label}`;
       document.getElementById('userAvatar').innerText = currentUser.name.substring(0, 3).toUpperCase();
 
+      // Perbaikan Tampilan HP: Otomatis Scroll Langsung ke Paling Atas Layar saat Login
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
       applyRolePermissions();
       showToast(`Selamat datang, ${currentUser.name}`);
     }
@@ -1139,12 +1154,34 @@
       if (accounts.length === 0) return showToast('❌ Silakan buat akun/rekening kas terlebih dahulu!');
 
       document.getElementById('payDebtId').value = id;
-      document.getElementById('payDebtInfo').innerText = `Pelunasan ${item.type}: ${item.person} sebesar Rp ${item.amount.toLocaleString()}`;
+      document.getElementById('payDebtCurrentAmount').value = item.amount;
+      document.getElementById('payDebtInfo').innerHTML = `Pelunasan <strong>${item.type}</strong>: ${item.person}<br>Tagihan Terutang: <strong class="text-amber-400">Rp ${item.amount.toLocaleString()}</strong>`;
+      
+      const payInput = document.getElementById('payDebtAmountInput');
+      payInput.value = item.amount;
+      payInput.max = item.amount;
+
+      calculateDebtRemaining();
 
       const optionsHTML = accounts.map(a => `<option value="${a.name}">${a.name} (Rp ${parseFloat(a.balance).toLocaleString()})</option>`).join('');
       document.getElementById('payDebtAccount').innerHTML = optionsHTML;
 
       document.getElementById('payDebtModal').classList.remove('hidden');
+    }
+
+    function calculateDebtRemaining() {
+      const currentAmount = parseFloat(document.getElementById('payDebtCurrentAmount').value) || 0;
+      const payAmount = parseFloat(document.getElementById('payDebtAmountInput').value) || 0;
+      const remaining = currentAmount - payAmount;
+
+      const remainingTextEl = document.getElementById('payDebtRemainingText');
+      if (remaining <= 0) {
+        remainingTextEl.innerText = 'Rp 0 (Lunas sepenuhnya)';
+        remainingTextEl.className = 'text-emerald-400 font-mono font-bold';
+      } else {
+        remainingTextEl.innerText = 'Rp ' + remaining.toLocaleString();
+        remainingTextEl.className = 'text-amber-400 font-mono font-bold';
+      }
     }
 
     function closePayDebtModal() {
@@ -1155,33 +1192,53 @@
       e.preventDefault();
       const id = document.getElementById('payDebtId').value;
       const targetAccountName = document.getElementById('payDebtAccount').value;
+      const payAmount = parseFloat(document.getElementById('payDebtAmountInput').value) || 0;
 
       const item = debts.find(d => d.id === id);
       const selectedAccount = accounts.find(a => a.name === targetAccountName);
 
       if (!item || !selectedAccount) return;
 
-      db.ref('debts/' + id).update({ status: 'Lunas' });
+      if (payAmount <= 0) {
+        return showToast('❌ Nominal pelunasan tidak valid!');
+      }
 
+      const remaining = item.amount - payAmount;
       const isHutang = item.type === 'Hutang';
       const txType = isHutang ? 'Pengeluaran' : 'Pendapatan';
 
+      if (remaining <= 0) {
+        // Pelunasan Penuh (Lunas)
+        db.ref('debts/' + id).update({ 
+          status: 'Lunas',
+          amount: 0,
+          notes: `${item.notes} (Lunas: Rp ${payAmount.toLocaleString()})`
+        });
+      } else {
+        // Pelunasan Sebagian
+        db.ref('debts/' + id).update({ 
+          status: 'Sebagian',
+          amount: remaining,
+          notes: `${item.notes} (Dicicil: Rp ${payAmount.toLocaleString()})`
+        });
+      }
+
       const autoTx = {
         type: txType,
-        amount: item.amount,
+        amount: payAmount,
         account: targetAccountName,
         category: isHutang ? 'Pelunasan Hutang' : 'Pelunasan Piutang',
         date: new Date().toISOString().split('T')[0],
-        notes: `Pelunasan ${item.type}: ${item.person} (${item.notes})`
+        notes: `Pelunasan ${item.type}: ${item.person} (${remaining <= 0 ? 'Lunas' : 'Sisa Rp ' + remaining.toLocaleString()})`
       };
 
       db.ref('transactions').push(autoTx);
 
-      const adj = isHutang ? -item.amount : item.amount;
+      const adj = isHutang ? -payAmount : payAmount;
       db.ref('accounts/' + selectedAccount.id).update({ balance: parseFloat(selectedAccount.balance || 0) + adj });
 
       closePayDebtModal();
-      showToast(`✅ ${item.type} Berhasil Dilunasi Menggunakan ${targetAccountName}!`);
+      showToast(`✅ Pelunasan ${item.type} sebesar Rp ${payAmount.toLocaleString()} Berhasil Diproses!`);
     }
 
     function deleteDebt(id) {
@@ -1312,7 +1369,7 @@
       let totalHutang = 0;
       let totalPiutang = 0;
       debts.forEach(d => {
-        if (d.status === 'Belum Lunas') {
+        if (d.status !== 'Lunas') {
           if (d.type === 'Hutang') totalHutang += parseFloat(d.amount || 0);
           if (d.type === 'Piutang') totalPiutang += parseFloat(d.amount || 0);
         }
@@ -1385,8 +1442,11 @@
           debtTbody.innerHTML = `<tr><td colspan="6" class="py-8 text-center text-slate-500">Belum ada catatan hutang atau piutang.</td></tr>`;
         } else {
           debtTbody.innerHTML = debts.map(d => {
-            const isUnpaid = d.status === 'Belum Lunas';
-            const badgeClass = isUnpaid ? 'bg-amber-500/10 text-amber-400 border-amber-500/20' : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+            const isUnpaid = d.status !== 'Lunas';
+            let badgeClass = 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+            if (d.status === 'Lunas') badgeClass = 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+            if (d.status === 'Sebagian') badgeClass = 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20';
+
             const typeBadge = d.type === 'Hutang' ? 'text-rose-400' : 'text-emerald-400';
 
             return `
