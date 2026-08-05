@@ -360,7 +360,7 @@
           <button onclick="switchTab('transfer')" id="nav-transfer" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
             <i class="fa-solid fa-right-left"></i> Transfer Antar Akun
           </button>
-          <button onclick="switchTab('akun')" id="nav-akun" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold font-semibold">
+          <button onclick="switchTab('akun')" id="nav-akun" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
             <i class="fa-solid fa-vault"></i> Manajemen Kas & Rekening
           </button>
           <button onclick="switchTab('laporan')" id="nav-laporan" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
@@ -570,9 +570,24 @@
 
           <div class="lg:col-span-2 glass-card p-5 sm:p-6 rounded-2xl">
             <div class="flex justify-between items-center mb-6 pb-4 border-b border-adaptive">
-              <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase">Riwayat & Fitur Kelola Transaksi</h2>
+              <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase">Riwayat Transaksi Jurnal</h2>
             </div>
-            <div id="txHistoryList" class="space-y-3">
+            <!-- BAGIAN DISIMPULKAN & DISEMPURNAKAN: MENAMPILKAN RIWAYAT TRANSAKSI JURNAL -->
+            <div id="txHistoryList" class="space-y-3 overflow-x-auto">
+              <table class="w-full text-left border-collapse min-w-[500px]">
+                <thead>
+                  <tr class="border-b border-adaptive text-[10px] text-adaptive-muted uppercase tracking-wider font-bold">
+                    <th class="py-2.5 px-2">Tanggal</th>
+                    <th class="py-2.5 px-2">Tipe</th>
+                    <th class="py-2.5 px-2">Akun / Rekening</th>
+                    <th class="py-2.5 px-2">Kategori</th>
+                    <th class="py-2.5 px-2 text-right">Nominal</th>
+                    <th class="py-2.5 px-2 text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="pencatatanTxHistoryBody" class="divide-y divide-adaptive text-xs font-medium">
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
@@ -705,7 +720,20 @@
             <div class="flex justify-between items-center mb-6 pb-4 border-b border-adaptive">
               <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase">Riwayat Transfer Antar Rekening</h2>
             </div>
-            <div id="transferHistoryList" class="space-y-3">
+            <!-- BAGIAN DISIMPULKAN & DISEMPURNAKAN: RIWAYAT MUTASI TRANSFER -->
+            <div id="transferHistoryList" class="space-y-3 overflow-x-auto">
+              <table class="w-full text-left border-collapse min-w-[500px]">
+                <thead>
+                  <tr class="border-b border-adaptive text-[10px] text-adaptive-muted uppercase tracking-wider font-bold">
+                    <th class="py-2.5 px-2">Tanggal</th>
+                    <th class="py-2.5 px-2">Transfer Rekening</th>
+                    <th class="py-2.5 px-2">Memo / Catatan</th>
+                    <th class="py-2.5 px-2 text-right">Nominal Transfer</th>
+                  </tr>
+                </thead>
+                <tbody id="transferHistoryBody" class="divide-y divide-adaptive text-xs font-medium">
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
@@ -1495,6 +1523,60 @@
       if(elEditTx) elEditTx.innerHTML = optionsHTML;
     }
 
+    // FUNGSI BARU: RENDER RIWAYAT PADA TAB PENCATATAN
+    function renderTxHistory() {
+      const historyBody = document.getElementById('pencatatanTxHistoryBody');
+      if (!historyBody) return;
+
+      const nonTransferTx = transactions.filter(t => t.type !== 'Transfer');
+      if (nonTransferTx.length === 0) {
+        historyBody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-adaptive-muted">Belum ada riwayat jurnal pencatatan.</td></tr>`;
+        return;
+      }
+
+      historyBody.innerHTML = nonTransferTx.map(t => {
+        const badgeClass = t.type === 'Pendapatan' ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/30' : 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/30';
+        return `
+          <tr class="hover:bg-slate-100 dark:hover:bg-corporate-800/40 transition-all">
+            <td class="py-3 px-2 font-mono text-[11px] text-adaptive-muted whitespace-nowrap">${t.date}</td>
+            <td class="py-3 px-2"><span class="px-2 py-0.5 rounded-full text-[10px] font-bold border ${badgeClass}">${t.type}</span></td>
+            <td class="py-3 px-2 font-semibold text-adaptive-main">${t.account}</td>
+            <td class="py-3 px-2 text-adaptive-sub">${t.category}</td>
+            <td class="py-3 px-2 text-right font-black font-mono ${t.type === 'Pendapatan' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'} whitespace-nowrap">
+              Rp ${parseFloat(t.amount).toLocaleString()}
+            </td>
+            <td class="py-3 px-2 text-center whitespace-nowrap">
+              <button onclick="openEditTxModal('${t.id}')" class="p-1.5 text-amber-600 dark:text-amber-400 hover:bg-amber-400/10 rounded-lg transition-all" title="Edit"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="deleteTx('${t.id}')" class="p-1.5 text-rose-600 dark:text-rose-400 hover:bg-rose-400/10 rounded-lg transition-all ml-1" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    // FUNGSI BARU: RENDER RIWAYAT TRANSFER
+    function renderTransferHistory() {
+      const transferBody = document.getElementById('transferHistoryBody');
+      if (!transferBody) return;
+
+      const transfers = transactions.filter(t => t.type === 'Transfer');
+      if (transfers.length === 0) {
+        transferBody.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-adaptive-muted">Belum ada riwayat transfer antar rekening.</td></tr>`;
+        return;
+      }
+
+      transferBody.innerHTML = transfers.map(t => `
+        <tr class="hover:bg-slate-100 dark:hover:bg-corporate-800/40 transition-all">
+          <td class="py-3 px-2 font-mono text-[11px] text-adaptive-muted whitespace-nowrap">${t.date}</td>
+          <td class="py-3 px-2 font-semibold text-cyan-600 dark:text-cyan-400">${t.account}</td>
+          <td class="py-3 px-2 text-adaptive-sub">${t.notes}</td>
+          <td class="py-3 px-2 text-right font-black font-mono text-adaptive-main whitespace-nowrap">
+            Rp ${parseFloat(t.amount).toLocaleString()}
+          </td>
+        </tr>
+      `).join('');
+    }
+
     function renderDashboard() {
       const totals = getTotals();
       const filteredTx = getFilteredTransactions();
@@ -1590,6 +1672,8 @@
         </div>
       `).join('');
 
+      renderTxHistory();
+      renderTransferHistory();
       renderAnalytics();
       renderPrintableReport();
     }
@@ -1631,7 +1715,7 @@
       `;
     }
 
-    // LAPORAN KEUANGAN PDF
+    // LAPORAN KEUANGAN PDF (DENGAN TANDA TANGAN DISEMPURNAKAN)
     function renderPrintableReport() {
       const totals = getTotals();
       const filteredTx = getFilteredTransactions();
@@ -1875,6 +1959,43 @@
               <p><strong>5.2 Rincian Likuiditas & Kas:</strong> Konsolidasi kas tersimpan pada ${accounts.length} akun terdaftar dengan total saldo likuid sebesar <strong>Rp ${totals.assets.toLocaleString()}</strong>.</p>
             </div>
           </div>
+
+          <!-- BAGIAN DISIMPULKAN & DISEMPURNAKAN: LEMBAR OTORISASI / TANDA TANGAN -->
+          <div class="dark-print-box p-6 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive pt-8 mt-8">
+            <h4 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 mb-8 text-xs text-center tracking-widest">
+              LEMBAR OTORISASI & VERIFIKASI LAPORAN KEUANGAN
+            </h4>
+            
+            <div class="grid grid-cols-3 gap-4 text-center">
+              <div class="flex flex-col justify-between h-36">
+                <span class="text-[11px] font-bold text-adaptive-muted uppercase">Dibuat Oleh:</span>
+                <div class="border-b border-slate-400 w-3/4 mx-auto"></div>
+                <div>
+                  <p class="font-bold text-xs text-adaptive-main">${currentUser ? currentUser.name : 'Staf Keuangan'}</p>
+                  <p class="text-[10px] text-adaptive-muted">Staf Akuntansi & Keuangan</p>
+                </div>
+              </div>
+
+              <div class="flex flex-col justify-between h-36">
+                <span class="text-[11px] font-bold text-adaptive-muted uppercase">Diverifikasi Oleh:</span>
+                <div class="border-b border-slate-400 w-3/4 mx-auto"></div>
+                <div>
+                  <p class="font-bold text-xs text-adaptive-main">Manager Keuangan</p>
+                  <p class="text-[10px] text-adaptive-muted">Head of Finance & Treasury</p>
+                </div>
+              </div>
+
+              <div class="flex flex-col justify-between h-36">
+                <span class="text-[11px] font-bold text-adaptive-muted uppercase">Disetujui Oleh:</span>
+                <div class="border-b border-slate-400 w-3/4 mx-auto"></div>
+                <div>
+                  <p class="font-bold text-xs text-adaptive-main">Direktur Utama</p>
+                  <p class="text-[10px] text-adaptive-muted">Chief Executive Officer (CEO)</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
         </div>
       `;
     }
