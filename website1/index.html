@@ -69,7 +69,7 @@
     html.dark .border-adaptive { border-color: rgba(255, 255, 255, 0.08); }
     html.dark .report-bg { background-color: #0b1120 !important; color: #f8fafc !important; border: 1px solid rgba(212, 175, 55, 0.3) !important; }
 
-    /* Light Mode Overrides Modern & High-Contrast */
+    /* Light Mode Overrides */
     html:not(.dark) body { background-color: #f1f5f9; color: #0f172a; }
     html:not(.dark) .glass-card {
       background: #ffffff;
@@ -95,7 +95,6 @@
     ::-webkit-scrollbar-track { background: transparent; }
     ::-webkit-scrollbar-thumb { background: #1e2d4a; border-radius: 10px; }
 
-    /* Print Stylesheet untuk Ekspor Laporan Keuangan PDF */
     @media print {
       body * { visibility: hidden; }
       #printableReport, #printableReport * { 
@@ -130,7 +129,7 @@
       <span id="toastMsg" class="text-adaptive-main">Notifikasi Enterprise</span>
     </div>
 
-    <!-- ================= MODAL EDIT TRANSAKSI ================= -->
+    <!-- MODAL EDIT TRANSAKSI -->
     <div id="editTxModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
       <div class="glass-card max-w-lg w-full p-6 sm:p-8 rounded-2xl border border-amber-500/30 shadow-2xl relative max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-6 border-b border-adaptive pb-3">
@@ -158,7 +157,6 @@
           <div>
             <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Entitas Akun / Bank</label>
             <select id="editTxAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-              <!-- Dynamic Options Generated via JS -->
             </select>
           </div>
 
@@ -185,7 +183,7 @@
       </div>
     </div>
 
-    <!-- ================= MODAL EDIT AKUN/KAS ================= -->
+    <!-- MODAL EDIT AKUN/KAS -->
     <div id="editAccModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
       <div class="glass-card max-w-md w-full p-6 sm:p-8 rounded-2xl border border-amber-500/30 shadow-2xl relative">
         <div class="flex justify-between items-center mb-6 border-b border-adaptive pb-3">
@@ -225,7 +223,7 @@
       </div>
     </div>
 
-    <!-- ================= MODAL PELUNASAN HUTANG / PIUTANG ================= -->
+    <!-- MODAL PELUNASAN HUTANG / PIUTANG -->
     <div id="payDebtModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
       <div class="glass-card max-w-md w-full p-6 rounded-2xl border border-amber-500/30 shadow-2xl relative">
         <div class="flex justify-between items-center mb-4 border-b border-adaptive pb-3">
@@ -253,7 +251,6 @@
 
             <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Rekening Kas / Bank</label>
             <select id="payDebtAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-              <!-- Dynamic -->
             </select>
           </div>
 
@@ -265,7 +262,7 @@
       </div>
     </div>
 
-    <!-- ================= SECTION LOGIN SCREEN ================= -->
+    <!-- LOGIN SCREEN -->
     <div id="loginOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/80 dark:bg-corporate-950/90 backdrop-blur-md">
       <div class="glass-card max-w-md w-full p-6 sm:p-8 rounded-2xl border border-amber-500/30 shadow-2xl relative overflow-hidden">
         <div class="text-center mb-8">
@@ -304,7 +301,7 @@
       </div>
     </div>
 
-    <!-- ================= MAIN APPLICATION CONTENT ================= -->
+    <!-- MAIN APPLICATION CONTENT -->
     <div id="mainApp" class="hidden">
       <!-- HEADER -->
       <header class="sticky top-0 z-40 border-b header-bg">
@@ -375,42 +372,70 @@
       <!-- MAIN CONTAINER -->
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
-        <!-- ================= PANEL FILTER BULAN, TAHUN & URUTAN TANGGAL ================= -->
-        <div class="glass-card p-3 sm:p-4 rounded-2xl mb-6 flex flex-wrap items-center justify-between gap-3 no-print border-l-4 border-l-amber-500">
+        <!-- PANEL FILTER BULAN, TAHUN & URUTAN TANGGAL BARU TERMASUK PERIODE 25 TO 25 -->
+        <div class="glass-card p-4 rounded-2xl mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 no-print border-l-4 border-l-amber-500">
           <div class="flex items-center gap-2 text-adaptive-main">
-            <i class="fa-solid fa-filter text-amber-500 text-xs sm:text-sm"></i>
-            <span class="text-[11px] sm:text-xs font-bold uppercase tracking-wider">Filter & Urutan Transaksi:</span>
+            <i class="fa-solid fa-filter text-amber-500 text-sm"></i>
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider block">Filter Periode Transaksi</span>
+              <span id="filterPeriodIndicator" class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold block">Menampilkan semua periode</span>
+            </div>
           </div>
-          <div class="flex flex-wrap items-center gap-2">
-            <!-- Filter Urutan Tanggal (Descending/Ascending) -->
-            <select id="filterSortOrder" onchange="renderDashboard()" class="py-1.5 px-2.5 rounded-xl glass-input text-[11px] sm:text-xs outline-none cursor-pointer font-semibold">
-              <option value="DESC">📅 Terbaru ➔ Terlama</option>
-              <option value="ASC">📅 Terlama ➔ Terbaru</option>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 md:flex md:flex-wrap items-center gap-2">
+            <!-- Mode Periode (Tipe Filter) -->
+            <select id="filterMode" onchange="toggleFilterMode()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-bold border-amber-500/40 text-amber-600 dark:text-amber-400">
+              <option value="CYCLE25">🔄 Siklus Gaji (25 - 25)</option>
+              <option value="CALENDAR">📅 Kalender Bulan (1 - 30/31)</option>
             </select>
 
-            <select id="filterMonth" onchange="renderDashboard()" class="py-1.5 px-2.5 rounded-xl glass-input text-[11px] sm:text-xs outline-none cursor-pointer font-semibold">
-              <option value="ALL">Semua Bulan</option>
-              <option value="01">Januari</option>
-              <option value="02">Februari</option>
-              <option value="03">Maret</option>
-              <option value="04">April</option>
-              <option value="05">Mei</option>
-              <option value="06">Juni</option>
-              <option value="07">Juli</option>
-              <option value="08">Agustus</option>
-              <option value="09">September</option>
-              <option value="10">Oktober</option>
-              <option value="11">November</option>
-              <option value="12">Desember</option>
+            <!-- Filter Urutan Tanggal -->
+            <select id="filterSortOrder" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold">
+              <option value="DESC">⬇️ Terbaru ➔ Terlama</option>
+              <option value="ASC">⬆️ Terlama ➔ Terbaru</option>
             </select>
 
-            <select id="filterYear" onchange="renderDashboard()" class="py-1.5 px-2.5 rounded-xl glass-input text-[11px] sm:text-xs outline-none cursor-pointer font-semibold">
-              <!-- Terisi Dinamis Lewat JS -->
+            <!-- Option Bulan Siklus (25 - 25) -->
+            <select id="filterCycleMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold">
+              <option value="ALL">Semua Siklus Bulan</option>
+              <option value="01">25 Des - 25 Jan</option>
+              <option value="02">25 Jan - 25 Feb</option>
+              <option value="03">25 Feb - 25 Mar</option>
+              <option value="04">25 Mar - 25 Apr</option>
+              <option value="05">25 Apr - 25 Mei</option>
+              <option value="06">25 Mei - 25 Jun</option>
+              <option value="07">25 Jun - 25 Jul</option>
+              <option value="08">25 Jul - 25 Agu</option>
+              <option value="09">25 Agu - 25 Sep</option>
+              <option value="10">25 Sep - 25 Okt</option>
+              <option value="11">25 Okt - 25 Nov</option>
+              <option value="12">25 Nov - 25 Des</option>
+            </select>
+
+            <!-- Option Bulan Standar Kalender -->
+            <select id="filterCalendarMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold hidden">
+              <option value="ALL">Semua Bulan Kalender</option>
+              <option value="01">Januari (1-31)</option>
+              <option value="02">Februari (1-28/29)</option>
+              <option value="03">Maret (1-31)</option>
+              <option value="04">April (1-30)</option>
+              <option value="05">Mei (1-31)</option>
+              <option value="06">Juni (1-30)</option>
+              <option value="07">Juli (1-31)</option>
+              <option value="08">Agustus (1-31)</option>
+              <option value="09">September (1-30)</option>
+              <option value="10">Oktober (1-31)</option>
+              <option value="11">November (1-30)</option>
+              <option value="12">Desember (1-31)</option>
+            </select>
+
+            <!-- Filter Tahun -->
+            <select id="filterYear" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold">
             </select>
           </div>
         </div>
 
-        <!-- ================= TAB 1: DASHBOARD ================= -->
+        <!-- TAB 1: DASHBOARD -->
         <section id="tab-dashboard" class="tab-content space-y-6">
           <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
             <div class="glass-card p-5 sm:p-6 rounded-2xl relative overflow-hidden">
@@ -472,14 +497,13 @@
                   </tr>
                 </thead>
                 <tbody id="txTableBody" class="divide-y divide-adaptive text-xs font-medium">
-                  <!-- Realtime Dynamic Data -->
                 </tbody>
               </table>
             </div>
           </div>
         </section>
 
-        <!-- ================= TAB 2: ANALISIS PERUSAHAAN ================= -->
+        <!-- TAB 2: ANALISIS PERUSAHAAN -->
         <section id="tab-analisis" class="tab-content hidden space-y-6">
           <div class="grid grid-cols-1 md:grid-cols-3 gap-5">
             <div class="glass-card p-6 rounded-2xl border-l-4 border-l-amber-500">
@@ -504,12 +528,11 @@
           <div class="glass-card p-6 rounded-2xl space-y-4">
             <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase border-b border-adaptive pb-3">Ringkasan Eksekutif & Mitigasi Risiko</h2>
             <div id="executiveSummary" class="space-y-3 text-xs text-adaptive-sub font-medium">
-              <!-- Dynamic analysis -->
             </div>
           </div>
         </section>
 
-        <!-- ================= TAB 3: PENCATATAN ================= -->
+        <!-- TAB 3: PENCATATAN -->
         <section id="tab-pencatatan" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div class="glass-card p-5 sm:p-6 rounded-2xl h-fit">
             <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase mb-1">Entri Jurnal Baru</h2>
@@ -532,7 +555,6 @@
               <div>
                 <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Entitas Akun</label>
                 <select id="txAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                  <!-- Dynamic Options -->
                 </select>
               </div>
 
@@ -562,12 +584,11 @@
               <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase">Riwayat & Fitur Kelola Transaksi</h2>
             </div>
             <div id="txHistoryList" class="space-y-3">
-              <!-- Dynamic list with edit and delete -->
             </div>
           </div>
         </section>
 
-        <!-- ================= TAB HUTANG & PIUTANG ================= -->
+        <!-- TAB HUTANG & PIUTANG -->
         <section id="tab-hutangpiutang" class="tab-content hidden space-y-6">
           <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-rose-500">
@@ -638,7 +659,6 @@
                     </tr>
                   </thead>
                   <tbody id="debtTableBody" class="divide-y divide-adaptive text-xs font-medium">
-                    <!-- Dynamic Data -->
                   </tbody>
                 </table>
               </div>
@@ -646,7 +666,7 @@
           </div>
         </section>
 
-        <!-- ================= TAB 4: TRANSFER ANTAR AKUN ================= -->
+        <!-- TAB 4: TRANSFER ANTAR AKUN -->
         <section id="tab-transfer" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div class="glass-card p-5 sm:p-6 rounded-2xl h-fit">
             <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase mb-1">Transfer Dana Antar Rekening</h2>
@@ -656,7 +676,6 @@
               <div>
                 <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Rekening Sumber (Pengirim)</label>
                 <select id="transferFromAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                  <!-- Dynamic -->
                 </select>
               </div>
 
@@ -669,7 +688,6 @@
               <div>
                 <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Rekening Tujuan (Penerima)</label>
                 <select id="transferToAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                  <!-- Dynamic -->
                 </select>
               </div>
 
@@ -699,12 +717,11 @@
               <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase">Riwayat Transfer Antar Rekening</h2>
             </div>
             <div id="transferHistoryList" class="space-y-3">
-              <!-- Dynamic list -->
             </div>
           </div>
         </section>
 
-        <!-- ================= TAB 5: AKUN & KAS ================= -->
+        <!-- TAB 5: AKUN & KAS -->
         <section id="tab-akun" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div class="glass-card p-5 sm:p-6 rounded-2xl h-fit">
             <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase mb-1">Tambah Akun/Bank Baru</h2>
@@ -739,12 +756,11 @@
           <div class="lg:col-span-2 glass-card p-5 sm:p-6 rounded-2xl">
             <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase mb-6 pb-4 border-b border-adaptive">Kelola Portofolio Rekening & Kas</h2>
             <div id="accountCardsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- Dynamic list with edit button -->
             </div>
           </div>
         </section>
 
-        <!-- ================= TAB 6: LAPORAN KEUANGAN PDF ================= -->
+        <!-- TAB 6: LAPORAN KEUANGAN PDF -->
         <section id="tab-laporan" class="tab-content hidden space-y-6">
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 no-print">
             <div>
@@ -757,7 +773,6 @@
           </div>
 
           <div class="p-6 sm:p-12 rounded-2xl border shadow-2xl report-bg" id="printableReport">
-            <!-- Comprehensive Printable Official Financial Report HTML -->
           </div>
         </section>
 
@@ -765,12 +780,11 @@
     </div>
   </div>
 
-  <!-- ================= FOOTER / WATERMARK & TOMBOL RESET DATA KECIL ================= -->
+  <!-- FOOTER -->
   <footer class="text-center py-6 border-t border-adaptive no-print flex flex-col items-center justify-center gap-3">
     <div class="text-adaptive-muted text-[11px] tracking-widest font-extrabold uppercase">
       APP BY AAAIIM ONEFINANCE
     </div>
-    <!-- Tombol Reset Data dibuat kecil, samar, dan diletakkan di bawah agar tidak mudah tertekan -->
     <button onclick="resetDataKeuangan()" id="btnResetData" class="text-[10px] text-slate-400 hover:text-rose-500 opacity-60 hover:opacity-100 transition-all flex items-center gap-1.5 underline font-medium">
       <i class="fa-solid fa-rotate-left text-[9px]"></i> Reset Data Keuangan
     </button>
@@ -778,9 +792,7 @@
 
   <!-- FIREBASE & APPLICATION LOGIC -->
   <script>
-    // -----------------------------------------------------------------
     // 1. KONFIGURASI FIREBASE
-    // -----------------------------------------------------------------
     const firebaseConfig = {
       apiKey: "AIzaSyB8L2mjD2fiUqP3iAGccCh98MyIgsgM_14",
       authDomain: "aaaiim-onefinance.firebaseapp.com",
@@ -817,9 +829,31 @@
       yearSelect.innerHTML = html;
     })();
 
-    // -----------------------------------------------------------------
-    // HELPER OTOMATIS DOWNLOAD BACKUP (.JSON) SEBELUM PENGHAPUSAN
-    // -----------------------------------------------------------------
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3500);
+    }
+
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => {
+        el.classList.remove('active', 'border-amber-500', 'text-amber-600', 'dark:text-amber-400', 'font-bold');
+        el.classList.add('border-transparent', 'text-adaptive-muted');
+      });
+
+      const targetTab = document.getElementById(`tab-${tabName}`);
+      const targetNav = document.getElementById(`nav-${tabName}`);
+      if (targetTab) targetTab.classList.remove('hidden');
+      if (targetNav) {
+        targetNav.classList.add('active', 'border-amber-500', 'text-amber-600', 'dark:text-amber-400', 'font-bold');
+        targetNav.classList.remove('border-transparent', 'text-adaptive-muted');
+      }
+    }
+
+    // HELPER DOWNLOAD BACKUP
     function downloadBackupJSON(customFileName) {
       const backupData = {
         exportDate: new Date().toISOString(),
@@ -843,9 +877,7 @@
       showToast('📥 File Backup JSON Otomatis Diunduh!');
     }
 
-    // -----------------------------------------------------------------
-    // 2. NIGHT MODE / DARK MODE TOGGLE
-    // -----------------------------------------------------------------
+    // DARK MODE TOGGLE
     function toggleDarkMode() {
       const html = document.documentElement;
       const themeIcon = document.getElementById('themeIcon');
@@ -871,9 +903,7 @@
       document.getElementById('themeText').innerText = 'Day Mode';
     }
 
-    // -----------------------------------------------------------------
-    // 3. AUTHENTICATION & PERMISSIONS
-    // -----------------------------------------------------------------
+    // AUTHENTICATION
     function handleLogin(e) {
       e.preventDefault();
       const u = document.getElementById('loginUser').value.trim().toLowerCase();
@@ -919,9 +949,7 @@
       });
     }
 
-    // -----------------------------------------------------------------
-    // 4. REALTIME FIREBASE LISTENERS
-    // -----------------------------------------------------------------
+    // REALTIME FIREBASE LISTENERS
     db.ref('transactions').on('value', (snapshot) => {
       const data = snapshot.val();
       transactions = [];
@@ -957,16 +985,14 @@
       renderDashboard();
     });
 
-    // -----------------------------------------------------------------
-    // FITUR RESET DATA KEUANGAN
-    // -----------------------------------------------------------------
+    // RESET DATA
     function resetDataKeuangan() {
       if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
       
-      const confirmFirst = confirm("⚠️ PERINGATAN KETAT:\nSistem akan OTOMATIS mengunduh file cadangan (.json) sebelum data terhapus.\nApakah Anda yakin ingin MENGHAPUS SEMUA DATA keuangan di cloud database?");
+      const confirmFirst = confirm("⚠️ PERINGATAN KETAT:\nSistem akan OTOMATIS mengunduh file cadangan (.json) sebelum data terhapus.\nApakah Anda yakin ingin MENGHAPUS SEMUA DATA?");
       if (!confirmFirst) return;
 
-      const confirmSecond = prompt("Ketik 'RESET' untuk mengonfirmasi penghapusan seluruh data:");
+      const confirmSecond = prompt("Ketik 'RESET' untuk mengonfirmasi:");
       if (confirmSecond !== 'RESET') {
         return showToast('❌ Pembatalan Reset Data!');
       }
@@ -979,24 +1005,97 @@
         default: { name: 'Kas Utama', type: 'Kas', balance: 0 }
       });
 
-      showToast('⚠️ Seluruh data keuangan telah direset! (Backup tersimpan di komputer)');
+      showToast('⚠️ Seluruh data keuangan telah direset!');
     }
 
     // -----------------------------------------------------------------
-    // HELPER FILTER & URUTAN TRANSAKSI
+    // LOGIKA FILTER TANGGAL SIKLUS (TANGGAL 25 - 25) & BULAN STANDAR
     // -----------------------------------------------------------------
+    function toggleFilterMode() {
+      const mode = document.getElementById('filterMode').value;
+      const cycleSelect = document.getElementById('filterCycleMonth');
+      const calendarSelect = document.getElementById('filterCalendarMonth');
+
+      if (mode === 'CYCLE25') {
+        cycleSelect.classList.remove('hidden');
+        calendarSelect.classList.add('hidden');
+      } else {
+        cycleSelect.classList.add('hidden');
+        calendarSelect.classList.remove('hidden');
+      }
+      renderDashboard();
+    }
+
     function getFilteredTransactions() {
-      const selectedMonth = document.getElementById('filterMonth').value;
-      const selectedYear = document.getElementById('filterYear').value;
+      const mode = document.getElementById('filterMode').value;
+      const selectedYearVal = document.getElementById('filterYear').value;
       const sortOrder = document.getElementById('filterSortOrder').value;
+      const indicator = document.getElementById('filterPeriodIndicator');
 
       let filtered = transactions.filter(t => {
-        if (!t.date) return true;
-        const [y, m] = t.date.split('-');
-        const matchMonth = (selectedMonth === 'ALL') || (m === selectedMonth);
-        const matchYear = (selectedYear === 'ALL') || (y === selectedYear);
-        return matchMonth && matchYear;
+        if (!t.date) return false;
+        
+        const txDate = new Date(t.date + 'T00:00:00');
+        const txYear = txDate.getFullYear();
+
+        // 1. Opsi Filter Kalender Biasa (Bulan 1-30/31)
+        if (mode === 'CALENDAR') {
+          const selectedMonth = document.getElementById('filterCalendarMonth').value;
+          const matchMonth = (selectedMonth === 'ALL') || ((txDate.getMonth() + 1).toString().padStart(2, '0') === selectedMonth);
+          const matchYear = (selectedYearVal === 'ALL') || (txYear.toString() === selectedYearVal);
+          return matchMonth && matchYear;
+        } 
+        
+        // 2. Opsi Siklus Per-Tanggal 25 Bulan Ini - Tanggal 25 Bulan Depan
+        else if (mode === 'CYCLE25') {
+          const selectedCycleMonth = document.getElementById('filterCycleMonth').value;
+
+          if (selectedCycleMonth === 'ALL') {
+            if (selectedYearVal !== 'ALL') {
+              return txYear.toString() === selectedYearVal;
+            }
+            return true;
+          }
+
+          const targetCycleMonth = parseInt(selectedCycleMonth, 10);
+          const targetYear = selectedYearVal !== 'ALL' ? parseInt(selectedYearVal, 10) : new Date().getFullYear();
+
+          // Siklus N: Dari (25 Bulan N-1) jam 00:00:00 s.d. (25 Bulan N) jam 23:59:59
+          let startMonth = targetCycleMonth - 2; // JS Date index 0-11
+          let startYear = targetYear;
+          if (startMonth < 0) {
+            startMonth = 11;
+            startYear = targetYear - 1;
+          }
+
+          let endMonth = targetCycleMonth - 1;
+          let endYear = targetYear;
+
+          const startDate = new Date(startYear, startMonth, 25, 0, 0, 0);
+          const endDate = new Date(endYear, endMonth, 25, 23, 59, 59);
+
+          return txDate >= startDate && txDate <= endDate;
+        }
+        return true;
       });
+
+      // Render Indikator Teks Periode Aktif
+      if (indicator) {
+        if (mode === 'CYCLE25') {
+          const mVal = document.getElementById('filterCycleMonth').value;
+          const yVal = document.getElementById('filterYear').value;
+          if (mVal !== 'ALL') {
+            const mText = document.getElementById('filterCycleMonth').options[document.getElementById('filterCycleMonth').selectedIndex].text;
+            indicator.innerText = `Siklus: ${mText} ${yVal !== 'ALL' ? yVal : ''}`;
+          } else {
+            indicator.innerText = `Siklus: Semua Bulan Siklus ${yVal !== 'ALL' ? yVal : ''}`;
+          }
+        } else {
+          const mVal = document.getElementById('filterCalendarMonth').value;
+          const yVal = document.getElementById('filterYear').value;
+          indicator.innerText = `Kalender: Bulan ${mVal} | Tahun ${yVal}`;
+        }
+      }
 
       return filtered.sort((a, b) => {
         const dateA = new Date(a.date || '1970-01-01');
@@ -1005,9 +1104,7 @@
       });
     }
 
-    // -----------------------------------------------------------------
-    // 5. CRUD TRANSAKSI
-    // -----------------------------------------------------------------
+    // CRUD TRANSAKSI
     function handleSaveTx(e) {
       e.preventDefault();
       if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
@@ -1128,9 +1225,7 @@
       showToast('🗑️ Jurnal Transaksi Dihapus!');
     }
 
-    // -----------------------------------------------------------------
-    // 6. CRUD & LOGIKA HUTANG PIUTANG
-    // -----------------------------------------------------------------
+    // CRUD HUTANG PIUTANG
     function handleSaveDebt(e) {
       e.preventDefault();
       if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
@@ -1252,9 +1347,7 @@
       showToast('🗑️ Catatan Berhasil Dihapus!');
     }
 
-    // -----------------------------------------------------------------
-    // 7. CRUD AKUN / REKENING
-    // -----------------------------------------------------------------
+    // CRUD AKUN / REKENING
     function handleSaveAccount(e) {
       e.preventDefault();
       if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
@@ -1317,9 +1410,7 @@
       showToast('✅ Detail Rekening Diperbarui Otomatis!');
     }
 
-    // -----------------------------------------------------------------
-    // 8. TRANSFER DANA
-    // -----------------------------------------------------------------
+    // TRANSFER DANA
     function handleSaveTransfer(e) {
       e.preventDefault();
       if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
@@ -1357,9 +1448,7 @@
       showToast('✅ Pemindahan Dana Berhasil!');
     }
 
-    // -----------------------------------------------------------------
-    // 9. RENDER UI & ANALISIS
-    // -----------------------------------------------------------------
+    // RENDER UI & ANALISIS
     function getTotals() {
       let income = 0, expense = 0, assets = 0;
       const filteredTx = getFilteredTransactions();
@@ -1533,20 +1622,13 @@
       `;
     }
 
-    // -----------------------------------------------------------------
-    // 10. LAPORAN KEUANGAN PDF (DARK/LIGHT MODE CONTRAST OPTIMIZED)
-    // -----------------------------------------------------------------
+    // LAPORAN KEUANGAN PDF
     function renderPrintableReport() {
       const totals = getTotals();
       const filteredTx = getFilteredTransactions();
 
-      const selectedMonth = document.getElementById('filterMonth').value;
-      const selectedYear = document.getElementById('filterYear').value;
-      let filterText = 'Semua Periode';
-      if (selectedMonth !== 'ALL' || selectedYear !== 'ALL') {
-        filterText = `Bulan ${selectedMonth !== 'ALL' ? selectedMonth : 'Semua'} / Tahun ${selectedYear !== 'ALL' ? selectedYear : 'Semua'}`;
-      }
-
+      const filterIndicator = document.getElementById('filterPeriodIndicator');
+      const filterText = filterIndicator ? filterIndicator.innerText : 'Semua Periode';
       const reportDate = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
 
       const expenseCategories = {};
@@ -1576,7 +1658,6 @@
       const opexRatio = totals.income > 0 ? ((totals.expense / totals.income) * 100).toFixed(1) : 0;
 
       document.getElementById('printableReport').innerHTML = `
-        <!-- HEADER LAPORAN -->
         <div class="border-b border-adaptive pb-6 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <h1 class="text-xl sm:text-2xl font-black uppercase text-amber-600 dark:text-amber-400 tracking-wider">PT AAAIIM ONEFINANCE GLOBAL</h1>
@@ -1776,7 +1857,7 @@
             </table>
           </div>
 
-          <!-- 5. CATATAN ATAS LAPORAN KEUANGAN (CALK) & ANALISIS -->
+          <!-- 5. CALK -->
           <div class="dark-print-box p-5 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive space-y-4">
             <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 text-sm flex items-center gap-2">
               <i class="fa-solid fa-clipboard-list"></i> 5. CATATAN ATAS LAPORAN KEUANGAN (CALK) & ANALISIS MANAJEMEN
@@ -1787,7 +1868,6 @@
               
               <p><strong>5.2 Rincian Likuiditas & Kas:</strong> Konsolidasi kas tersimpan pada ${accounts.length} akun terdaftar dengan total saldo likuid sebesar <strong>Rp ${totals.assets.toLocaleString()}</strong>.</p>
               
-              <!-- SARAN & ANALISIS KEUANGAN -->
               <div class="p-4 rounded-xl bg-slate-100 dark:bg-corporate-800/80 border border-amber-500/30 space-y-2 mt-3">
                 <h4 class="font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider text-xs flex items-center gap-2">
                   <i class="fa-solid fa-lightbulb"></i> Saran, Mitigasi Risiko & Analisis Auditor:
@@ -1844,42 +1924,21 @@
 
       const transfers = filteredTx.filter(t => t.type === 'Transfer');
       document.getElementById('transferHistoryList').innerHTML = transfers.length === 0 ?
-        '<p class="text-xs text-adaptive-muted text-center py-4 font-medium">Belum ada riwayat transfer antar akun pada periode terpilih.</p>' :
+        '<p class="text-xs text-adaptive-muted text-center py-4 font-medium">Belum ada riwayat transfer internal pada periode terpilih.</p>' :
         transfers.map(t => `
-          <div class="p-4 rounded-xl border border-adaptive glass-input flex justify-between items-center">
+          <div class="p-4 rounded-xl border border-adaptive glass-input flex justify-between items-center gap-2">
             <div>
-              <h4 class="font-bold text-xs text-cyan-600 dark:text-cyan-400 flex items-center gap-1.5">
-                <i class="fa-solid fa-right-left text-[10px]"></i> ${t.fromAccount} <i class="fa-solid fa-arrow-right text-[10px] text-slate-400"></i> ${t.toAccount}
-              </h4>
-              <p class="text-[10px] text-adaptive-muted mt-1 font-medium">${t.date} • ${t.notes}</p>
+              <h4 class="font-bold text-xs text-adaptive-main"><i class="fa-solid fa-right-left text-cyan-500 mr-1"></i> ${t.account}</h4>
+              <p class="text-[10px] text-adaptive-muted mt-0.5 font-medium">${t.date} • ${t.notes}</p>
             </div>
-            <span class="font-black text-xs font-mono text-cyan-600 dark:text-cyan-400">
-              Rp ${parseFloat(t.amount).toLocaleString()}
-            </span>
+            <div class="flex items-center gap-3">
+              <span class="font-black text-xs font-mono text-cyan-600 dark:text-cyan-400 whitespace-nowrap">
+                Rp ${parseFloat(t.amount).toLocaleString()}
+              </span>
+              <button onclick="deleteTx('${t.id}')" class="p-1.5 text-rose-600 dark:text-rose-400 hover:bg-rose-400/10 rounded-lg transition-all" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+            </div>
           </div>
         `).join('');
-    }
-
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('border-amber-500', 'text-amber-600', 'dark:text-amber-400', 'font-bold');
-        btn.classList.add('border-transparent', 'text-adaptive-muted', 'font-semibold');
-      });
-
-      document.getElementById('tab-' + tabId).classList.remove('hidden');
-      const activeBtn = document.getElementById('nav-' + tabId);
-      if(activeBtn) {
-        activeBtn.classList.remove('border-transparent', 'text-adaptive-muted', 'font-semibold');
-        activeBtn.classList.add('border-amber-500', 'text-amber-600', 'dark:text-amber-400', 'font-bold');
-      }
-    }
-
-    function showToast(msg) {
-      const toast = document.getElementById('toast');
-      document.getElementById('toastMsg').innerText = msg;
-      toast.classList.remove('hidden');
-      setTimeout(() => toast.classList.add('hidden'), 3500);
     }
   </script>
 </body>
