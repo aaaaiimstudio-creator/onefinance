@@ -397,13 +397,13 @@
               <option value="ASC">⬆️ Terlama ➔ Terbaru</option>
             </select>
 
-            <!-- Option Bulan Siklus (Dipopulasikan Dinamis: Contoh 24 Jan - 24 Feb) -->
+            <!-- Option Bulan Siklus (Dipopulasikan Dinamis) -->
             <select id="filterCycleMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2.5 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold shadow-sm">
             </select>
 
             <!-- Option Bulan Standar Kalender -->
             <select id="filterCalendarMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2.5 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold hidden shadow-sm">
-              <option value="ALL">Semua Bulan Kalender</option>
+              <option value="ALL" selected>Semua Bulan Kalender</option>
               <option value="01">Januari</option>
               <option value="02">Februari</option>
               <option value="03">Maret</option>
@@ -572,7 +572,6 @@
             <div class="flex justify-between items-center mb-6 pb-4 border-b border-adaptive">
               <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase">Riwayat Transaksi Jurnal</h2>
             </div>
-            <!-- BAGIAN DISIMPULKAN & DISEMPURNAKAN: MENAMPILKAN RIWAYAT TRANSAKSI JURNAL -->
             <div id="txHistoryList" class="space-y-3 overflow-x-auto">
               <table class="w-full text-left border-collapse min-w-[500px]">
                 <thead>
@@ -720,7 +719,6 @@
             <div class="flex justify-between items-center mb-6 pb-4 border-b border-adaptive">
               <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase">Riwayat Transfer Antar Rekening</h2>
             </div>
-            <!-- BAGIAN DISIMPULKAN & DISEMPURNAKAN: RIWAYAT MUTASI TRANSFER -->
             <div id="transferHistoryList" class="space-y-3 overflow-x-auto">
               <table class="w-full text-left border-collapse min-w-[500px]">
                 <thead>
@@ -782,7 +780,7 @@
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 no-print">
             <div>
               <h2 class="text-base font-bold text-adaptive-main uppercase tracking-wider">Laporan Keuangan Perusahaan Standar Akuntansi</h2>
-              <p class="text-xs text-adaptive-muted font-medium">Laporan Laba/Rugi, Neraca Kas, Arus Kas, Perubahan Ekuitas, dan CALK disajikan realtime.</p>
+              <p class="text-xs text-adaptive-muted font-medium">Laporan Laba/Rugi, Neraca Kas, Arus Kas, Perubahan Ekuitas, CALK, serta Analisis & Saran Strategis.</p>
             </div>
             <button onclick="window.print()" class="px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/20 hover:from-amber-400 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider w-full sm:w-auto">
               <i class="fa-solid fa-file-pdf"></i> Unduh / Cetak Laporan PDF
@@ -839,9 +837,9 @@
     (function populateYearFilter() {
       const yearSelect = document.getElementById('filterYear');
       const currentYear = new Date().getFullYear();
-      let html = `<option value="ALL">Semua Tahun</option>`;
+      let html = `<option value="ALL" selected>Semua Tahun</option>`;
       for (let y = currentYear - 3; y <= currentYear + 2; y++) {
-        html += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`;
+        html += `<option value="${y}">${y}</option>`;
       }
       yearSelect.innerHTML = html;
     })();
@@ -852,23 +850,19 @@
       const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
       const currentDate = new Date();
       
-      let html = `<option value="ALL">Semua Siklus Gaji</option>`;
+      let html = `<option value="ALL" selected>Semua Siklus Gaji</option>`;
       const pad = (num) => String(num).padStart(2, '0');
 
-      // Tampilkan 12 bulan siklus seputar tahun aktif
       for (let i = 0; i < 12; i++) {
         const start = new Date(currentDate.getFullYear(), i, 24);
         const end = new Date(currentDate.getFullYear(), i + 1, 24);
         
-        // Format Tampilan sederhana (misal: "24 Januari - 24 Februari")
         const labelText = `24 ${monthNames[start.getMonth()]} - 24 ${monthNames[end.getMonth()]}`;
         
-        // Format ISO YYYY-MM-DD
         const valStart = `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}`;
         const valEnd = `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(end.getDate())}`;
 
-        const isCurrent = (currentDate.getMonth() === i);
-        html += `<option value="${valStart}|${valEnd}" ${isCurrent ? 'selected' : ''}>${labelText}</option>`;
+        html += `<option value="${valStart}|${valEnd}">${labelText}</option>`;
       }
 
       cycleSelect.innerHTML = html;
@@ -948,7 +942,7 @@
       document.getElementById('themeText').innerText = 'Day Mode';
     }
 
-    // AUTHENTICATION
+    // AUTHENTICATION & AUTO SHOW ALL DATA ON LOGIN
     function handleLogin(e) {
       e.preventDefault();
       const u = document.getElementById('loginUser').value.trim().toLowerCase();
@@ -965,6 +959,11 @@
         return;
       }
 
+      // SET UNFILTERED DEFAULTS SAAT LOGIN
+      document.getElementById('filterCycleMonth').value = 'ALL';
+      document.getElementById('filterCalendarMonth').value = 'ALL';
+      document.getElementById('filterYear').value = 'ALL';
+
       document.getElementById('loginOverlay').classList.add('hidden');
       document.getElementById('mainApp').classList.remove('hidden');
       document.getElementById('userNameDisplay').innerText = currentUser.name;
@@ -974,7 +973,8 @@
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
       applyRolePermissions();
-      showToast(`Selamat datang, ${currentUser.name}`);
+      renderDashboard();
+      showToast(`Selamat datang, ${currentUser.name}. Memuat seluruh data transaksi tanpa filter.`);
     }
 
     function handleLogout() {
@@ -1053,7 +1053,7 @@
       showToast('⚠️ Seluruh data keuangan telah direset!');
     }
 
-    // LOGIKA FILTER TANGGAL SIKLUS (TANGGAL 24 - 24) & BULAN STANDAR
+    // LOGIKA FILTER TANGGAL SIKLUS & BULAN STANDAR
     function toggleFilterMode() {
       const mode = document.getElementById('filterMode').value;
       const cycleSelect = document.getElementById('filterCycleMonth');
@@ -1104,9 +1104,7 @@
           const startDate = new Date(startDateStr + 'T00:00:00');
           const endDate = new Date(endDateStr + 'T23:59:59');
 
-          // Sesuaikan filter tahun jika dipilih secara eksplisit
           if (selectedYearVal !== 'ALL' && startDate.getFullYear().toString() !== selectedYearVal) {
-             // Sesuaikan tanggal tahun berdasar filter dropdown tahun
              startDate.setFullYear(parseInt(selectedYearVal));
              endDate.setFullYear(parseInt(selectedYearVal));
              if(startDate.getMonth() === 11) endDate.setFullYear(parseInt(selectedYearVal) + 1);
@@ -1117,7 +1115,6 @@
         return true;
       });
 
-      // Render Text Indikator Periode Aktif
       if (indicator) {
         if (mode === 'CYCLE24') {
           const cycleSelect = document.getElementById('filterCycleMonth');
@@ -1126,12 +1123,16 @@
             const mText = cycleSelect.options[cycleSelect.selectedIndex].text;
             indicator.innerText = `Siklus: ${mText}`;
           } else {
-            indicator.innerText = `Siklus: Semua Periode Gaji`;
+            indicator.innerText = `Menampilkan Semua Periode Transaksi (Tanpa Filter)`;
           }
         } else {
           const mVal = document.getElementById('filterCalendarMonth').value;
           const yVal = document.getElementById('filterYear').value;
-          indicator.innerText = `Kalender: Bulan ${mVal} | Tahun ${yVal}`;
+          if(mVal === 'ALL' && yVal === 'ALL') {
+            indicator.innerText = `Menampilkan Semua Periode Transaksi (Tanpa Filter)`;
+          } else {
+            indicator.innerText = `Kalender: Bulan ${mVal} | Tahun ${yVal}`;
+          }
         }
       }
 
@@ -1523,7 +1524,6 @@
       if(elEditTx) elEditTx.innerHTML = optionsHTML;
     }
 
-    // FUNGSI BARU: RENDER RIWAYAT PADA TAB PENCATATAN
     function renderTxHistory() {
       const historyBody = document.getElementById('pencatatanTxHistoryBody');
       if (!historyBody) return;
@@ -1554,7 +1554,6 @@
       }).join('');
     }
 
-    // FUNGSI BARU: RENDER RIWAYAT TRANSFER
     function renderTransferHistory() {
       const transferBody = document.getElementById('transferHistoryBody');
       if (!transferBody) return;
@@ -1589,7 +1588,6 @@
       if(document.getElementById('kpiTotalHutang')) document.getElementById('kpiTotalHutang').innerText = 'Rp ' + totals.totalHutang.toLocaleString();
       if(document.getElementById('kpiTotalPiutang')) document.getElementById('kpiTotalPiutang').innerText = 'Rp ' + totals.totalPiutang.toLocaleString();
 
-      // Render Tabel Dashboard
       const tbody = document.getElementById('txTableBody');
       if (filteredTx.length === 0) {
         tbody.innerHTML = `<tr><td colspan="7" class="py-8 text-center text-adaptive-muted font-medium">Tidak ada transaksi untuk periode terpilih.</td></tr>`;
@@ -1620,7 +1618,6 @@
         }).join('');
       }
 
-      // Render Tabel Hutang & Piutang
       const debtTbody = document.getElementById('debtTableBody');
       if (debtTbody) {
         if (debts.length === 0) {
@@ -1657,7 +1654,6 @@
 
       updateAccountDropdowns();
 
-      // Render Account Cards
       const cards = document.getElementById('accountCardsList');
       cards.innerHTML = accounts.map(a => `
         <div class="p-5 sm:p-6 rounded-2xl glass-card relative overflow-hidden flex justify-between items-center">
@@ -1715,7 +1711,7 @@
       `;
     }
 
-    // LAPORAN KEUANGAN PDF (DENGAN TANDA TANGAN DISEMPURNAKAN)
+    // LAPORAN KEUANGAN PDF DENGAN CALK, ANALISIS DINAMIS & SARAN
     function renderPrintableReport() {
       const totals = getTotals();
       const filteredTx = getFilteredTransactions();
@@ -1741,11 +1737,25 @@
       const modalAtauEkuitas = totalAsetKeseluruhan - totalKewajiban;
       const totalPasiva = totalKewajiban + modalAtauEkuitas;
 
-      const arusKasOperasional = totals.income - totals.expense;
-      const arusKasBersih = arusKasOperasional; 
-      const saldoAwalKas = totals.assets - arusKasBersih;
+      const npm = totals.income > 0 ? ((totals.net / totals.income) * 100).toFixed(1) : 0;
+      const expenseRatio = totals.income > 0 ? ((totals.expense / totals.income) * 100).toFixed(1) : 0;
+      const currentRatio = totals.totalHutang > 0 ? (totalAsetKeseluruhan / totals.totalHutang).toFixed(2) : 'Aman (Bebas Utang)';
 
-      const ekuitasAwal = modalAtauEkuitas - totals.net;
+      // LOGIKA DINAMIS SARAN STRATEGIS
+      let saranAnalisisText = '';
+      if (totals.net > 0 && expenseRatio < 60) {
+        saranAnalisisText = `
+          * **Efisiensi Beban Optimal**: Beban operasional (${expenseRatio}%) berada pada tingkat aman. Perusahaan disarankan untuk mengalokasikan kelebihan arus kas ke instrumen investasi berisiko rendah atau ekspansi lini bisnis baru.
+          * **Manajemen Piutang**: Segera lakukan penagihan berkala pada tagihan piutang sebesar **Rp ${totals.totalPiutang.toLocaleString()}** guna memperkuat likuiditas kas tunai.`;
+      } else if (totals.net >= 0) {
+        saranAnalisisText = `
+          * **Pengendalian Operasional**: Beban operasional menyerap **${expenseRatio}%** dari total pendapatan. Direksi direkomendasikan melakukan efisiensi pos pengeluaran modal non-prioritas.
+          * **Penataan Kewajiban**: Pastikan utang jangka pendek senilai **Rp ${totals.totalHutang.toLocaleString()}** diselesaikan sebelum jatuh tempo untuk menjaga kredibilitas kas perusahaan.`;
+      } else {
+        saranAnalisisText = `
+          * **Restrukturisasi Kas & Biaya**: Perusahaan mengalami defisit operasional. Diperlukan audit efisiensi mendalam pada pos-pos pengeluaran terbesar dan penundaan pengeluaran opsional.
+          * **Penguatan Modal**: Pertimbangkan penambahan modal disetor atau percepatan penagihan piutang usaha guna menutupi kewajiban berjalan.`;
+      }
 
       document.getElementById('printableReport').innerHTML = `
         <div class="border-b border-adaptive pb-6 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -1877,122 +1887,64 @@
             </div>
           </div>
 
-          <!-- 3. LAPORAN ARUS KAS -->
-          <div class="dark-print-box p-4 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive">
-            <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 mb-3 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-money-bill-transfer"></i> 3. LAPORAN ARUS KAS (CASH FLOW STATEMENT)
+          <!-- 3. CATATAN ATAS LAPORAN KEUANGAN (CALK) -->
+          <div class="dark-print-box p-4 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive space-y-3">
+            <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 mb-1 text-sm flex items-center gap-2">
+              <i class="fa-solid fa-note-sticky"></i> 3. CATATAN ATAS LAPORAN KEUANGAN (CALK)
             </h3>
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="border-b border-adaptive text-adaptive-muted font-extrabold uppercase text-[11px] bg-slate-200/60 dark:bg-corporate-800/50">
-                  <th class="py-2 px-3">Arus Kas Aktivitas Operasional</th>
-                  <th class="py-2 px-3 text-right">Nominal (IDR)</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-adaptive">
-                <tr>
-                  <td class="py-2 px-3 text-adaptive-sub">Penerimaan Kas dari Pelanggan & Pendapatan Usaha</td>
-                  <td class="py-2 px-3 text-right font-mono font-bold text-emerald-600 dark:text-emerald-400">Rp ${totals.income.toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td class="py-2 px-3 text-adaptive-sub">Pembayaran Kas untuk Beban Operasional & Supplier</td>
-                  <td class="py-2 px-3 text-right font-mono font-bold text-rose-600 dark:text-rose-400">(Rp ${totals.expense.toLocaleString()})</td>
-                </tr>
-                <tr class="font-bold bg-slate-200/50 dark:bg-corporate-800/30">
-                  <td class="py-2 px-3 text-adaptive-main">Arus Kas Bersih dari Aktivitas Operasional</td>
-                  <td class="py-2 px-3 text-right font-mono ${arusKasOperasional >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">Rp ${arusKasOperasional.toLocaleString()}</td>
-                </tr>
-                <tr class="border-t border-adaptive">
-                  <td class="py-2 px-3 text-adaptive-muted italic">Kenaikan (Penurunan) Bersih Kas dan Setara Kas</td>
-                  <td class="py-2 px-3 text-right font-mono font-bold ${arusKasBersih >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">Rp ${arusKasBersih.toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td class="py-2 px-3 text-adaptive-muted font-medium">Kas dan Setara Kas pada Awal Periode</td>
-                  <td class="py-2 px-3 text-right font-mono text-adaptive-sub">Rp ${saldoAwalKas.toLocaleString()}</td>
-                </tr>
-                <tr class="font-extrabold bg-cyan-500/10 border-t-2 border-cyan-500/30">
-                  <td class="py-2.5 px-3 text-cyan-700 dark:text-cyan-400 uppercase">KAS DAN SETARA KAS PADA AKHIR PERIODE</td>
-                  <td class="py-2.5 px-3 text-right font-mono text-cyan-700 dark:text-cyan-400">Rp ${totals.assets.toLocaleString()}</td>
-                </tr>
-              </tbody>
-            </table>
+            <p class="text-xs text-adaptive-sub leading-relaxed">
+              * <strong>Dasar Penyusunan:</strong> Laporan disajikan sesuai Standar Akuntansi Keuangan (SAK) dengan asas akrual dan kas yang disesuaikan.
+            </p>
+            <p class="text-xs text-adaptive-sub leading-relaxed">
+              * <strong>Konsolidasi Aset Kas:</strong> Saldo kas yang tercatat senilai <strong>Rp ${totals.assets.toLocaleString()}</strong> tersebar pada ${accounts.length} rekening internal resmi perusahaan.
+            </p>
+            <p class="text-xs text-adaptive-sub leading-relaxed">
+              * <strong>Kewajiban dan Hak Tagih:</strong> Terdapat saldo utang terutang senilai <strong>Rp ${totals.totalHutang.toLocaleString()}</strong> dan piutang berjalan senilai <strong>Rp ${totals.totalPiutang.toLocaleString()}</strong>.
+            </p>
           </div>
 
-          <!-- 4. LAPORAN PERUBAHAN EKUITAS -->
-          <div class="dark-print-box p-4 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive">
-            <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 mb-3 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-chart-line"></i> 4. LAPORAN PERUBAHAN EKUITAS (STATEMENT OF CHANGES IN EQUITY)
-            </h3>
-            <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="border-b border-adaptive text-adaptive-muted font-extrabold uppercase text-[11px] bg-slate-200/60 dark:bg-corporate-800/50">
-                  <th class="py-2 px-3">Komponen Ekuitas</th>
-                  <th class="py-2 px-3 text-right">Nominal (IDR)</th>
-                </tr>
-              </thead>
-              <tbody class="divide-y divide-adaptive">
-                <tr>
-                  <td class="py-2 px-3 text-adaptive-sub">Saldo Ekuitas Awal Periode</td>
-                  <td class="py-2 px-3 text-right font-mono font-bold text-adaptive-main">Rp ${ekuitasAwal.toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td class="py-2 px-3 text-adaptive-sub">Laba (Rugi) Bersih Periode Berjalan</td>
-                  <td class="py-2 px-3 text-right font-mono font-bold ${totals.net >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">Rp ${totals.net.toLocaleString()}</td>
-                </tr>
-                <tr class="font-extrabold bg-amber-500/10 border-t-2 border-amber-500/30">
-                  <td class="py-2.5 px-3 text-amber-700 dark:text-amber-400 uppercase">SALDO EKUITAS AKHIR PERIODE</td>
-                  <td class="py-2.5 px-3 text-right font-mono text-amber-700 dark:text-amber-400">Rp ${modalAtauEkuitas.toLocaleString()}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- 5. CALK -->
-          <div class="dark-print-box p-5 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive space-y-4">
-            <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-clipboard-list"></i> 5. CATATAN ATAS LAPORAN KEUANGAN (CALK) & ANALISIS MANAJEMEN
+          <!-- 4. ANALISIS RASIO KEUANGAN & SARAN STRATEGIS DIREKSI -->
+          <div class="dark-print-box p-5 rounded-xl bg-amber-500/5 border border-amber-500/30 space-y-4">
+            <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-amber-500/30 pb-2 text-sm flex items-center gap-2">
+              <i class="fa-solid fa-chart-line"></i> 4. ANALISIS KEUANGAN & SARAN STRATEGIS EKSEKUTIF
             </h3>
             
-            <div class="space-y-3 text-xs text-adaptive-sub">
-              <p><strong>5.1 Kebijakan Akuntansi Utama:</strong> Laporan disajikan berbasis akrual modifikasi sesuai SAK EMKM/ETAP. Penyajikan kas bersih menggunakan metode langsung (direct method).</p>
-              
-              <p><strong>5.2 Rincian Likuiditas & Kas:</strong> Konsolidasi kas tersimpan pada ${accounts.length} akun terdaftar dengan total saldo likuid sebesar <strong>Rp ${totals.assets.toLocaleString()}</strong>.</p>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div class="p-3 bg-slate-100 dark:bg-corporate-800 rounded-xl border border-adaptive">
+                <span class="text-[10px] font-bold uppercase text-adaptive-muted">Net Profit Margin</span>
+                <p class="text-lg font-black text-amber-600 dark:text-amber-400 font-mono">${npm}%</p>
+              </div>
+              <div class="p-3 bg-slate-100 dark:bg-corporate-800 rounded-xl border border-adaptive">
+                <span class="text-[10px] font-bold uppercase text-adaptive-muted">Operating Expense Ratio</span>
+                <p class="text-lg font-black text-rose-600 dark:text-rose-400 font-mono">${expenseRatio}%</p>
+              </div>
+              <div class="p-3 bg-slate-100 dark:bg-corporate-800 rounded-xl border border-adaptive">
+                <span class="text-[10px] font-bold uppercase text-adaptive-muted">Rasio Likuiditas Kas</span>
+                <p class="text-lg font-black text-cyan-600 dark:text-cyan-400 font-mono">${currentRatio}</p>
+              </div>
+            </div>
+
+            <div class="pt-2">
+              <h4 class="font-extrabold text-xs uppercase text-adaptive-main mb-2">Rekomendasi & Langkah Strategis:</h4>
+              <div class="text-xs text-adaptive-sub space-y-1.5 leading-relaxed">
+                ${saranAnalisisText}
+              </div>
             </div>
           </div>
 
-          <!-- BAGIAN DISIMPULKAN & DISEMPURNAKAN: LEMBAR OTORISASI / TANDA TANGAN -->
-          <div class="dark-print-box p-6 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive pt-8 mt-8">
-            <h4 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 mb-8 text-xs text-center tracking-widest">
-              LEMBAR OTORISASI & VERIFIKASI LAPORAN KEUANGAN
-            </h4>
-            
-            <div class="grid grid-cols-3 gap-4 text-center">
-              <div class="flex flex-col justify-between h-36">
-                <span class="text-[11px] font-bold text-adaptive-muted uppercase">Dibuat Oleh:</span>
-                <div class="border-b border-slate-400 w-3/4 mx-auto"></div>
-                <div>
-                  <p class="font-bold text-xs text-adaptive-main">${currentUser ? currentUser.name : 'Staf Keuangan'}</p>
-                  <p class="text-[10px] text-adaptive-muted">Staf Akuntansi & Keuangan</p>
-                </div>
-              </div>
-
-              <div class="flex flex-col justify-between h-36">
-                <span class="text-[11px] font-bold text-adaptive-muted uppercase">Diverifikasi Oleh:</span>
-                <div class="border-b border-slate-400 w-3/4 mx-auto"></div>
-                <div>
-                  <p class="font-bold text-xs text-adaptive-main">Manager Keuangan</p>
-                  <p class="text-[10px] text-adaptive-muted">Head of Finance & Treasury</p>
-                </div>
-              </div>
-
-              <div class="flex flex-col justify-between h-36">
-                <span class="text-[11px] font-bold text-adaptive-muted uppercase">Disetujui Oleh:</span>
-                <div class="border-b border-slate-400 w-3/4 mx-auto"></div>
-                <div>
-                  <p class="font-bold text-xs text-adaptive-main">Direktur Utama</p>
-                  <p class="text-[10px] text-adaptive-muted">Chief Executive Officer (CEO)</p>
-                </div>
-              </div>
+          <!-- TANDA TANGAN PENGESAHAN LAPORAN -->
+          <div class="pt-8 grid grid-cols-2 text-center text-xs font-bold text-adaptive-main">
+            <div>
+              <p class="text-adaptive-muted uppercase text-[10px] font-bold">Disiapkan Oleh,</p>
+              <div class="h-16"></div>
+              <p class="underline uppercase tracking-wider">${currentUser ? currentUser.name : 'Staf Keuangan'}</p>
+              <p class="text-[10px] text-adaptive-muted font-normal">Departemen Keuangan & Akuntansi</p>
+            </div>
+            <div>
+              <p class="text-adaptive-muted uppercase text-[10px] font-bold">Disetujui Oleh,</p>
+              <div class="h-16"></div>
+              <p class="underline uppercase tracking-wider">Direktur Utama / CFO</p>
+              <p class="text-[10px] text-adaptive-muted font-normal">PT AAAIIM ONEFINANCE GLOBAL</p>
             </div>
           </div>
 
