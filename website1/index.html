@@ -354,6 +354,10 @@
           <button onclick="switchTab('pencatatan')" id="nav-pencatatan" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
             <i class="fa-solid fa-pen-to-square"></i> Jurnal Transaksi
           </button>
+          <!-- MENU BARU: REKENING KORAN / BUKU BESAR -->
+          <button onclick="switchTab('rekeningkoran')" id="nav-rekeningkoran" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
+            <i class="fa-solid fa-receipt"></i> Rekening Koran Per Akun
+          </button>
           <button onclick="switchTab('hutangpiutang')" id="nav-hutangpiutang" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
             <i class="fa-solid fa-hand-holding-dollar"></i> Hutang & Piutang
           </button>
@@ -585,6 +589,70 @@
                   </tr>
                 </thead>
                 <tbody id="pencatatanTxHistoryBody" class="divide-y divide-adaptive text-xs font-medium">
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- TAB BARU: REKENING KORAN / BUKU BESAR -->
+        <section id="tab-rekeningkoran" class="tab-content hidden space-y-6">
+          <div class="glass-card p-5 sm:p-6 rounded-2xl border-l-4 border-l-amber-500">
+            <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div>
+                <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase flex items-center gap-2">
+                  <i class="fa-solid fa-receipt text-amber-500"></i> Rekening Koran & Buku Besar per Akun
+                </h2>
+                <p class="text-xs text-adaptive-muted mt-1 font-medium">
+                  Croscek seluruh mutasi masuk, keluar, dan saldo berjalan (running balance) untuk menyesuaikan data sistem dengan rekening real.
+                </p>
+              </div>
+
+              <!-- Selector Pilih Rekening Specific -->
+              <div class="w-full md:w-72">
+                <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Pilih Rekening / Kas</label>
+                <select id="statementAccountSelect" onchange="renderAccountStatement()" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-bold text-amber-600 dark:text-amber-400">
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Cards Summary Rekening Koran -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="glass-card p-4 sm:p-5 rounded-2xl">
+              <span class="text-[10px] font-bold text-adaptive-muted uppercase tracking-widest block">Total Mutasi Masuk (Kredit)</span>
+              <h3 class="text-xl font-black text-emerald-600 dark:text-emerald-400 mt-2" id="stmtTotalIn">Rp 0</h3>
+            </div>
+            <div class="glass-card p-4 sm:p-5 rounded-2xl">
+              <span class="text-[10px] font-bold text-adaptive-muted uppercase tracking-widest block">Total Mutasi Keluar (Debit)</span>
+              <h3 class="text-xl font-black text-rose-600 dark:text-rose-400 mt-2" id="stmtTotalOut">Rp 0</h3>
+            </div>
+            <div class="glass-card p-4 sm:p-5 rounded-2xl border border-amber-500/30">
+              <span class="text-[10px] font-bold text-amber-600 dark:text-amber-400 uppercase tracking-widest block">Saldo Akhir Sistem</span>
+              <h3 class="text-xl font-black text-amber-600 dark:text-amber-400 mt-2" id="stmtEndingBalance">Rp 0</h3>
+            </div>
+          </div>
+
+          <!-- Tabel Mutasi Rekening Koran -->
+          <div class="glass-card p-5 sm:p-6 rounded-2xl">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-adaptive">
+              <h3 class="text-sm font-bold text-adaptive-main tracking-wide uppercase" id="stmtTitle">Rincian Mutasi Transaksi</h3>
+              <span class="text-[10px] bg-amber-500/10 text-amber-600 dark:text-amber-400 px-3 py-1 rounded-full font-bold uppercase border border-amber-500/20">Croscheck Mode</span>
+            </div>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse min-w-[700px]">
+                <thead>
+                  <tr class="border-b border-adaptive text-[10px] text-adaptive-muted uppercase tracking-wider font-bold">
+                    <th class="py-3 px-3">Tanggal</th>
+                    <th class="py-3 px-3">Kategori / Transaksi</th>
+                    <th class="py-3 px-3">Catatan / Memo</th>
+                    <th class="py-3 px-3 text-right text-emerald-600 dark:text-emerald-400">Uang Masuk (+)</th>
+                    <th class="py-3 px-3 text-right text-rose-600 dark:text-rose-400">Uang Keluar (-)</th>
+                    <th class="py-3 px-3 text-right text-amber-600 dark:text-amber-400">Saldo Berjalan</th>
+                  </tr>
+                </thead>
+                <tbody id="statementTableBody" class="divide-y divide-adaptive text-xs font-medium">
                 </tbody>
               </table>
             </div>
@@ -889,6 +957,10 @@
       if (targetNav) {
         targetNav.classList.add('active', 'border-amber-500', 'text-amber-600', 'dark:text-amber-400', 'font-bold');
         targetNav.classList.remove('border-transparent', 'text-adaptive-muted');
+      }
+
+      if (tabName === 'rekeningkoran') {
+        renderAccountStatement();
       }
     }
 
@@ -1487,6 +1559,84 @@
       showToast('✅ Pemindahan Dana Berhasil!');
     }
 
+    // RENDER REKENING KORAN / BUKU BESAR PER AKUN
+    function renderAccountStatement() {
+      const selectEl = document.getElementById('statementAccountSelect');
+      if (!selectEl) return;
+
+      const selectedAccName = selectEl.value;
+      const targetAcc = accounts.find(a => a.name === selectedAccName);
+
+      if (!targetAcc) {
+        document.getElementById('statementTableBody').innerHTML = `<tr><td colspan="6" class="py-6 text-center text-adaptive-muted">Pilih rekening untuk melihat mutasi.</td></tr>`;
+        return;
+      }
+
+      // Filter transaksi terkait rekening terpilih (Termasuk transaksi Pendapatan, Pengeluaran, dan Transfer)
+      let relatedTx = transactions.filter(t => {
+        if (t.type === 'Transfer') {
+          return t.fromAccount === selectedAccName || t.toAccount === selectedAccName;
+        }
+        return t.account === selectedAccName;
+      });
+
+      // Urutkan dari tanggal terlama ke terbaru untuk hitung running balance secara presisi
+      relatedTx.sort((a, b) => new Date(a.date || '1970-01-01') - new Date(b.date || '1970-01-01'));
+
+      let totalIn = 0;
+      let totalOut = 0;
+      let runningBalance = 0;
+
+      let statementRowsHTML = relatedTx.map(t => {
+        let moneyIn = 0;
+        let moneyOut = 0;
+
+        if (t.type === 'Pendapatan') {
+          moneyIn = parseFloat(t.amount || 0);
+        } else if (t.type === 'Pengeluaran') {
+          moneyOut = parseFloat(t.amount || 0);
+        } else if (t.type === 'Transfer') {
+          if (t.toAccount === selectedAccName) {
+            moneyIn = parseFloat(t.amount || 0);
+          } else if (t.fromAccount === selectedAccName) {
+            moneyOut = parseFloat(t.amount || 0);
+          }
+        }
+
+        totalIn += moneyIn;
+        totalOut += moneyOut;
+        runningBalance += (moneyIn - moneyOut);
+
+        return `
+          <tr class="hover:bg-slate-100 dark:hover:bg-corporate-800/40 transition-all">
+            <td class="py-3 px-3 font-mono text-[11px] text-adaptive-muted whitespace-nowrap">${t.date}</td>
+            <td class="py-3 px-3 font-semibold text-adaptive-main">${t.category || t.type}</td>
+            <td class="py-3 px-3 text-adaptive-sub">${t.notes || '-'}</td>
+            <td class="py-3 px-3 text-right font-black font-mono text-emerald-600 dark:text-emerald-400 whitespace-nowrap">
+              ${moneyIn > 0 ? 'Rp ' + moneyIn.toLocaleString() : '-'}
+            </td>
+            <td class="py-3 px-3 text-right font-black font-mono text-rose-600 dark:text-rose-400 whitespace-nowrap">
+              ${moneyOut > 0 ? 'Rp ' + moneyOut.toLocaleString() : '-'}
+            </td>
+            <td class="py-3 px-3 text-right font-black font-mono text-amber-600 dark:text-amber-400 whitespace-nowrap">
+              Rp ${runningBalance.toLocaleString()}
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      document.getElementById('stmtTotalIn').innerText = 'Rp ' + totalIn.toLocaleString();
+      document.getElementById('stmtTotalOut').innerText = 'Rp ' + totalOut.toLocaleString();
+      document.getElementById('stmtEndingBalance').innerText = 'Rp ' + parseFloat(targetAcc.balance || 0).toLocaleString();
+      document.getElementById('stmtTitle').innerText = `Rincian Mutasi: ${targetAcc.name} (${targetAcc.type})`;
+
+      if (relatedTx.length === 0) {
+        statementRowsHTML = `<tr><td colspan="6" class="py-8 text-center text-adaptive-muted font-medium">Belum ada mutasi transaksi pada rekening ini.</td></tr>`;
+      }
+
+      document.getElementById('statementTableBody').innerHTML = statementRowsHTML;
+    }
+
     // RENDER UI & ANALISIS
     function getTotals() {
       let income = 0, expense = 0, assets = 0;
@@ -1517,11 +1667,17 @@
       const elFrom = document.getElementById('transferFromAccount');
       const elTo = document.getElementById('transferToAccount');
       const elEditTx = document.getElementById('editTxAccount');
+      const elStmtSelect = document.getElementById('statementAccountSelect');
 
       if(elTx) elTx.innerHTML = optionsHTML;
       if(elFrom) elFrom.innerHTML = optionsHTML;
       if(elTo) elTo.innerHTML = optionsHTML;
       if(elEditTx) elEditTx.innerHTML = optionsHTML;
+      if(elStmtSelect && accounts.length > 0) {
+        const currentVal = elStmtSelect.value;
+        elStmtSelect.innerHTML = optionsHTML;
+        if(currentVal) elStmtSelect.value = currentVal;
+      }
     }
 
     function renderTxHistory() {
@@ -1672,6 +1828,7 @@
       renderTransferHistory();
       renderAnalytics();
       renderPrintableReport();
+      renderAccountStatement();
     }
 
     function renderAnalytics() {
@@ -1739,23 +1896,6 @@
 
       const npm = totals.income > 0 ? ((totals.net / totals.income) * 100).toFixed(1) : 0;
       const expenseRatio = totals.income > 0 ? ((totals.expense / totals.income) * 100).toFixed(1) : 0;
-      const currentRatio = totals.totalHutang > 0 ? (totalAsetKeseluruhan / totals.totalHutang).toFixed(2) : 'Aman (Bebas Utang)';
-
-      // LOGIKA DINAMIS SARAN STRATEGIS
-      let saranAnalisisText = '';
-      if (totals.net > 0 && expenseRatio < 60) {
-        saranAnalisisText = `
-          * **Efisiensi Beban Optimal**: Beban operasional (${expenseRatio}%) berada pada tingkat aman. Perusahaan disarankan untuk mengalokasikan kelebihan arus kas ke instrumen investasi berisiko rendah atau ekspansi lini bisnis baru.
-          * **Manajemen Piutang**: Segera lakukan penagihan berkala pada tagihan piutang sebesar **Rp ${totals.totalPiutang.toLocaleString()}** guna memperkuat likuiditas kas tunai.`;
-      } else if (totals.net >= 0) {
-        saranAnalisisText = `
-          * **Pengendalian Operasional**: Beban operasional menyerap **${expenseRatio}%** dari total pendapatan. Direksi direkomendasikan melakukan efisiensi pos pengeluaran modal non-prioritas.
-          * **Penataan Kewajiban**: Pastikan utang jangka pendek senilai **Rp ${totals.totalHutang.toLocaleString()}** diselesaikan sebelum jatuh tempo untuk menjaga kredibilitas kas perusahaan.`;
-      } else {
-        saranAnalisisText = `
-          * **Restrukturisasi Kas & Biaya**: Perusahaan mengalami defisit operasional. Diperlukan audit efisiensi mendalam pada pos-pos pengeluaran terbesar dan penundaan pengeluaran opsional.
-          * **Penguatan Modal**: Pertimbangkan penambahan modal disetor atau percepatan penagihan piutang usaha guna menutupi kewajiban berjalan.`;
-      }
 
       document.getElementById('printableReport').innerHTML = `
         <div class="border-b border-adaptive pb-6 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -1884,67 +2024,6 @@
                   </tbody>
                 </table>
               </div>
-            </div>
-          </div>
-
-          <!-- 3. CATATAN ATAS LAPORAN KEUANGAN (CALK) -->
-          <div class="dark-print-box p-4 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive space-y-3">
-            <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 mb-1 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-note-sticky"></i> 3. CATATAN ATAS LAPORAN KEUANGAN (CALK)
-            </h3>
-            <p class="text-xs text-adaptive-sub leading-relaxed">
-              * <strong>Dasar Penyusunan:</strong> Laporan disajikan sesuai Standar Akuntansi Keuangan (SAK) dengan asas akrual dan kas yang disesuaikan.
-            </p>
-            <p class="text-xs text-adaptive-sub leading-relaxed">
-              * <strong>Konsolidasi Aset Kas:</strong> Saldo kas yang tercatat senilai <strong>Rp ${totals.assets.toLocaleString()}</strong> tersebar pada ${accounts.length} rekening internal resmi perusahaan.
-            </p>
-            <p class="text-xs text-adaptive-sub leading-relaxed">
-              * <strong>Kewajiban dan Hak Tagih:</strong> Terdapat saldo utang terutang senilai <strong>Rp ${totals.totalHutang.toLocaleString()}</strong> dan piutang berjalan senilai <strong>Rp ${totals.totalPiutang.toLocaleString()}</strong>.
-            </p>
-          </div>
-
-          <!-- 4. ANALISIS RASIO KEUANGAN & SARAN STRATEGIS DIREKSI -->
-          <div class="dark-print-box p-5 rounded-xl bg-amber-500/5 border border-amber-500/30 space-y-4">
-            <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-amber-500/30 pb-2 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-chart-line"></i> 4. ANALISIS KEUANGAN & SARAN STRATEGIS EKSEKUTIF
-            </h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div class="p-3 bg-slate-100 dark:bg-corporate-800 rounded-xl border border-adaptive">
-                <span class="text-[10px] font-bold uppercase text-adaptive-muted">Net Profit Margin</span>
-                <p class="text-lg font-black text-amber-600 dark:text-amber-400 font-mono">${npm}%</p>
-              </div>
-              <div class="p-3 bg-slate-100 dark:bg-corporate-800 rounded-xl border border-adaptive">
-                <span class="text-[10px] font-bold uppercase text-adaptive-muted">Operating Expense Ratio</span>
-                <p class="text-lg font-black text-rose-600 dark:text-rose-400 font-mono">${expenseRatio}%</p>
-              </div>
-              <div class="p-3 bg-slate-100 dark:bg-corporate-800 rounded-xl border border-adaptive">
-                <span class="text-[10px] font-bold uppercase text-adaptive-muted">Rasio Likuiditas Kas</span>
-                <p class="text-lg font-black text-cyan-600 dark:text-cyan-400 font-mono">${currentRatio}</p>
-              </div>
-            </div>
-
-            <div class="pt-2">
-              <h4 class="font-extrabold text-xs uppercase text-adaptive-main mb-2">Rekomendasi & Langkah Strategis:</h4>
-              <div class="text-xs text-adaptive-sub space-y-1.5 leading-relaxed">
-                ${saranAnalisisText}
-              </div>
-            </div>
-          </div>
-
-          <!-- TANDA TANGAN PENGESAHAN LAPORAN -->
-          <div class="pt-8 grid grid-cols-2 text-center text-xs font-bold text-adaptive-main">
-            <div>
-              <p class="text-adaptive-muted uppercase text-[10px] font-bold">Disiapkan Oleh,</p>
-              <div class="h-16"></div>
-              <p class="underline uppercase tracking-wider">${currentUser ? currentUser.name : 'Staf Keuangan'}</p>
-              <p class="text-[10px] text-adaptive-muted font-normal">Departemen Keuangan & Akuntansi</p>
-            </div>
-            <div>
-              <p class="text-adaptive-muted uppercase text-[10px] font-bold">Disetujui Oleh,</p>
-              <div class="h-16"></div>
-              <p class="underline uppercase tracking-wider">Direktur Utama / CFO</p>
-              <p class="text-[10px] text-adaptive-muted font-normal">PT AAAIIM ONEFINANCE GLOBAL</p>
             </div>
           </div>
 
