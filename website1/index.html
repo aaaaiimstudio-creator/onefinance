@@ -372,7 +372,7 @@
       <!-- MAIN CONTAINER -->
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
-        <!-- PANEL FILTER BULAN, TAHUN & URUTAN TANGGAL BARU TERMASUK PERIODE 25 TO 25 -->
+        <!-- PANEL FILTER BULAN, TAHUN & URUTAN TANGGAL BARU TERMASUK PERIODE 24 TO 24 -->
         <div class="glass-card p-4 rounded-2xl mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 no-print border-l-4 border-l-amber-500">
           <div class="flex items-center gap-2 text-adaptive-main">
             <i class="fa-solid fa-filter text-amber-500 text-sm"></i>
@@ -385,7 +385,7 @@
           <div class="grid grid-cols-1 sm:grid-cols-2 md:flex md:flex-wrap items-center gap-2">
             <!-- Mode Periode (Tipe Filter) -->
             <select id="filterMode" onchange="toggleFilterMode()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-bold border-amber-500/40 text-amber-600 dark:text-amber-400">
-              <option value="CYCLE25">🔄 Siklus Gaji (25 - 25)</option>
+              <option value="CYCLE24">🔄 Siklus Gaji (24 - 24)</option>
               <option value="CALENDAR">📅 Kalender Bulan</option>
             </select>
 
@@ -395,7 +395,7 @@
               <option value="ASC">⬆️ Terlama ➔ Terbaru</option>
             </select>
 
-            <!-- Option Bulan Siklus (Dipopulasikan Dinamis via JavaScript dari 24 Bulan Lalu Hingga 24 Bulan Depan) -->
+            <!-- Option Bulan Siklus (Dipopulasikan Dinamis via JavaScript Per Tgl 24 Tanpa Tahun) -->
             <select id="filterCycleMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold">
             </select>
 
@@ -816,7 +816,7 @@
       yearSelect.innerHTML = html;
     })();
 
-    // Populasikan Opsi Siklus Gaji Per 24 Bulan Sebelumnya hingga 24 Bulan Selanjutnya
+    // Populasikan Opsi Siklus Gaji Per Tanggal 24 Bulan Ini Hingga Bulan Selanjutnya (Tanpa Tampilan Tahun)
     (function populateCycleMonthFilter() {
       const cycleSelect = document.getElementById('filterCycleMonth');
       const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
@@ -824,16 +824,19 @@
       
       let html = `<option value="ALL">Semua Siklus Bulan</option>`;
 
+      const pad = (num) => String(num).padStart(2, '0');
+
       for (let i = -24; i <= 24; i++) {
-        const start = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 25);
-        const end = new Date(currentDate.getFullYear(), currentDate.getMonth() + i + 1, 25);
+        const start = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 24);
+        const end = new Date(currentDate.getFullYear(), currentDate.getMonth() + i + 1, 24);
         
-        const startLabel = `${start.getDate()} ${monthNames[start.getMonth()]} ${start.getFullYear()}`;
-        const endLabel = `${end.getDate()} ${monthNames[end.getMonth()]} ${end.getFullYear()}`;
+        // Hanya Menampilkan Tanggal dan Bulan (Tanpa Tahun)
+        const startLabel = `${start.getDate()} ${monthNames[start.getMonth()]}`;
+        const endLabel = `${end.getDate()} ${monthNames[end.getMonth()]}`;
         
-        // Format ISO String untuk value range tanggal
-        const valStart = start.toISOString().split('T')[0];
-        const valEnd = end.toISOString().split('T')[0];
+        // Format ISO YYYY-MM-DD lokal untuk value range tanggal
+        const valStart = `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}`;
+        const valEnd = `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(end.getDate())}`;
 
         const isCurrent = (i === 0);
         html += `<option value="${valStart}|${valEnd}" ${isCurrent ? 'selected' : ''}>${startLabel} - ${endLabel}</option>`;
@@ -1022,14 +1025,14 @@
     }
 
     // -----------------------------------------------------------------
-    // LOGIKA FILTER TANGGAL SIKLUS (TANGGAL 25 - 25) & BULAN STANDAR
+    // LOGIKA FILTER TANGGAL SIKLUS (TANGGAL 24 - 24) & BULAN STANDAR
     // -----------------------------------------------------------------
     function toggleFilterMode() {
       const mode = document.getElementById('filterMode').value;
       const cycleSelect = document.getElementById('filterCycleMonth');
       const calendarSelect = document.getElementById('filterCalendarMonth');
 
-      if (mode === 'CYCLE25') {
+      if (mode === 'CYCLE24' || mode === 'CYCLE25') {
         cycleSelect.classList.remove('hidden');
         calendarSelect.classList.add('hidden');
       } else {
@@ -1059,8 +1062,8 @@
           return matchMonth && matchYear;
         } 
         
-        // 2. Opsi Siklus Per-Tanggal 25 Bulan Ini - Tanggal 25 Bulan Depan (Range 48 Bulan)
-        else if (mode === 'CYCLE25') {
+        // 2. Opsi Siklus Per-Tanggal 24 Bulan Ini - Tanggal 24 Bulan Depan
+        else if (mode === 'CYCLE24' || mode === 'CYCLE25') {
           const selectedCycleVal = document.getElementById('filterCycleMonth').value;
 
           if (selectedCycleVal === 'ALL') {
@@ -1081,7 +1084,7 @@
 
       // Render Indikator Teks Periode Aktif
       if (indicator) {
-        if (mode === 'CYCLE25') {
+        if (mode === 'CYCLE24' || mode === 'CYCLE25') {
           const cycleSelect = document.getElementById('filterCycleMonth');
           const mVal = cycleSelect.value;
           if (mVal !== 'ALL' && cycleSelect.selectedIndex !== -1) {
