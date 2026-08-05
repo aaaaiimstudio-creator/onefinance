@@ -131,9 +131,9 @@
 
     <!-- MODAL EDIT TRANSAKSI -->
     <div id="editTxModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div class="glass-card max-w-lg w-full p-6 sm:p-8 rounded-2xl border border-amber-500/30 shadow-2xl relative max-h-[90vh] overflow-y-auto">
+      <div class="glass-card max-w-lg w-full p-5 sm:p-8 rounded-2xl border border-amber-500/30 shadow-2xl relative max-h-[90vh] overflow-y-auto">
         <div class="flex justify-between items-center mb-6 border-b border-adaptive pb-3">
-          <h3 class="text-base font-bold text-adaptive-main uppercase tracking-wider flex items-center gap-2">
+          <h3 class="text-sm sm:text-base font-bold text-adaptive-main uppercase tracking-wider flex items-center gap-2">
             <i class="fa-solid fa-pen-to-square text-amber-500"></i> Edit Jurnal Transaksi
           </h3>
           <button onclick="closeEditTxModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -185,9 +185,9 @@
 
     <!-- MODAL EDIT AKUN/KAS -->
     <div id="editAccModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div class="glass-card max-w-md w-full p-6 sm:p-8 rounded-2xl border border-amber-500/30 shadow-2xl relative">
+      <div class="glass-card max-w-md w-full p-5 sm:p-8 rounded-2xl border border-amber-500/30 shadow-2xl relative">
         <div class="flex justify-between items-center mb-6 border-b border-adaptive pb-3">
-          <h3 class="text-base font-bold text-adaptive-main uppercase tracking-wider flex items-center gap-2">
+          <h3 class="text-sm sm:text-base font-bold text-adaptive-main uppercase tracking-wider flex items-center gap-2">
             <i class="fa-solid fa-pen-to-square text-amber-500"></i> Edit Akun / Rekening
           </h3>
           <button onclick="closeEditAccModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -225,9 +225,9 @@
 
     <!-- MODAL PELUNASAN HUTANG / PIUTANG -->
     <div id="payDebtModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div class="glass-card max-w-md w-full p-6 rounded-2xl border border-amber-500/30 shadow-2xl relative">
+      <div class="glass-card max-w-md w-full p-5 sm:p-6 rounded-2xl border border-amber-500/30 shadow-2xl relative">
         <div class="flex justify-between items-center mb-4 border-b border-adaptive pb-3">
-          <h3 class="text-sm font-bold text-adaptive-main uppercase tracking-wider flex items-center gap-2">
+          <h3 class="text-xs sm:text-sm font-bold text-adaptive-main uppercase tracking-wider flex items-center gap-2">
             <i class="fa-solid fa-wallet text-amber-500"></i> Form Pelunasan Hutang / Piutang
           </h3>
           <button onclick="closePayDebtModal()" class="text-slate-400 hover:text-slate-600 dark:hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
@@ -373,9 +373,11 @@
       <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
 
         <!-- PANEL FILTER BULAN, TAHUN & URUTAN TANGGAL BARU TERMASUK PERIODE 24 TO 24 -->
-        <div class="glass-card p-4 rounded-2xl mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 no-print border-l-4 border-l-amber-500">
-          <div class="flex items-center gap-2 text-adaptive-main">
-            <i class="fa-solid fa-filter text-amber-500 text-sm"></i>
+        <div class="glass-card p-4 rounded-2xl mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 no-print border-l-4 border-l-amber-500 shadow-lg">
+          <div class="flex items-center gap-3 text-adaptive-main">
+            <div class="p-2 bg-amber-500/10 text-amber-500 rounded-xl">
+              <i class="fa-solid fa-filter text-base"></i>
+            </div>
             <div>
               <span class="text-xs font-bold uppercase tracking-wider block">Filter Periode Transaksi</span>
               <span id="filterPeriodIndicator" class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold block">Menampilkan semua periode</span>
@@ -384,23 +386,23 @@
 
           <div class="grid grid-cols-1 sm:grid-cols-2 md:flex md:flex-wrap items-center gap-2">
             <!-- Mode Periode (Tipe Filter) -->
-            <select id="filterMode" onchange="toggleFilterMode()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-bold border-amber-500/40 text-amber-600 dark:text-amber-400">
+            <select id="filterMode" onchange="toggleFilterMode()" class="w-full sm:w-auto py-2.5 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-bold border-amber-500/40 text-amber-600 dark:text-amber-400 shadow-sm">
               <option value="CYCLE24">🔄 Siklus Gaji (24 - 24)</option>
               <option value="CALENDAR">📅 Kalender Bulan</option>
             </select>
 
             <!-- Filter Urutan Tanggal -->
-            <select id="filterSortOrder" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold">
+            <select id="filterSortOrder" onchange="renderDashboard()" class="w-full sm:w-auto py-2.5 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold shadow-sm">
               <option value="DESC">⬇️ Terbaru ➔ Terlama</option>
               <option value="ASC">⬆️ Terlama ➔ Terbaru</option>
             </select>
 
-            <!-- Option Bulan Siklus (Dipopulasikan Dinamis via JavaScript Per Tgl 24 Tanpa Tahun) -->
-            <select id="filterCycleMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold">
+            <!-- Option Bulan Siklus (Dipopulasikan Dinamis: Contoh 24 Jan - 24 Feb) -->
+            <select id="filterCycleMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2.5 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold shadow-sm">
             </select>
 
-            <!-- Option Bulan Standar Kalender (Diubah Nama Bulan Saja) -->
-            <select id="filterCalendarMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold hidden">
+            <!-- Option Bulan Standar Kalender -->
+            <select id="filterCalendarMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2.5 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold hidden shadow-sm">
               <option value="ALL">Semua Bulan Kalender</option>
               <option value="01">Januari</option>
               <option value="02">Februari</option>
@@ -417,7 +419,7 @@
             </select>
 
             <!-- Filter Tahun -->
-            <select id="filterYear" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold">
+            <select id="filterYear" onchange="renderDashboard()" class="w-full sm:w-auto py-2.5 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold shadow-sm">
             </select>
           </div>
         </div>
@@ -816,30 +818,29 @@
       yearSelect.innerHTML = html;
     })();
 
-    // Populasikan Opsi Siklus Gaji Per Tanggal 24 Bulan Ini Hingga Bulan Selanjutnya (Tanpa Tampilan Tahun)
+    // Populasikan Opsi Siklus Gaji Sederhana (24 Januari - 24 Februari, dst)
     (function populateCycleMonthFilter() {
       const cycleSelect = document.getElementById('filterCycleMonth');
-      const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+      const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
       const currentDate = new Date();
       
-      let html = `<option value="ALL">Semua Siklus Bulan</option>`;
-
+      let html = `<option value="ALL">Semua Siklus Gaji</option>`;
       const pad = (num) => String(num).padStart(2, '0');
 
-      for (let i = -24; i <= 24; i++) {
-        const start = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 24);
-        const end = new Date(currentDate.getFullYear(), currentDate.getMonth() + i + 1, 24);
+      // Tampilkan 12 bulan siklus seputar tahun aktif
+      for (let i = 0; i < 12; i++) {
+        const start = new Date(currentDate.getFullYear(), i, 24);
+        const end = new Date(currentDate.getFullYear(), i + 1, 24);
         
-        // Hanya Menampilkan Tanggal dan Bulan (Tanpa Tahun)
-        const startLabel = `${start.getDate()} ${monthNames[start.getMonth()]}`;
-        const endLabel = `${end.getDate()} ${monthNames[end.getMonth()]}`;
+        // Format Tampilan sederhana (misal: "24 Januari - 24 Februari")
+        const labelText = `24 ${monthNames[start.getMonth()]} - 24 ${monthNames[end.getMonth()]}`;
         
-        // Format ISO YYYY-MM-DD lokal untuk value range tanggal
+        // Format ISO YYYY-MM-DD
         const valStart = `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}`;
         const valEnd = `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(end.getDate())}`;
 
-        const isCurrent = (i === 0);
-        html += `<option value="${valStart}|${valEnd}" ${isCurrent ? 'selected' : ''}>${startLabel} - ${endLabel}</option>`;
+        const isCurrent = (currentDate.getMonth() === i);
+        html += `<option value="${valStart}|${valEnd}" ${isCurrent ? 'selected' : ''}>${labelText}</option>`;
       }
 
       cycleSelect.innerHTML = html;
@@ -1024,15 +1025,13 @@
       showToast('⚠️ Seluruh data keuangan telah direset!');
     }
 
-    // -----------------------------------------------------------------
     // LOGIKA FILTER TANGGAL SIKLUS (TANGGAL 24 - 24) & BULAN STANDAR
-    // -----------------------------------------------------------------
     function toggleFilterMode() {
       const mode = document.getElementById('filterMode').value;
       const cycleSelect = document.getElementById('filterCycleMonth');
       const calendarSelect = document.getElementById('filterCalendarMonth');
 
-      if (mode === 'CYCLE24' || mode === 'CYCLE25') {
+      if (mode === 'CYCLE24') {
         cycleSelect.classList.remove('hidden');
         calendarSelect.classList.add('hidden');
       } else {
@@ -1054,7 +1053,7 @@
         const txDate = new Date(t.date + 'T00:00:00');
         const txYear = txDate.getFullYear();
 
-        // 1. Opsi Filter Kalender Biasa (Bulan 1-30/31)
+        // Filter Mode Kalender
         if (mode === 'CALENDAR') {
           const selectedMonth = document.getElementById('filterCalendarMonth').value;
           const matchMonth = (selectedMonth === 'ALL') || ((txDate.getMonth() + 1).toString().padStart(2, '0') === selectedMonth);
@@ -1062,8 +1061,8 @@
           return matchMonth && matchYear;
         } 
         
-        // 2. Opsi Siklus Per-Tanggal 24 Bulan Ini - Tanggal 24 Bulan Depan
-        else if (mode === 'CYCLE24' || mode === 'CYCLE25') {
+        // Filter Mode Siklus Gaji (24-24)
+        else if (mode === 'CYCLE24') {
           const selectedCycleVal = document.getElementById('filterCycleMonth').value;
 
           if (selectedCycleVal === 'ALL') {
@@ -1077,21 +1076,29 @@
           const startDate = new Date(startDateStr + 'T00:00:00');
           const endDate = new Date(endDateStr + 'T23:59:59');
 
+          // Sesuaikan filter tahun jika dipilih secara eksplisit
+          if (selectedYearVal !== 'ALL' && startDate.getFullYear().toString() !== selectedYearVal) {
+             // Sesuaikan tanggal tahun berdasar filter dropdown tahun
+             startDate.setFullYear(parseInt(selectedYearVal));
+             endDate.setFullYear(parseInt(selectedYearVal));
+             if(startDate.getMonth() === 11) endDate.setFullYear(parseInt(selectedYearVal) + 1);
+          }
+
           return txDate >= startDate && txDate <= endDate;
         }
         return true;
       });
 
-      // Render Indikator Teks Periode Aktif
+      // Render Text Indikator Periode Aktif
       if (indicator) {
-        if (mode === 'CYCLE24' || mode === 'CYCLE25') {
+        if (mode === 'CYCLE24') {
           const cycleSelect = document.getElementById('filterCycleMonth');
           const mVal = cycleSelect.value;
           if (mVal !== 'ALL' && cycleSelect.selectedIndex !== -1) {
             const mText = cycleSelect.options[cycleSelect.selectedIndex].text;
             indicator.innerText = `Siklus: ${mText}`;
           } else {
-            indicator.innerText = `Siklus: Semua Bulan Siklus`;
+            indicator.innerText = `Siklus: Semua Periode Gaji`;
           }
         } else {
           const mVal = document.getElementById('filterCalendarMonth').value;
