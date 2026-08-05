@@ -360,7 +360,7 @@
           <button onclick="switchTab('transfer')" id="nav-transfer" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
             <i class="fa-solid fa-right-left"></i> Transfer Antar Akun
           </button>
-          <button onclick="switchTab('akun')" id="nav-akun" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
+          <button onclick="switchTab('akun')" id="nav-akun" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold font-semibold">
             <i class="fa-solid fa-vault"></i> Manajemen Kas & Rekening
           </button>
           <button onclick="switchTab('laporan')" id="nav-laporan" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
@@ -386,7 +386,7 @@
             <!-- Mode Periode (Tipe Filter) -->
             <select id="filterMode" onchange="toggleFilterMode()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-bold border-amber-500/40 text-amber-600 dark:text-amber-400">
               <option value="CYCLE25">🔄 Siklus Gaji (25 - 25)</option>
-              <option value="CALENDAR">📅 Kalender Bulan (1 - 30/31)</option>
+              <option value="CALENDAR">📅 Kalender Bulan</option>
             </select>
 
             <!-- Filter Urutan Tanggal -->
@@ -395,38 +395,25 @@
               <option value="ASC">⬆️ Terlama ➔ Terbaru</option>
             </select>
 
-            <!-- Option Bulan Siklus (25 - 25) -->
+            <!-- Option Bulan Siklus (Dipopulasikan Dinamis via JavaScript dari 24 Bulan Lalu Hingga 24 Bulan Depan) -->
             <select id="filterCycleMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold">
-              <option value="ALL">Semua Siklus Bulan</option>
-              <option value="01">25 Des - 25 Jan</option>
-              <option value="02">25 Jan - 25 Feb</option>
-              <option value="03">25 Feb - 25 Mar</option>
-              <option value="04">25 Mar - 25 Apr</option>
-              <option value="05">25 Apr - 25 Mei</option>
-              <option value="06">25 Mei - 25 Jun</option>
-              <option value="07">25 Jun - 25 Jul</option>
-              <option value="08">25 Jul - 25 Agu</option>
-              <option value="09">25 Agu - 25 Sep</option>
-              <option value="10">25 Sep - 25 Okt</option>
-              <option value="11">25 Okt - 25 Nov</option>
-              <option value="12">25 Nov - 25 Des</option>
             </select>
 
-            <!-- Option Bulan Standar Kalender -->
+            <!-- Option Bulan Standar Kalender (Diubah Nama Bulan Saja) -->
             <select id="filterCalendarMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold hidden">
               <option value="ALL">Semua Bulan Kalender</option>
-              <option value="01">Januari (1-31)</option>
-              <option value="02">Februari (1-28/29)</option>
-              <option value="03">Maret (1-31)</option>
-              <option value="04">April (1-30)</option>
-              <option value="05">Mei (1-31)</option>
-              <option value="06">Juni (1-30)</option>
-              <option value="07">Juli (1-31)</option>
-              <option value="08">Agustus (1-31)</option>
-              <option value="09">September (1-30)</option>
-              <option value="10">Oktober (1-31)</option>
-              <option value="11">November (1-30)</option>
-              <option value="12">Desember (1-31)</option>
+              <option value="01">Januari</option>
+              <option value="02">Februari</option>
+              <option value="03">Maret</option>
+              <option value="04">April</option>
+              <option value="05">Mei</option>
+              <option value="06">Juni</option>
+              <option value="07">Juli</option>
+              <option value="08">Agustus</option>
+              <option value="09">September</option>
+              <option value="10">Oktober</option>
+              <option value="11">November</option>
+              <option value="12">Desember</option>
             </select>
 
             <!-- Filter Tahun -->
@@ -829,6 +816,32 @@
       yearSelect.innerHTML = html;
     })();
 
+    // Populasikan Opsi Siklus Gaji Per 24 Bulan Sebelumnya hingga 24 Bulan Selanjutnya
+    (function populateCycleMonthFilter() {
+      const cycleSelect = document.getElementById('filterCycleMonth');
+      const monthNames = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+      const currentDate = new Date();
+      
+      let html = `<option value="ALL">Semua Siklus Bulan</option>`;
+
+      for (let i = -24; i <= 24; i++) {
+        const start = new Date(currentDate.getFullYear(), currentDate.getMonth() + i, 25);
+        const end = new Date(currentDate.getFullYear(), currentDate.getMonth() + i + 1, 25);
+        
+        const startLabel = `${start.getDate()} ${monthNames[start.getMonth()]} ${start.getFullYear()}`;
+        const endLabel = `${end.getDate()} ${monthNames[end.getMonth()]} ${end.getFullYear()}`;
+        
+        // Format ISO String untuk value range tanggal
+        const valStart = start.toISOString().split('T')[0];
+        const valEnd = end.toISOString().split('T')[0];
+
+        const isCurrent = (i === 0);
+        html += `<option value="${valStart}|${valEnd}" ${isCurrent ? 'selected' : ''}>${startLabel} - ${endLabel}</option>`;
+      }
+
+      cycleSelect.innerHTML = html;
+    })();
+
     function showToast(msg) {
       const toast = document.getElementById('toast');
       const toastMsg = document.getElementById('toastMsg');
@@ -1046,33 +1059,20 @@
           return matchMonth && matchYear;
         } 
         
-        // 2. Opsi Siklus Per-Tanggal 25 Bulan Ini - Tanggal 25 Bulan Depan
+        // 2. Opsi Siklus Per-Tanggal 25 Bulan Ini - Tanggal 25 Bulan Depan (Range 48 Bulan)
         else if (mode === 'CYCLE25') {
-          const selectedCycleMonth = document.getElementById('filterCycleMonth').value;
+          const selectedCycleVal = document.getElementById('filterCycleMonth').value;
 
-          if (selectedCycleMonth === 'ALL') {
+          if (selectedCycleVal === 'ALL') {
             if (selectedYearVal !== 'ALL') {
               return txYear.toString() === selectedYearVal;
             }
             return true;
           }
 
-          const targetCycleMonth = parseInt(selectedCycleMonth, 10);
-          const targetYear = selectedYearVal !== 'ALL' ? parseInt(selectedYearVal, 10) : new Date().getFullYear();
-
-          // Siklus N: Dari (25 Bulan N-1) jam 00:00:00 s.d. (25 Bulan N) jam 23:59:59
-          let startMonth = targetCycleMonth - 2; // JS Date index 0-11
-          let startYear = targetYear;
-          if (startMonth < 0) {
-            startMonth = 11;
-            startYear = targetYear - 1;
-          }
-
-          let endMonth = targetCycleMonth - 1;
-          let endYear = targetYear;
-
-          const startDate = new Date(startYear, startMonth, 25, 0, 0, 0);
-          const endDate = new Date(endYear, endMonth, 25, 23, 59, 59);
+          const [startDateStr, endDateStr] = selectedCycleVal.split('|');
+          const startDate = new Date(startDateStr + 'T00:00:00');
+          const endDate = new Date(endDateStr + 'T23:59:59');
 
           return txDate >= startDate && txDate <= endDate;
         }
@@ -1082,13 +1082,13 @@
       // Render Indikator Teks Periode Aktif
       if (indicator) {
         if (mode === 'CYCLE25') {
-          const mVal = document.getElementById('filterCycleMonth').value;
-          const yVal = document.getElementById('filterYear').value;
-          if (mVal !== 'ALL') {
-            const mText = document.getElementById('filterCycleMonth').options[document.getElementById('filterCycleMonth').selectedIndex].text;
-            indicator.innerText = `Siklus: ${mText} ${yVal !== 'ALL' ? yVal : ''}`;
+          const cycleSelect = document.getElementById('filterCycleMonth');
+          const mVal = cycleSelect.value;
+          if (mVal !== 'ALL' && cycleSelect.selectedIndex !== -1) {
+            const mText = cycleSelect.options[cycleSelect.selectedIndex].text;
+            indicator.innerText = `Siklus: ${mText}`;
           } else {
-            indicator.innerText = `Siklus: Semua Bulan Siklus ${yVal !== 'ALL' ? yVal : ''}`;
+            indicator.innerText = `Siklus: Semua Bulan Siklus`;
           }
         } else {
           const mVal = document.getElementById('filterCalendarMonth').value;
@@ -1580,7 +1580,6 @@
         </div>
       `).join('');
 
-      renderHistoryLists();
       renderAnalytics();
       renderPrintableReport();
     }
@@ -1653,9 +1652,6 @@
       const saldoAwalKas = totals.assets - arusKasBersih;
 
       const ekuitasAwal = modalAtauEkuitas - totals.net;
-
-      const npm = totals.income > 0 ? ((totals.net / totals.income) * 100).toFixed(1) : 0;
-      const opexRatio = totals.income > 0 ? ((totals.expense / totals.income) * 100).toFixed(1) : 0;
 
       document.getElementById('printableReport').innerHTML = `
         <div class="border-b border-adaptive pb-6 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -1867,78 +1863,10 @@
               <p><strong>5.1 Kebijakan Akuntansi Utama:</strong> Laporan disajikan berbasis akrual modifikasi sesuai SAK EMKM/ETAP. Penyajikan kas bersih menggunakan metode langsung (direct method).</p>
               
               <p><strong>5.2 Rincian Likuiditas & Kas:</strong> Konsolidasi kas tersimpan pada ${accounts.length} akun terdaftar dengan total saldo likuid sebesar <strong>Rp ${totals.assets.toLocaleString()}</strong>.</p>
-              
-              <div class="p-4 rounded-xl bg-slate-100 dark:bg-corporate-800/80 border border-amber-500/30 space-y-2 mt-3">
-                <h4 class="font-bold text-amber-700 dark:text-amber-400 uppercase tracking-wider text-xs flex items-center gap-2">
-                  <i class="fa-solid fa-lightbulb"></i> Saran, Mitigasi Risiko & Analisis Auditor:
-                </h4>
-                <ul class="list-disc list-inside space-y-1.5 text-adaptive-sub">
-                  <li><strong>Evaluasi Margin Profit (NPM ${npm}%):</strong> ${totals.net >= 0 ? 'Margin profit berada pada kategori positif. Disarankan untuk mempertahankan efisiensi beban operasional.' : 'Perusahaan mengalami defisit operasional. Segera Lakukan audit pengeluaran pada pos beban terbesar.'}</li>
-                  <li><strong>Rasio Beban Operasional (${opexRatio}%):</strong> ${opexRatio > 70 ? 'Pengeluaran memakan lebih dari 70% pendapatan. Direkomendasikan melakukan renegosiasi dengan vendor atau restrukturisasi biaya rutin.' : 'Rasio beban operasional tergolong sehat dan terkendali.'}</li>
-                  <li><strong>Manajemen Modal Kerja & Piutang:</strong> Terdapat outstanding piutang sebesar <strong>Rp ${totals.totalPiutang.toLocaleString()}</strong> dan kewajiban hutang sebesar <strong>Rp ${totals.totalHutang.toLocaleString()}</strong>. Tim Finance disarankan mempercepat penagihan piutang jatuh tempo untuk memperkuat likuiditas kas.</li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <!-- TANDA TANGAN -->
-          <div class="pt-8 grid grid-cols-2 text-center text-xs text-adaptive-sub font-semibold border-t border-adaptive">
-            <div>
-              <p>Disusun Oleh,</p>
-              <div class="h-16"></div>
-              <p class="font-extrabold text-adaptive-main underline text-sm">${currentUser ? currentUser.name : 'Staf Keuangan'}</p>
-              <p class="text-adaptive-muted">Departemen Keuangan</p>
-            </div>
-            <div>
-              <p>Disetujui Oleh,</p>
-              <div class="h-16"></div>
-              <p class="font-extrabold text-adaptive-main underline text-sm">Direktur Utama / CFO</p>
-              <p class="text-adaptive-muted">PT AAAIIM OneFinance</p>
             </div>
           </div>
         </div>
       `;
-    }
-
-    function renderHistoryLists() {
-      const filteredTx = getFilteredTransactions();
-
-      const nonTransfers = filteredTx.filter(t => t.type !== 'Transfer');
-      document.getElementById('txHistoryList').innerHTML = nonTransfers.length === 0 ? 
-        '<p class="text-xs text-adaptive-muted text-center py-4 font-medium">Belum ada transaksi operasional pada periode terpilih.</p>' :
-        nonTransfers.map(t => `
-          <div class="p-4 rounded-xl border border-adaptive glass-input flex justify-between items-center gap-2">
-            <div>
-              <h4 class="font-bold text-xs text-adaptive-main">${t.notes !== '-' ? t.notes : t.category}</h4>
-              <p class="text-[10px] text-adaptive-muted mt-0.5 font-medium">${t.date} • ${t.account} • <span class="font-semibold text-amber-600 dark:text-amber-400">${t.category}</span></p>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="font-black text-xs font-mono ${t.type === 'Pendapatan' ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'} whitespace-nowrap">
-                Rp ${parseFloat(t.amount).toLocaleString()}
-              </span>
-              <button onclick="openEditTxModal('${t.id}')" class="p-1.5 text-amber-600 dark:text-amber-400 hover:bg-amber-400/10 rounded-lg transition-all" title="Edit"><i class="fa-solid fa-pen"></i></button>
-              <button onclick="deleteTx('${t.id}')" class="p-1.5 text-rose-600 dark:text-rose-400 hover:bg-rose-400/10 rounded-lg transition-all" title="Hapus"><i class="fa-solid fa-trash"></i></button>
-            </div>
-          </div>
-        `).join('');
-
-      const transfers = filteredTx.filter(t => t.type === 'Transfer');
-      document.getElementById('transferHistoryList').innerHTML = transfers.length === 0 ?
-        '<p class="text-xs text-adaptive-muted text-center py-4 font-medium">Belum ada riwayat transfer internal pada periode terpilih.</p>' :
-        transfers.map(t => `
-          <div class="p-4 rounded-xl border border-adaptive glass-input flex justify-between items-center gap-2">
-            <div>
-              <h4 class="font-bold text-xs text-adaptive-main"><i class="fa-solid fa-right-left text-cyan-500 mr-1"></i> ${t.account}</h4>
-              <p class="text-[10px] text-adaptive-muted mt-0.5 font-medium">${t.date} • ${t.notes}</p>
-            </div>
-            <div class="flex items-center gap-3">
-              <span class="font-black text-xs font-mono text-cyan-600 dark:text-cyan-400 whitespace-nowrap">
-                Rp ${parseFloat(t.amount).toLocaleString()}
-              </span>
-              <button onclick="deleteTx('${t.id}')" class="p-1.5 text-rose-600 dark:text-rose-400 hover:bg-rose-400/10 rounded-lg transition-all" title="Hapus"><i class="fa-solid fa-trash"></i></button>
-            </div>
-          </div>
-        `).join('');
     }
   </script>
 </body>
