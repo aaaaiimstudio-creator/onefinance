@@ -13,14 +13,10 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // ==========================================
-        // BAGIAN INI YANG PERLU ANDA SESUAIKAN
-        // (Salin konfigurasi dari Project Settings Firebase Anda)
-        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyAIYx1cDdOCYgQ292iyK3nIZ04Yxgvew18",
             authDomain: "aaaaiim-onefinance--patungan.firebaseapp.com",
-            databaseURL: "https://aaaaiim-onefinance--patungan-default-rtdb.asia-southeast1.firebasedatabase.app", // <--- Tambahkan baris ini secara manual agar terhubung ke Realtime Database wilayah asia-southeast1
+            databaseURL: "https://aaaaiim-onefinance--patungan-default-rtdb.asia-southeast1.firebasedatabase.app",
             projectId: "aaaaiim-onefinance--patungan",
             storageBucket: "aaaaiim-onefinance--patungan.firebasestorage.app",
             messagingSenderId: "86182070035",
@@ -28,11 +24,9 @@
             measurementId: "G-GJ9D2JM5VD"
         };
 
-        // Inisialisasi Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Ekspor fungsi database ke global scope
         window.FB_DB = db;
         window.FB_Ref = ref;
         window.FB_Set = set;
@@ -40,7 +34,6 @@
         window.FB_Remove = remove;
         window.isFirebaseReady = true;
         
-        // Panggil fungsi sinkronisasi setelah Firebase siap
         if (typeof window.initFirebaseSync === 'function') {
             window.initFirebaseSync();
         }
@@ -57,37 +50,37 @@
     <style>
         :root {
             --primary: #1e3a8a;
-            --primary-hover: #1e40af;
+            --primary-hover: #1d4ed8;
             --primary-light: #eff6ff;
             --accent: #3b82f6;
-            --bg: #f8fafc;
+            --bg: #f1f5f9;
             --card-bg: #ffffff;
-            --text: #1e293b;
+            --text: #0f172a;
             --text-secondary: #64748b;
             --border: #e2e8f0;
-            --input-bg: #ffffff;
+            --input-bg: #f8fafc;
             --danger: #ef4444;
             --success: #10b981;
             --success-bg: #f0fdf4;
-            --shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.08), 0 8px 10px -6px rgba(30, 58, 138, 0.05);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow: 0 20px 25px -5px rgba(30, 58, 138, 0.05), 0 8px 10px -6px rgba(30, 58, 138, 0.03);
+            --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         [data-theme="dark"] {
             --primary: #3b82f6;
             --primary-hover: #60a5fa;
-            --primary-light: rgba(59, 130, 246, 0.15);
+            --primary-light: rgba(59, 130, 246, 0.12);
             --accent: #60a5fa;
-            --bg: #0f172a;
-            --card-bg: #1e293b;
-            --text: #f1f5f9;
-            --text-secondary: #94a3b8;
-            --border: #334155;
-            --input-bg: #0f172a;
+            --bg: #0b0f19;
+            --card-bg: #111827;
+            --text: #f8fafc;
+            --text-secondary: #9ca3af;
+            --border: #1f2937;
+            --input-bg: #0b0f19;
             --danger: #f87171;
             --success: #34d399;
-            --success-bg: rgba(16, 185, 129, 0.1);
-            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+            --success-bg: rgba(16, 185, 129, 0.08);
+            --shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
         }
 
         * {
@@ -103,35 +96,36 @@
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: space-between;
             align-items: center;
-            padding: 20px;
+            justify-content: space-between;
+            padding: 24px 16px;
             transition: var(--transition);
         }
 
         .app-container {
             width: 100%;
-            max-width: 900px;
+            max-width: 1000px;
             background: var(--card-bg);
-            border-radius: 24px;
+            border-radius: 28px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
             overflow: hidden;
-            position: relative;
+            backdrop-filter: blur(10px);
         }
 
         .app-header {
-            background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
+            background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%);
             color: white;
-            padding: 30px 40px;
+            padding: 28px 36px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: relative;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
         [data-theme="dark"] .app-header {
-            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            background: linear-gradient(135deg, #111827 0%, #0b0f19 100%);
             border-bottom: 1px solid var(--border);
         }
 
@@ -142,14 +136,14 @@
         }
 
         .header-title h1 {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
             letter-spacing: -0.5px;
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .header-title p {
-            font-size: 14px;
+            font-size: 13px;
             color: #93c5fd;
             opacity: 0.9;
         }
@@ -161,63 +155,63 @@
         }
 
         .theme-toggle, .sync-badge {
-            background: rgba(255, 255, 255, 0.15);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             color: white;
-            height: 44px;
-            border-radius: 12px;
+            height: 40px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
             transition: var(--transition);
-            font-size: 14px;
-            padding: 0 15px;
+            font-size: 13px;
+            padding: 0 14px;
+            font-weight: 500;
         }
 
         .theme-toggle {
-            width: 44px;
+            width: 40px;
             padding: 0;
-            font-size: 18px;
+            font-size: 16px;
         }
 
         .theme-toggle:hover, .sync-badge:hover {
-            background: rgba(255, 255, 255, 0.25);
-            transform: scale(1.05);
+            background: rgba(255, 255, 255, 0.2);
         }
 
         .app-body {
-            padding: 35px 40px;
+            padding: 32px 36px;
         }
 
         .grid-layout {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
+            grid-template-columns: 1fr 1.1fr;
+            gap: 28px;
         }
 
-        @media (max-width: 768px) {
-            body { padding: 10px; }
-            .app-header { padding: 20px; flex-direction: column; align-items: flex-start; gap: 15px; }
-            .header-actions { position: absolute; top: 20px; right: 20px; }
-            .app-body { padding: 20px; }
+        @media (max-width: 900px) {
+            body { padding: 12px 8px; }
+            .app-header { padding: 20px; flex-direction: column; align-items: flex-start; gap: 16px; }
+            .header-actions { width: 100%; justify-content: space-between; }
+            .app-body { padding: 20px 16px; }
             .grid-layout { grid-template-columns: 1fr; gap: 20px; }
         }
 
         .card-section {
             background: var(--bg);
             border: 1px solid var(--border);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 25px;
+            border-radius: 20px;
+            padding: 22px;
+            margin-bottom: 20px;
             transition: var(--transition);
         }
 
         .section-title {
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: var(--text);
-            margin-bottom: 18px;
+            margin-bottom: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -234,15 +228,17 @@
         }
 
         .form-group {
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .form-label {
             display: block;
-            font-size: 13px;
+            font-size: 12px;
             font-weight: 600;
             color: var(--text-secondary);
             margin-bottom: 6px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .input-wrapper {
@@ -255,7 +251,7 @@
             position: absolute;
             left: 14px;
             color: var(--text-secondary);
-            font-size: 14px;
+            font-size: 13px;
         }
 
         .form-control {
@@ -263,8 +259,8 @@
             background: var(--input-bg);
             border: 1px solid var(--border);
             color: var(--text);
-            padding: 12px 14px 12px 42px;
-            border-radius: 10px;
+            padding: 11px 14px 11px 40px;
+            border-radius: 12px;
             font-size: 14px;
             font-weight: 500;
             outline: none;
@@ -274,6 +270,7 @@
         .form-control:focus {
             border-color: var(--accent);
             box-shadow: 0 0 0 3px var(--primary-light);
+            background: var(--card-bg);
         }
 
         .btn {
@@ -285,18 +282,19 @@
             background: var(--primary);
             color: white;
             border: none;
-            padding: 13px 20px;
-            border-radius: 10px;
+            padding: 12px 20px;
+            border-radius: 12px;
             font-size: 14px;
             font-weight: 600;
             cursor: pointer;
             transition: var(--transition);
-            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.2);
         }
 
         .btn:hover {
             background: var(--primary-hover);
             transform: translateY(-1px);
+            box-shadow: 0 6px 16px rgba(30, 58, 138, 0.3);
         }
 
         .btn-sm {
@@ -307,23 +305,23 @@
             box-shadow: none;
         }
 
-        .btn-danger { background: var(--danger); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15); }
+        .btn-danger { background: var(--danger); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2); }
         .btn-danger:hover { background: #dc2626; }
-        .btn-warning { background: #f59e0b; color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); }
+        .btn-warning { background: #f59e0b; color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2); }
         .btn-warning:hover { background: #d97706; }
-        .btn-success { background: var(--success); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); }
+        .btn-success { background: var(--success); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2); }
         .btn-success:hover { background: #059669; }
 
         .btn-group {
             display: flex;
-            gap: 8px;
+            gap: 6px;
         }
 
         .table-container {
             overflow-x: auto;
-            margin-top: 15px;
-            border-radius: 10px;
+            border-radius: 12px;
             border: 1px solid var(--border);
+            background: var(--card-bg);
         }
 
         table {
@@ -339,6 +337,7 @@
             font-weight: 700;
             padding: 12px 14px;
             border-bottom: 1px solid var(--border);
+            white-space: nowrap;
         }
 
         [data-theme="dark"] th {
@@ -357,15 +356,15 @@
 
         .result-box {
             background: var(--success-bg);
-            border: 1px solid rgba(16, 185, 129, 0.2);
-            border-radius: 16px;
+            border: 1px solid rgba(16, 185, 129, 0.25);
+            border-radius: 20px;
             padding: 24px;
-            margin-top: 30px;
-            animation: fadeIn 0.4s ease-out;
+            margin-top: 28px;
+            animation: fadeIn 0.3s ease-out;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(8px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -373,14 +372,14 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
+            margin-bottom: 16px;
             border-bottom: 1px solid rgba(16, 185, 129, 0.2);
             padding-bottom: 12px;
         }
 
         .result-header h3 {
             color: var(--success);
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 700;
             display: flex;
             align-items: center;
@@ -388,24 +387,24 @@
         }
 
         .grand-total {
-            font-size: 18px;
+            font-size: 16px;
             font-weight: 800;
             color: var(--success);
             text-align: right;
-            margin-top: 15px;
-            padding-top: 12px;
+            margin-top: 16px;
+            padding-top: 14px;
             border-top: 1px dashed rgba(16, 185, 129, 0.3);
         }
 
         .verifier-section {
-            margin-top: 20px;
-            padding-top: 15px;
+            margin-top: 16px;
+            padding-top: 14px;
             border-top: 1px solid rgba(16, 185, 129, 0.2);
             display: flex;
             justify-content: space-between;
             align-items: center;
             flex-wrap: wrap;
-            gap: 15px;
+            gap: 12px;
         }
 
         .verifier-info {
@@ -414,28 +413,29 @@
         }
 
         .badge {
-            background: rgba(59, 130, 246, 0.1);
+            background: rgba(59, 130, 246, 0.12);
             color: var(--accent);
-            padding: 4px 8px;
-            border-radius: 6px;
+            padding: 5px 10px;
+            border-radius: 8px;
             font-size: 11px;
             font-weight: 700;
         }
 
         .empty-state {
             text-align: center;
-            padding: 20px;
+            padding: 24px;
             color: var(--text-secondary);
             font-style: italic;
             font-size: 13px;
         }
 
         .app-footer-brand {
-            margin-top: 20px;
+            margin-top: 24px;
             text-align: center;
             font-size: 12px;
             color: var(--text-secondary);
-            font-weight: 500;
+            font-weight: 600;
+            letter-spacing: 0.5px;
         }
     </style>
 </head>
@@ -444,12 +444,12 @@
 <div class="app-container">
     <header class="app-header">
         <div class="header-title-wrapper">
-            <div class="p-2 sm:p-3 bg-gradient-to-b from-amber-500/20 to-transparent border border-amber-500/30 rounded-xl text-amber-500 dark:text-amber-400 shadow-md">
-                <i class="fa-solid fa-building-columns text-lg sm:text-xl"></i>
+            <div class="p-3 bg-gradient-to-br from-blue-600/20 to-indigo-600/10 border border-blue-400/30 rounded-2xl text-blue-400 shadow-inner">
+                <i class="fa-solid fa-calculator text-xl"></i>
             </div>
             <div class="header-title">
                 <h1>AAAAIIM OneFinance</h1>
-                <p>Kalkulator patungan makanan online transparan & adil</p>
+                <p>Kalkulator patungan makanan transparan & adil</p>
             </div>
         </div>
         <div class="header-actions">
@@ -464,6 +464,7 @@
 
     <div class="app-body">
         <div class="grid-layout">
+            <!-- Kolom Kiri: Input Peserta & Komponen Biaya -->
             <div>
                 <div class="card-section">
                     <div class="section-title">
@@ -483,7 +484,7 @@
                         <label class="form-label">Total Harga Makanan (Rp)</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-rupiah-sign input-icon"></i>
-                            <input type="text" id="hargaMakanan" class="form-control" placeholder="35000" oninput="formatRupiahInput(this)">
+                            <input type="text" id="hargaMakanan" class="form-control" placeholder="35.000" oninput="formatRupiahInput(this)">
                         </div>
                     </div>
                     <button class="btn" id="btnSimpanPeserta" onclick="simpanPeserta()">
@@ -497,48 +498,49 @@
                 <div class="card-section" style="margin-bottom: 0;">
                     <div class="section-title">
                         <div class="section-title-left">
-                            <i class="fa-solid fa-calculator"></i> Rincian Aplikasi (Shopee/Grab)
+                            <i class="fa-solid fa-receipt"></i> Rincian Aplikasi (Shopee/Grab)
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Total Diskon / Promo (Rp)</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-tag input-icon"></i>
-                            <input type="text" id="diskon" class="form-control" value="" placeholder="0" oninput="formatRupiahInput(this); simpanOtomatisToFirebase();">
+                            <input type="text" id="diskon" class="form-control" placeholder="0" oninput="formatRupiahInput(this); simpanOtomatisToFirebase();">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Total Ongkos Kirim (Rp)</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-motorcycle input-icon"></i>
-                            <input type="text" id="ongkir" class="form-control" value="" placeholder="0" oninput="formatRupiahInput(this); simpanOtomatisToFirebase();">
+                            <input type="text" id="ongkir" class="form-control" placeholder="0" oninput="formatRupiahInput(this); simpanOtomatisToFirebase();">
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="form-label">Biaya Layanan (Rp)</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-hand-holding-dollar input-icon"></i>
-                            <input type="text" id="biayaLayanan" class="form-control" value="" placeholder="0" oninput="formatRupiahInput(this); simpanOtomatisToFirebase();">
+                            <input type="text" id="biayaLayanan" class="form-control" placeholder="0" oninput="formatRupiahInput(this); simpanOtomatisToFirebase();">
                         </div>
                     </div>
                     <div class="form-group" style="margin-bottom: 0;">
                         <label class="form-label">Pajak / Biaya Lainnya (Rp)</label>
                         <div class="input-wrapper">
-                            <i class="fa-solid fa-receipt input-icon"></i>
-                            <input type="text" id="pajak" class="form-control" value="" placeholder="0" oninput="formatRupiahInput(this); simpanOtomatisToFirebase();">
+                            <i class="fa-solid fa-file-invoice-dollar input-icon"></i>
+                            <input type="text" id="pajak" class="form-control" placeholder="0" oninput="formatRupiahInput(this); simpanOtomatisToFirebase();">
                         </div>
                     </div>
                 </div>
             </div>
 
+            <!-- Kolom Kanan: Tabel Peserta, Verifikator, & Aksi Hitung -->
             <div>
                 <div class="card-section">
                     <div class="section-title">
                         <div class="section-title-left">
-                            <i class="fa-solid fa-users"></i> Daftar Peserta Terdaftar
+                            <i class="fa-solid fa-users"></i> Daftar Peserta
                         </div>
                         <button class="btn btn-sm btn-danger" onclick="konfirmasiResetData()" title="Hapus Semua Data">
-                            <i class="fa-solid fa-trash-can"></i> Reset Data
+                            <i class="fa-solid fa-trash-can"></i> Reset
                         </button>
                     </div>
                     <div class="table-container">
@@ -569,30 +571,31 @@
                         <label class="form-label">Nama Verifikator</label>
                         <div class="input-wrapper">
                             <i class="fa-solid fa-user-check input-icon"></i>
-                            <input type="text" id="namaVerifikator" class="form-control" placeholder="Contoh: Admin / Kak Andi" oninput="simpanOtomatisToFirebase()">
+                            <input type="text" id="namaVerifikator" class="form-control" placeholder="Contoh: Kak Andi" oninput="simpanOtomatisToFirebase()">
                         </div>
                     </div>
                 </div>
 
-                <button class="btn" style="padding: 16px; font-size: 15px;" onclick="hitungPatungan()">
+                <button class="btn" style="padding: 15px; font-size: 15px;" onclick="hitungPatungan()">
                     <i class="fa-solid fa-calculator"></i> Hitung Pembagian Otomatis
                 </button>
             </div>
         </div>
 
+        <!-- Bagian Hasil / Output -->
         <div class="result-box" id="hasilSection" style="display: none;">
             <div class="result-header">
                 <h3><i class="fa-solid fa-circle-check"></i> Rincian Pembayaran Bersih</h3>
                 <span class="badge" id="jumlahPesertaBadge">0 Peserta</span>
             </div>
-            <div class="table-container" style="background: var(--card-bg);">
+            <div class="table-container">
                 <table id="tabelHasil">
                     <thead>
                         <tr>
                             <th>Nama</th>
                             <th>Makanan</th>
                             <th>Proporsi Diskon</th>
-                            <th>Proporsi Biaya+Ongkir</th>
+                            <th>Proporsi Ongkir/Biaya</th>
                             <th>Total Bayar</th>
                         </tr>
                     </thead>
@@ -758,7 +761,7 @@
         document.getElementById('hargaMakanan').value = item.harga.toLocaleString('id-ID');
         document.getElementById('editIndex').value = index;
         
-        document.getElementById('formTitleText').innerText = 'Edit Peserta: ' + item.nama;
+        document.getElementById('formTitleText').innerText = 'Edit: ' + item.nama;
         document.getElementById('btnSimpanPeserta').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan';
         document.getElementById('btnBatalEdit').style.display = 'inline-flex';
         
@@ -784,7 +787,7 @@
     }
 
     function konfirmasiResetData() {
-        if (confirm('Apakah Anda yakin ingin mereset/menghapus seluruh data peserta, diskon, dan rincian? Tindakan ini akan menghapusnya secara permanen dari Firebase.')) {
+        if (confirm('Apakah Anda yakin ingin mereset/menghapus seluruh data peserta, diskon, dan rincian?')) {
             daftarPeserta = [];
             document.getElementById('diskon').value = '';
             document.getElementById('ongkir').value = '';
@@ -797,11 +800,7 @@
 
             if (window.isFirebaseReady && window.FB_DB) {
                 const dbRef = window.FB_Ref(window.FB_DB, 'onefinance/patungan');
-                window.FB_Remove(dbRef).then(() => {
-                    alert('Data berhasil direset.');
-                }).catch(err => {
-                    console.error("Gagal menghapus data dari Firebase:", err);
-                });
+                window.FB_Remove(dbRef).catch(err => console.error(err));
             }
         }
     }
@@ -891,10 +890,7 @@
     }
 
     function unduhRincian() {
-        if (hasilHitungGlobal.length === 0) {
-            alert('Belum ada data hasil hitung yang tersedia!');
-            return;
-        }
+        if (hasilHitungGlobal.length === 0) return;
 
         const verifikator = document.getElementById('namaVerifikator').value.trim() || 'HEAD AAAAIIM ONEFINANCE';
         let textContent = "========================================\n";
