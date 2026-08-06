@@ -8,13 +8,15 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Firebase SDK (Modular v10 atau kompatibel via CDN) -->
+    <!-- Firebase SDK (Modular v10) -->
     <script type="module">
-        // Import Firebase SDK (Contoh menggunakan CDN v10)
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
 
-        // Konfigurasi Firebase Anda (Ganti dengan kredensial proyek Firebase Anda)
+        // ==========================================
+        // BAGIAN INI YANG PERLU ANDA SESUAIKAN
+        // (Salin konfigurasi dari Project Settings Firebase Anda)
+        // ==========================================
         const firebaseConfig = {
             apiKey: "AIzaSyAIYx1cDdOCYgQ292iyK3nIZ04Yxgvew18",
             authDomain: "aaaaiim-onefinance--patungan.firebaseapp.com",
@@ -23,13 +25,13 @@
             messagingSenderId: "86182070035",
             appId: "1:86182070035:web:7550ad843dbe8635937ce6",
             measurementId: "G-GJ9D2JM5VD"
-      };
+        };
 
         // Inisialisasi Firebase
         const app = initializeApp(firebaseConfig);
         const db = getDatabase(app);
 
-        // Ekspor fungsi database ke global scope agar bisa diakses script aplikasi
+        // Ekspor fungsi database ke global scope
         window.FB_DB = db;
         window.FB_Ref = ref;
         window.FB_Set = set;
@@ -117,7 +119,6 @@
             position: relative;
         }
 
-        /* Header Styling */
         .app-header {
             background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
             color: white;
@@ -184,7 +185,6 @@
             transform: scale(1.05);
         }
 
-        /* Content Body */
         .app-body {
             padding: 35px 40px;
         }
@@ -232,7 +232,6 @@
             color: var(--accent);
         }
 
-        /* Form Controls */
         .form-group {
             margin-bottom: 16px;
         }
@@ -276,7 +275,6 @@
             box-shadow: 0 0 0 3px var(--primary-light);
         }
 
-        /* Buttons */
         .btn {
             display: inline-flex;
             align-items: center;
@@ -320,7 +318,6 @@
             gap: 8px;
         }
 
-        /* Tables & Lists */
         .table-container {
             overflow-x: auto;
             margin-top: 15px;
@@ -357,7 +354,6 @@
             border-bottom: none;
         }
 
-        /* Results Box */
         .result-box {
             background: var(--success-bg);
             border: 1px solid rgba(16, 185, 129, 0.2);
@@ -433,7 +429,6 @@
             font-size: 13px;
         }
 
-        /* Footer Branding */
         .app-footer-brand {
             margin-top: 20px;
             text-align: center;
@@ -446,7 +441,6 @@
 <body>
 
 <div class="app-container">
-    <!-- Header -->
     <header class="app-header">
         <div class="header-title-wrapper">
             <div class="p-2 sm:p-3 bg-gradient-to-b from-amber-500/20 to-transparent border border-amber-500/30 rounded-xl text-amber-500 dark:text-amber-400 shadow-md">
@@ -467,12 +461,9 @@
         </div>
     </header>
 
-    <!-- Body -->
     <div class="app-body">
         <div class="grid-layout">
-            <!-- Kolom Kiri: Input Peserta & Diskon -->
             <div>
-                <!-- Input Peserta -->
                 <div class="card-section">
                     <div class="section-title">
                         <div class="section-title-left">
@@ -502,7 +493,6 @@
                     </button>
                 </div>
 
-                <!-- Biaya Tambahan & Diskon -->
                 <div class="card-section" style="margin-bottom: 0;">
                     <div class="section-title">
                         <div class="section-title-left">
@@ -540,7 +530,6 @@
                 </div>
             </div>
 
-            <!-- Kolom Kanan: Tabel Peserta & Tombol Hitung & Verifikator -->
             <div>
                 <div class="card-section">
                     <div class="section-title">
@@ -569,7 +558,6 @@
                     </div>
                 </div>
 
-                <!-- Input Verifikator -->
                 <div class="card-section">
                     <div class="section-title">
                         <div class="section-title-left">
@@ -591,7 +579,6 @@
             </div>
         </div>
 
-        <!-- Bagian Hasil Akhir -->
         <div class="result-box" id="hasilSection" style="display: none;">
             <div class="result-header">
                 <h3><i class="fa-solid fa-circle-check"></i> Rincian Pembayaran Bersih</h3>
@@ -609,7 +596,6 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <!-- Hasil perhitungan -->
                     </tbody>
                 </table>
             </div>
@@ -638,7 +624,6 @@
     let daftarPeserta = [];
     let isSyncingFromFirebase = false;
 
-    // Fungsi Tema Gelap / Terang
     function toggleTheme() {
         const html = document.documentElement;
         const icon = document.getElementById('themeIcon');
@@ -653,7 +638,6 @@
         }
     }
 
-    // Format Rupiah Input saat diketik
     function formatRupiahInput(input) {
         let value = input.value.replace(/[^,\d]/g, '');
         let split = value.split(',');
@@ -675,11 +659,9 @@
         return parseFloat(val.toString().replace(/\./g, '').replace(/,/g, '.')) || 0;
     }
 
-    // Inisialisasi Sinkronisasi Realtime Firebase
     window.initFirebaseSync = function() {
         const dbRef = window.FB_Ref(window.FB_DB, 'onefinance/patungan');
         
-        // Mendengarkan perubahan data secara real-time dari Firebase
         window.FB_OnValue(dbRef, (snapshot) => {
             const serverData = snapshot.val();
             if (serverData) {
@@ -694,7 +676,6 @@
 
                 renderTabelPeserta();
                 
-                // Jika sebelumnya hasil perhitungan terbuka, otomatis hitung ulang
                 if (serverData.isCalculated && daftarPeserta.length > 0) {
                     hitungPatungan();
                 }
@@ -713,7 +694,6 @@
         });
     };
 
-    // Fungsi untuk menyimpan perubahan ke Firebase Realtime Database
     function simpanOtomatisToFirebase(isCalculated = false) {
         if (isSyncingFromFirebase) return;
         if (!window.isFirebaseReady || !window.FB_DB) return;
@@ -746,7 +726,6 @@
         });
     }
 
-    // Tambah atau Edit Peserta
     function simpanPeserta() {
         const nama = document.getElementById('namaPeserta').value.trim();
         const hargaStr = document.getElementById('hargaMakanan').value;
@@ -803,7 +782,6 @@
         simpanOtomatisToFirebase();
     }
 
-    // Fungsi Reset Data / Hapus Semua
     function konfirmasiResetData() {
         if (confirm('Apakah Anda yakin ingin mereset/menghapus seluruh data peserta, diskon, dan rincian? Tindakan ini akan menghapusnya secara permanen dari Firebase.')) {
             daftarPeserta = [];
@@ -816,7 +794,6 @@
             batalEdit();
             renderTabelPeserta();
 
-            // Hapus dari Firebase
             if (window.isFirebaseReady && window.FB_DB) {
                 const dbRef = window.FB_Ref(window.FB_DB, 'onefinance/patungan');
                 window.FB_Remove(dbRef).then(() => {
