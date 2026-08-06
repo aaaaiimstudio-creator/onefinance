@@ -1,0 +1,957 @@
+<!DOCTYPE html>
+<html lang="id" data-theme="dark" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AAAAIIM OneFinance - Kalkulator Patungan Makanan Modern (Firebase Integrated)</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Firebase SDK (Modular v10 atau kompatibel via CDN) -->
+    <script type="module">
+        // Import Firebase SDK (Contoh menggunakan CDN v10)
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getDatabase, ref, set, onValue, remove } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-database.js";
+
+        // Konfigurasi Firebase Anda (Ganti dengan kredensial proyek Firebase Anda)
+        const firebaseConfig = {
+            apiKey: "AIzaSyAIYx1cDdOCYgQ292iyK3nIZ04Yxgvew18",
+            authDomain: "aaaaiim-onefinance--patungan.firebaseapp.com",
+            projectId: "aaaaiim-onefinance--patungan",
+            storageBucket: "aaaaiim-onefinance--patungan.firebasestorage.app",
+            messagingSenderId: "86182070035",
+            appId: "1:86182070035:web:7550ad843dbe8635937ce6",
+            measurementId: "G-GJ9D2JM5VD"
+      };
+
+        // Inisialisasi Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getDatabase(app);
+
+        // Ekspor fungsi database ke global scope agar bisa diakses script aplikasi
+        window.FB_DB = db;
+        window.FB_Ref = ref;
+        window.FB_Set = set;
+        window.FB_OnValue = onValue;
+        window.FB_Remove = remove;
+        window.isFirebaseReady = true;
+        
+        // Panggil fungsi sinkronisasi setelah Firebase siap
+        if (typeof window.initFirebaseSync === 'function') {
+            window.initFirebaseSync();
+        }
+    </script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {}
+            }
+        }
+    </script>
+    <style>
+        :root {
+            --primary: #1e3a8a;
+            --primary-hover: #1e40af;
+            --primary-light: #eff6ff;
+            --accent: #3b82f6;
+            --bg: #f8fafc;
+            --card-bg: #ffffff;
+            --text: #1e293b;
+            --text-secondary: #64748b;
+            --border: #e2e8f0;
+            --input-bg: #ffffff;
+            --danger: #ef4444;
+            --success: #10b981;
+            --success-bg: #f0fdf4;
+            --shadow: 0 10px 25px -5px rgba(30, 58, 138, 0.08), 0 8px 10px -6px rgba(30, 58, 138, 0.05);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        [data-theme="dark"] {
+            --primary: #3b82f6;
+            --primary-hover: #60a5fa;
+            --primary-light: rgba(59, 130, 246, 0.15);
+            --accent: #60a5fa;
+            --bg: #0f172a;
+            --card-bg: #1e293b;
+            --text: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --border: #334155;
+            --input-bg: #0f172a;
+            --danger: #f87171;
+            --success: #34d399;
+            --success-bg: rgba(16, 185, 129, 0.1);
+            --shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.3);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            transition: var(--transition);
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 900px;
+            background: var(--card-bg);
+            border-radius: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--border);
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Header Styling */
+        .app-header {
+            background: linear-gradient(135deg, #1e3a8a 0%, #172554 100%);
+            color: white;
+            padding: 30px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: relative;
+        }
+
+        [data-theme="dark"] .app-header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-title-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .header-title h1 {
+            font-size: 24px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 6px;
+        }
+
+        .header-title p {
+            font-size: 14px;
+            color: #93c5fd;
+            opacity: 0.9;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .theme-toggle, .sync-badge {
+            background: rgba(255, 255, 255, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: white;
+            height: 44px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 14px;
+            padding: 0 15px;
+        }
+
+        .theme-toggle {
+            width: 44px;
+            padding: 0;
+            font-size: 18px;
+        }
+
+        .theme-toggle:hover, .sync-badge:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: scale(1.05);
+        }
+
+        /* Content Body */
+        .app-body {
+            padding: 35px 40px;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+        }
+
+        @media (max-width: 768px) {
+            body { padding: 10px; }
+            .app-header { padding: 20px; flex-direction: column; align-items: flex-start; gap: 15px; }
+            .header-actions { position: absolute; top: 20px; right: 20px; }
+            .app-body { padding: 20px; }
+            .grid-layout { grid-template-columns: 1fr; gap: 20px; }
+        }
+
+        .card-section {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 25px;
+            transition: var(--transition);
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .section-title-left {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .section-title i {
+            color: var(--accent);
+        }
+
+        /* Form Controls */
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            margin-bottom: 6px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 14px;
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .form-control {
+            width: 100%;
+            background: var(--input-bg);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 14px 12px 42px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 500;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-control:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--primary-light);
+        }
+
+        /* Buttons */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            width: 100%;
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 13px 20px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            box-shadow: 0 4px 12px rgba(30, 58, 138, 0.15);
+        }
+
+        .btn:hover {
+            background: var(--primary-hover);
+            transform: translateY(-1px);
+        }
+
+        .btn-sm {
+            padding: 6px 12px;
+            font-size: 12px;
+            border-radius: 8px;
+            width: auto;
+            box-shadow: none;
+        }
+
+        .btn-danger { background: var(--danger); box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15); }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-warning { background: #f59e0b; color: white; box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15); }
+        .btn-warning:hover { background: #d97706; }
+        .btn-success { background: var(--success); box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); }
+        .btn-success:hover { background: #059669; }
+
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        /* Tables & Lists */
+        .table-container {
+            overflow-x: auto;
+            margin-top: 15px;
+            border-radius: 10px;
+            border: 1px solid var(--border);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 13px;
+        }
+
+        th {
+            background: var(--primary-light);
+            color: var(--primary);
+            font-weight: 700;
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        [data-theme="dark"] th {
+            color: var(--accent);
+        }
+
+        td {
+            padding: 12px 14px;
+            border-bottom: 1px solid var(--border);
+            color: var(--text);
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Results Box */
+        .result-box {
+            background: var(--success-bg);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 16px;
+            padding: 24px;
+            margin-top: 30px;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(16, 185, 129, 0.2);
+            padding-bottom: 12px;
+        }
+
+        .result-header h3 {
+            color: var(--success);
+            font-size: 18px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .grand-total {
+            font-size: 18px;
+            font-weight: 800;
+            color: var(--success);
+            text-align: right;
+            margin-top: 15px;
+            padding-top: 12px;
+            border-top: 1px dashed rgba(16, 185, 129, 0.3);
+        }
+
+        .verifier-section {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid rgba(16, 185, 129, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .verifier-info {
+            font-size: 13px;
+            color: var(--text);
+        }
+
+        .badge {
+            background: rgba(59, 130, 246, 0.1);
+            color: var(--accent);
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-secondary);
+            font-style: italic;
+            font-size: 13px;
+        }
+
+        /* Footer Branding */
+        .app-footer-brand {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+        <div class="header-title-wrapper">
+            <div class="p-2 sm:p-3 bg-gradient-to-b from-amber-500/20 to-transparent border border-amber-500/30 rounded-xl text-amber-500 dark:text-amber-400 shadow-md">
+                <i class="fa-solid fa-building-columns text-lg sm:text-xl"></i>
+            </div>
+            <div class="header-title">
+                <h1>AAAAIIM OneFinance</h1>
+                <p>Kalkulator patungan makanan online transparan & adil</p>
+            </div>
+        </div>
+        <div class="header-actions">
+            <div class="sync-badge" id="syncStatus" title="Status Sinkronisasi Firebase">
+                <i class="fa-solid fa-cloud-arrow-down mr-2 text-blue-400"></i> <span id="syncText">Menghubungkan...</span>
+            </div>
+            <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()" title="Ganti Mode Terang/Gelap">
+                <i class="fa-solid fa-sun" id="themeIcon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Body -->
+    <div class="app-body">
+        <div class="grid-layout">
+            <!-- Kolom Kiri: Input Peserta & Diskon -->
+            <div>
+                <!-- Input Peserta -->
+                <div class="card-section">
+                    <div class="section-title">
+                        <div class="section-title-left">
+                            <i class="fa-solid fa-user-plus"></i> <span id="formTitleText">Tambah Peserta</span>
+                        </div>
+                    </div>
+                    <input type="hidden" id="editIndex" value="-1">
+                    <div class="form-group">
+                        <label class="form-label">Nama Peserta</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user input-icon"></i>
+                            <input type="text" id="namaPeserta" class="form-control" placeholder="Contoh: Budi">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Total Harga Makanan (Rp)</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-rupiah-sign input-icon"></i>
+                            <input type="text" id="hargaMakanan" class="form-control" placeholder="35000" oninput="formatRupiahInput(this)">
+                        </div>
+                    </div>
+                    <button class="btn" id="btnSimpanPeserta" onclick="simpanPeserta()">
+                        <i class="fa-solid fa-plus"></i> Tambah ke Daftar
+                    </button>
+                    <button class="btn btn-warning" id="btnBatalEdit" onclick="batalEdit()" style="display: none; margin-top: 8px;">
+                        <i class="fa-solid fa-xmark"></i> Batal Edit
+                    </button>
+                </div>
+
+                <!-- Biaya Tambahan & Diskon -->
+                <div class="card-section" style="margin-bottom: 0;">
+                    <div class="section-title">
+                        <div class="section-title-left">
+                            <i class="fa-solid fa-calculator"></i> Rincian Aplikasi (Shopee/Grab)
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Total Diskon / Promo (Rp)</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-tag input-icon"></i>
+                            <input type="text" id="diskon" class="form-control" value="" placeholder="0" oninput="formatRupiahInput(this); simpanOtomatisToFirebase();">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Total Ongkos Kirim (Rp)</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-motorcycle input-icon"></i>
+                            <input type="text" id="ongkir" class="form-control" value="" placeholder="0" oninput="formatRupiahInput(this); simpanOtomatisToFirebase();">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Biaya Layanan (Rp)</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-hand-holding-dollar input-icon"></i>
+                            <input type="text" id="biayaLayanan" class="form-control" value="" placeholder="0" oninput="formatRupiahInput(this); simpanOtomatisToFirebase();">
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Pajak / Biaya Lainnya (Rp)</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-receipt input-icon"></i>
+                            <input type="text" id="pajak" class="form-control" value="" placeholder="0" oninput="formatRupiahInput(this); simpanOtomatisToFirebase();">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Kolom Kanan: Tabel Peserta & Tombol Hitung & Verifikator -->
+            <div>
+                <div class="card-section">
+                    <div class="section-title">
+                        <div class="section-title-left">
+                            <i class="fa-solid fa-users"></i> Daftar Peserta Terdaftar
+                        </div>
+                        <button class="btn btn-sm btn-danger" onclick="konfirmasiResetData()" title="Hapus Semua Data">
+                            <i class="fa-solid fa-trash-can"></i> Reset Data
+                        </button>
+                    </div>
+                    <div class="table-container">
+                        <table id="tabelPeserta">
+                            <thead>
+                                <tr>
+                                    <th>Nama</th>
+                                    <th>Makanan</th>
+                                    <th style="text-align: center;">Aksi</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td colspan="3" class="empty-state">Belum ada peserta ditambahkan</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Input Verifikator -->
+                <div class="card-section">
+                    <div class="section-title">
+                        <div class="section-title-left">
+                            <i class="fa-solid fa-user-shield"></i> Verifikator / Pemesan Utama
+                        </div>
+                    </div>
+                    <div class="form-group" style="margin-bottom: 0;">
+                        <label class="form-label">Nama Verifikator</label>
+                        <div class="input-wrapper">
+                            <i class="fa-solid fa-user-check input-icon"></i>
+                            <input type="text" id="namaVerifikator" class="form-control" placeholder="Contoh: Admin / Kak Andi" oninput="simpanOtomatisToFirebase()">
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn" style="padding: 16px; font-size: 15px;" onclick="hitungPatungan()">
+                    <i class="fa-solid fa-calculator"></i> Hitung Pembagian Otomatis
+                </button>
+            </div>
+        </div>
+
+        <!-- Bagian Hasil Akhir -->
+        <div class="result-box" id="hasilSection" style="display: none;">
+            <div class="result-header">
+                <h3><i class="fa-solid fa-circle-check"></i> Rincian Pembayaran Bersih</h3>
+                <span class="badge" id="jumlahPesertaBadge">0 Peserta</span>
+            </div>
+            <div class="table-container" style="background: var(--card-bg);">
+                <table id="tabelHasil">
+                    <thead>
+                        <tr>
+                            <th>Nama</th>
+                            <th>Makanan</th>
+                            <th>Proporsi Diskon</th>
+                            <th>Proporsi Biaya+Ongkir</th>
+                            <th>Total Bayar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Hasil perhitungan -->
+                    </tbody>
+                </table>
+            </div>
+            
+            <div class="verifier-section">
+                <div class="verifier-info" id="verifierInfoText">
+                    <i class="fa-solid fa-shield-halved" style="color: var(--success);"></i> Diverifikasi oleh: <strong>-</strong>
+                </div>
+                <button class="btn btn-sm btn-success" onclick="unduhRincian()">
+                    <i class="fa-solid fa-download"></i> Unduh Rincian (TXT)
+                </button>
+            </div>
+
+            <div class="grand-total" id="grandTotalText">
+                Total Keseluruhan Driver: Rp 0
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="app-footer-brand">
+    by AAAAIIM OneFinance
+</div>
+
+<script>
+    let daftarPeserta = [];
+    let isSyncingFromFirebase = false;
+
+    // Fungsi Tema Gelap / Terang
+    function toggleTheme() {
+        const html = document.documentElement;
+        const icon = document.getElementById('themeIcon');
+        if (html.getAttribute('data-theme') === 'light') {
+            html.setAttribute('data-theme', 'dark');
+            html.classList.add('dark');
+            icon.className = 'fa-solid fa-sun';
+        } else {
+            html.setAttribute('data-theme', 'light');
+            html.classList.remove('dark');
+            icon.className = 'fa-solid fa-moon';
+        }
+    }
+
+    // Format Rupiah Input saat diketik
+    function formatRupiahInput(input) {
+        let value = input.value.replace(/[^,\d]/g, '');
+        let split = value.split(',');
+        let sisa = split[0].length % 3;
+        let rupiah = split[0].substr(0, sisa);
+        let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+        if (ribuan) {
+            let separator = sisa ? '.' : '';
+            rupiah += separator + ribuan.join('.');
+        }
+
+        rupiah = split[1] !== undefined ? rupiah + ',' + split[1] : rupiah;
+        input.value = rupiah ? rupiah : '';
+    }
+
+    function parseRupiah(val) {
+        if (!val) return 0;
+        return parseFloat(val.toString().replace(/\./g, '').replace(/,/g, '.')) || 0;
+    }
+
+    // Inisialisasi Sinkronisasi Realtime Firebase
+    window.initFirebaseSync = function() {
+        const dbRef = window.FB_Ref(window.FB_DB, 'onefinance/patungan');
+        
+        // Mendengarkan perubahan data secara real-time dari Firebase
+        window.FB_OnValue(dbRef, (snapshot) => {
+            const serverData = snapshot.val();
+            if (serverData) {
+                isSyncingFromFirebase = true;
+                
+                daftarPeserta = serverData.peserta || [];
+                document.getElementById('diskon').value = serverData.diskon || '';
+                document.getElementById('ongkir').value = serverData.ongkir || '';
+                document.getElementById('biayaLayanan').value = serverData.biayaLayanan || '';
+                document.getElementById('pajak').value = serverData.pajak || '';
+                document.getElementById('namaVerifikator').value = serverData.verifikator || '';
+
+                renderTabelPeserta();
+                
+                // Jika sebelumnya hasil perhitungan terbuka, otomatis hitung ulang
+                if (serverData.isCalculated && daftarPeserta.length > 0) {
+                    hitungPatungan();
+                }
+
+                isSyncingFromFirebase = false;
+                document.getElementById('syncText').innerText = 'Sinkron Aktif';
+                document.getElementById('syncStatus').querySelector('i').className = 'fa-solid fa-cloud mr-2 text-emerald-400';
+            } else {
+                document.getElementById('syncText').innerText = 'Siap (Kosong)';
+                document.getElementById('syncStatus').querySelector('i').className = 'fa-solid fa-cloud mr-2 text-blue-400';
+            }
+        }, (error) => {
+            console.error("Firebase sync error:", error);
+            document.getElementById('syncText').innerText = 'Gagal Sinkron';
+            document.getElementById('syncStatus').querySelector('i').className = 'fa-solid fa-triangle-exclamation mr-2 text-red-400';
+        });
+    };
+
+    // Fungsi untuk menyimpan perubahan ke Firebase Realtime Database
+    function simpanOtomatisToFirebase(isCalculated = false) {
+        if (isSyncingFromFirebase) return;
+        if (!window.isFirebaseReady || !window.FB_DB) return;
+
+        const diskon = document.getElementById('diskon').value;
+        const ongkir = document.getElementById('ongkir').value;
+        const biayaLayanan = document.getElementById('biayaLayanan').value;
+        const pajak = document.getElementById('pajak').value;
+        const verifikator = document.getElementById('namaVerifikator').value;
+
+        const payload = {
+            peserta: daftarPeserta,
+            diskon: diskon,
+            ongkir: ongkir,
+            biayaLayanan: biayaLayanan,
+            pajak: pajak,
+            verifikator: verifikator,
+            isCalculated: isCalculated,
+            lastUpdated: new Date().toISOString()
+        };
+
+        const dbRef = window.FB_Ref(window.FB_DB, 'onefinance/patungan');
+        window.FB_Set(dbRef, payload).then(() => {
+            document.getElementById('syncText').innerText = 'Tersimpan';
+            setTimeout(() => {
+                document.getElementById('syncText').innerText = 'Sinkron Aktif';
+            }, 1500);
+        }).catch((err) => {
+            console.error("Gagal menyimpan ke Firebase:", err);
+        });
+    }
+
+    // Tambah atau Edit Peserta
+    function simpanPeserta() {
+        const nama = document.getElementById('namaPeserta').value.trim();
+        const hargaStr = document.getElementById('hargaMakanan').value;
+        const harga = parseRupiah(hargaStr);
+        const editIndex = parseInt(document.getElementById('editIndex').value);
+
+        if (!nama || isNaN(harga) || harga <= 0) {
+            alert('Mohon masukkan nama dan harga makanan dengan benar!');
+            return;
+        }
+
+        if (editIndex === -1) {
+            daftarPeserta.push({ nama: nama, harga: harga });
+        } else {
+            daftarPeserta[editIndex] = { nama: nama, harga: harga };
+            batalEdit();
+        }
+
+        document.getElementById('namaPeserta').value = '';
+        document.getElementById('hargaMakanan').value = '';
+
+        renderTabelPeserta();
+        simpanOtomatisToFirebase();
+    }
+
+    function editPeserta(index) {
+        const item = daftarPeserta[index];
+        document.getElementById('namaPeserta').value = item.nama;
+        document.getElementById('hargaMakanan').value = item.harga.toLocaleString('id-ID');
+        document.getElementById('editIndex').value = index;
+        
+        document.getElementById('formTitleText').innerText = 'Edit Peserta: ' + item.nama;
+        document.getElementById('btnSimpanPeserta').innerHTML = '<i class="fa-solid fa-floppy-disk"></i> Simpan Perubahan';
+        document.getElementById('btnBatalEdit').style.display = 'inline-flex';
+        
+        document.getElementById('namaPeserta').focus();
+    }
+
+    function batalEdit() {
+        document.getElementById('namaPeserta').value = '';
+        document.getElementById('hargaMakanan').value = '';
+        document.getElementById('editIndex').value = '-1';
+        document.getElementById('formTitleText').innerText = 'Tambah Peserta';
+        document.getElementById('btnSimpanPeserta').innerHTML = '<i class="fa-solid fa-plus"></i> Tambah ke Daftar';
+        document.getElementById('btnBatalEdit').style.display = 'none';
+    }
+
+    function hapusPeserta(index) {
+        daftarPeserta.splice(index, 1);
+        renderTabelPeserta();
+        if (parseInt(document.getElementById('editIndex').value) === index) {
+            batalEdit();
+        }
+        simpanOtomatisToFirebase();
+    }
+
+    // Fungsi Reset Data / Hapus Semua
+    function konfirmasiResetData() {
+        if (confirm('Apakah Anda yakin ingin mereset/menghapus seluruh data peserta, diskon, dan rincian? Tindakan ini akan menghapusnya secara permanen dari Firebase.')) {
+            daftarPeserta = [];
+            document.getElementById('diskon').value = '';
+            document.getElementById('ongkir').value = '';
+            document.getElementById('biayaLayanan').value = '';
+            document.getElementById('pajak').value = '';
+            document.getElementById('namaVerifikator').value = '';
+            document.getElementById('hasilSection').style.display = 'none';
+            batalEdit();
+            renderTabelPeserta();
+
+            // Hapus dari Firebase
+            if (window.isFirebaseReady && window.FB_DB) {
+                const dbRef = window.FB_Ref(window.FB_DB, 'onefinance/patungan');
+                window.FB_Remove(dbRef).then(() => {
+                    alert('Data berhasil direset.');
+                }).catch(err => {
+                    console.error("Gagal menghapus data dari Firebase:", err);
+                });
+            }
+        }
+    }
+
+    function renderTabelPeserta() {
+        const tbody = document.querySelector('#tabelPeserta tbody');
+        tbody.innerHTML = '';
+
+        if (daftarPeserta.length === 0) {
+            tbody.innerHTML = `<tr><td colspan="3" class="empty-state">Belum ada peserta ditambahkan</td></tr>`;
+            return;
+        }
+
+        daftarPeserta.forEach((item, index) => {
+            let tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${item.nama}</strong></td>
+                <td>Rp ${item.harga.toLocaleString('id-ID')}</td>
+                <td style="text-align: center;">
+                    <div class="btn-group" style="justify-content: center;">
+                        <button class="btn btn-sm btn-warning" onclick="editPeserta(${index})" title="Edit"><i class="fa-solid fa-pen"></i></button>
+                        <button class="btn btn-sm btn-danger" onclick="hapusPeserta(${index})" title="Hapus"><i class="fa-solid fa-trash"></i></button>
+                    </div>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }
+
+    let hasilHitungGlobal = [];
+    let grandTotalGlobal = 0;
+
+    function hitungPatungan() {
+        if (daftarPeserta.length === 0) {
+            alert('Belum ada peserta yang ditambahkan!');
+            return;
+        }
+
+        const diskon = parseRupiah(document.getElementById('diskon').value);
+        const ongkir = parseRupiah(document.getElementById('ongkir').value);
+        const biayaLayanan = parseRupiah(document.getElementById('biayaLayanan').value);
+        const pajak = parseRupiah(document.getElementById('pajak').value);
+        const verifikator = document.getElementById('namaVerifikator').value.trim() || 'HEAD AAAAIIM ONEFINANCE';
+
+        let totalMakanan = daftarPeserta.reduce((sum, item) => sum + item.harga, 0);
+        const totalBiayaTambahan = ongkir + biayaLayanan + pajak;
+
+        const tbodyHasil = document.querySelector('#tabelHasil tbody');
+        tbodyHasil.innerHTML = '';
+
+        grandTotalGlobal = 0;
+        hasilHitungGlobal = [];
+
+        daftarPeserta.forEach(item => {
+            let rasio = totalMakanan > 0 ? (item.harga / totalMakanan) : (1 / daftarPeserta.length);
+            let jatahDiskon = diskon * rasio;
+            let jatahTambahan = totalBiayaTambahan * rasio;
+            let totalBayar = item.harga - jatahDiskon + jatahTambahan;
+            
+            grandTotalGlobal += totalBayar;
+            hasilHitungGlobal.push({
+                nama: item.nama,
+                harga: item.harga,
+                jatahDiskon: Math.round(jatahDiskon),
+                jatahTambahan: Math.round(jatahTambahan),
+                totalBayar: Math.round(totalBayar)
+            });
+
+            let tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><strong>${item.nama}</strong></td>
+                <td>Rp ${item.harga.toLocaleString('id-ID')}</td>
+                <td style="color: var(--danger);">- Rp ${Math.round(jatahDiskon).toLocaleString('id-ID')}</td>
+                <td style="color: var(--success);">+ Rp ${Math.round(jatahTambahan).toLocaleString('id-ID')}</td>
+                <td><strong>Rp ${Math.round(totalBayar).toLocaleString('id-ID')}</strong></td>
+            `;
+            tbodyHasil.appendChild(tr);
+        });
+
+        document.getElementById('jumlahPesertaBadge').innerText = `${daftarPeserta.length} Peserta`;
+        document.getElementById('verifierInfoText').innerHTML = `<i class="fa-solid fa-shield-halved" style="color: var(--success);"></i> Diverifikasi oleh: <strong>${verifikator}</strong>`;
+        document.getElementById('grandTotalText').innerText = `Total Keseluruhan Driver: Rp ${Math.round(grandTotalGlobal).toLocaleString('id-ID')}`;
+        document.getElementById('hasilSection').style.display = 'block';
+        document.getElementById('hasilSection').scrollIntoView({ behavior: 'smooth' });
+
+        simpanOtomatisToFirebase(true);
+    }
+
+    function unduhRincian() {
+        if (hasilHitungGlobal.length === 0) {
+            alert('Belum ada data hasil hitung yang tersedia!');
+            return;
+        }
+
+        const verifikator = document.getElementById('namaVerifikator').value.trim() || 'HEAD AAAAIIM ONEFINANCE';
+        let textContent = "========================================\n";
+        textContent += "      AAAAIIM OneFinance - SPLIT BILL\n";
+        textContent += "========================================\n";
+        textContent += `Diverifikasi oleh : ${verifikator}\n`;
+        textContent += `Tanggal / Waktu   : ${new Date().toLocaleString('id-ID')}\n`;
+        textContent += "----------------------------------------\n\n";
+        textContent += "RINCIAN PEMBAYARAN MASING-MASING PESERTA:\n";
+        textContent += "----------------------------------------\n";
+
+        hasilHitungGlobal.forEach((item, idx) => {
+            textContent += `${idx + 1}. ${item.nama}\n`;
+            textContent += `   - Harga Makanan    : Rp ${item.harga.toLocaleString('id-ID')}\n`;
+            textContent += `   - Potongan Diskon  : - Rp ${item.jatahDiskon.toLocaleString('id-ID')}\n`;
+            textContent += `   - Biaya + Ongkir   : + Rp ${item.jatahTambahan.toLocaleString('id-ID')}\n`;
+            textContent += `   * Total Bayar      : Rp ${item.totalBayar.toLocaleString('id-ID')}\n\n`;
+        });
+
+        textContent += "----------------------------------------\n";
+        textContent += `TOTAL KESELURUHAN : Rp ${Math.round(grandTotalGlobal).toLocaleString('id-ID')}\n`;
+        textContent += "========================================\n";
+        textContent += "Powered by AAAAIIM OneFinance\n";
+
+        const blob = new Blob([textContent], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `Rincian_Patungan_AAAAIIM_OneFinance.txt`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
+</script>
+
+</body>
+</html>
