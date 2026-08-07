@@ -69,7 +69,7 @@
     html.dark .border-adaptive { border-color: rgba(255, 255, 255, 0.08); }
     html.dark .report-bg { background-color: #0b1120 !important; color: #f8fafc !important; border: 1px solid rgba(212, 175, 55, 0.3) !important; }
 
-    /* Light Mode Overrides (Soft Colors - Mata tidak cepat lelah) */
+    /* Light Mode Overrides */
     html:not(.dark) body { background-color: #f4f6f9; color: #334155; }
     html:not(.dark) .glass-card {
       background: #ffffff;
@@ -90,6 +90,11 @@
     html:not(.dark) .text-adaptive-muted { color: #64748b; }
     html:not(.dark) .border-adaptive { border-color: #e2e8f0; }
     html:not(.dark) .report-bg { background-color: #ffffff !important; color: #1e293b !important; border: 1px solid #cbd5e1 !important; }
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    /* Hide scrollbar for IE, Edge and Firefox */
+    .no-scrollbar { -ms-overflow-style: none;  scrollbar-width: none; }
 
     ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
@@ -344,95 +349,105 @@
           </div>
         </div>
 
-        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-2 overflow-x-auto border-t border-adaptive no-scrollbar">
-          <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn active border-b-2 border-amber-500 text-amber-600 dark:text-amber-400 font-bold flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all">
+        <!-- Horizontal Scroll Menu Bar (Sangat Smooth di HP) -->
+        <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8 flex space-x-1 sm:space-x-2 overflow-x-auto border-t border-adaptive no-scrollbar py-1">
+          <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn active border-b-2 border-amber-500 text-amber-600 dark:text-amber-400 font-bold flex items-center gap-2 px-3 sm:px-5 py-2.5 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all">
             <i class="fa-solid fa-chart-pie"></i> Eksekutif Dashboard
           </button>
-          <button onclick="switchTab('analisis')" id="nav-analisis" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
+          <button onclick="switchTab('analisis')" id="nav-analisis" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-2.5 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
             <i class="fa-solid fa-chart-line"></i> Analisis Rasio
           </button>
-          <button onclick="switchTab('pencatatan')" id="nav-pencatatan" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
+          <button onclick="switchTab('pencatatan')" id="nav-pencatatan" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-2.5 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
             <i class="fa-solid fa-pen-to-square"></i> Jurnal Transaksi
           </button>
-          <button onclick="switchTab('rekeningkoran')" id="nav-rekeningkoran" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
+          <button onclick="switchTab('rekeningkoran')" id="nav-rekeningkoran" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-2.5 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
             <i class="fa-solid fa-receipt"></i> Rekening Koran Per Akun
           </button>
-          <button onclick="switchTab('hutangpiutang')" id="nav-hutangpiutang" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
+          <button onclick="switchTab('hutangpiutang')" id="nav-hutangpiutang" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-2.5 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
             <i class="fa-solid fa-hand-holding-dollar"></i> Hutang & Piutang
           </button>
-          <button onclick="switchTab('transfer')" id="nav-transfer" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
+          <button onclick="switchTab('transfer')" id="nav-transfer" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-2.5 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
             <i class="fa-solid fa-right-left"></i> Transfer Antar Akun
           </button>
-          <button onclick="switchTab('akun')" id="nav-akun" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
+          <button onclick="switchTab('akun')" id="nav-akun" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-2.5 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
             <i class="fa-solid fa-vault"></i> Manajemen Kas & Rekening
           </button>
-          <button onclick="switchTab('laporan')" id="nav-laporan" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-3 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
+          <button onclick="switchTab('laporan')" id="nav-laporan" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main flex items-center gap-2 px-3 sm:px-5 py-2.5 text-[11px] sm:text-xs tracking-wider uppercase whitespace-nowrap transition-all font-semibold">
             <i class="fa-solid fa-file-invoice-dollar"></i> Laporan Keuangan Lengkap
           </button>
         </div>
       </header>
 
       <!-- MAIN CONTAINER -->
-      <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
+      <main class="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
 
-        <!-- PANEL FILTER BULAN, TAHUN, TANGGAL & URUTAN TANGGAL -->
-        <div class="glass-card p-4 rounded-2xl mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4 no-print border-l-4 border-l-amber-500 shadow-lg">
-          <div class="flex items-center gap-3 text-adaptive-main">
-            <div class="p-2 bg-amber-500/10 text-amber-500 rounded-xl">
-              <i class="fa-solid fa-filter text-base"></i>
+        <!-- PANEL FILTER DESAIN RESPONGISIVE & DESAIN MOBILE RINGKAS (COLLAPSIBLE/ACCORDION UNTUK HP) -->
+        <div class="glass-card p-3 sm:p-4 rounded-2xl mb-6 border-l-4 border-l-amber-500 shadow-lg no-print">
+          <!-- Filter Header untuk Mobile -->
+          <div class="flex items-center justify-between cursor-pointer" onclick="toggleMobileFilterPanel()">
+            <div class="flex items-center gap-2 sm:gap-3 text-adaptive-main">
+              <div class="p-2 bg-amber-500/10 text-amber-500 rounded-xl">
+                <i class="fa-solid fa-filter text-sm sm:text-base"></i>
+              </div>
+              <div>
+                <span class="text-xs font-bold uppercase tracking-wider block">Filter Periode & Tanggal</span>
+                <span id="filterPeriodIndicator" class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold block truncate max-w-[200px] sm:max-w-none">Menampilkan semua periode</span>
+              </div>
             </div>
-            <div>
-              <span class="text-xs font-bold uppercase tracking-wider block">Filter Periode & Tanggal Transaksi</span>
-              <span id="filterPeriodIndicator" class="text-[10px] text-amber-600 dark:text-amber-400 font-semibold block">Menampilkan semua periode</span>
-            </div>
+            <button class="md:hidden text-adaptive-muted p-2 rounded-lg bg-slate-100 dark:bg-slate-800 text-xs">
+              <i id="filterToggleIcon" class="fa-solid fa-chevron-down"></i>
+            </button>
           </div>
 
-          <div class="grid grid-cols-1 sm:grid-cols-2 md:flex md:flex-wrap items-center gap-2">
-            <!-- Mode Periode (Tipe Filter) -->
-            <select id="filterMode" onchange="toggleFilterMode()" class="w-full sm:w-auto py-2.5 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-bold border-amber-500/40 text-amber-600 dark:text-amber-400 shadow-sm">
-              <option value="CYCLE24">🔄 Siklus Gaji (24 - 24)</option>
-              <option value="CALENDAR">📅 Kalender Bulan</option>
-              <option value="EXACT_DATE">🎯 Tanggal Spesifik</option>
-            </select>
+          <!-- Body Filter Options -->
+          <div id="filterOptionsContainer" class="hidden md:flex md:flex-wrap items-center gap-2 mt-3 pt-3 border-t border-adaptive md:border-t-0 md:mt-0 md:pt-0">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:flex md:flex-wrap w-full md:w-auto gap-2">
+              <!-- Mode Periode -->
+              <select id="filterMode" onchange="toggleFilterMode()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-bold border-amber-500/40 text-amber-600 dark:text-amber-400 shadow-sm">
+                <option value="CYCLE24">🔄 Siklus Gaji (24 - 24)</option>
+                <option value="CALENDAR">📅 Kalender Bulan</option>
+                <option value="EXACT_DATE">🎯 Tanggal Spesifik</option>
+              </select>
 
-            <!-- Filter Tanggal Spesifik (Muncul saat EXACT_DATE dipilih) -->
-            <input type="date" id="filterSpecificDate" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none font-semibold shadow-sm hidden">
+              <!-- Tanggal Spesifik -->
+              <input type="date" id="filterSpecificDate" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none font-semibold shadow-sm hidden">
 
-            <!-- Filter Urutan Tanggal -->
-            <select id="filterSortOrder" onchange="renderDashboard()" class="w-full sm:w-auto py-2.5 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold shadow-sm">
-              <option value="DESC">⬇️ Terbaru ➔ Terlama</option>
-              <option value="ASC">⬆️ Terlama ➔ Terbaru</option>
-            </select>
+              <!-- Urutan Tanggal -->
+              <select id="filterSortOrder" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold shadow-sm">
+                <option value="DESC">⬇️ Terbaru ➔ Terlama</option>
+                <option value="ASC">⬆️ Terlama ➔ Terbaru</option>
+              </select>
 
-            <!-- Option Bulan Siklus (Dipopulasikan Dinamis) -->
-            <select id="filterCycleMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2.5 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold shadow-sm">
-            </select>
+              <!-- Bulan Siklus -->
+              <select id="filterCycleMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold shadow-sm">
+              </select>
 
-            <!-- Option Bulan Standar Kalender -->
-            <select id="filterCalendarMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2.5 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold hidden shadow-sm">
-              <option value="ALL" selected>Semua Bulan Kalender</option>
-              <option value="01">Januari</option>
-              <option value="02">Februari</option>
-              <option value="03">Maret</option>
-              <option value="04">April</option>
-              <option value="05">Mei</option>
-              <option value="06">Juni</option>
-              <option value="07">Juli</option>
-              <option value="08">Agustus</option>
-              <option value="09">September</option>
-              <option value="10">Oktober</option>
-              <option value="11">November</option>
-              <option value="12">Desember</option>
-            </select>
+              <!-- Bulan Kalender -->
+              <select id="filterCalendarMonth" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold hidden shadow-sm">
+                <option value="ALL" selected>Semua Bulan Kalender</option>
+                <option value="01">Januari</option>
+                <option value="02">Februari</option>
+                <option value="03">Maret</option>
+                <option value="04">April</option>
+                <option value="05">Mei</option>
+                <option value="06">Juni</option>
+                <option value="07">Juli</option>
+                <option value="08">Agustus</option>
+                <option value="09">September</option>
+                <option value="10">Oktober</option>
+                <option value="11">November</option>
+                <option value="12">Desember</option>
+              </select>
 
-            <!-- Filter Tahun -->
-            <select id="filterYear" onchange="renderDashboard()" class="w-full sm:w-auto py-2.5 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold shadow-sm">
-            </select>
+              <!-- Filter Tahun -->
+              <select id="filterYear" onchange="renderDashboard()" class="w-full sm:w-auto py-2 px-3 rounded-xl glass-input text-xs outline-none cursor-pointer font-semibold shadow-sm">
+              </select>
 
-            <!-- Tombol Clear Filter Tanggal Spesifik -->
-            <button id="btnClearSpecificDate" onclick="clearSpecificDateFilter()" class="hidden py-2.5 px-3 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 rounded-xl border border-rose-500/30 text-xs font-bold transition-all" title="Reset Filter Tanggal">
-              <i class="fa-solid fa-rotate-left"></i> Reset
-            </button>
+              <!-- Reset Button -->
+              <button id="btnClearSpecificDate" onclick="clearSpecificDateFilter()" class="hidden py-2 px-3 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 rounded-xl border border-rose-500/30 text-xs font-bold transition-all" title="Reset Filter Tanggal">
+                <i class="fa-solid fa-rotate-left"></i> Reset
+              </button>
+            </div>
           </div>
         </div>
 
@@ -851,12 +866,12 @@
           </div>
         </section>
 
-        <!-- TAB 6: LAPORAN KEUANGAN PDF -->
+        <!-- TAB 6: LAPORAN KEUANGAN PDF (DENGAN RINCIAN SUB REKENING PADA NERACA) -->
         <section id="tab-laporan" class="tab-content hidden space-y-6">
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 no-print">
             <div>
               <h2 class="text-base font-bold text-adaptive-main uppercase tracking-wider">Laporan Keuangan Perusahaan Standar Akuntansi</h2>
-              <p class="text-xs text-adaptive-muted font-medium">Laporan Laba/Rugi, Neraca Kas, Arus Kas, Perubahan Ekuitas, CALK, serta Analisis & Saran Strategis.</p>
+              <p class="text-xs text-adaptive-muted font-medium">Laporan Laba/Rugi, Neraca Kas (Termasuk Rincian Rekening), Arus Kas, Perubahan Ekuitas, CALK, serta Analisis & Saran Strategis.</p>
             </div>
             <button onclick="window.print()" class="px-6 py-3.5 bg-gradient-to-r from-amber-500 to-amber-600 text-slate-950 font-bold rounded-xl shadow-lg shadow-amber-500/20 hover:from-amber-400 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider w-full sm:w-auto">
               <i class="fa-solid fa-file-pdf"></i> Unduh / Cetak Laporan PDF
@@ -910,7 +925,7 @@
     if(document.getElementById('debtDueDate')) document.getElementById('debtDueDate').value = todayDate;
     document.getElementById('filterSpecificDate').value = todayDate;
 
-    // Populasikan Opsi Tahun Dinamis untuk Filter
+    // Populasikan Opsi Tahun
     (function populateYearFilter() {
       const yearSelect = document.getElementById('filterYear');
       const currentYear = new Date().getFullYear();
@@ -921,7 +936,7 @@
       yearSelect.innerHTML = html;
     })();
 
-    // Populasikan Opsi Siklus Gaji Sederhana (24 Januari - 24 Februari, dst)
+    // Populasikan Opsi Siklus Gaji (24-24)
     (function populateCycleMonthFilter() {
       const cycleSelect = document.getElementById('filterCycleMonth');
       const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
@@ -944,6 +959,20 @@
 
       cycleSelect.innerHTML = html;
     })();
+
+    function toggleMobileFilterPanel() {
+      const container = document.getElementById('filterOptionsContainer');
+      const icon = document.getElementById('filterToggleIcon');
+      if (container.classList.contains('hidden')) {
+        container.classList.remove('hidden');
+        container.classList.add('flex', 'flex-col');
+        if(icon) icon.className = 'fa-solid fa-chevron-up';
+      } else {
+        container.classList.add('hidden');
+        container.classList.remove('flex', 'flex-col');
+        if(icon) icon.className = 'fa-solid fa-chevron-down';
+      }
+    }
 
     function showToast(msg) {
       const toast = document.getElementById('toast');
@@ -973,7 +1002,6 @@
       }
     }
 
-    // HELPER DOWNLOAD BACKUP
     function downloadBackupJSON(customFileName) {
       const backupData = {
         exportDate: new Date().toISOString(),
@@ -997,7 +1025,6 @@
       showToast('📥 File Backup JSON Otomatis Diunduh!');
     }
 
-    // DARK MODE TOGGLE (Soft Colors for Light Mode)
     function toggleDarkMode() {
       const html = document.documentElement;
       const themeIcon = document.getElementById('themeIcon');
@@ -1023,7 +1050,6 @@
       document.getElementById('themeText').innerText = 'Day Mode';
     }
 
-    // AUTHENTICATION & AUTO SHOW ALL DATA ON LOGIN
     function handleLogin(e) {
       e.preventDefault();
       const u = document.getElementById('loginUser').value.trim().toLowerCase();
@@ -1040,7 +1066,6 @@
         return;
       }
 
-      // SET UNFILTERED DEFAULTS SAAT LOGIN
       document.getElementById('filterCycleMonth').value = 'ALL';
       document.getElementById('filterCalendarMonth').value = 'ALL';
       document.getElementById('filterYear').value = 'ALL';
@@ -1075,7 +1100,7 @@
       });
     }
 
-    // REALTIME FIREBASE LISTENERS
+    // REALTIME LISTENERS
     db.ref('transactions').on('value', (snapshot) => {
       const data = snapshot.val();
       transactions = [];
@@ -1111,7 +1136,6 @@
       renderDashboard();
     });
 
-    // RESET DATA
     function resetDataKeuangan() {
       if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
       
@@ -1134,7 +1158,6 @@
       showToast('⚠️ Seluruh data keuangan telah direset!');
     }
 
-    // LOGIKA FILTER TANGGAL SIKLUS, BULAN STANDAR & TANGGAL SPESIFIK
     function toggleFilterMode() {
       const mode = document.getElementById('filterMode').value;
       const cycleSelect = document.getElementById('filterCycleMonth');
@@ -1179,7 +1202,6 @@
       let filtered = transactions.filter(t => {
         if (!t.date) return false;
         
-        // Filter Tanggal Spesifik (Persis satu hari tertentu)
         if (mode === 'EXACT_DATE') {
           const exactDate = document.getElementById('filterSpecificDate').value;
           return exactDate ? t.date === exactDate : true;
@@ -1188,15 +1210,12 @@
         const txDate = new Date(t.date + 'T00:00:00');
         const txYear = txDate.getFullYear();
 
-        // Filter Mode Kalender
         if (mode === 'CALENDAR') {
           const selectedMonth = document.getElementById('filterCalendarMonth').value;
           const matchMonth = (selectedMonth === 'ALL') || ((txDate.getMonth() + 1).toString().padStart(2, '0') === selectedMonth);
           const matchYear = (selectedYearVal === 'ALL') || (txYear.toString() === selectedYearVal);
           return matchMonth && matchYear;
         } 
-        
-        // Filter Mode Siklus Gaji (24-24)
         else if (mode === 'CYCLE24') {
           const selectedCycleVal = document.getElementById('filterCycleMonth').value;
 
@@ -1227,7 +1246,7 @@
           const exactDate = document.getElementById('filterSpecificDate').value;
           if (exactDate) {
             const formattedDate = new Date(exactDate + 'T00:00:00').toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-            indicator.innerText = `Tanggal Spesifik: ${formattedDate}`;
+            indicator.innerText = `Spesifik: ${formattedDate}`;
           } else {
             indicator.innerText = `Menampilkan Semua Transaksi`;
           }
@@ -1238,15 +1257,15 @@
             const mText = cycleSelect.options[cycleSelect.selectedIndex].text;
             indicator.innerText = `Siklus: ${mText}`;
           } else {
-            indicator.innerText = `Menampilkan Semua Periode Transaksi (Tanpa Filter)`;
+            indicator.innerText = `Semua Periode Transaksi`;
           }
         } else {
           const mVal = document.getElementById('filterCalendarMonth').value;
           const yVal = document.getElementById('filterYear').value;
           if(mVal === 'ALL' && yVal === 'ALL') {
-            indicator.innerText = `Menampilkan Semua Periode Transaksi (Tanpa Filter)`;
+            indicator.innerText = `Semua Periode Transaksi`;
           } else {
-            indicator.innerText = `Kalender: Bulan ${mVal} | Tahun ${yVal}`;
+            indicator.innerText = `Kalender: Bln ${mVal} | Thn ${yVal}`;
           }
         }
       }
@@ -1258,7 +1277,6 @@
       });
     }
 
-    // CRUD TRANSAKSI
     function handleSaveTx(e) {
       e.preventDefault();
       if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
@@ -1379,7 +1397,6 @@
       showToast('🗑️ Jurnal Transaksi Dihapus!');
     }
 
-    // CRUD HUTANG PIUTANG
     function handleSaveDebt(e) {
       e.preventDefault();
       if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
@@ -1501,7 +1518,6 @@
       showToast('🗑️ Catatan Berhasil Dihapus!');
     }
 
-    // CRUD AKUN / REKENING
     function handleSaveAccount(e) {
       e.preventDefault();
       if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
@@ -1564,7 +1580,6 @@
       showToast('✅ Detail Rekening Diperbarui Otomatis!');
     }
 
-    // TRANSFER DANA
     function handleSaveTransfer(e) {
       e.preventDefault();
       if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
@@ -1602,7 +1617,6 @@
       showToast('✅ Pemindahan Dana Berhasil!');
     }
 
-    // RENDER REKENING KORAN / BUKU BESAR PER AKUN
     function renderAccountStatement() {
       const selectEl = document.getElementById('statementAccountSelect');
       if (!selectEl) return;
@@ -1678,7 +1692,6 @@
       document.getElementById('statementTableBody').innerHTML = statementRowsHTML;
     }
 
-    // RENDER UI & ANALISIS
     function getTotals() {
       let income = 0, expense = 0, assets = 0;
       const filteredTx = getFilteredTransactions();
@@ -1909,7 +1922,7 @@
       `;
     }
 
-    // LAPORAN KEUANGAN PDF DENGAN LABA RUGI, NERACA, ARUS KAS, PERUBAHAN EKUITAS, CALK, ANALISIS & TTD PENGESAHAN
+    // LAPORAN KEUANGAN LENGKAP DENGAN SUB-AKUN REKENING PADA NERACA
     function renderPrintableReport() {
       const totals = getTotals();
       const filteredTx = getFilteredTransactions();
@@ -1939,124 +1952,149 @@
       const npm = totals.income > 0 ? ((totals.net / totals.income) * 100).toFixed(1) : 0;
       const expenseRatio = totals.income > 0 ? ((totals.expense / totals.income) * 100).toFixed(1) : 0;
 
-      // Generasi Rekomendasi Dinamis Berdasarkan Kondisi Keuangan
       let saranAnalisis = "";
       if (totals.net < 0) {
-        saranAnalisis = "Perusahaan mengalami defisit pada periode ini. Direkomendasikan melakukan efisiensi ketat pada pos pengeluaran operasional non-esensial dan mengoptimalkan penagihan piutang usaha yang tertunda.";
+        saranAnalisis = "Perusahaan mengalami defisit pada periode ini. Direkomendasikan melakukan efisiensi ketat pada pos pengeluaran operasional non-esensial dan mengoptimalkan penagihan piutang usaha.";
       } else if (expenseRatio > 70) {
-        saranAnalisis = "Perusahaan mencetak laba positif namun rasio pengeluaran tergolong tinggi (>70%). Diperlukan rasionalisasi biaya operasional agar margin keuntungan dapat ditingkatkan pada periode mendatang.";
+        saranAnalisis = "Perusahaan mencetak laba positif namun rasio pengeluaran tergolong tinggi (>70%). Diperlukan rasionalisasi biaya operasional agar margin keuntungan dapat ditingkatkan.";
       } else {
-        saranAnalisis = "Kinerja keuangan perusahaan berada pada kondisi sangat sehat dan efisien. Disarankan untuk mengalokasikan sebagian surplus laba bersih ke dalam dana cadangan ekspansi atau instrumen likuid berisiko rendah.";
+        saranAnalisis = "Kinerja keuangan perusahaan berada pada kondisi sangat sehat dan efisien. Disarankan untuk mengalokasikan sebagian surplus laba bersih ke dalam dana cadangan ekspansi.";
       }
 
-      document.getElementById('printableReport').innerHTML = `
-        <!-- HEADER KOP LAPORAN -->
-        <div class="border-b-2 border-amber-500 pb-6 mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      // Generate HTML Rincian Sub-Akun Rekening untuk Neraca
+      let subAccountsHTML = accounts.map(a => `
+        <tr class="border-b border-adaptive/40">
+          <td class="py-1.5 pl-6 pr-2 text-adaptive-sub font-mono text-[11px] flex items-center gap-1.5">
+            <i class="fa-solid fa-circle-dot text-[7px] text-amber-500"></i> ${a.name} <span class="text-[9px] text-adaptive-muted">(${a.type})</span>
+          </td>
+          <td class="py-1.5 px-2 text-right font-mono text-adaptive-main">Rp ${parseFloat(a.balance).toLocaleString()}</td>
+        </tr>
+      `).join('');
+
+      if (accounts.length === 0) {
+        subAccountsHTML = `<tr><td colspan="2" class="py-1 pl-6 text-adaptive-muted text-[11px]">Belum ada akun rekening</td></tr>`;
+      }
+
+      const reportHTML = `
+        <div class="space-y-8 text-xs">
+          <!-- HEADER KOP LAPORAN -->
+          <div class="border-b-2 border-amber-500 pb-4 text-center">
+            <h2 class="text-xl sm:text-2xl font-extrabold uppercase tracking-widest text-adaptive-main">AAAIIM ONEFINANCE ENTERPRISE</h2>
+            <p class="text-xs text-adaptive-muted font-bold tracking-wider mt-1 uppercase">Laporan Financial Statement & Audited Balance Sheet</p>
+            <p class="text-[11px] text-amber-600 dark:text-amber-400 font-semibold mt-2">Periode Laporan: ${filterText} | Dicetak Pada: ${reportDate}</p>
+          </div>
+
+          <!-- 1. LAPORAN LABA / RUGI -->
           <div>
-            <h1 class="text-xl sm:text-2xl font-black uppercase text-amber-600 dark:text-amber-400 tracking-wider">PT AAAIIM ONEFINANCE GLOBAL</h1>
-            <p class="text-xs text-adaptive-sub font-bold">Laporan Keuangan Konsolidasi Perusahaan (Enterprise Financial Statement)</p>
-            <p class="text-xs text-adaptive-muted mt-1 font-medium">Periode Filter: <strong class="text-adaptive-main">${filterText}</strong> | Tanggal Cetak: ${reportDate}</p>
-          </div>
-          <div class="text-left sm:text-right">
-            <span class="px-3 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/30 rounded text-xs font-extrabold uppercase tracking-widest">Dokumen Resmi Perusahaan</span>
-          </div>
-        </div>
-
-        <div class="space-y-8 text-xs sm:text-sm text-adaptive-sub">
-          
-          <!-- 1. LAPORAN LABA RUGI -->
-          <div class="dark-print-box p-4 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive">
-            <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 mb-3 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-file-invoice-dollar"></i> 1. LAPORAN LABA RUGI (INCOME STATEMENT)
+            <h3 class="font-black text-sm uppercase tracking-wider text-adaptive-main border-b border-adaptive pb-1 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-file-lines text-amber-500"></i> I. Laporan Laba / Rugi (Income Statement)
             </h3>
             <table class="w-full text-left border-collapse">
-              <thead>
-                <tr class="border-b border-adaptive text-adaptive-muted font-extrabold uppercase text-[11px] bg-slate-200/60 dark:bg-corporate-800/50">
-                  <th class="py-2.5 px-3">Uraian Akun Operasional</th>
-                  <th class="py-2.5 px-3 text-right">Jumlah (IDR)</th>
+              <tbody>
+                <tr class="font-bold bg-slate-100 dark:bg-corporate-900 border-b border-adaptive">
+                  <td class="py-2 px-2 text-adaptive-main uppercase" colspan="2">Pendapatan Operasional</td>
                 </tr>
-              </thead>
-              <tbody class="divide-y divide-adaptive">
-                <tr class="font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-corporate-800/30">
-                  <td class="py-2 px-3">TOTAL PENDAPATAN OPERASIONAL (REVENUE)</td>
-                  <td class="py-2 px-3 text-right font-mono">Rp ${totals.income.toLocaleString()}</td>
+                ${Object.keys(incomeCategories).map(cat => `
+                  <tr class="border-b border-adaptive/50">
+                    <td class="py-1.5 pl-4 pr-2 text-adaptive-sub">${cat}</td>
+                    <td class="py-1.5 px-2 text-right font-mono text-emerald-600 dark:text-emerald-400 font-bold">Rp ${incomeCategories[cat].toLocaleString()}</td>
+                  </tr>
+                `).join('')}
+                <tr class="font-extrabold border-b border-adaptive text-emerald-600 dark:text-emerald-400">
+                  <td class="py-2 px-2 uppercase">Total Pendapatan (Gross Revenue)</td>
+                  <td class="py-2 px-2 text-right font-mono">Rp ${totals.income.toLocaleString()}</td>
                 </tr>
-                ${Object.keys(incomeCategories).length > 0 ? Object.keys(incomeCategories).map(cat => `
-                  <tr>
-                    <td class="py-1.5 pl-6 text-adaptive-sub font-medium">Pendapatan - ${cat}</td>
-                    <td class="py-1.5 px-3 text-right font-mono text-emerald-600 dark:text-emerald-400">Rp ${incomeCategories[cat].toLocaleString()}</td>
-                  </tr>
-                `).join('') : `
-                  <tr>
-                    <td class="py-1.5 pl-6 text-adaptive-muted italic">Tidak ada rincian pendapatan</td>
-                    <td class="py-1.5 px-3 text-right font-mono text-adaptive-muted">-</td>
-                  </tr>
-                `}
-                <tr class="font-bold text-rose-600 dark:text-rose-400 bg-rose-50 dark:bg-corporate-800/30">
-                  <td class="py-2 px-3">TOTAL BEBAN OPERASIONAL (EXPENSES)</td>
-                  <td class="py-2 px-3 text-right font-mono">Rp ${totals.expense.toLocaleString()}</td>
+
+                <tr class="font-bold bg-slate-100 dark:bg-corporate-900 border-b border-adaptive">
+                  <td class="py-2 px-2 text-adaptive-main uppercase pt-4" colspan="2">Beban Operasional</td>
                 </tr>
-                ${Object.keys(expenseCategories).length > 0 ? Object.keys(expenseCategories).map(cat => `
-                  <tr>
-                    <td class="py-1.5 pl-6 text-adaptive-sub font-medium">Beban - ${cat}</td>
-                    <td class="py-1.5 px-3 text-right font-mono text-rose-600 dark:text-rose-400">Rp ${expenseCategories[cat].toLocaleString()}</td>
+                ${Object.keys(expenseCategories).map(cat => `
+                  <tr class="border-b border-adaptive/50">
+                    <td class="py-1.5 pl-4 pr-2 text-adaptive-sub">${cat}</td>
+                    <td class="py-1.5 px-2 text-right font-mono text-rose-600 dark:text-rose-400 font-bold">Rp ${expenseCategories[cat].toLocaleString()}</td>
                   </tr>
-                `).join('') : `
-                  <tr>
-                    <td class="py-1.5 pl-6 text-adaptive-muted italic">Tidak ada rincian beban</td>
-                    <td class="py-1.5 px-3 text-right font-mono text-adaptive-muted">-</td>
-                  </tr>
-                `}
-                <tr class="font-black text-amber-600 dark:text-amber-400 text-sm bg-amber-500/10 border-t-2 border-amber-500">
-                  <td class="py-3 px-3 uppercase">LABA / (RUGI) BERSIH PERIODE BERJALAN</td>
-                  <td class="py-3 px-3 text-right font-mono text-base">Rp ${totals.net.toLocaleString()}</td>
+                `).join('')}
+                <tr class="font-extrabold border-b border-adaptive text-rose-600 dark:text-rose-400">
+                  <td class="py-2 px-2 uppercase">Total Beban Operasional</td>
+                  <td class="py-2 px-2 text-right font-mono">Rp ${totals.expense.toLocaleString()}</td>
+                </tr>
+
+                <tr class="font-black text-sm bg-amber-500/10 border-t-2 border-amber-500 text-adaptive-main">
+                  <td class="py-3 px-2 uppercase">Laba Bersih Sebelum Pajak (Net Income)</td>
+                  <td class="py-3 px-2 text-right font-mono text-amber-600 dark:text-amber-400">Rp ${totals.net.toLocaleString()}</td>
                 </tr>
               </tbody>
             </table>
           </div>
 
-          <!-- 2. NERACA KEUANGAN KONSOLIDASI -->
-          <div class="dark-print-box p-4 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive">
-            <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 mb-3 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-scale-balanced"></i> 2. NERACA KEUANGAN (BALANCE SHEET)
+          <!-- 2. LAPORAN NERACA KEUANGAN (TERMASUK SUB-AKUN REKENING) -->
+          <div>
+            <h3 class="font-black text-sm uppercase tracking-wider text-adaptive-main border-b border-adaptive pb-1 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-scale-balanced text-amber-500"></i> II. Neraca Keuangan Konsolidasi (Balance Sheet)
             </h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <!-- ASET -->
-              <div>
-                <h4 class="font-bold text-xs uppercase text-cyan-600 dark:text-cyan-400 mb-2 border-b border-adaptive pb-1">AKTIVA / ASET</h4>
-                <table class="w-full text-left border-collapse">
-                  <tbody class="divide-y divide-adaptive text-xs">
-                    <tr>
-                      <td class="py-1.5 font-medium">Kas & Bank Likuid</td>
-                      <td class="py-1.5 text-right font-mono font-bold">Rp ${totals.assets.toLocaleString()}</td>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <!-- AKTIVA / ASET -->
+              <div class="border border-adaptive rounded-xl p-4 bg-slate-50 dark:bg-corporate-900/40">
+                <h4 class="font-extrabold uppercase text-xs text-adaptive-main border-b border-adaptive pb-2 mb-2 flex justify-between">
+                  <span>AKTIVA (ASET PERUSAHAAN)</span>
+                </h4>
+                <table class="w-full">
+                  <tbody>
+                    <tr class="font-bold border-b border-adaptive/40 text-adaptive-main">
+                      <td class="py-1.5 px-1">Aset Lancar (Current Assets):</td>
+                      <td class="py-1.5 px-1 text-right font-mono">Rp ${totalAsetKeseluruhan.toLocaleString()}</td>
                     </tr>
-                    <tr>
-                      <td class="py-1.5 font-medium">Piutang Usaha</td>
-                      <td class="py-1.5 text-right font-mono font-bold">Rp ${totals.totalPiutang.toLocaleString()}</td>
+                    
+                    <!-- RINCIAN SUB-AKUN KAS & REKENING BANK -->
+                    <tr class="font-semibold text-[11px] text-amber-600 dark:text-amber-400">
+                      <td class="py-1 pl-3 uppercase" colspan="2"><i class="fa-solid fa-angle-right text-[9px]"></i> Rincian Sub-Akun Rekening Kas & Bank:</td>
                     </tr>
-                    <tr class="font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border-t border-cyan-500">
-                      <td class="py-2">TOTAL ASET (AKTIVA)</td>
-                      <td class="py-2 text-right font-mono">Rp ${totalAsetKeseluruhan.toLocaleString()}</td>
+                    ${subAccountsHTML}
+                    <tr class="border-b border-adaptive/40">
+                      <td class="py-1.5 pl-6 pr-2 text-adaptive-sub font-mono text-[11px] flex items-center gap-1.5">
+                        <i class="fa-solid fa-circle-dot text-[7px] text-emerald-500"></i> Piutang Usaha (Tagihan)
+                      </td>
+                      <td class="py-1.5 px-2 text-right font-mono text-adaptive-main">Rp ${totals.totalPiutang.toLocaleString()}</td>
+                    </tr>
+
+                    <tr class="font-black border-t-2 border-amber-500 text-adaptive-main text-xs">
+                      <td class="py-2 px-1 uppercase pt-3">TOTAL AKTIVA</td>
+                      <td class="py-2 px-1 text-right font-mono text-amber-600 dark:text-amber-400 pt-3">Rp ${totalAsetKeseluruhan.toLocaleString()}</td>
                     </tr>
                   </tbody>
                 </table>
               </div>
-              <!-- PASIVA -->
-              <div>
-                <h4 class="font-bold text-xs uppercase text-amber-600 dark:text-amber-400 mb-2 border-b border-adaptive pb-1">PASIVA (KEWAJIBAN & EKUITAS)</h4>
-                <table class="w-full text-left border-collapse">
-                  <tbody class="divide-y divide-adaptive text-xs">
-                    <tr>
-                      <td class="py-1.5 font-medium">Hutang Usaha / Kewajiban</td>
-                      <td class="py-1.5 text-right font-mono font-bold text-rose-600 dark:text-rose-400">Rp ${totals.totalHutang.toLocaleString()}</td>
+
+              <!-- PASIVA / KEWAJIBAN & EKUITAS -->
+              <div class="border border-adaptive rounded-xl p-4 bg-slate-50 dark:bg-corporate-900/40">
+                <h4 class="font-extrabold uppercase text-xs text-adaptive-main border-b border-adaptive pb-2 mb-2 flex justify-between">
+                  <span>PASIVA (KEWAJIBAN & EKUITAS)</span>
+                </h4>
+                <table class="w-full">
+                  <tbody>
+                    <tr class="font-bold border-b border-adaptive/40 text-adaptive-main">
+                      <td class="py-1.5 px-1" colspan="2">Kewajiban / Liabilitas (Liabilities):</td>
                     </tr>
-                    <tr>
-                      <td class="py-1.5 font-medium">Ekuitas / Modal Akhir</td>
-                      <td class="py-1.5 text-right font-mono font-bold">Rp ${modalAkhirEkuitas.toLocaleString()}</td>
+                    <tr class="border-b border-adaptive/40">
+                      <td class="py-1.5 pl-6 pr-2 text-adaptive-sub font-mono text-[11px]">Hutang Usaha Belum Lunas</td>
+                      <td class="py-1.5 px-2 text-right font-mono text-rose-600 dark:text-rose-400 font-bold">Rp ${totals.totalHutang.toLocaleString()}</td>
                     </tr>
-                    <tr class="font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 border-t border-amber-500">
-                      <td class="py-2">TOTAL PASIVA</td>
-                      <td class="py-2 text-right font-mono">Rp ${totalPasiva.toLocaleString()}</td>
+
+                    <tr class="font-bold border-b border-adaptive/40 text-adaptive-main pt-2">
+                      <td class="py-1.5 px-1" colspan="2">Ekuitas Pemilik (Owner's Equity):</td>
+                    </tr>
+                    <tr class="border-b border-adaptive/40">
+                      <td class="py-1.5 pl-6 pr-2 text-adaptive-sub font-mono text-[11px]">Modal Awal Disetor (Estimasi)</td>
+                      <td class="py-1.5 px-2 text-right font-mono text-adaptive-main">Rp ${modalAwalEstimasi.toLocaleString()}</td>
+                    </tr>
+                    <tr class="border-b border-adaptive/40">
+                      <td class="py-1.5 pl-6 pr-2 text-adaptive-sub font-mono text-[11px]">Laba Ditahan Periode Berjalan</td>
+                      <td class="py-1.5 px-2 text-right font-mono text-amber-600 dark:text-amber-400 font-bold">Rp ${totals.net.toLocaleString()}</td>
+                    </tr>
+
+                    <tr class="font-black border-t-2 border-amber-500 text-adaptive-main text-xs">
+                      <td class="py-2 px-1 uppercase pt-3">TOTAL PASIVA</td>
+                      <td class="py-2 px-1 text-right font-mono text-amber-600 dark:text-amber-400 pt-3">Rp ${totalPasiva.toLocaleString()}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -2064,111 +2102,44 @@
             </div>
           </div>
 
-          <!-- 3. LAPORAN ARUS KAS (CASH FLOW STATEMENT) -->
-          <div class="dark-print-box p-4 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive">
-            <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 mb-3 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-money-bill-transfer"></i> 3. LAPORAN ARUS KAS (CASH FLOW STATEMENT)
+          <!-- 3. CATATAN ATAS LAPORAN KEUANGAN (CALK) & ANALISIS -->
+          <div class="border border-adaptive p-5 rounded-2xl bg-slate-50 dark:bg-corporate-900/60 dark-print-box">
+            <h3 class="font-black text-xs uppercase tracking-wider text-adaptive-main border-b border-adaptive pb-2 mb-3 flex items-center gap-2">
+              <i class="fa-solid fa-magnifying-glass-chart text-amber-500"></i> III. Catatan Atas Laporan Keuangan (CALK) & Rekomendasi
             </h3>
-            <table class="w-full text-left border-collapse">
-              <tbody class="divide-y divide-adaptive text-xs">
-                <tr>
-                  <td class="py-2 font-semibold">Arus Kas Masuk dari Aktivitas Operasional (Pemasukan Kas)</td>
-                  <td class="py-2 text-right font-mono font-bold text-emerald-600 dark:text-emerald-400">+ Rp ${totals.income.toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td class="py-2 font-semibold">Arus Kas Keluar untuk Aktivitas Operasional (Pengeluaran Kas)</td>
-                  <td class="py-2 text-right font-mono font-bold text-rose-600 dark:text-rose-400">- Rp ${totals.expense.toLocaleString()}</td>
-                </tr>
-                <tr class="font-bold text-adaptive-main bg-slate-200/50 dark:bg-corporate-800/50">
-                  <td class="py-2">ARUS KAS BERSIH (NET CASH FLOW)</td>
-                  <td class="py-2 text-right font-mono text-amber-600 dark:text-amber-400">Rp ${totals.net.toLocaleString()}</td>
-                </tr>
-                <tr class="font-extrabold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 border-t border-cyan-500">
-                  <td class="py-2.5 uppercase">TOTAL SALDO KAS & BANK PERIODE AKHIR</td>
-                  <td class="py-2.5 text-right font-mono text-sm">Rp ${totals.assets.toLocaleString()}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- 4. LAPORAN PERUBAHAN MODAL (STATEMENT OF CHANGES IN EQUITY) -->
-          <div class="dark-print-box p-4 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive">
-            <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 mb-3 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-chart-line-up"></i> 4. LAPORAN PERUBAHAN MODAL / EKUITAS
-            </h3>
-            <table class="w-full text-left border-collapse">
-              <tbody class="divide-y divide-adaptive text-xs">
-                <tr>
-                  <td class="py-2 font-medium">Modal Awal Estimasi</td>
-                  <td class="py-2 text-right font-mono font-bold">Rp ${modalAwalEstimasi.toLocaleString()}</td>
-                </tr>
-                <tr>
-                  <td class="py-2 font-medium">Laba / (Rugi) Bersih Periode Berjalan</td>
-                  <td class="py-2 text-right font-mono font-bold ${totals.net >= 0 ? 'text-emerald-600 dark:text-emerald-400' : 'text-rose-600 dark:text-rose-400'}">
-                    ${totals.net >= 0 ? '+' : ''} Rp ${totals.net.toLocaleString()}
-                  </td>
-                </tr>
-                <tr class="font-extrabold text-amber-600 dark:text-amber-400 bg-amber-500/10 border-t-2 border-amber-500">
-                  <td class="py-2.5 uppercase">MODAL / EKUITAS AKHIR PERIODE</td>
-                  <td class="py-2.5 text-right font-mono text-sm">Rp ${modalAkhirEkuitas.toLocaleString()}</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-
-          <!-- 5. CATATAN ATAS LAPORAN KEUANGAN (CALK) -->
-          <div class="dark-print-box p-4 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive space-y-3">
-            <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 mb-3 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-book-bookmark"></i> 5. CATATAN ATAS LAPORAN KEUANGAN (CALK)
-            </h3>
-            <div class="text-xs space-y-2 leading-relaxed">
-              <p><strong>5.1. Umum & Ketentuan Kebijakan Akuntansi:</strong> Laporan Keuangan PT AAAIIM ONEFINANCE GLOBAL disusun berdasarkan Prinsip Standar Akuntansi Keuangan (PSAK) berbasis akrual dan kas yang relevan. Seluruh pencatatan menggunakan satuan mata uang Rupiah (IDR).</p>
-              <p><strong>5.2. Kas & Setara Kas:</strong> Menggambarkan nilai total cadangan dana likuid yang berada pada rekening bank korporat serta kas tunai siap pakai dengan nilai total Rp ${totals.assets.toLocaleString()}.</p>
-              <p><strong>5.3. Kewajiban & Hak Piutang:</strong> Total kewajiban terutang (Hutang Usaha) yang wajib diselesaikan adalah sebesar Rp ${totals.totalHutang.toLocaleString()}, sedangkan tagihan aktif (Piutang Usaha) senilai Rp ${totals.totalPiutang.toLocaleString()}.</p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-[11px]">
+              <div>
+                <p class="font-bold text-adaptive-main">Rasio Profitabilitas (Net Margin): <span class="text-amber-600 dark:text-amber-400 font-mono">${npm}%</span></p>
+                <p class="font-bold text-adaptive-main mt-1">Rasio Beban Operasional: <span class="text-rose-600 dark:text-rose-400 font-mono">${expenseRatio}%</span></p>
+              </div>
+              <div>
+                <p class="font-bold text-adaptive-main">Status Kesehatan Finansial: <span class="text-emerald-600 dark:text-emerald-400 uppercase font-extrabold">${totals.net >= 0 ? 'SEHAT' : 'DEFISIT'}</span></p>
+              </div>
+            </div>
+            <div class="mt-3 pt-3 border-t border-adaptive text-[11px] text-adaptive-sub">
+              <p class="font-bold text-adaptive-main mb-1">Analisis Strategis Direksi:</p>
+              <p class="italic">${saranAnalisis}</p>
             </div>
           </div>
 
-          <!-- 6. ANALISIS, REKOMENDASI & SARAN KEUANGAN -->
-          <div class="dark-print-box p-4 rounded-xl bg-slate-50 dark:bg-corporate-900 border border-adaptive space-y-3">
-            <h3 class="font-extrabold text-amber-600 dark:text-amber-400 uppercase border-b border-adaptive pb-2 mb-3 text-sm flex items-center gap-2">
-              <i class="fa-solid fa-lightbulb"></i> 6. ANALISIS RASIO & SARAN STRATEGIS DIREKSI
-            </h3>
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 my-2">
-              <div class="p-3 bg-slate-200/50 dark:bg-corporate-800 rounded-lg">
-                <span class="text-[10px] uppercase font-bold text-adaptive-muted">Net Profit Margin (NPM)</span>
-                <p class="text-lg font-black text-amber-600 dark:text-amber-400 mt-1">${npm}%</p>
-              </div>
-              <div class="p-3 bg-slate-200/50 dark:bg-corporate-800 rounded-lg">
-                <span class="text-[10px] uppercase font-bold text-adaptive-muted">Rasio Beban Operasional</span>
-                <p class="text-lg font-black text-rose-600 dark:text-rose-400 mt-1">${expenseRatio}%</p>
-              </div>
-              <div class="p-3 bg-slate-200/50 dark:bg-corporate-800 rounded-lg">
-                <span class="text-[10px] uppercase font-bold text-adaptive-muted">Status Likuiditas</span>
-                <p class="text-lg font-black text-cyan-600 dark:text-cyan-400 mt-1">${totals.assets > totals.totalHutang ? 'AMAN' : 'WASPADA'}</p>
-              </div>
-            </div>
-            <p class="text-xs leading-relaxed font-medium"><strong>Rekomendasi & Saran Management:</strong> ${saranAnalisis}</p>
-          </div>
-
-          <!-- 7. TTD PENGESAHAN LAPORAN KEUANGAN -->
-          <div class="pt-8 border-t border-adaptive grid grid-cols-2 gap-8 text-center">
+          <!-- TANDA TANGAN PENGESAHAN -->
+          <div class="pt-8 grid grid-cols-2 gap-8 text-center text-[11px]">
             <div>
-              <p class="text-xs font-bold text-adaptive-sub uppercase tracking-wider mb-1">Dibuat Oleh,</p>
-              <p class="text-[10px] text-adaptive-muted uppercase mb-12">Staff Manajer Keuangan</p>
-              <div class="w-40 border-b border-adaptive mx-auto mb-1"></div>
-              <p class="text-xs font-bold text-adaptive-main">( Finance & Accounting Dept )</p>
+              <p class="text-adaptive-muted mb-12">Disiapkan Oleh,<br><strong>Staf Akuntansi / Keuangan</strong></p>
+              <p class="font-bold text-adaptive-main underline">( ______________________ )</p>
             </div>
             <div>
-              <p class="text-xs font-bold text-adaptive-sub uppercase tracking-wider mb-1">Disetujui & Disahkan Oleh,</p>
-              <p class="text-[10px] text-adaptive-muted uppercase mb-12">Direktur Utama / Chief Financial Officer</p>
-              <div class="w-40 border-b border-adaptive mx-auto mb-1"></div>
-              <p class="text-xs font-bold text-adaptive-main">( Executive Board Direksi )</p>
+              <p class="text-adaptive-muted mb-12">Disetujui Oleh,<br><strong>Direktur / Pemilik Perusahaan</strong></p>
+              <p class="font-bold text-adaptive-main underline">( ______________________ )</p>
             </div>
           </div>
-
         </div>
       `;
+
+      document.getElementById('printableReport').innerHTML = reportHTML;
     }
+
+    renderDashboard();
   </script>
 </body>
 </html>
