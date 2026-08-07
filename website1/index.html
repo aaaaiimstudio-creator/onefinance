@@ -150,7 +150,7 @@
 <body class="min-h-screen antialiased selection:bg-emerald-500 selection:text-white flex flex-col justify-between theme-emerald">
 
   <div>
-    <!-- COLOR CUSTOMIZER PANEL (TOOL MERUBAH WARNA TAMPILAN) -->
+    <!-- COLOR CUSTOMIZER PANEL -->
     <div id="colorCustomizerPanel" class="fixed bottom-6 right-6 z-50 transition-all duration-300">
       <div id="colorPickerBox" class="hidden glass-card p-4 rounded-2xl border border-adaptive shadow-2xl mb-3 flex flex-col gap-3 min-w-[200px] animate-bounce-in">
         <div class="flex justify-between items-center pb-2 border-b border-adaptive">
@@ -229,6 +229,51 @@
           <div class="flex gap-3 pt-2">
             <button type="button" onclick="closeEditTxModal()" class="w-1/2 py-3 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-bold rounded-xl text-xs uppercase transition-all">Batal</button>
             <button type="submit" class="w-1/2 py-3 brand-gradient text-slate-950 font-bold rounded-xl text-xs uppercase shadow-lg transition-all">Perbarui</button>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- MODAL EDIT TRANSFER -->
+    <div id="editTransferModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+      <div class="glass-card max-w-lg w-full p-5 sm:p-8 rounded-3xl border border-adaptive shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-6 border-b border-adaptive pb-3">
+          <h3 class="text-sm sm:text-base font-bold text-adaptive-main uppercase tracking-wider flex items-center gap-2">
+            <i class="fa-solid fa-pen-to-square text-cyan-500"></i> Edit Transaksi Transfer
+          </h3>
+          <button onclick="closeEditTransferModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+
+        <form id="editTransferForm" onsubmit="handleUpdateTransfer(event)" class="space-y-4">
+          <input type="hidden" id="editTransferId">
+          <div>
+            <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Rekening Sumber (Pengirim)</label>
+            <select id="editTransferFromAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium"></select>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Rekening Tujuan (Penerima)</label>
+            <select id="editTransferToAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium"></select>
+          </div>
+
+          <div>
+            <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Nominal (Rp)</label>
+            <input type="number" id="editTransferAmount" min="1" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium font-mono">
+          </div>
+
+          <div>
+            <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Tanggal Transfer</label>
+            <input type="date" id="editTransferDate" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
+          </div>
+
+          <div>
+            <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Memo Transfer</label>
+            <textarea id="editTransferNotes" rows="2" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium"></textarea>
+          </div>
+
+          <div class="flex gap-3 pt-2">
+            <button type="button" onclick="closeEditTransferModal()" class="w-1/2 py-3 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 text-slate-800 dark:text-white font-bold rounded-xl text-xs uppercase transition-all">Batal</button>
+            <button type="submit" class="w-1/2 py-3 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl text-xs uppercase shadow-lg transition-all">Simpan Perubahan</button>
           </div>
         </form>
       </div>
@@ -531,7 +576,7 @@
             </div>
           </div>
 
-          <!-- VISUAL CHARTS SECTION (TAMBAHAN GRAFIK INTERAKTIF) -->
+          <!-- VISUAL CHARTS SECTION -->
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="lg:col-span-2 glass-card p-5 rounded-3xl">
               <div class="flex justify-between items-center mb-4">
@@ -886,6 +931,7 @@
                     <th class="py-2.5 px-2">Transfer Rekening</th>
                     <th class="py-2.5 px-2">Memo / Catatan</th>
                     <th class="py-2.5 px-2 text-right">Nominal Transfer</th>
+                    <th class="py-2.5 px-2 text-center">Aksi</th>
                   </tr>
                 </thead>
                 <tbody id="transferHistoryBody" class="divide-y divide-adaptive text-xs font-medium">
@@ -939,7 +985,7 @@
           <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 no-print">
             <div>
               <h2 class="text-base font-bold text-adaptive-main uppercase tracking-wider">Laporan Keuangan Perusahaan Standar Akuntansi</h2>
-              <p class="text-xs text-adaptive-muted font-medium">Laporan Laba/Rugi, Neraca Kas, Arus Kas, Perubahan Ekuitas, CALK, serta Analisis & Saran Strategis.</p>
+              <p class="text-xs text-adaptive-muted font-medium">Laporan Laba/Rugi Spesifik, Arus Kas, Catatan Atas Laporan Keuangan (CALK), Analisis & Saran, serta TTD Pengesahan.</p>
             </div>
             <button onclick="window.print()" class="px-6 py-4 brand-gradient text-slate-950 font-bold rounded-xl shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider w-full sm:w-auto">
               <i class="fa-solid fa-file-pdf"></i> Unduh / Cetak Laporan PDF
@@ -966,7 +1012,7 @@
 
   <!-- FIREBASE & APPLICATION LOGIC -->
   <script>
-    // 1. KONFIGURASI FIREBASE (Sama 100% dengan bawaan Anda)
+    // 1. KONFIGURASI FIREBASE
     const firebaseConfig = {
       apiKey: "AIzaSyB8L2mjD2fiUqP3iAGccCh98MyIgsgM_14",
       authDomain: "aaaiim-onefinance.firebaseapp.com",
@@ -1086,6 +1132,8 @@
 
       if (tabName === 'rekeningkoran') {
         renderAccountStatement();
+      } else if (tabName === 'laporan') {
+        renderFinancialReport();
       }
     }
 
@@ -1484,6 +1532,90 @@
       showToast('🗑️ Jurnal Transaksi Dihapus!');
     }
 
+    /* FITUR EDIT & HAPUS TRANSFER ANTAR AKUN */
+    function openEditTransferModal(id) {
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      const tx = transactions.find(t => t.id === id);
+      if (!tx || tx.type !== 'Transfer') return;
+
+      updateAccountDropdowns();
+
+      document.getElementById('editTransferId').value = tx.id;
+      document.getElementById('editTransferFromAccount').value = tx.fromAccount || '';
+      document.getElementById('editTransferToAccount').value = tx.toAccount || '';
+      document.getElementById('editTransferAmount').value = tx.amount;
+      document.getElementById('editTransferDate').value = tx.date;
+      document.getElementById('editTransferNotes').value = tx.notes || '';
+
+      document.getElementById('editTransferModal').classList.remove('hidden');
+    }
+
+    function closeEditTransferModal() {
+      document.getElementById('editTransferModal').classList.add('hidden');
+    }
+
+    function handleUpdateTransfer(e) {
+      e.preventDefault();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+
+      const id = document.getElementById('editTransferId').value;
+      const oldTx = transactions.find(t => t.id === id);
+      if (!oldTx) return;
+
+      const newFrom = document.getElementById('editTransferFromAccount').value;
+      const newTo = document.getElementById('editTransferToAccount').value;
+      const newAmount = parseFloat(document.getElementById('editTransferAmount').value);
+      const newDate = document.getElementById('editTransferDate').value;
+      const newNotes = document.getElementById('editTransferNotes').value;
+
+      if (newFrom === newTo) return showToast('❌ Rekening sumber dan tujuan tidak boleh sama!');
+
+      // Kembalikan saldo awal
+      const oldFromAcc = accounts.find(a => a.name === oldTx.fromAccount);
+      const oldToAcc = accounts.find(a => a.name === oldTx.toAccount);
+      if (oldFromAcc) db.ref('accounts/' + oldFromAcc.id).update({ balance: parseFloat(oldFromAcc.balance || 0) + parseFloat(oldTx.amount) });
+      if (oldToAcc) db.ref('accounts/' + oldToAcc.id).update({ balance: parseFloat(oldToAcc.balance || 0) - parseFloat(oldTx.amount) });
+
+      // Terapkan saldo baru
+      const updatedTransfer = {
+        type: 'Transfer',
+        amount: newAmount,
+        account: `${newFrom} ➔ ${newTo}`,
+        fromAccount: newFrom,
+        toAccount: newTo,
+        category: 'Transfer Internal',
+        date: newDate,
+        notes: newNotes
+      };
+
+      db.ref('transactions/' + id).update(updatedTransfer);
+
+      const newFromAcc = accounts.find(a => a.name === newFrom);
+      const newToAcc = accounts.find(a => a.name === newTo);
+      if (newFromAcc) db.ref('accounts/' + newFromAcc.id).update({ balance: parseFloat(newFromAcc.balance || 0) - newAmount });
+      if (newToAcc) db.ref('accounts/' + newToAcc.id).update({ balance: parseFloat(newToAcc.balance || 0) + newAmount });
+
+      closeEditTransferModal();
+      showToast('✅ Transaksi Transfer Berhasil Diperbarui!');
+    }
+
+    function deleteTransfer(id) {
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      if (!confirm('Apakah Anda yakin ingin menghapus transaksi transfer dana ini? Saldo rekening akan dikembalikan.')) return;
+
+      const tx = transactions.find(t => t.id === id);
+      if (tx && tx.type === 'Transfer') {
+        const fromAcc = accounts.find(a => a.name === tx.fromAccount);
+        const toAcc = accounts.find(a => a.name === tx.toAccount);
+
+        if (fromAcc) db.ref('accounts/' + fromAcc.id).update({ balance: parseFloat(fromAcc.balance || 0) + parseFloat(tx.amount) });
+        if (toAcc) db.ref('accounts/' + toAcc.id).update({ balance: parseFloat(toAcc.balance || 0) - parseFloat(tx.amount) });
+      }
+
+      db.ref('transactions/' + id).remove();
+      showToast('🗑️ Transaksi Transfer Berhasil Dihapus!');
+    }
+
     function handleSaveDebt(e) {
       e.preventDefault();
       if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
@@ -1808,12 +1940,16 @@
       const elFrom = document.getElementById('transferFromAccount');
       const elTo = document.getElementById('transferToAccount');
       const elEditTx = document.getElementById('editTxAccount');
+      const elEditFrom = document.getElementById('editTransferFromAccount');
+      const elEditTo = document.getElementById('editTransferToAccount');
       const elStmtSelect = document.getElementById('statementAccountSelect');
 
       if(elTx) elTx.innerHTML = optionsHTML;
       if(elFrom) elFrom.innerHTML = optionsHTML;
       if(elTo) elTo.innerHTML = optionsHTML;
       if(elEditTx) elEditTx.innerHTML = optionsHTML;
+      if(elEditFrom) elEditFrom.innerHTML = optionsHTML;
+      if(elEditTo) elEditTo.innerHTML = optionsHTML;
       if(elStmtSelect && accounts.length > 0) {
         const currentVal = elStmtSelect.value;
         elStmtSelect.innerHTML = optionsHTML;
@@ -1866,7 +2002,7 @@
 
       const transfers = transactions.filter(t => t.type === 'Transfer');
       if (transfers.length === 0) {
-        transferBody.innerHTML = `<tr><td colspan="4" class="py-6 text-center text-adaptive-muted">Belum ada riwayat transfer antar rekening.</td></tr>`;
+        transferBody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-adaptive-muted">Belum ada riwayat transfer antar rekening.</td></tr>`;
         return;
       }
 
@@ -1877,6 +2013,10 @@
           <td class="py-3 px-2 text-adaptive-sub">${t.notes}</td>
           <td class="py-3 px-2 text-right font-black font-mono text-adaptive-main whitespace-nowrap">
             Rp ${parseFloat(t.amount).toLocaleString()}
+          </td>
+          <td class="py-3 px-2 text-center whitespace-nowrap">
+            <button onclick="openEditTransferModal('${t.id}')" class="p-1.5 text-cyan-500 hover:bg-cyan-500/10 rounded-lg transition-all" title="Edit Transfer"><i class="fa-solid fa-pen"></i></button>
+            <button onclick="deleteTransfer('${t.id}')" class="p-1.5 text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all ml-1" title="Hapus Transfer"><i class="fa-solid fa-trash"></i></button>
           </td>
         </tr>
       `).join('');
@@ -1952,6 +2092,231 @@
       }
     }
 
+    // RENDER MODUL LAPORAN KEUANGAN LENGKAP
+    function renderFinancialReport() {
+      const container = document.getElementById('printableReport');
+      if (!container) return;
+
+      const filtered = getFilteredTransactions();
+      const totals = getTotals();
+
+      // Kategori Laba Rugi Spesifik
+      let revenueCategories = {};
+      let hppCategories = {};
+      let opexCategories = {};
+      let nonOpIncCategories = {};
+      let nonOpExpCategories = {};
+
+      let totalRevenue = 0;
+      let totalHPP = 0;
+      let totalOpex = 0;
+      let totalNonOpInc = 0;
+      let totalNonOpExp = 0;
+
+      // Kategori Arus Kas
+      let operatingIn = 0, operatingOut = 0;
+      let investingIn = 0, investingOut = 0;
+      let financingIn = 0, financingOut = 0;
+
+      filtered.forEach(t => {
+        const amt = parseFloat(t.amount || 0);
+        const catLower = (t.category || '').toLowerCase();
+
+        if (t.type === 'Pendapatan') {
+          if (catLower.includes('investasi') || catLower.includes('aset') || catLower.includes('dividen')) {
+            investingIn += amt;
+            nonOpIncCategories[t.category] = (nonOpIncCategories[t.category] || 0) + amt;
+            totalNonOpInc += amt;
+          } else if (catLower.includes('modal') || catLower.includes('pinjaman') || catLower.includes('saham')) {
+            financingIn += amt;
+            nonOpIncCategories[t.category] = (nonOpIncCategories[t.category] || 0) + amt;
+            totalNonOpInc += amt;
+          } else {
+            operatingIn += amt;
+            revenueCategories[t.category] = (revenueCategories[t.category] || 0) + amt;
+            totalRevenue += amt;
+          }
+        } else if (t.type === 'Pengeluaran') {
+          if (catLower.includes('hpp') || catLower.includes('pokok') || catLower.includes('bahan') || catLower.includes('produksi')) {
+            operatingOut += amt;
+            hppCategories[t.category] = (hppCategories[t.category] || 0) + amt;
+            totalHPP += amt;
+          } else if (catLower.includes('investasi') || catLower.includes('aset') || catLower.includes('peralatan') || catLower.includes('mesin')) {
+            investingOut += amt;
+            nonOpExpCategories[t.category] = (nonOpExpCategories[t.category] || 0) + amt;
+            totalNonOpExp += amt;
+          } else if (catLower.includes('dividen') || catLower.includes('pelunasan pinjaman') || catLower.includes('obligasi')) {
+            financingOut += amt;
+            nonOpExpCategories[t.category] = (nonOpExpCategories[t.category] || 0) + amt;
+            totalNonOpExp += amt;
+          } else {
+            operatingOut += amt;
+            opexCategories[t.category] = (opexCategories[t.category] || 0) + amt;
+            totalOpex += amt;
+          }
+        }
+      });
+
+      const labaKotor = totalRevenue - totalHPP;
+      const labaOperasional = labaKotor - totalOpex;
+      const labaBersih = labaOperasional + (totalNonOpInc - totalNonOpExp);
+
+      const netOperatingCF = operatingIn - operatingOut;
+      const netInvestingCF = investingIn - investingOut;
+      const netFinancingCF = financingIn - financingOut;
+      const totalNetCF = netOperatingCF + netInvestingCF + netFinancingCF;
+
+      const currentDateFormatted = new Date().toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+
+      // Render HTML Laporan
+      container.innerHTML = `
+        <div class="text-center pb-6 mb-8 border-b-2 border-slate-700">
+          <h1 class="text-2xl font-black uppercase tracking-widest text-adaptive-main">PT AAAIIM WEALTH & CAPITAL MANAGEMENT</h1>
+          <h2 class="text-lg font-bold brand-text uppercase mt-1">LAPORAN KEUANGAN KONSOLIDASI KOMPREHENSIF</h2>
+          <p class="text-xs text-adaptive-muted mt-1 font-mono">Periode Laporan: Tanggal Cetak ${currentDateFormatted}</p>
+        </div>
+
+        <!-- 1. LAPORAN LABA RUGI SPESIFIK -->
+        <div class="mb-10">
+          <h3 class="text-sm font-extrabold uppercase tracking-wider brand-text mb-3 flex items-center gap-2 border-b border-adaptive pb-1">
+            <i class="fa-solid fa-file-lines"></i> 1. LAPORAN LABA RUGI SPESIFIK (INCOME STATEMENT)
+          </h3>
+          <table class="w-full text-xs font-medium border-collapse">
+            <tbody>
+              <!-- PENDAPATAN OPERASIONAL -->
+              <tr class="font-bold bg-slate-500/10"><td class="py-2 px-2" colspan="2">PENDAPATAN OPERASIONAL USAHA</td></tr>
+              ${Object.keys(revenueCategories).length > 0 ? Object.keys(revenueCategories).map(cat => `
+                <tr><td class="py-1 px-4 text-adaptive-sub">• ${cat}</td><td class="py-1 px-2 text-right font-mono">Rp ${revenueCategories[cat].toLocaleString()}</td></tr>
+              `).join('') : `<tr><td class="py-1 px-4 text-adaptive-muted italic">• Tidak ada transaksi penjualan/pendapatan</td><td class="py-1 px-2 text-right font-mono">Rp 0</td></tr>`}
+              <tr class="font-bold border-t border-adaptive"><td class="py-2 px-2">TOTAL PENDAPATAN OPERASIONAL (A)</td><td class="py-2 px-2 text-right font-mono brand-text">Rp ${totalRevenue.toLocaleString()}</td></tr>
+
+              <!-- BEBAN POKOK -->
+              <tr class="font-bold bg-slate-500/10"><td class="py-2 px-2" colspan="2">BEBAN POKOK PENDAPATAN (HPP)</td></tr>
+              ${Object.keys(hppCategories).length > 0 ? Object.keys(hppCategories).map(cat => `
+                <tr><td class="py-1 px-4 text-adaptive-sub">• ${cat}</td><td class="py-1 px-2 text-right font-mono text-rose-500">(Rp ${hppCategories[cat].toLocaleString()})</td></tr>
+              `).join('') : `<tr><td class="py-1 px-4 text-adaptive-muted italic">• Tidak ada HPP langsung</td><td class="py-1 px-2 text-right font-mono">Rp 0</td></tr>`}
+              <tr class="font-bold border-t border-adaptive"><td class="py-2 px-2">TOTAL BEBAN POKOK PENDAPATAN (B)</td><td class="py-2 px-2 text-right font-mono text-rose-500">(Rp ${totalHPP.toLocaleString()})</td></tr>
+
+              <!-- LABA KOTOR -->
+              <tr class="font-black bg-emerald-500/10 border-y border-emerald-500/30"><td class="py-2 px-2">LABA KOTOR (GROSS PROFIT) [A - B]</td><td class="py-2 px-2 text-right font-mono text-emerald-500">Rp ${labaKotor.toLocaleString()}</td></tr>
+
+              <!-- BEBAN OPERASIONAL -->
+              <tr class="font-bold bg-slate-500/10"><td class="py-2 px-2" colspan="2">BEBAN OPERASIONAL (OPERATING EXPENSES)</td></tr>
+              ${Object.keys(opexCategories).length > 0 ? Object.keys(opexCategories).map(cat => `
+                <tr><td class="py-1 px-4 text-adaptive-sub">• ${cat}</td><td class="py-1 px-2 text-right font-mono text-rose-500">(Rp ${opexCategories[cat].toLocaleString()})</td></tr>
+              `).join('') : `<tr><td class="py-1 px-4 text-adaptive-muted italic">• Tidak ada beban operasional</td><td class="py-1 px-2 text-right font-mono">Rp 0</td></tr>`}
+              <tr class="font-bold border-t border-adaptive"><td class="py-2 px-2">TOTAL BEBAN OPERASIONAL (C)</td><td class="py-2 px-2 text-right font-mono text-rose-500">(Rp ${totalOpex.toLocaleString()})</td></tr>
+
+              <!-- LABA OPERASIONAL -->
+              <tr class="font-black bg-emerald-500/10 border-y border-emerald-500/30"><td class="py-2 px-2">LABA OPERASIONAL (EBIT)</td><td class="py-2 px-2 text-right font-mono text-emerald-500">Rp ${labaOperasional.toLocaleString()}</td></tr>
+
+              <!-- NON-OPERASIONAL -->
+              <tr class="font-bold bg-slate-500/10"><td class="py-2 px-2" colspan="2">PENDAPATAN / (BEBAN) LAIN-LAIN (NON-OPERASIONAL)</td></tr>
+              <tr><td class="py-1 px-4 text-adaptive-sub">• Total Pendapatan Lain-Lain</td><td class="py-1 px-2 text-right font-mono">Rp ${totalNonOpInc.toLocaleString()}</td></tr>
+              <tr><td class="py-1 px-4 text-adaptive-sub">• Total Beban Lain-Lain / Investasi</td><td class="py-1 px-2 text-right font-mono text-rose-500">(Rp ${totalNonOpExp.toLocaleString()})</td></tr>
+
+              <!-- LABA BERSIH -->
+              <tr class="font-black text-sm bg-emerald-500/20 border-2 border-emerald-500"><td class="py-3 px-2">LABA (RUGI) BERSIH TAHUN BERJALAN (NET INCOME)</td><td class="py-3 px-2 text-right font-mono text-emerald-400">Rp ${labaBersih.toLocaleString()}</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 2. LAPORAN ARUS KAS -->
+        <div class="mb-10">
+          <h3 class="text-sm font-extrabold uppercase tracking-wider brand-text mb-3 flex items-center gap-2 border-b border-adaptive pb-1">
+            <i class="fa-solid fa-water"></i> 2. LAPORAN ARUS KAS (STATEMENT OF CASH FLOWS)
+          </h3>
+          <table class="w-full text-xs font-medium border-collapse">
+            <tbody>
+              <tr class="font-bold bg-slate-500/10"><td class="py-2 px-2" colspan="2">ARUS KAS DARI AKTIVITAS OPERASIONAL</td></tr>
+              <tr><td class="py-1 px-4 text-adaptive-sub">• Penerimaan Kas dari Pelanggan/Operasional</td><td class="py-1 px-2 text-right font-mono">Rp ${operatingIn.toLocaleString()}</td></tr>
+              <tr><td class="py-1 px-4 text-adaptive-sub">• Pembayaran Kas untuk Beban Operasional & Supplier</td><td class="py-1 px-2 text-right font-mono text-rose-500">(Rp ${operatingOut.toLocaleString()})</td></tr>
+              <tr class="font-bold border-t border-adaptive"><td class="py-2 px-2">Arus Kas Bersih dari Aktivitas Operasional</td><td class="py-2 px-2 text-right font-mono ${netOperatingCF >= 0 ? 'text-emerald-500' : 'text-rose-500'}">Rp ${netOperatingCF.toLocaleString()}</td></tr>
+
+              <tr class="font-bold bg-slate-500/10"><td class="py-2 px-2" colspan="2">ARUS KAS DARI AKTIVITAS INVESTASI</td></tr>
+              <tr><td class="py-1 px-4 text-adaptive-sub">• Hasil Pelepasan Aset/Investasi</td><td class="py-1 px-2 text-right font-mono">Rp ${investingIn.toLocaleString()}</td></tr>
+              <tr><td class="py-1 px-4 text-adaptive-sub">• Perolehan Aset Tetap / Pengeluaran Investasi</td><td class="py-1 px-2 text-right font-mono text-rose-500">(Rp ${investingOut.toLocaleString()})</td></tr>
+              <tr class="font-bold border-t border-adaptive"><td class="py-2 px-2">Arus Kas Bersih dari Aktivitas Investasi</td><td class="py-2 px-2 text-right font-mono ${netInvestingCF >= 0 ? 'text-emerald-500' : 'text-rose-500'}">Rp ${netInvestingCF.toLocaleString()}</td></tr>
+
+              <tr class="font-bold bg-slate-500/10"><td class="py-2 px-2" colspan="2">ARUS KAS DARI AKTIVITAS PENDANAAN</td></tr>
+              <tr><td class="py-1 px-4 text-adaptive-sub">• Penerimaan Pinjaman Modal / Saham</td><td class="py-1 px-2 text-right font-mono">Rp ${financingIn.toLocaleString()}</td></tr>
+              <tr><td class="py-1 px-4 text-adaptive-sub">• Pelunasan Pinjaman / Pembayaran Dividen</td><td class="py-1 px-2 text-right font-mono text-rose-500">(Rp ${financingOut.toLocaleString()})</td></tr>
+              <tr class="font-bold border-t border-adaptive"><td class="py-2 px-2">Arus Kas Bersih dari Aktivitas Pendanaan</td><td class="py-2 px-2 text-right font-mono ${netFinancingCF >= 0 ? 'text-emerald-500' : 'text-rose-500'}">Rp ${netFinancingCF.toLocaleString()}</td></tr>
+
+              <tr class="font-black text-xs bg-cyan-500/20 border-t-2 border-cyan-500"><td class="py-2.5 px-2">KENAIKAN (PENURUNAN) BERSIH KAS DAN BANK</td><td class="py-2.5 px-2 text-right font-mono text-cyan-400">Rp ${totalNetCF.toLocaleString()}</td></tr>
+              <tr class="font-black text-xs bg-cyan-500/30 border-b-2 border-cyan-500"><td class="py-2.5 px-2">SALDO AKHIR KAS KONSOLIDASI SISTEM</td><td class="py-2.5 px-2 text-right font-mono text-cyan-300">Rp ${totals.assets.toLocaleString()}</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- 3. CATATAN ATAS LAPORAN KEUANGAN (CALK) -->
+        <div class="mb-10">
+          <h3 class="text-sm font-extrabold uppercase tracking-wider brand-text mb-3 flex items-center gap-2 border-b border-adaptive pb-1">
+            <i class="fa-solid fa-book"></i> 3. CATATAN ATAS LAPORAN KEUANGAN (CALK)
+          </h3>
+          <div class="text-xs space-y-3 leading-relaxed text-adaptive-sub">
+            <p><strong>A. Dasar Penyusunan:</strong> Laporan Keuangan ini disusun berdasarkan Standar Akuntansi Keuangan Entitas Tanpa Akuntabilitas Publik (SAK ETAP) dengan basis akrual dan pencatatan mutasi kas realtime.</p>
+            <p><strong>B. Rincian Kas & Bank Konsolidasi:</strong> Total entitas akun kas terdaftar berjumlah <strong>${accounts.length} akun</strong> dengan saldo berjalan sebagai berikut:</p>
+            <div class="grid grid-cols-2 gap-2 my-2 font-mono text-[11px]">
+              ${accounts.map(a => `<div class="p-2 border border-adaptive rounded-lg bg-slate-500/5"><strong>${a.name} (${a.type}):</strong> Rp ${parseFloat(a.balance).toLocaleString()}</div>`).join('')}
+            </div>
+            <p><strong>C. Kewajiban & Hak Terutang:</strong> Per entitas laporan ini dicetak, terdapat kewajiban Hutang Usaha senilai <strong class="text-rose-500">Rp ${totals.totalHutang.toLocaleString()}</strong> dan Hak Piutang Tagihan senilai <strong class="text-emerald-500">Rp ${totals.totalPiutang.toLocaleString()}</strong>.</p>
+          </div>
+        </div>
+
+        <!-- 4. ANALISIS DAN SARAN STRATEGIS -->
+        <div class="mb-10">
+          <h3 class="text-sm font-extrabold uppercase tracking-wider brand-text mb-3 flex items-center gap-2 border-b border-adaptive pb-1">
+            <i class="fa-solid fa-lightbulb"></i> 4. ANALISIS KEBIJAKAN & SARAN STRATEGIS DIREKSI
+          </h3>
+          <div class="p-4 rounded-2xl border border-adaptive bg-slate-500/5 text-xs space-y-3">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-b border-adaptive pb-3">
+              <div>
+                <span class="text-adaptive-muted uppercase font-bold text-[10px]">Net Profit Margin (NPM):</span>
+                <p class="text-base font-black brand-text font-mono">${totalRevenue > 0 ? ((labaBersih / totalRevenue) * 100).toFixed(1) : 0}%</p>
+              </div>
+              <div>
+                <span class="text-adaptive-muted uppercase font-bold text-[10px]">Rasio Efisiensi Beban Operasional:</span>
+                <p class="text-base font-black text-rose-500 font-mono">${totalRevenue > 0 ? ((totalOpex / totalRevenue) * 100).toFixed(1) : 0}%</p>
+              </div>
+            </div>
+            <p><strong>📌 Rekomendasi & Evaluation Note:</strong></p>
+            <ul class="list-disc pl-4 space-y-1 text-adaptive-sub">
+              <li>${labaBersih >= 0 ? 'Perusahaan membukukan **Profit Positif**. Pertahankan efisiensi struktur biaya operasional.' : 'Perusahaan mengalami **Defisit/Rugi**. Disarankan untuk merestrukturisasi pos pengeluaran operasional terbesar.'}</li>
+              <li>Pastikan penagihan Piutang Usaha senilai **Rp ${totals.totalPiutang.toLocaleString()}** diprioritaskan untuk menambah cadangan likuiditas kas.</li>
+              <li>Alokasikan dana cadangan darurat kas sebesar minimal **15-20%** dari total asset likuid saat ini.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- 5. TTD PENGESAHAN RESMI -->
+        <div class="pt-6 border-t border-adaptive">
+          <h3 class="text-xs font-extrabold uppercase tracking-wider text-center text-adaptive-muted mb-8">LEMBAR PENGESAHAN LAPORAN KEUANGAN OFFICIAL</h3>
+          <div class="grid grid-cols-2 text-center text-xs">
+            <div>
+              <p class="text-adaptive-muted font-bold">Dibuat Oleh,</p>
+              <p class="text-[10px] text-adaptive-muted">Manajer Keuangan & Akuntansi</p>
+              <div class="h-20 flex items-center justify-center">
+                <span class="italic text-[10px] text-slate-500 border-b border-dashed border-slate-500 px-4">[ Tanda Tangan Digital Verified ]</span>
+              </div>
+              <p class="font-bold text-adaptive-main underline uppercase">${currentUser ? currentUser.name : 'Staf Keuangan'}</p>
+              <p class="text-[10px] text-adaptive-muted font-mono">NIP: FIN-8829102</p>
+            </div>
+
+            <div>
+              <p class="text-adaptive-muted font-bold">Disetujui Oleh,</p>
+              <p class="text-[10px] text-adaptive-muted">Direktur Utama / CEO</p>
+              <div class="h-20 flex items-center justify-center">
+                <span class="italic text-[10px] text-slate-500 border-b border-dashed border-slate-500 px-4">[ Tanda Tangan Digital Verified ]</span>
+              </div>
+              <p class="font-bold text-adaptive-main underline uppercase">Direksi Eksekutif</p>
+              <p class="text-[10px] text-adaptive-muted font-mono">AAAIIM Wealth Management</p>
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
     function renderDashboard() {
       const totals = getTotals();
       const filteredTx = getFilteredTransactions();
@@ -1963,6 +2328,36 @@
 
       if(document.getElementById('kpiTotalHutang')) document.getElementById('kpiTotalHutang').innerText = 'Rp ' + totals.totalHutang.toLocaleString();
       if(document.getElementById('kpiTotalPiutang')) document.getElementById('kpiTotalPiutang').innerText = 'Rp ' + totals.totalPiutang.toLocaleString();
+
+      // Render Analisis Tab Quick KPI
+      const npm = totals.income > 0 ? ((totals.net / totals.income) * 100).toFixed(1) : 0;
+      const expRatio = totals.income > 0 ? ((totals.expense / totals.income) * 100).toFixed(1) : 0;
+      
+      if(document.getElementById('npmValue')) document.getElementById('npmValue').innerText = npm + '%';
+      if(document.getElementById('expenseRatioValue')) document.getElementById('expenseRatioValue').innerText = expRatio + '%';
+
+      const healthScoreEl = document.getElementById('healthScore');
+      const healthDescEl = document.getElementById('healthDesc');
+      if (healthScoreEl && healthDescEl) {
+        if (totals.net >= 0 && totals.assets > 0) {
+          healthScoreEl.innerText = 'SEHAT (A+)';
+          healthScoreEl.className = 'text-3xl font-black text-emerald-500 mt-2';
+          healthDescEl.innerText = 'Kondisi kas stabil dengan rasio profitabilitas positif.';
+        } else {
+          healthScoreEl.innerText = 'WASPADA (C)';
+          healthScoreEl.className = 'text-3xl font-black text-rose-500 mt-2';
+          healthDescEl.innerText = 'Beban operasional melebihi pendapatan. Perlu efisiensi.';
+        }
+      }
+
+      const execSummary = document.getElementById('executiveSummary');
+      if (execSummary) {
+        execSummary.innerHTML = `
+          <p>• Total pemasukan yang berhasil dicatatkan adalah <strong>Rp ${totals.income.toLocaleString()}</strong> dengan beban pengeluaran operasional <strong>Rp ${totals.expense.toLocaleString()}</strong>.</p>
+          <p>• Laba bersih bersih yang berhasil dibukukan mencapai <strong>Rp ${totals.net.toLocaleString()}</strong>.</p>
+          <p>• Konsolidasi seluruh aset kas & bank berada pada posisi aman senilai <strong>Rp ${totals.assets.toLocaleString()}</strong>.</p>
+        `;
+      }
 
       const tbody = document.getElementById('txTableBody');
       if (filteredTx.length === 0) {
@@ -1987,7 +2382,10 @@
                 ${t.type !== 'Transfer' ? `
                   <button onclick="openEditTxModal('${t.id}')" class="p-1.5 brand-text hover:bg-slate-200 dark:hover:bg-slate-800 rounded-lg transition-all" title="Edit"><i class="fa-solid fa-pen"></i></button>
                   <button onclick="deleteTx('${t.id}')" class="p-1.5 text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all ml-1" title="Hapus"><i class="fa-solid fa-trash"></i></button>
-                ` : '-'}
+                ` : `
+                  <button onclick="openEditTransferModal('${t.id}')" class="p-1.5 text-cyan-500 hover:bg-cyan-500/10 rounded-lg transition-all" title="Edit Transfer"><i class="fa-solid fa-pen"></i></button>
+                  <button onclick="deleteTransfer('${t.id}')" class="p-1.5 text-rose-500 hover:bg-rose-500/10 rounded-lg transition-all ml-1" title="Hapus Transfer"><i class="fa-solid fa-trash"></i></button>
+                `}
               </td>
             </tr>
           `;
@@ -2031,138 +2429,24 @@
       updateAccountDropdowns();
 
       const cards = document.getElementById('accountCardsList');
-      cards.innerHTML = accounts.map(a => `
-        <div class="p-5 sm:p-6 rounded-3xl glass-card relative overflow-hidden flex justify-between items-center group hover:border-[var(--brand-primary)] transition-all">
-          <div>
-            <span class="text-[9px] font-extrabold brand-text border border-[var(--brand-glow)] px-2.5 py-0.5 rounded-full uppercase tracking-widest">${a.type}</span>
-            <h3 class="font-bold text-sm text-adaptive-main mt-2">${a.name}</h3>
-            <p class="text-xl sm:text-2xl font-black mt-1 font-mono text-adaptive-main">Rp ${parseFloat(a.balance).toLocaleString()}</p>
+      if (cards) {
+        cards.innerHTML = accounts.map(a => `
+          <div class="p-5 sm:p-6 rounded-3xl glass-card relative overflow-hidden flex justify-between items-center group hover:border-[var(--brand-primary)] transition-all">
+            <div>
+              <span class="text-[9px] font-extrabold brand-text border border-[var(--brand-glow)] px-2.5 py-0.5 rounded-full uppercase tracking-widest">${a.type}</span>
+              <h3 class="font-bold text-sm text-adaptive-main mt-2">${a.name}</h3>
+              <p class="text-xl sm:text-2xl font-black mt-1 font-mono text-adaptive-main">Rp ${parseFloat(a.balance).toLocaleString()}</p>
+            </div>
+            <button onclick="openEditAccModal('${a.id}')" class="p-3 bg-[var(--brand-light)] brand-text hover:bg-[var(--brand-primary)] hover:text-slate-950 rounded-2xl transition-all shadow-md">
+              <i class="fa-solid fa-pen-to-square"></i>
+            </button>
           </div>
-          <button onclick="openEditAccModal('${a.id}')" class="p-3 bg-[var(--brand-light)] brand-text hover:bg-[var(--brand-primary)] hover:text-slate-950 rounded-2xl border border-[var(--brand-glow)] transition-all text-xs font-bold uppercase tracking-wider flex items-center gap-1">
-            <i class="fa-solid fa-pen-to-square"></i> Edit
-          </button>
-        </div>
-      `).join('');
+        `).join('');
+      }
 
       renderTxHistory();
       renderTransferHistory();
-      renderAnalytics();
-      renderPrintableReport();
-      renderAccountStatement();
       renderCharts();
-    }
-
-    function renderAnalytics() {
-      const totals = getTotals();
-      const npm = totals.income > 0 ? ((totals.net / totals.income) * 100).toFixed(1) : 0;
-      const expenseRatio = totals.income > 0 ? ((totals.expense / totals.income) * 100).toFixed(1) : 0;
-
-      document.getElementById('npmValue').innerText = npm + '%';
-      document.getElementById('expenseRatioValue').innerText = expenseRatio + '%';
-
-      const healthScoreEl = document.getElementById('healthScore');
-      const healthDescEl = document.getElementById('healthDesc');
-
-      if (totals.net >= 0 && expenseRatio <= 70) {
-        healthScoreEl.innerText = 'SANGAT SEHAT';
-        healthScoreEl.className = 'text-3xl font-black text-emerald-500 mt-2';
-        healthDescEl.innerText = 'Profitabilitas tinggi dan beban operasional efisien.';
-      } else if (totals.net >= 0) {
-        healthScoreEl.innerText = 'STABIL';
-        healthScoreEl.className = 'text-3xl font-black text-amber-500 mt-2';
-        healthDescEl.innerText = 'Mencetak laba, tetapi rasio pengeluaran tergolong tinggi.';
-      } else {
-        healthScoreEl.innerText = 'DEFISIT';
-        healthScoreEl.className = 'text-3xl font-black text-rose-500 mt-2';
-        healthDescEl.innerText = 'Beban operasional melebihi pendapatan masuk.';
-      }
-
-      document.getElementById('executiveSummary').innerHTML = `
-        <div class="p-4 rounded-2xl bg-slate-100 dark:bg-corporate-900 border border-adaptive">
-          <p class="font-bold brand-text mb-1"><i class="fa-solid fa-chart-line"></i> Margin Laba Operasional (Periode Terpilih):</p>
-          <p>Net Profit Margin berada di angka <strong>${npm}%</strong> dari akumulasi pendapatan sebesar Rp ${totals.income.toLocaleString()}.</p>
-        </div>
-        <div class="p-4 rounded-2xl bg-slate-100 dark:bg-corporate-900 border border-adaptive">
-          <p class="font-bold text-cyan-500 mb-1"><i class="fa-solid fa-vault"></i> Konsolidasi Asset Kas:</p>
-          <p>Total cadangan kas dan likuiditas bank siap pakai saat ini sebesar <strong>Rp ${totals.assets.toLocaleString()}</strong>.</p>
-        </div>
-      `;
-    }
-
-    // LAPORAN KEUANGAN PDF FORMATTER
-    function renderPrintableReport() {
-      const totals = getTotals();
-      const filteredTx = getFilteredTransactions();
-
-      const filterIndicator = document.getElementById('filterPeriodIndicator');
-      const filterText = filterIndicator ? filterIndicator.innerText : 'Semua Periode';
-      const reportDate = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
-
-      const expenseCategories = {};
-      const incomeCategories = {};
-
-      filteredTx.forEach(t => {
-        if (t.type === 'Pengeluaran') {
-          expenseCategories[t.category] = (expenseCategories[t.category] || 0) + parseFloat(t.amount);
-        }
-        if (t.type === 'Pendapatan') {
-          incomeCategories[t.category] = (incomeCategories[t.category] || 0) + parseFloat(t.amount);
-        }
-      });
-
-      const totalAsetKeseluruhan = totals.assets + totals.totalPiutang;
-      const totalKewajiban = totals.totalHutang;
-      const modalAwalEstimasi = Math.max(0, totalAsetKeseluruhan - totals.net - totalKewajiban);
-      const modalAkhirEkuitas = modalAwalEstimasi + totals.net;
-
-      let accountSubDetails = accounts.map(a => `
-        <div class="flex justify-between py-1 border-b border-slate-200 dark:border-slate-800 text-xs">
-          <span>Kas/Bank: <strong>${a.name}</strong> (${a.type})</span>
-          <span class="font-mono">Rp ${parseFloat(a.balance).toLocaleString()}</span>
-        </div>
-      `).join('');
-
-      document.getElementById('printableReport').innerHTML = `
-        <div class="border-b-2 border-slate-700 pb-6 mb-6 flex justify-between items-center">
-          <div>
-            <h1 class="text-2xl font-black uppercase tracking-wider text-adaptive-main">AAAIIM OneFinance</h1>
-            <p class="text-xs text-adaptive-muted uppercase font-bold tracking-widest">Enterprise Wealth & Financial Statement</p>
-          </div>
-          <div class="text-right">
-            <span class="text-xs text-adaptive-muted font-bold block">Tanggal Cetak: ${reportDate}</span>
-            <span class="text-xs brand-text font-bold block">Periode: ${filterText}</span>
-          </div>
-        </div>
-
-        <div class="space-y-8">
-          <div>
-            <h3 class="text-sm font-bold uppercase border-b border-adaptive pb-2 mb-4 brand-text">I. Laporan Laba Rugi (Income Statement)</h3>
-            <div class="space-y-2 text-xs">
-              <div class="flex justify-between font-bold"><span>Total Pendapatan Operasional</span><span class="font-mono text-emerald-500">Rp ${totals.income.toLocaleString()}</span></div>
-              <div class="flex justify-between font-bold"><span>Total Beban Operasional</span><span class="font-mono text-rose-500">Rp ${totals.expense.toLocaleString()}</span></div>
-              <div class="flex justify-between font-black text-sm pt-2 border-t border-adaptive"><span>Laba Bersih Operasional (NOI)</span><span class="font-mono brand-text">Rp ${totals.net.toLocaleString()}</span></div>
-            </div>
-          </div>
-
-          <div>
-            <h3 class="text-sm font-bold uppercase border-b border-adaptive pb-2 mb-4 brand-text">II. Neraca Keuangan (Balance Sheet)</h3>
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
-              <div>
-                <h4 class="font-bold border-b pb-1 mb-2">ASET / AKTIVA</h4>
-                ${accountSubDetails}
-                <div class="flex justify-between py-1 border-b text-emerald-500"><span>Total Piutang Usaha</span><span class="font-mono">Rp ${totals.totalPiutang.toLocaleString()}</span></div>
-                <div class="flex justify-between font-bold text-sm pt-2"><span>TOTAL AKTIVA</span><span class="font-mono">Rp ${totalAsetKeseluruhan.toLocaleString()}</span></div>
-              </div>
-              <div>
-                <h4 class="font-bold border-b pb-1 mb-2">KEWAJIBAN & EKUITAS</h4>
-                <div class="flex justify-between py-1 border-b text-rose-500"><span>Hutang Usaha</span><span class="font-mono">Rp ${totals.totalHutang.toLocaleString()}</span></div>
-                <div class="flex justify-between py-1 border-b"><span>Ekuitas / Modal Akhir</span><span class="font-mono">Rp ${modalAkhirEkuitas.toLocaleString()}</span></div>
-                <div class="flex justify-between font-bold text-sm pt-2"><span>TOTAL PASIVA</span><span class="font-mono">Rp ${(totalKewajiban + modalAkhirEkuitas).toLocaleString()}</span></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
     }
   </script>
 </body>
