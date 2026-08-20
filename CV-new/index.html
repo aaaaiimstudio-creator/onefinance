@@ -16,6 +16,8 @@
         .cv-page { width: 210mm; min-height: 297mm; background: white; margin: auto; padding: 15mm; box-sizing: border-box; text-align: justify; }
         .section-title { border-bottom: 2px solid #2563eb; color: #1e293b; padding-bottom: 4px; margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 13px; display: flex; align-items: center; gap: 8px; page-break-after: avoid; text-align: left; }
         .section-title i { color: #2563eb; }
+        .cv-section { margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px dashed #e2e8f0; }
+        .cv-section:last-child { border-bottom: none; }
         ul { padding-left: 16px; margin: 0; text-align: justify; }
         li { margin-bottom: 3px; text-align: justify; }
         p { text-align: justify; }
@@ -72,37 +74,59 @@
             <textarea id="inRingkasan" rows="3" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed text-justify"></textarea>
         </div>
 
-        <!-- 3. Pengalaman Kerja (Dinamis / Bisa Tambah) -->
+        <!-- 3. Pengalaman Kerja (Bisa Geser Atas/Bawah) -->
         <div class="space-y-3 p-3 bg-slate-50 border rounded-xl">
             <div class="flex items-center justify-between">
                 <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">3. Pengalaman Kerja</h3>
-                <button onclick="addJobField()" class="text-[11px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1">
+                <button onclick="addEntry('job')" class="text-[11px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1">
                     <i class="fa-solid fa-plus"></i> Tambah Kerja
                 </button>
             </div>
             <div id="jobContainer" class="space-y-3"></div>
         </div>
 
-        <!-- 4. Pendidikan (Dinamis / Bisa Tambah) -->
+        <!-- 4. Pendidikan (Bisa Geser Atas/Bawah) -->
         <div class="space-y-3 p-3 bg-slate-50 border rounded-xl">
             <div class="flex items-center justify-between">
                 <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">4. Pendidikan</h3>
-                <button onclick="addEduField()" class="text-[11px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1">
+                <button onclick="addEntry('edu')" class="text-[11px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1">
                     <i class="fa-solid fa-plus"></i> Tambah Pendidikan
                 </button>
             </div>
             <div id="eduContainer" class="space-y-3"></div>
         </div>
 
-        <!-- 5. Keahlian -->
+        <!-- 5. Pengalaman Organisasi (Baru & Bisa Geser) -->
+        <div class="space-y-3 p-3 bg-slate-50 border rounded-xl">
+            <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">5. Pengalaman Organisasi</h3>
+                <button onclick="addEntry('org')" class="text-[11px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1">
+                    <i class="fa-solid fa-plus"></i> Tambah Organisasi
+                </button>
+            </div>
+            <div id="orgContainer" class="space-y-3"></div>
+        </div>
+
+        <!-- 6. Agenda Experience / Kegiatan (Baru & Bisa Geser) -->
+        <div class="space-y-3 p-3 bg-slate-50 border rounded-xl">
+            <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">6. Agenda Experience / Kegiatan</h3>
+                <button onclick="addEntry('agenda')" class="text-[11px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1">
+                    <i class="fa-solid fa-plus"></i> Tambah Agenda
+                </button>
+            </div>
+            <div id="agendaContainer" class="space-y-3"></div>
+        </div>
+
+        <!-- 7. Keahlian -->
         <div class="space-y-2">
-            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">5. Keahlian & Keterampilan</h3>
+            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">7. Keahlian & Keterampilan</h3>
             <textarea id="inKeahlian" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed text-justify"></textarea>
         </div>
 
-        <!-- 6. Sertifikasi & Bahasa -->
+        <!-- 8. Sertifikasi & Bahasa -->
         <div class="space-y-2">
-            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">6. Sertifikasi & Bahasa</h3>
+            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">8. Sertifikasi & Bahasa</h3>
             <textarea id="inSertifikasi" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed text-justify" placeholder="Sertifikasi..."></textarea>
             <textarea id="inBahasa" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed text-justify" placeholder="Bahasa..."></textarea>
         </div>
@@ -123,13 +147,13 @@
 
     <!-- ================= PREVIEW CV (KANAN) ================= -->
     <div class="lg:col-span-7 flex justify-center">
-        <div id="cvOutput" class="cv-page shadow-2xl space-y-5 text-slate-900 border border-slate-200 rounded-xl relative overflow-hidden">
+        <div id="cvOutput" class="cv-page shadow-2xl space-y-4 text-slate-900 border border-slate-200 rounded-xl relative overflow-hidden">
             
             <!-- Aksen Garis Gradasi Header -->
             <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-400"></div>
 
-            <!-- Header Info Personal dengan Foto Lebih Tinggi & Border Gradasi -->
-            <div class="flex items-center gap-6 border-b border-slate-200 pb-6 pt-2">
+            <!-- Header Info Personal -->
+            <div class="flex items-center gap-6 border-b border-slate-200 pb-5 pt-2 cv-section">
                 <div class="p-1.5 bg-gradient-to-tr from-blue-600 via-indigo-500 to-sky-400 rounded-2xl shadow-md shrink-0">
                     <img id="outFoto" src="https://via.placeholder.com/180" class="w-32 h-44 object-cover rounded-xl bg-white block">
                 </div>
@@ -146,25 +170,37 @@
             </div>
 
             <!-- Ringkasan -->
-            <div>
+            <div class="cv-section">
                 <h3 class="section-title"><i class="fa-solid fa-user-tie"></i> Ringkasan Profesional</h3>
                 <p id="outRingkasan" class="text-xs text-slate-700 leading-relaxed text-justify"></p>
             </div>
 
             <!-- Pengalaman Kerja -->
-            <div>
+            <div class="cv-section">
                 <h3 class="section-title"><i class="fa-solid fa-briefcase"></i> Pengalaman Kerja</h3>
                 <div id="outJobContainer" class="space-y-3"></div>
             </div>
 
             <!-- Pendidikan -->
-            <div>
+            <div class="cv-section">
                 <h3 class="section-title"><i class="fa-solid fa-graduation-cap"></i> Pendidikan</h3>
                 <div id="outEduContainer" class="space-y-3"></div>
             </div>
 
+            <!-- Pengalaman Organisasi -->
+            <div class="cv-section" id="sectionOrgWrapper">
+                <h3 class="section-title"><i class="fa-solid fa-users-rectangle"></i> Pengalaman Organisasi</h3>
+                <div id="outOrgContainer" class="space-y-3"></div>
+            </div>
+
+            <!-- Agenda Experience -->
+            <div class="cv-section" id="sectionAgendaWrapper">
+                <h3 class="section-title"><i class="fa-solid fa-calendar-days"></i> Agenda Experience / Kegiatan</h3>
+                <div id="outAgendaContainer" class="space-y-3"></div>
+            </div>
+
             <!-- Keahlian -->
-            <div>
+            <div class="cv-section">
                 <h3 class="section-title"><i class="fa-solid fa-code"></i> Keahlian & Keterampilan</h3>
                 <ul id="outKeahlian" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
             </div>
@@ -228,12 +264,20 @@
     const standardFields = ['inNama', 'inProfesi', 'inEmail', 'inTelepon', 'inLokasi', 'inLinkedin', 'inRingkasan', 'inKeahlian', 'inSertifikasi', 'inBahasa'];
 
     const defaultJobs = [
-        { title: "Senior Full Stack Engineer | PT Teknologi Maju Indonesia", periode: "2023 - Sekarang", desc: "- Memimpin tim teknis dalam pengembangan aplikasi web skala enterprise.\n- Mengoptimalkan performa kueri database hingga meningkatkan kecepatan loading 35%.\n- Berkolaborasi dengan product manager untuk merancang fitur inovatif." },
-        { title: "Frontend Developer | PT Solusi Digital Nusantara", periode: "2021 - 2023", desc: "- Mengembangkan antarmuka pengguna menggunakan React.js dan Tailwind CSS.\n- Mengintegrasikan RESTful API untuk mendukung fungsionalitas sistem." }
+        { title: "Senior Full Stack Engineer | PT Teknologi Maju Indonesia", periode: "2023 - Sekarang", desc: "- Memimpin tim teknis dalam pengembangan aplikasi web skala enterprise.\n- Mengoptimalkan performa kueri database hingga meningkatkan kecepatan loading 35%." },
+        { title: "Frontend Developer | PT Solusi Digital Nusantara", periode: "2021 - 2023", desc: "- Mengembangkan antarmuka pengguna menggunakan React.js dan Tailwind CSS." }
     ];
 
     const defaultEdu = [
         { title: "S1 Teknik Informatika | Institut Teknologi Bandung", periode: "2017 - 2021", desc: "- IPK: 3.82 / 4.00 (Cum Laude)\n- Penerima Beasiswa Unggulan Prestasi Akademik" }
+    ];
+
+    const defaultOrg = [
+        { title: "Ketua Umum | Himpunan Mahasiswa Informatika", periode: "2019 - 2020", desc: "- Mengkoordinasikan 50+ pengurus aktif dalam program kerja tahunan.\n- Mengelola anggaran dan kerja sama sponsor eksternal." }
+    ];
+
+    const defaultAgenda = [
+        { title: "Speaker / Narasumber | Tech Talk Nasional", periode: "2024", desc: "- Membagikan wawasan mengenai arsitektur web modern kepada 300+ peserta." }
     ];
 
     function bindList(text, outputElement) {
@@ -249,92 +293,64 @@
         });
     }
 
-    function renderJobInputs(jobs = defaultJobs) {
-        const container = document.getElementById('jobContainer');
+    function renderDynamicInputs(type, dataList) {
+        const container = document.getElementById(type + 'Container');
         container.innerHTML = '';
-        jobs.forEach((job, index) => {
+        dataList.forEach((item, index) => {
             const div = document.createElement('div');
             div.className = "p-3 bg-white border rounded-xl space-y-2 relative shadow-sm";
             div.innerHTML = `
                 <div class="flex justify-between items-center">
-                    <span class="text-[10px] font-bold text-blue-600 uppercase">Pekerjaan #${index + 1}</span>
-                    ${jobs.length > 1 ? `<button onclick="removeJobField(${index})" class="text-red-500 hover:text-red-700 text-xs"><i class="fa-solid fa-trash"></i></button>` : ''}
+                    <span class="text-[10px] font-bold text-blue-600 uppercase">${type.toUpperCase()} #${index + 1}</span>
+                    <div class="flex items-center gap-1">
+                        ${index > 0 ? `<button onclick="moveItem('${type}', ${index}, -1)" title="Geser ke Atas" class="text-slate-600 hover:text-blue-600 text-xs px-1"><i class="fa-solid fa-arrow-up"></i></button>` : ''}
+                        ${index < dataList.length - 1 ? `<button onclick="moveItem('${type}', ${index}, 1)" title="Geser ke Bawah" class="text-slate-600 hover:text-blue-600 text-xs px-1"><i class="fa-solid fa-arrow-down"></i></button>` : ''}
+                        <button onclick="removeEntry('${type}', ${index})" title="Hapus" class="text-red-500 hover:text-red-700 text-xs px-1 ml-1"><i class="fa-solid fa-trash"></i></button>
+                    </div>
                 </div>
-                <input type="text" placeholder="Posisi & Perusahaan" value="${job.title}" class="job-title w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
-                <input type="text" placeholder="Periode Kerja" value="${job.periode}" class="job-periode w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
-                <textarea rows="3" placeholder="Deskripsi Tugas (Gunakan tanda -)" class="job-desc w-full p-2 text-xs border rounded-lg bg-white leading-relaxed text-justify" oninput="triggerUpdate()">${job.desc}</textarea>
+                <input type="text" placeholder="Judul / Posisi / Instansi" value="${item.title}" class="${type}-title w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
+                <input type="text" placeholder="Periode (Contoh: 2023 - Sekarang)" value="${item.periode}" class="${type}-periode w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
+                <textarea rows="2" placeholder="Rincian / Tugas (Gunakan tanda -)" class="${type}-desc w-full p-2 text-xs border rounded-lg bg-white leading-relaxed text-justify" oninput="triggerUpdate()">${item.desc}</textarea>
             `;
             container.appendChild(div);
         });
     }
 
-    function renderEduInputs(eduList = defaultEdu) {
-        const container = document.getElementById('eduContainer');
-        container.innerHTML = '';
-        eduList.forEach((edu, index) => {
-            const div = document.createElement('div');
-            div.className = "p-3 bg-white border rounded-xl space-y-2 relative shadow-sm";
-            div.innerHTML = `
-                <div class="flex justify-between items-center">
-                    <span class="text-[10px] font-bold text-blue-600 uppercase">Pendidikan #${index + 1}</span>
-                    ${eduList.length > 1 ? `<button onclick="removeEduField(${index})" class="text-red-500 hover:text-red-700 text-xs"><i class="fa-solid fa-trash"></i></button>` : ''}
-                </div>
-                <input type="text" placeholder="Gelar & Institusi" value="${edu.title}" class="edu-title w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
-                <input type="text" placeholder="Periode Pendidikan" value="${edu.periode}" class="edu-periode w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
-                <textarea rows="2" placeholder="Rincian (Gunakan tanda -)" class="edu-desc w-full p-2 text-xs border rounded-lg bg-white leading-relaxed text-justify" oninput="triggerUpdate()">${edu.desc}</textarea>
-            `;
-            container.appendChild(div);
-        });
-    }
-
-    function addJobField() {
-        const jobs = collectJobsData();
-        jobs.push({ title: "", periode: "", desc: "" });
-        renderJobInputs(jobs);
-        triggerUpdate();
-    }
-
-    function removeJobField(index) {
-        const jobs = collectJobsData();
-        jobs.splice(index, 1);
-        renderJobInputs(jobs);
-        triggerUpdate();
-    }
-
-    function addEduField() {
-        const eduList = collectEduData();
-        eduList.push({ title: "", periode: "", desc: "" });
-        renderEduInputs(eduList);
-        triggerUpdate();
-    }
-
-    function removeEduField(index) {
-        const eduList = collectEduData();
-        eduList.splice(index, 1);
-        renderEduInputs(eduList);
-        triggerUpdate();
-    }
-
-    function collectJobsData() {
-        const titles = document.querySelectorAll('.job-title');
-        const periodes = document.querySelectorAll('.job-periode');
-        const descs = document.querySelectorAll('.job-desc');
-        let jobs = [];
+    function collectData(type) {
+        const titles = document.querySelectorAll('.' + type + '-title');
+        const periodes = document.querySelectorAll('.' + type + '-periode');
+        const descs = document.querySelectorAll('.' + type + '-desc');
+        let results = [];
         for(let i=0; i<titles.length; i++) {
-            jobs.push({ title: titles[i].value, periode: periodes[i].value, desc: descs[i].value });
+            results.push({ title: titles[i].value, periode: periodes[i].value, desc: descs[i].value });
         }
-        return jobs;
+        return results;
     }
 
-    function collectEduData() {
-        const titles = document.querySelectorAll('.edu-title');
-        const periodes = document.querySelectorAll('.edu-periode');
-        const descs = document.querySelectorAll('.edu-desc');
-        let eduList = [];
-        for(let i=0; i<titles.length; i++) {
-            eduList.push({ title: titles[i].value, periode: periodes[i].value, desc: descs[i].value });
+    function addEntry(type) {
+        let list = collectData(type);
+        list.push({ title: "", periode: "", desc: "" });
+        renderDynamicInputs(type, list);
+        triggerUpdate();
+    }
+
+    function removeEntry(type, index) {
+        let list = collectData(type);
+        list.splice(index, 1);
+        renderDynamicInputs(type, list);
+        triggerUpdate();
+    }
+
+    function moveItem(type, index, direction) {
+        let list = collectData(type);
+        const targetIndex = index + direction;
+        if (targetIndex >= 0 && targetIndex < list.length) {
+            const temp = list[index];
+            list[index] = list[targetIndex];
+            list[targetIndex] = temp;
+            renderDynamicInputs(type, list);
+            triggerUpdate();
         }
-        return eduList;
     }
 
     function updatePreview() {
@@ -350,41 +366,42 @@
         bindList(document.getElementById('inSertifikasi').value, document.getElementById('outSertifikasi'));
         bindList(document.getElementById('inBahasa').value, document.getElementById('outBahasa'));
 
-        const outJobContainer = document.getElementById('outJobContainer');
-        outJobContainer.innerHTML = '';
-        collectJobsData().forEach(job => {
-            if(job.title.trim() || job.desc.trim()) {
+        // Render dynamic sections to preview
+        renderPreviewList('job', 'outJobContainer');
+        renderPreviewList('edu', 'outEduContainer');
+        renderPreviewList('org', 'outOrgContainer', 'sectionOrgWrapper');
+        renderPreviewList('agenda', 'outAgendaContainer', 'sectionAgendaWrapper');
+    }
+
+    function renderPreviewList(type, outputId, wrapperId = null) {
+        const container = document.getElementById(outputId);
+        container.innerHTML = '';
+        const items = collectData(type);
+        let hasContent = false;
+
+        items.forEach(item => {
+            if(item.title.trim() || item.desc.trim()) {
+                hasContent = true;
                 const div = document.createElement('div');
                 div.innerHTML = `
                     <div class="flex justify-between font-bold text-xs text-slate-950">
-                        <span>${job.title}</span>
-                        <span>${job.periode}</span>
+                        <span>${item.title}</span>
+                        <span>${item.periode}</span>
                     </div>
                     <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed mt-1 text-justify"></ul>
                 `;
                 const ul = div.querySelector('ul');
-                bindList(job.desc, ul);
-                outJobContainer.appendChild(div);
+                bindList(item.desc, ul);
+                container.appendChild(div);
             }
         });
 
-        const outEduContainer = document.getElementById('outEduContainer');
-        outEduContainer.innerHTML = '';
-        collectEduData().forEach(edu => {
-            if(edu.title.trim() || edu.desc.trim()) {
-                const div = document.createElement('div');
-                div.innerHTML = `
-                    <div class="flex justify-between font-bold text-xs text-slate-950">
-                        <span>${edu.title}</span>
-                        <span>${edu.periode}</span>
-                    </div>
-                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
-                `;
-                const ul = div.querySelector('ul');
-                bindList(edu.desc, ul);
-                outEduContainer.appendChild(div);
+        if (wrapperId) {
+            const wrapper = document.getElementById(wrapperId);
+            if (wrapper) {
+                wrapper.style.display = hasContent ? 'block' : 'none';
             }
-        });
+        }
     }
 
     function triggerUpdate() {
@@ -396,8 +413,10 @@
     function getAllInputData() {
         let data = {};
         standardFields.forEach(f => data[f] = document.getElementById(f).value);
-        data.jobs = collectJobsData();
-        data.education = collectEduData();
+        data.jobs = collectData('job');
+        data.education = collectData('edu');
+        data.organization = collectData('org');
+        data.agenda = collectData('agenda');
         return data;
     }
 
@@ -405,8 +424,10 @@
         standardFields.forEach(f => {
             localStorage.setItem(f, document.getElementById(f).value);
         });
-        localStorage.setItem('savedJobs', JSON.stringify(collectJobsData()));
-        localStorage.setItem('savedEdu', JSON.stringify(collectEduData()));
+        localStorage.setItem('savedJobs', JSON.stringify(collectData('job')));
+        localStorage.setItem('savedEdu', JSON.stringify(collectData('edu')));
+        localStorage.setItem('savedOrg', JSON.stringify(collectData('org')));
+        localStorage.setItem('savedAgenda', JSON.stringify(collectData('agenda')));
     }
 
     window.addEventListener('DOMContentLoaded', () => {
@@ -428,10 +449,16 @@
         });
 
         const savedJobs = localStorage.getItem('savedJobs');
-        renderJobInputs(savedJobs ? JSON.parse(savedJobs) : defaultJobs);
+        renderDynamicInputs('job', savedJobs ? JSON.parse(savedJobs) : defaultJobs);
 
         const savedEdu = localStorage.getItem('savedEdu');
-        renderEduInputs(savedEdu ? JSON.parse(savedEdu) : defaultEdu);
+        renderDynamicInputs('edu', savedEdu ? JSON.parse(savedEdu) : defaultEdu);
+
+        const savedOrg = localStorage.getItem('savedOrg');
+        renderDynamicInputs('org', savedOrg ? JSON.parse(savedOrg) : defaultOrg);
+
+        const savedAgenda = localStorage.getItem('savedAgenda');
+        renderDynamicInputs('agenda', savedAgenda ? JSON.parse(savedAgenda) : defaultAgenda);
         
         const savedFoto = localStorage.getItem('inFoto');
         if(savedFoto) document.getElementById('outFoto').src = savedFoto;
