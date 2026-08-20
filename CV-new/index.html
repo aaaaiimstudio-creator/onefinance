@@ -13,11 +13,12 @@
     <style>
         @page { size: A4; margin: 0; }
         body { font-family: 'Helvetica', 'Arial', sans-serif; background-color: #f1f5f9; }
-        .cv-page { width: 210mm; min-height: 297mm; background: white; margin: auto; padding: 15mm; box-sizing: border-box; }
-        .section-title { border-bottom: 2px solid #2563eb; color: #1e293b; padding-bottom: 4px; margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 13px; display: flex; align-items: center; gap: 8px; page-break-after: avoid; }
+        .cv-page { width: 210mm; min-height: 297mm; background: white; margin: auto; padding: 15mm; box-sizing: border-box; text-align: justify; }
+        .section-title { border-bottom: 2px solid #2563eb; color: #1e293b; padding-bottom: 4px; margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 13px; display: flex; align-items: center; gap: 8px; page-break-after: avoid; text-align: left; }
         .section-title i { color: #2563eb; }
-        ul { padding-left: 16px; margin: 0; }
-        li { margin-bottom: 3px; }
+        ul { padding-left: 16px; margin: 0; text-align: justify; }
+        li { margin-bottom: 3px; text-align: justify; }
+        p { text-align: justify; }
         @media print { 
             .no-print { display: none !important; } 
             body { background: white; -webkit-print-color-adjust: exact; }
@@ -67,8 +68,8 @@
 
         <!-- 2. Ringkasan Eksekutif -->
         <div class="space-y-2">
-            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">2. Ringkasan Profesional</h3>
-            <textarea id="inRingkasan" rows="3" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed"></textarea>
+            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">2. Ringkasan Profesional (Rata Kanan Kiri)</h3>
+            <textarea id="inRingkasan" rows="3" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed text-justify"></textarea>
         </div>
 
         <!-- 3. Pengalaman Kerja (Dinamis / Bisa Tambah) -->
@@ -96,14 +97,14 @@
         <!-- 5. Keahlian -->
         <div class="space-y-2">
             <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">5. Keahlian & Keterampilan</h3>
-            <textarea id="inKeahlian" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed"></textarea>
+            <textarea id="inKeahlian" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed text-justify"></textarea>
         </div>
 
         <!-- 6. Sertifikasi & Bahasa -->
         <div class="space-y-2">
             <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">6. Sertifikasi & Bahasa</h3>
-            <textarea id="inSertifikasi" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed" placeholder="Sertifikasi..."></textarea>
-            <textarea id="inBahasa" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed" placeholder="Bahasa..."></textarea>
+            <textarea id="inSertifikasi" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed text-justify" placeholder="Sertifikasi..."></textarea>
+            <textarea id="inBahasa" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed text-justify" placeholder="Bahasa..."></textarea>
         </div>
 
         <!-- Tombol Aksi -->
@@ -120,7 +121,7 @@
         </div>
     </div>
 
-    <!-- ================= PREVIEW CV (KANAN) - FOTO LEBIH TINGGI & GRADASI ELEGAN ================= -->
+    <!-- ================= PREVIEW CV (KANAN) ================= -->
     <div class="lg:col-span-7 flex justify-center">
         <div id="cvOutput" class="cv-page shadow-2xl space-y-5 text-slate-900 border border-slate-200 rounded-xl relative overflow-hidden">
             
@@ -133,7 +134,7 @@
                     <img id="outFoto" src="https://via.placeholder.com/180" class="w-32 h-44 object-cover rounded-xl bg-white block">
                 </div>
                 <div class="flex-1">
-                    <h1 id="outNama" class="text-2xl font-black uppercase tracking-wide text-slate-900"></h1>
+                    <h1 id="outNama" class="text-2xl font-black uppercase tracking-wide text-slate-950"></h1>
                     <p id="outProfesi" class="text-sm font-bold text-blue-600 uppercase tracking-wider mt-1"></p>
                     <div class="text-[11px] text-slate-600 flex flex-wrap gap-x-4 gap-y-1.5 mt-3 font-medium">
                         <span id="outEmail"></span>
@@ -165,18 +166,18 @@
             <!-- Keahlian -->
             <div>
                 <h3 class="section-title"><i class="fa-solid fa-code"></i> Keahlian & Keterampilan</h3>
-                <ul id="outKeahlian" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed"></ul>
+                <ul id="outKeahlian" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
             </div>
 
             <!-- Sertifikasi & Bahasa -->
             <div class="grid grid-cols-2 gap-4">
                 <div>
                     <h3 class="section-title"><i class="fa-solid fa-certificate"></i> Sertifikasi</h3>
-                    <ul id="outSertifikasi" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed"></ul>
+                    <ul id="outSertifikasi" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
                 </div>
                 <div>
                     <h3 class="section-title"><i class="fa-solid fa-language"></i> Bahasa</h3>
-                    <ul id="outBahasa" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed"></ul>
+                    <ul id="outBahasa" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
                 </div>
             </div>
 
@@ -241,6 +242,7 @@
         lines.forEach(line => {
             if(line.trim()) {
                 const li = document.createElement('li');
+                li.className = "text-justify";
                 li.textContent = line.replace(/^- /, '');
                 outputElement.appendChild(li);
             }
@@ -260,7 +262,7 @@
                 </div>
                 <input type="text" placeholder="Posisi & Perusahaan" value="${job.title}" class="job-title w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
                 <input type="text" placeholder="Periode Kerja" value="${job.periode}" class="job-periode w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
-                <textarea rows="3" placeholder="Deskripsi Tugas (Gunakan tanda -)" class="job-desc w-full p-2 text-xs border rounded-lg bg-white leading-relaxed" oninput="triggerUpdate()">${job.desc}</textarea>
+                <textarea rows="3" placeholder="Deskripsi Tugas (Gunakan tanda -)" class="job-desc w-full p-2 text-xs border rounded-lg bg-white leading-relaxed text-justify" oninput="triggerUpdate()">${job.desc}</textarea>
             `;
             container.appendChild(div);
         });
@@ -279,7 +281,7 @@
                 </div>
                 <input type="text" placeholder="Gelar & Institusi" value="${edu.title}" class="edu-title w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
                 <input type="text" placeholder="Periode Pendidikan" value="${edu.periode}" class="edu-periode w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
-                <textarea rows="2" placeholder="Rincian (Gunakan tanda -)" class="edu-desc w-full p-2 text-xs border rounded-lg bg-white leading-relaxed" oninput="triggerUpdate()">${edu.desc}</textarea>
+                <textarea rows="2" placeholder="Rincian (Gunakan tanda -)" class="edu-desc w-full p-2 text-xs border rounded-lg bg-white leading-relaxed text-justify" oninput="triggerUpdate()">${edu.desc}</textarea>
             `;
             container.appendChild(div);
         });
@@ -354,11 +356,11 @@
             if(job.title.trim() || job.desc.trim()) {
                 const div = document.createElement('div');
                 div.innerHTML = `
-                    <div class="flex justify-between font-bold text-xs text-slate-900">
+                    <div class="flex justify-between font-bold text-xs text-slate-950">
                         <span>${job.title}</span>
                         <span>${job.periode}</span>
                     </div>
-                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed mt-1"></ul>
+                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed mt-1 text-justify"></ul>
                 `;
                 const ul = div.querySelector('ul');
                 bindList(job.desc, ul);
@@ -372,11 +374,11 @@
             if(edu.title.trim() || edu.desc.trim()) {
                 const div = document.createElement('div');
                 div.innerHTML = `
-                    <div class="flex justify-between font-bold text-xs text-slate-900">
+                    <div class="flex justify-between font-bold text-xs text-slate-950">
                         <span>${edu.title}</span>
                         <span>${edu.periode}</span>
                     </div>
-                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed mt-1"></ul>
+                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
                 `;
                 const ul = div.querySelector('ul');
                 bindList(edu.desc, ul);
@@ -478,7 +480,7 @@
 
     function downloadWord() {
         const cvContent = document.getElementById('cvOutput').innerHTML;
-        const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>CV ATS</title><style>body{font-family: Arial, sans-serif; text-align: justify; line-height: 1.4; color: #1e293b;} h3{border-bottom: 2px solid #2563eb; padding-bottom: 4px; margin-top: 15px;}</style></head><body>";
+        const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>CV ATS</title><style>body{font-family: Arial, sans-serif; text-align: justify; line-height: 1.4; color: #1e293b;} p, li {text-align: justify;} h3{border-bottom: 2px solid #2563eb; padding-bottom: 4px; margin-top: 15px; text-align: left;}</style></head><body>";
         const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(header + cvContent + "</body></html>");
         const fileDownload = document.createElement("a");
         fileDownload.href = source;
