@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate ATS Professional CV Generator</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- html2pdf Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        @page { size: A4; margin: 0; }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; background-color: #f1f5f9; }
+        .cv-page { width: 210mm; min-height: 297mm; background: white; margin: auto; padding: 15mm; box-sizing: border-box; }
+        .section-title { border-bottom: 2px solid #0f172a; color: #0f172a; padding-bottom: 3px; margin-bottom: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 13px; }
+        ul { padding-left: 16px; margin: 0; }
+        li { margin-bottom: 3px; }
+        @media print { 
+            .no-print { display: none !important; } 
+            body { background: white; }
+            .cv-page { box-shadow: none; margin: 0; padding: 10mm; }
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+<div class="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- ================= PANEL INPUT (KIRI) ================= -->
+    <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-xl no-print space-y-5 max-h-[88vh] overflow-y-auto border border-slate-200">
+        <div class="flex items-center justify-between border-b pb-3">
+            <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <i class="fa-solid fa-pen-to-square text-blue-600"></i> Panel Data CV
+            </h2>
+            <span id="autoSaveIndicator" class="text-[10px] bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
+                <i class="fa-solid fa-cloud text-emerald-600"></i> Auto-Saved
+            </span>
+        </div>
+        
+        <!-- Status Koneksi Firebase -->
+        <div id="firebaseStatus" class="text-[11px] bg-slate-100 text-slate-600 p-2.5 rounded-lg border flex items-center justify-between">
+            <span>Status: Menghubungkan ke Firebase...</span>
+            <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+        </div>
+
+        <!-- 1. Info Personal -->
+        <div class="space-y-3">
+            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">1. Informasi Personal</h3>
+            <div>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Foto Profil (Ukuran Besar)</label>
+                <input type="file" id="inFoto" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
+            </div>
+            <input type="text" id="inNama" placeholder="Nama Lengkap & Gelar" class="w-full p-2.5 text-xs border rounded-lg">
+            <input type="text" id="inProfesi" placeholder="Jabatan Utama" class="w-full p-2.5 text-xs border rounded-lg">
+            <div class="grid grid-cols-2 gap-2">
+                <input type="text" id="inEmail" placeholder="Email" class="p-2.5 text-xs border rounded-lg">
+                <input type="text" id="inTelepon" placeholder="Telepon" class="p-2.5 text-xs border rounded-lg">
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+                <input type="text" id="inLokasi" placeholder="Lokasi" class="p-2.5 text-xs border rounded-lg">
+                <input type="text" id="inLinkedin" placeholder="LinkedIn" class="p-2.5 text-xs border rounded-lg">
+            </div>
+        </div>
+
+        <!-- 2. Ringkasan Eksekutif -->
+        <div class="space-y-2">
+            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">2. Ringkasan Profesional (Justify)</h3>
+            <textarea id="inRingkasan" rows="3" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed"></textarea>
+        </div>
+
+        <!-- 3. Pengalaman Kerja -->
+        <div class="space-y-3 p-3 bg-slate-50 border rounded-xl">
+            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">3. Pengalaman Kerja</h3>
+            <div>
+                <label class="block text-[11px] font-medium text-slate-600 mb-1">Posisi & Perusahaan</label>
+                <input type="text" id="inJobTitle" class="w-full p-2 text-xs border rounded-lg bg-white">
+            </div>
+            <div>
+                <label class="block text-[11px] font-medium text-slate-600 mb-1">Periode Kerja</label>
+                <input type="text" id="inJobPeriode" class="w-full p-2 text-xs border rounded-lg bg-white">
+            </div>
+            <div>
+                <label class="block text-[11px] font-medium text-slate-600 mb-1">Deskripsi Tugas (Gunakan tanda -)</label>
+                <textarea id="inJobDesc" rows="4" class="w-full p-2 text-xs border rounded-lg bg-white leading-relaxed"></textarea>
+            </div>
+        </div>
+
+        <!-- 4. Pendidikan -->
+        <div class="space-y-3 p-3 bg-slate-50 border rounded-xl">
+            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">4. Pendidikan</h3>
+            <div>
+                <label class="block text-[11px] font-medium text-slate-600 mb-1">Gelar & Institusi</label>
+                <input type="text" id="inEduTitle" class="w-full p-2 text-xs border rounded-lg bg-white">
+            </div>
+            <div>
+                <label class="block text-[11px] font-medium text-slate-600 mb-1">Periode Pendidikan</label>
+                <input type="text" id="inEduPeriode" class="w-full p-2 text-xs border rounded-lg bg-white">
+            </div>
+            <div>
+                <label class="block text-[11px] font-medium text-slate-600 mb-1">Rincian (Gunakan tanda -)</label>
+                <textarea id="inEduDesc" rows="3" class="w-full p-2 text-xs border rounded-lg bg-white leading-relaxed"></textarea>
+            </div>
+        </div>
+
+        <!-- 5. Keahlian -->
+        <div class="space-y-2">
+            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">5. Keahlian & Keterampilan</h3>
+            <textarea id="inKeahlian" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed"></textarea>
+        </div>
+
+        <!-- 6. Sertifikasi & Bahasa -->
+        <div class="space-y-2">
+            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">6. Sertifikasi & Bahasa</h3>
+            <textarea id="inSertifikasi" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed"></textarea>
+            <textarea id="inBahasa" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed"></textarea>
+        </div>
+
+        <!-- Tombol Aksi -->
+        <div class="pt-3 border-t flex flex-col gap-2">
+            <button onclick="saveToFirebaseCloud()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up"></i> Sinkronisasi Manual ke Firebase
+            </button>
+            <button onclick="downloadPDF()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
+                <i class="fa-solid fa-file-pdf"></i> Download PDF (ATS Ready)
+            </button>
+            <button onclick="downloadWord()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
+                <i class="fa-solid fa-file-word"></i> Download Word (.doc)
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= PREVIEW CV (KANAN) ================= -->
+    <div class="lg:col-span-7 flex justify-center">
+        <div id="cvOutput" class="cv-page shadow-2xl space-y-4 text-slate-900 border border-slate-200 rounded-xl">
+            
+            <div class="flex items-center gap-6 border-b-2 border-slate-900 pb-5">
+                <img id="outFoto" src="https://via.placeholder.com/180" class="w-32 h-36 object-cover rounded-lg border-2 border-slate-800 shadow-md">
+                <div class="flex-1">
+                    <h1 id="outNama" class="text-2xl font-black uppercase tracking-wide text-slate-900"></h1>
+                    <p id="outProfesi" class="text-sm font-bold text-blue-700 uppercase tracking-wide mt-0.5"></p>
+                    <div class="text-[11px] text-slate-600 flex flex-wrap gap-x-3 gap-y-1 mt-2 font-medium">
+                        <span id="outEmail"></span>
+                        <span id="outTelepon"></span>
+                        <span id="outLokasi"></span>
+                        <span id="outLinkedin"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="section-title">Ringkasan Profesional</h3>
+                <p id="outRingkasan" class="text-xs text-slate-700 leading-relaxed text-justify"></p>
+            </div>
+
+            <div>
+                <h3 class="section-title">Pengalaman Kerja</h3>
+                <div class="space-y-2">
+                    <div>
+                        <div class="flex justify-between font-bold text-xs text-slate-900">
+                            <span id="outJobTitle"></span>
+                            <span id="outJobPeriode"></span>
+                        </div>
+                        <ul id="outJobDesc" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed mt-1"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="section-title">Pendidikan</h3>
+                <div class="space-y-2">
+                    <div>
+                        <div class="flex justify-between font-bold text-xs text-slate-900">
+                            <span id="outEduTitle"></span>
+                            <span id="outEduPeriode"></span>
+                        </div>
+                        <ul id="outEduDesc" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed mt-1"></ul>
+                    </div>
+                </div>
+            </div>
+
+            <div>
+                <h3 class="section-title">Keahlian & Keterampilan</h3>
+                <ul id="outKeahlian" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed"></ul>
+            </div>
+
+            <div class="grid grid-cols-2 gap-4">
+                <div>
+                    <h3 class="section-title">Sertifikasi</h3>
+                    <ul id="outSertifikasi" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed"></ul>
+                </div>
+                <div>
+                    <h3 class="section-title">Bahasa</h3>
+                    <ul id="outBahasa" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed"></ul>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- Firebase SDK & Auto-Save Logic -->
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+        const firebaseConfig = {
+        apiKey: "AIzaSyACLPGinyRVRDba_YGdaCnABeVm22-WglA",
+        authDomain: "aaaaiim-onefinance-cv.firebaseapp.com",
+        projectId: "aaaaiim-onefinance-cv",
+        storageBucket: "aaaaiim-onefinance-cv.firebasestorage.app",
+        messagingSenderId: "897642741307",
+        appId: "1:897642741307:web:dc63adb819ed74e935661e",
+        measurementId: "G-0KJ5PQ89BV"
+  };
+
+    let db = null;
+    try {
+        // Cek jika API Key masih placeholder bawaan
+        if (firebaseConfig.apiKey !== "API_KEY_ANDA_DISINI") {
+            const app = initializeApp(firebaseConfig);
+            db = getFirestore(app);
+            document.getElementById('firebaseStatus').innerHTML = `<span>Status: Terhubung ke Firebase Cloud ✅</span><span class="w-2 h-2 rounded-full bg-emerald-500"></span>`;
+        } else {
+            document.getElementById('firebaseStatus').innerHTML = `<span>Status: Mode Offline (Aman & Tersimpan di Browser) ℹ️</span><span class="w-2 h-2 rounded-full bg-blue-500"></span>`;
+        }
+    } catch (error) {
+        document.getElementById('firebaseStatus').innerHTML = `<span>Status: Mode Offline (Browser LocalStorage) ℹ️</span><span class="w-2 h-2 rounded-full bg-blue-500"></span>`;
+    }
+
+    window.saveToFirebaseCloud = async function() {
+        if (!db) {
+            alert("Firebase belum dikonfigurasi. Data Anda saat ini aman tersimpan otomatis di LocalStorage browser Anda!");
+            return;
+        }
+        try {
+            const cvData = getAllInputData();
+            const docRef = await addDoc(collection(db, "cv_database"), cvData);
+            alert("Berhasil sinkronisasi ke Firebase Cloud! ID: " + docRef.id);
+        } catch (e) {
+            alert("Gagal sinkronisasi: " + e.message);
+        }
+    };
+</script>
+
+<script>
+    const fields = ['inNama', 'inProfesi', 'inEmail', 'inTelepon', 'inLokasi', 'inLinkedin', 'inRingkasan', 'inJobTitle', 'inJobPeriode', 'inJobDesc', 'inEduTitle', 'inEduPeriode', 'inEduDesc', 'inKeahlian', 'inSertifikasi', 'inBahasa'];
+
+    const defaultData = {
+        inNama: "Rafi Ahmad Pratama, S.Kom.",
+        inProfesi: "Senior Full Stack Engineer",
+        inEmail: "rafi.ahmad@email.com",
+        inTelepon: "+62 813-9876-5432",
+        inLokasi: "Bandung, Indonesia",
+        inLinkedin: "linkedin.com/in/rafiahmad",
+        inRingkasan: "Software Engineer berpengalaman lebih dari 5 tahun dalam arsitektur sistem skala enterprise. Memiliki keahlian mendalam pada pengembangan backend, frontend, serta cloud deployment, serta berorientasi pada peningkatan performa sistem secara menyeluruh.",
+        inJobTitle: "Senior Full Stack Engineer | PT Teknologi Maju Indonesia",
+        inJobPeriode: "2023 - Sekarang",
+        inJobDesc: "- Memimpin tim teknis dalam pengembangan aplikasi web skala enterprise.\n- Mengoptimalkan performa kueri database hingga meningkatkan kecepatan loading 35%.\n- Berkolaborasi dengan product manager untuk merancang fitur inovatif.",
+        inEduTitle: "S1 Teknik Informatika | Institut Teknologi Bandung",
+        inEduPeriode: "2017 - 2021",
+        inEduDesc: "- IPK: 3.82 / 4.00 (Cum Laude)\n- Penerima Beasiswa Unggulan Prestasi Akademik\n- Ketua Himpunan Mahasiswa Informatika (2020)",
+        inKeahlian: "- JavaScript, TypeScript, React.js, Node.js\n- PostgreSQL, Docker, AWS, Git, Agile Methodology",
+        inSertifikasi: "- AWS Certified Solutions Architect (2024 - 2027)\n- Professional Scrum Master I (PSM I)",
+        inBahasa: "- Bahasa Indonesia (Native)\n- Bahasa Inggris (Professional Working Proficiency)"
+    };
+
+    function bindList(inputId, outputId) {
+        const input = document.getElementById(inputId);
+        const output = document.getElementById(outputId);
+        const lines = input.value.split('\n');
+        output.innerHTML = '';
+        lines.forEach(line => {
+            if(line.trim()) {
+                const li = document.createElement('li');
+                li.textContent = line.replace(/^- /, '');
+                output.appendChild(li);
+            }
+        });
+    }
+
+    function updatePreview() {
+        document.getElementById('outNama').textContent = document.getElementById('inNama').value;
+        document.getElementById('outProfesi').textContent = document.getElementById('inProfesi').value;
+        document.getElementById('outEmail').innerHTML = `<i class="fa-regular fa-envelope text-blue-600 mr-1"></i> ` + document.getElementById('inEmail').value;
+        document.getElementById('outTelepon').innerHTML = `<i class="fa-solid fa-phone text-blue-600 mr-1"></i> ` + document.getElementById('inTelepon').value;
+        document.getElementById('outLokasi').innerHTML = `<i class="fa-solid fa-location-dot text-blue-600 mr-1"></i> ` + document.getElementById('inLokasi').value;
+        document.getElementById('outLinkedin').innerHTML = `<i class="fa-brands fa-linkedin text-blue-600 mr-1"></i> ` + document.getElementById('inLinkedin').value;
+        document.getElementById('outRingkasan').textContent = document.getElementById('inRingkasan').value;
+        document.getElementById('outJobTitle').textContent = document.getElementById('inJobTitle').value;
+        document.getElementById('outJobPeriode').textContent = document.getElementById('inJobPeriode').value;
+        
+        bindList('inJobDesc', 'outJobDesc');
+        bindList('inEduDesc', 'outEduDesc');
+        bindList('inKeahlian', 'outKeahlian');
+        bindList('inSertifikasi', 'outSertifikasi');
+        bindList('inBahasa', 'outBahasa');
+    }
+
+    function getAllInputData() {
+        let data = {};
+        fields.forEach(f => data[f] = document.getElementById(f).value);
+        return data;
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        fields.forEach(f => {
+            const saved = localStorage.getItem(f);
+            document.getElementById(f).value = saved !== null ? saved : defaultData[f];
+        });
+        
+        const savedFoto = localStorage.getItem('inFoto');
+        if(savedFoto) document.getElementById('outFoto').src = savedFoto;
+
+        updatePreview();
+    });
+
+    fields.forEach(f => {
+        document.getElementById(f).addEventListener('input', () => {
+            localStorage.setItem(f, document.getElementById(f).value);
+            updatePreview();
+            showAutoSaveIndicator();
+        });
+    });
+
+    function showAutoSaveIndicator() {
+        const indicator = document.getElementById('autoSaveIndicator');
+        indicator.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-amber-600"></i> Menyimpan...`;
+        setTimeout(() => {
+            indicator.innerHTML = `<i class="fa-solid fa-cloud text-emerald-600"></i> Auto-Saved`;
+        }, 500);
+    }
+
+    document.getElementById('inFoto').addEventListener('change', e => {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = event => {
+                document.getElementById('outFoto').src = event.target.result;
+                localStorage.setItem('inFoto', event.target.result);
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+
+    function downloadPDF() {
+        const element = document.getElementById('cvOutput');
+        const opt = { margin: 0, filename: 'CV_ATS_Professional.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
+        html2pdf().from(element).set(opt).save();
+    }
+
+    function downloadWord() {
+        const cvContent = document.getElementById('cvOutput').innerHTML;
+        const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>CV ATS</title><style>body{font-family: Arial, sans-serif; text-align: justify;}</style></head><body>";
+        const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(header + cvContent + "</body></html>");
+        const fileDownload = document.createElement("a");
+        fileDownload.href = source;
+        fileDownload.download = 'CV_ATS_Professional.doc';
+        fileDownload.click();
+    }
+</script>
+</body>
+</html>
