@@ -206,6 +206,7 @@
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
+        const firebaseConfig = {
         apiKey: "AIzaSyACLPGinyRVRDba_YGdaCnABeVm22-WglA",
         authDomain: "aaaaiim-onefinance-cv.firebaseapp.com",
         projectId: "aaaaiim-onefinance-cv",
