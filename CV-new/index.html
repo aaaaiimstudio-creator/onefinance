@@ -14,7 +14,8 @@
         @page { size: A4; margin: 0; }
         body { font-family: 'Helvetica', 'Arial', sans-serif; background-color: #f1f5f9; }
         .cv-page { width: 210mm; min-height: 297mm; background: white; margin: auto; padding: 15mm; box-sizing: border-box; }
-        .section-title { border-bottom: 2px solid #0f172a; color: #0f172a; padding-bottom: 3px; margin-bottom: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 13px; }
+        .section-title { border-bottom: 2px solid #2563eb; color: #1e293b; padding-bottom: 4px; margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+        .section-title i { color: #2563eb; }
         ul { padding-left: 16px; margin: 0; }
         li { margin-bottom: 3px; }
         @media print { 
@@ -49,7 +50,7 @@
         <div class="space-y-3">
             <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">1. Informasi Personal</h3>
             <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Foto Profil (Ukuran Besar)</label>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Foto Profil (Gradasi Elegan)</label>
                 <input type="file" id="inFoto" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
             </div>
             <input type="text" id="inNama" placeholder="Nama Lengkap & Gelar" class="w-full p-2.5 text-xs border rounded-lg">
@@ -66,41 +67,33 @@
 
         <!-- 2. Ringkasan Eksekutif -->
         <div class="space-y-2">
-            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">2. Ringkasan Profesional (Justify)</h3>
+            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">2. Ringkasan Profesional</h3>
             <textarea id="inRingkasan" rows="3" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed"></textarea>
         </div>
 
-        <!-- 3. Pengalaman Kerja -->
+        <!-- 3. Pengalaman Kerja (Dinamis / Bisa Tambah) -->
         <div class="space-y-3 p-3 bg-slate-50 border rounded-xl">
-            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">3. Pengalaman Kerja</h3>
-            <div>
-                <label class="block text-[11px] font-medium text-slate-600 mb-1">Posisi & Perusahaan</label>
-                <input type="text" id="inJobTitle" class="w-full p-2 text-xs border rounded-lg bg-white">
+            <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">3. Pengalaman Kerja</h3>
+                <button onclick="addJobField()" class="text-[11px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1">
+                    <i class="fa-solid fa-plus"></i> Tambah Kerja
+                </button>
             </div>
-            <div>
-                <label class="block text-[11px] font-medium text-slate-600 mb-1">Periode Kerja</label>
-                <input type="text" id="inJobPeriode" class="w-full p-2 text-xs border rounded-lg bg-white">
-            </div>
-            <div>
-                <label class="block text-[11px] font-medium text-slate-600 mb-1">Deskripsi Tugas (Gunakan tanda -)</label>
-                <textarea id="inJobDesc" rows="4" class="w-full p-2 text-xs border rounded-lg bg-white leading-relaxed"></textarea>
+            <div id="jobContainer" class="space-y-3">
+                <!-- Container Item Kerja Dinamis -->
             </div>
         </div>
 
-        <!-- 4. Pendidikan -->
+        <!-- 4. Pendidikan (Dinamis / Bisa Tambah) -->
         <div class="space-y-3 p-3 bg-slate-50 border rounded-xl">
-            <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">4. Pendidikan</h3>
-            <div>
-                <label class="block text-[11px] font-medium text-slate-600 mb-1">Gelar & Institusi</label>
-                <input type="text" id="inEduTitle" class="w-full p-2 text-xs border rounded-lg bg-white">
+            <div class="flex items-center justify-between">
+                <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">4. Pendidikan</h3>
+                <button onclick="addEduField()" class="text-[11px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1">
+                    <i class="fa-solid fa-plus"></i> Tambah Pendidikan
+                </button>
             </div>
-            <div>
-                <label class="block text-[11px] font-medium text-slate-600 mb-1">Periode Pendidikan</label>
-                <input type="text" id="inEduPeriode" class="w-full p-2 text-xs border rounded-lg bg-white">
-            </div>
-            <div>
-                <label class="block text-[11px] font-medium text-slate-600 mb-1">Rincian (Gunakan tanda -)</label>
-                <textarea id="inEduDesc" rows="3" class="w-full p-2 text-xs border rounded-lg bg-white leading-relaxed"></textarea>
+            <div id="eduContainer" class="space-y-3">
+                <!-- Container Item Pendidikan Dinamis -->
             </div>
         </div>
 
@@ -113,8 +106,8 @@
         <!-- 6. Sertifikasi & Bahasa -->
         <div class="space-y-2">
             <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">6. Sertifikasi & Bahasa</h3>
-            <textarea id="inSertifikasi" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed"></textarea>
-            <textarea id="inBahasa" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed"></textarea>
+            <textarea id="inSertifikasi" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed" placeholder="Sertifikasi..."></textarea>
+            <textarea id="inBahasa" rows="2" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed" placeholder="Bahasa..."></textarea>
         </div>
 
         <!-- Tombol Aksi -->
@@ -131,16 +124,23 @@
         </div>
     </div>
 
-    <!-- ================= PREVIEW CV (KANAN) ================= -->
+    <!-- ================= PREVIEW CV (KANAN) - TEMPLATE BARU & FOTO GRADASI ================= -->
     <div class="lg:col-span-7 flex justify-center">
-        <div id="cvOutput" class="cv-page shadow-2xl space-y-4 text-slate-900 border border-slate-200 rounded-xl">
+        <div id="cvOutput" class="cv-page shadow-2xl space-y-5 text-slate-900 border border-slate-200 rounded-xl relative overflow-hidden">
             
-            <div class="flex items-center gap-6 border-b-2 border-slate-900 pb-5">
-                <img id="outFoto" src="https://via.placeholder.com/180" class="w-32 h-36 object-cover rounded-lg border-2 border-slate-800 shadow-md">
+            <!-- Aksen Desain Modern Header -->
+            <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-400"></div>
+
+            <!-- Header Info Personal dengan Foto Gradasi Besar -->
+            <div class="flex items-center gap-6 border-b border-slate-200 pb-6 pt-2">
+                <!-- Wrapper Foto dengan Border Gradasi -->
+                <div class="p-1 bg-gradient-to-tr from-blue-600 to-indigo-400 rounded-2xl shadow-lg shrink-0">
+                    <img id="outFoto" src="https://via.placeholder.com/180" class="w-36 h-40 object-cover rounded-xl bg-white">
+                </div>
                 <div class="flex-1">
                     <h1 id="outNama" class="text-2xl font-black uppercase tracking-wide text-slate-900"></h1>
-                    <p id="outProfesi" class="text-sm font-bold text-blue-700 uppercase tracking-wide mt-0.5"></p>
-                    <div class="text-[11px] text-slate-600 flex flex-wrap gap-x-3 gap-y-1 mt-2 font-medium">
+                    <p id="outProfesi" class="text-sm font-bold text-blue-600 uppercase tracking-wider mt-1"></p>
+                    <div class="text-[11px] text-slate-600 flex flex-wrap gap-x-4 gap-y-1.5 mt-3 font-medium">
                         <span id="outEmail"></span>
                         <span id="outTelepon"></span>
                         <span id="outLokasi"></span>
@@ -149,49 +149,42 @@
                 </div>
             </div>
 
+            <!-- Ringkasan -->
             <div>
-                <h3 class="section-title">Ringkasan Profesional</h3>
+                <h3 class="section-title"><i class="fa-solid fa-user-tie"></i> Ringkasan Profesional</h3>
                 <p id="outRingkasan" class="text-xs text-slate-700 leading-relaxed text-justify"></p>
             </div>
 
+            <!-- Pengalaman Kerja (Dinamis Render) -->
             <div>
-                <h3 class="section-title">Pengalaman Kerja</h3>
-                <div class="space-y-2">
-                    <div>
-                        <div class="flex justify-between font-bold text-xs text-slate-900">
-                            <span id="outJobTitle"></span>
-                            <span id="outJobPeriode"></span>
-                        </div>
-                        <ul id="outJobDesc" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed mt-1"></ul>
-                    </div>
+                <h3 class="section-title"><i class="fa-solid fa-briefcase"></i> Pengalaman Kerja</h3>
+                <div id="outJobContainer" class="space-y-3">
+                    <!-- Render hasil pekerjaan dinamis -->
                 </div>
             </div>
 
+            <!-- Pendidikan (Dinamis Render) -->
             <div>
-                <h3 class="section-title">Pendidikan</h3>
-                <div class="space-y-2">
-                    <div>
-                        <div class="flex justify-between font-bold text-xs text-slate-900">
-                            <span id="outEduTitle"></span>
-                            <span id="outEduPeriode"></span>
-                        </div>
-                        <ul id="outEduDesc" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed mt-1"></ul>
-                    </div>
+                <h3 class="section-title"><i class="fa-solid fa-graduation-cap"></i> Pendidikan</h3>
+                <div id="outEduContainer" class="space-y-3">
+                    <!-- Render hasil pendidikan dinamis -->
                 </div>
             </div>
 
+            <!-- Keahlian -->
             <div>
-                <h3 class="section-title">Keahlian & Keterampilan</h3>
+                <h3 class="section-title"><i class="fa-solid fa-code"></i> Keahlian & Keterampilan</h3>
                 <ul id="outKeahlian" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed"></ul>
             </div>
 
+            <!-- Sertifikasi & Bahasa -->
             <div class="grid grid-cols-2 gap-4">
                 <div>
-                    <h3 class="section-title">Sertifikasi</h3>
+                    <h3 class="section-title"><i class="fa-solid fa-certificate"></i> Sertifikasi</h3>
                     <ul id="outSertifikasi" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed"></ul>
                 </div>
                 <div>
-                    <h3 class="section-title">Bahasa</h3>
+                    <h3 class="section-title"><i class="fa-solid fa-language"></i> Bahasa</h3>
                     <ul id="outBahasa" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed"></ul>
                 </div>
             </div>
@@ -206,7 +199,6 @@
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
-        const firebaseConfig = {
         apiKey: "AIzaSyACLPGinyRVRDba_YGdaCnABeVm22-WglA",
         authDomain: "aaaaiim-onefinance-cv.firebaseapp.com",
         projectId: "aaaaiim-onefinance-cv",
@@ -214,25 +206,20 @@
         messagingSenderId: "897642741307",
         appId: "1:897642741307:web:dc63adb819ed74e935661e",
         measurementId: "G-0KJ5PQ89BV"
-  };
+    };
 
     let db = null;
     try {
-        // Cek jika API Key masih placeholder bawaan
-        if (firebaseConfig.apiKey !== "API_KEY_ANDA_DISINI") {
-            const app = initializeApp(firebaseConfig);
-            db = getFirestore(app);
-            document.getElementById('firebaseStatus').innerHTML = `<span>Status: Terhubung ke Firebase Cloud ✅</span><span class="w-2 h-2 rounded-full bg-emerald-500"></span>`;
-        } else {
-            document.getElementById('firebaseStatus').innerHTML = `<span>Status: Mode Offline (Aman & Tersimpan di Browser) ℹ️</span><span class="w-2 h-2 rounded-full bg-blue-500"></span>`;
-        }
+        const app = initializeApp(firebaseConfig);
+        db = getFirestore(app);
+        document.getElementById('firebaseStatus').innerHTML = `<span>Status: Terhubung ke Firebase Cloud ✅</span><span class="w-2 h-2 rounded-full bg-emerald-500"></span>`;
     } catch (error) {
         document.getElementById('firebaseStatus').innerHTML = `<span>Status: Mode Offline (Browser LocalStorage) ℹ️</span><span class="w-2 h-2 rounded-full bg-blue-500"></span>`;
     }
 
     window.saveToFirebaseCloud = async function() {
         if (!db) {
-            alert("Firebase belum dikonfigurasi. Data Anda saat ini aman tersimpan otomatis di LocalStorage browser Anda!");
+            alert("Firebase belum terkonfigurasi penuh, data Anda aman tersimpan otomatis di LocalStorage browser!");
             return;
         }
         try {
@@ -243,42 +230,130 @@
             alert("Gagal sinkronisasi: " + e.message);
         }
     };
+});
 </script>
 
 <script>
-    const fields = ['inNama', 'inProfesi', 'inEmail', 'inTelepon', 'inLokasi', 'inLinkedin', 'inRingkasan', 'inJobTitle', 'inJobPeriode', 'inJobDesc', 'inEduTitle', 'inEduPeriode', 'inEduDesc', 'inKeahlian', 'inSertifikasi', 'inBahasa'];
+    const standardFields = ['inNama', 'inProfesi', 'inEmail', 'inTelepon', 'inLokasi', 'inLinkedin', 'inRingkasan', 'inKeahlian', 'inSertifikasi', 'inBahasa'];
 
-    const defaultData = {
-        inNama: "Rafi Ahmad Pratama, S.Kom.",
-        inProfesi: "Senior Full Stack Engineer",
-        inEmail: "rafi.ahmad@email.com",
-        inTelepon: "+62 813-9876-5432",
-        inLokasi: "Bandung, Indonesia",
-        inLinkedin: "linkedin.com/in/rafiahmad",
-        inRingkasan: "Software Engineer berpengalaman lebih dari 5 tahun dalam arsitektur sistem skala enterprise. Memiliki keahlian mendalam pada pengembangan backend, frontend, serta cloud deployment, serta berorientasi pada peningkatan performa sistem secara menyeluruh.",
-        inJobTitle: "Senior Full Stack Engineer | PT Teknologi Maju Indonesia",
-        inJobPeriode: "2023 - Sekarang",
-        inJobDesc: "- Memimpin tim teknis dalam pengembangan aplikasi web skala enterprise.\n- Mengoptimalkan performa kueri database hingga meningkatkan kecepatan loading 35%.\n- Berkolaborasi dengan product manager untuk merancang fitur inovatif.",
-        inEduTitle: "S1 Teknik Informatika | Institut Teknologi Bandung",
-        inEduPeriode: "2017 - 2021",
-        inEduDesc: "- IPK: 3.82 / 4.00 (Cum Laude)\n- Penerima Beasiswa Unggulan Prestasi Akademik\n- Ketua Himpunan Mahasiswa Informatika (2020)",
-        inKeahlian: "- JavaScript, TypeScript, React.js, Node.js\n- PostgreSQL, Docker, AWS, Git, Agile Methodology",
-        inSertifikasi: "- AWS Certified Solutions Architect (2024 - 2027)\n- Professional Scrum Master I (PSM I)",
-        inBahasa: "- Bahasa Indonesia (Native)\n- Bahasa Inggris (Professional Working Proficiency)"
-    };
+    // Default data awal
+    const defaultJobs = [
+        { title: "Senior Full Stack Engineer | PT Teknologi Maju Indonesia", periode: "2023 - Sekarang", desc: "- Memimpin tim teknis dalam pengembangan aplikasi web skala enterprise.\n- Mengoptimalkan performa kueri database hingga meningkatkan kecepatan loading 35%.\n- Berkolaborasi dengan product manager untuk merancang fitur inovatif." },
+        { title: "Frontend Developer | PT Solusi Digital Nusantara", periode: "2021 - 2023", desc: "- Mengembangkan antarmuka pengguna menggunakan React.js dan Tailwind CSS.\n- Mengintegrasikan RESTful API untuk mendukung fungsionalitas sistem." }
+    ];
 
-    function bindList(inputId, outputId) {
-        const input = document.getElementById(inputId);
-        const output = document.getElementById(outputId);
-        const lines = input.value.split('\n');
-        output.innerHTML = '';
+    const defaultEdu = [
+        { title: "S1 Teknik Informatika | Institut Teknologi Bandung", periode: "2017 - 2021", desc: "- IPK: 3.82 / 4.00 (Cum Laude)\n- Penerima Beasiswa Unggulan Prestasi Akademik" }
+    ];
+
+    function bindList(text, outputElement) {
+        outputElement.innerHTML = '';
+        const lines = text.split('\n');
         lines.forEach(line => {
             if(line.trim()) {
                 const li = document.createElement('li');
                 li.textContent = line.replace(/^- /, '');
-                output.appendChild(li);
+                outputElement.appendChild(li);
             }
         });
+    }
+
+    // Render Form Pekerjaan Dinamis
+    function renderJobInputs(jobs = defaultJobs) {
+        const container = document.getElementById('jobContainer');
+        container.innerHTML = '';
+        jobs.forEach((job, index) => {
+            const div = document.createElement('div');
+            div.className = "p-3 bg-white border rounded-xl space-y-2 relative shadow-sm";
+            div.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] font-bold text-blue-600 uppercase">Pekerjaan #${index + 1}</span>
+                    ${jobs.length > 1 ? `<button onclick="removeJobField(${index})" class="text-red-500 hover:text-red-700 text-xs"><i class="fa-solid fa-trash"></i></button>` : ''}
+                </div>
+                <input type="text" placeholder="Posisi & Perusahaan" value="${job.title}" class="job-title w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
+                <input type="text" placeholder="Periode Kerja" value="${job.periode}" class="job-periode w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
+                <textarea rows="3" placeholder="Deskripsi Tugas (Gunakan tanda -)" class="job-desc w-full p-2 text-xs border rounded-lg bg-white leading-relaxed" oninput="triggerUpdate()">${job.desc}</textarea>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    // Render Form Pendidikan Dinamis
+    function renderEduInputs(eduList = defaultEdu) {
+        const container = document.getElementById('eduContainer');
+        container.innerHTML = '';
+        eduList.forEach((edu, index) => {
+            const div = document.createElement('div');
+            div.className = "p-3 bg-white border rounded-xl space-y-2 relative shadow-sm";
+            div.innerHTML = `
+                <div class="flex justify-between items-center">
+                    <span class="text-[10px] font-bold text-blue-600 uppercase">Pendidikan #${index + 1}</span>
+                    ${eduList.length > 1 ? `<button onclick="removeEduField(${index})" class="text-red-500 hover:text-red-700 text-xs"><i class="fa-solid fa-trash"></i></button>` : ''}
+                </div>
+                <input type="text" placeholder="Gelar & Institusi" value="${edu.title}" class="edu-title w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
+                <input type="text" placeholder="Periode Pendidikan" value="${edu.periode}" class="edu-periode w-full p-2 text-xs border rounded-lg bg-white" oninput="triggerUpdate()">
+                <textarea rows="2" placeholder="Rincian (Gunakan tanda -)" class="edu-desc w-full p-2 text-xs border rounded-lg bg-white leading-relaxed" oninput="triggerUpdate()">${edu.desc}</textarea>
+            `;
+            container.appendChild(div);
+        });
+    }
+
+    function addJobField() {
+        const jobs = collectJobsData();
+        jobs.push({ title: "", periode: "", desc: "" });
+        renderJobInputs(jobs);
+        triggerUpdate();
+    }
+
+    function removeJobField(index) {
+        const jobs = collectJobsData();
+        jobs.splice(index, 1);
+        renderJobInputs(jobs);
+        triggerUpdate();
+    }
+
+    function addEduField() {
+        const eduList = collectEduData();
+        eduList.push({ title: "", periode: "", desc: "" });
+        renderEduInputs(eduList);
+        triggerUpdate();
+    }
+
+    function removeEduField(index) {
+        const eduList = collectEduData();
+        eduList.splice(index, 1);
+        renderEduInputs(eduList);
+        triggerUpdate();
+    }
+
+    function collectJobsData() {
+        const titles = document.querySelectorAll('.job-title');
+        const periodes = document.querySelectorAll('.job-periode');
+        const descs = document.querySelectorAll('.job-desc');
+        let jobs = [];
+        for(let i=0; i<titles.length; i++) {
+            jobs.push({
+                title: titles[i].value,
+                periode: periodes[i].value,
+                desc: descs[i].value
+            });
+        }
+        return jobs;
+    }
+
+    function collectEduData() {
+        const titles = document.querySelectorAll('.edu-title');
+        const periodes = document.querySelectorAll('.edu-periode');
+        const descs = document.querySelectorAll('.edu-desc');
+        let eduList = [];
+        for(let i=0; i<titles.length; i++) {
+            eduList.push({
+                title: titles[i].value,
+                periode: periodes[i].value,
+                desc: descs[i].value
+            });
+        }
+        return eduList;
     }
 
     function updatePreview() {
@@ -289,27 +364,95 @@
         document.getElementById('outLokasi').innerHTML = `<i class="fa-solid fa-location-dot text-blue-600 mr-1"></i> ` + document.getElementById('inLokasi').value;
         document.getElementById('outLinkedin').innerHTML = `<i class="fa-brands fa-linkedin text-blue-600 mr-1"></i> ` + document.getElementById('inLinkedin').value;
         document.getElementById('outRingkasan').textContent = document.getElementById('inRingkasan').value;
-        document.getElementById('outJobTitle').textContent = document.getElementById('inJobTitle').value;
-        document.getElementById('outJobPeriode').textContent = document.getElementById('inJobPeriode').value;
         
-        bindList('inJobDesc', 'outJobDesc');
-        bindList('inEduDesc', 'outEduDesc');
-        bindList('inKeahlian', 'outKeahlian');
-        bindList('inSertifikasi', 'outSertifikasi');
-        bindList('inBahasa', 'outBahasa');
+        bindList(document.getElementById('inKeahlian').value, document.getElementById('outKeahlian'));
+        bindList(document.getElementById('inSertifikasi').value, document.getElementById('outSertifikasi'));
+        bindList(document.getElementById('inBahasa').value, document.getElementById('outBahasa'));
+
+        // Render Pengalaman ke Preview
+        const outJobContainer = document.getElementById('outJobContainer');
+        outJobContainer.innerHTML = '';
+        collectJobsData().forEach(job => {
+            if(job.title.trim() || job.desc.trim()) {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <div class="flex justify-between font-bold text-xs text-slate-900">
+                        <span>${job.title}</span>
+                        <span>${job.periode}</span>
+                    </div>
+                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed mt-1 job-list-out"></ul>
+                `;
+                const ul = div.querySelector('ul');
+                bindList(job.desc, ul);
+                outJobContainer.appendChild(div);
+            }
+        });
+
+        // Render Pendidikan ke Preview
+        const outEduContainer = document.getElementById('outEduContainer');
+        outEduContainer.innerHTML = '';
+        collectEduData().forEach(edu => {
+            if(edu.title.trim() || edu.desc.trim()) {
+                const div = document.createElement('div');
+                div.innerHTML = `
+                    <div class="flex justify-between font-bold text-xs text-slate-900">
+                        <span>${edu.title}</span>
+                        <span>${edu.periode}</span>
+                    </div>
+                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed mt-1"></ul>
+                `;
+                const ul = div.querySelector('ul');
+                bindList(edu.desc, ul);
+                outEduContainer.appendChild(div);
+            }
+        });
+    }
+
+    function triggerUpdate() {
+        updatePreview();
+        saveToLocalStorage();
+        showAutoSaveIndicator();
     }
 
     function getAllInputData() {
         let data = {};
-        fields.forEach(f => data[f] = document.getElementById(f).value);
+        standardFields.forEach(f => data[f] = document.getElementById(f).value);
+        data.jobs = collectJobsData();
+        data.education = collectEduData();
         return data;
     }
 
-    window.addEventListener('DOMContentLoaded', () => {
-        fields.forEach(f => {
-            const saved = localStorage.getItem(f);
-            document.getElementById(f).value = saved !== null ? saved : defaultData[f];
+    function saveToLocalStorage() {
+        standardFields.forEach(f => {
+            localStorage.setItem(f, document.getElementById(f).value);
         });
+        localStorage.setItem('savedJobs', JSON.stringify(collectJobsData()));
+        localStorage.setItem('savedEdu', JSON.stringify(collectEduData()));
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+        standardFields.forEach(f => {
+            const saved = localStorage.getItem(f);
+            const defaults = {
+                inNama: "Rafi Ahmad Pratama, S.Kom.",
+                inProfesi: "Senior Full Stack Engineer",
+                inEmail: "rafi.ahmad@email.com",
+                inTelepon: "+62 813-9876-5432",
+                inLokasi: "Bandung, Indonesia",
+                inLinkedin: "linkedin.com/in/rafiahmad",
+                inRingkasan: "Software Engineer berpengalaman lebih dari 5 tahun dalam arsitektur sistem skala enterprise.",
+                inKeahlian: "- JavaScript, TypeScript, React.js, Node.js\n- PostgreSQL, Docker, AWS, Git",
+                inSertifikasi: "- AWS Certified Solutions Architect (2024)\n- Professional Scrum Master I",
+                inBahasa: "- Bahasa Indonesia (Native)\n- Bahasa Inggris (Professional)"
+            };
+            document.getElementById(f).value = saved !== null ? saved : (defaults[f] || "");
+        });
+
+        const savedJobs = localStorage.getItem('savedJobs');
+        renderJobInputs(savedJobs ? JSON.parse(savedJobs) : defaultJobs);
+
+        const savedEdu = localStorage.getItem('savedEdu');
+        renderEduInputs(savedEdu ? JSON.parse(savedEdu) : defaultEdu);
         
         const savedFoto = localStorage.getItem('inFoto');
         if(savedFoto) document.getElementById('outFoto').src = savedFoto;
@@ -317,11 +460,9 @@
         updatePreview();
     });
 
-    fields.forEach(f => {
+    standardFields.forEach(f => {
         document.getElementById(f).addEventListener('input', () => {
-            localStorage.setItem(f, document.getElementById(f).value);
-            updatePreview();
-            showAutoSaveIndicator();
+            triggerUpdate();
         });
     });
 
@@ -340,6 +481,7 @@
             reader.onload = event => {
                 document.getElementById('outFoto').src = event.target.result;
                 localStorage.setItem('inFoto', event.target.result);
+                showAutoSaveIndicator();
             };
             reader.readAsDataURL(file);
         }
