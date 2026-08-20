@@ -206,12 +206,13 @@
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
-        apiKey: "API_KEY_ANDA_DISINI",
-        authDomain: "PROJECT_ID.firebaseapp.com",
-        projectId: "PROJECT_ID_ANDA",
-        storageBucket: "PROJECT_ID.appspot.com",
-        messagingSenderId: "SENDER_ID",
-        appId: "APP_ID"
+        apiKey: "AIzaSyACLPGinyRVRDba_YGdaCnABeVm22-WglA",
+        authDomain: "aaaaiim-onefinance-cv.firebaseapp.com",
+        projectId: "aaaaiim-onefinance-cv",
+        storageBucket: "aaaaiim-onefinance-cv.firebasestorage.app",
+        messagingSenderId: "897642741307",
+        appId: "1:897642741307:web:dc63adb819ed74e935661e",
+        measurementId: "G-0KJ5PQ89BV"
     };
 
     let db;
