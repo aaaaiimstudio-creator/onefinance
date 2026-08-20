@@ -14,14 +14,14 @@
         @page { size: A4; margin: 0; }
         body { font-family: 'Helvetica', 'Arial', sans-serif; background-color: #f1f5f9; }
         .cv-page { width: 210mm; min-height: 297mm; background: white; margin: auto; padding: 15mm; box-sizing: border-box; }
-        .section-title { border-bottom: 2px solid #2563eb; color: #1e293b; padding-bottom: 4px; margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 13px; display: flex; align-items: center; gap: 8px; }
+        .section-title { border-bottom: 2px solid #2563eb; color: #1e293b; padding-bottom: 4px; margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 13px; display: flex; align-items: center; gap: 8px; page-break-after: avoid; }
         .section-title i { color: #2563eb; }
         ul { padding-left: 16px; margin: 0; }
         li { margin-bottom: 3px; }
         @media print { 
             .no-print { display: none !important; } 
-            body { background: white; }
-            .cv-page { box-shadow: none; margin: 0; padding: 10mm; }
+            body { background: white; -webkit-print-color-adjust: exact; }
+            .cv-page { box-shadow: none; margin: 0; padding: 12mm; width: 100%; min-height: auto; }
         }
     </style>
 </head>
@@ -50,7 +50,7 @@
         <div class="space-y-3">
             <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">1. Informasi Personal</h3>
             <div>
-                <label class="block text-xs font-medium text-slate-600 mb-1">Foto Profil (Gradasi Elegan)</label>
+                <label class="block text-xs font-medium text-slate-600 mb-1">Foto Profil (Tinggi & Gradasi Elegan)</label>
                 <input type="file" id="inFoto" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
             </div>
             <input type="text" id="inNama" placeholder="Nama Lengkap & Gelar" class="w-full p-2.5 text-xs border rounded-lg">
@@ -79,9 +79,7 @@
                     <i class="fa-solid fa-plus"></i> Tambah Kerja
                 </button>
             </div>
-            <div id="jobContainer" class="space-y-3">
-                <!-- Container Item Kerja Dinamis -->
-            </div>
+            <div id="jobContainer" class="space-y-3"></div>
         </div>
 
         <!-- 4. Pendidikan (Dinamis / Bisa Tambah) -->
@@ -92,9 +90,7 @@
                     <i class="fa-solid fa-plus"></i> Tambah Pendidikan
                 </button>
             </div>
-            <div id="eduContainer" class="space-y-3">
-                <!-- Container Item Pendidikan Dinamis -->
-            </div>
+            <div id="eduContainer" class="space-y-3"></div>
         </div>
 
         <!-- 5. Keahlian -->
@@ -116,7 +112,7 @@
                 <i class="fa-solid fa-cloud-arrow-up"></i> Sinkronisasi Manual ke Firebase
             </button>
             <button onclick="downloadPDF()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
-                <i class="fa-solid fa-file-pdf"></i> Download PDF (ATS Ready)
+                <i class="fa-solid fa-file-pdf"></i> Download PDF (Super Rapi)
             </button>
             <button onclick="downloadWord()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
                 <i class="fa-solid fa-file-word"></i> Download Word (.doc)
@@ -124,18 +120,17 @@
         </div>
     </div>
 
-    <!-- ================= PREVIEW CV (KANAN) - TEMPLATE BARU & FOTO GRADASI ================= -->
+    <!-- ================= PREVIEW CV (KANAN) - FOTO LEBIH TINGGI & GRADASI ELEGAN ================= -->
     <div class="lg:col-span-7 flex justify-center">
         <div id="cvOutput" class="cv-page shadow-2xl space-y-5 text-slate-900 border border-slate-200 rounded-xl relative overflow-hidden">
             
-            <!-- Aksen Desain Modern Header -->
+            <!-- Aksen Garis Gradasi Header -->
             <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-400"></div>
 
-            <!-- Header Info Personal dengan Foto Gradasi Besar -->
+            <!-- Header Info Personal dengan Foto Lebih Tinggi & Border Gradasi -->
             <div class="flex items-center gap-6 border-b border-slate-200 pb-6 pt-2">
-                <!-- Wrapper Foto dengan Border Gradasi -->
-                <div class="p-1 bg-gradient-to-tr from-blue-600 to-indigo-400 rounded-2xl shadow-lg shrink-0">
-                    <img id="outFoto" src="https://via.placeholder.com/180" class="w-36 h-40 object-cover rounded-xl bg-white">
+                <div class="p-1.5 bg-gradient-to-tr from-blue-600 via-indigo-500 to-sky-400 rounded-2xl shadow-md shrink-0">
+                    <img id="outFoto" src="https://via.placeholder.com/180" class="w-32 h-44 object-cover rounded-xl bg-white block">
                 </div>
                 <div class="flex-1">
                     <h1 id="outNama" class="text-2xl font-black uppercase tracking-wide text-slate-900"></h1>
@@ -155,20 +150,16 @@
                 <p id="outRingkasan" class="text-xs text-slate-700 leading-relaxed text-justify"></p>
             </div>
 
-            <!-- Pengalaman Kerja (Dinamis Render) -->
+            <!-- Pengalaman Kerja -->
             <div>
                 <h3 class="section-title"><i class="fa-solid fa-briefcase"></i> Pengalaman Kerja</h3>
-                <div id="outJobContainer" class="space-y-3">
-                    <!-- Render hasil pekerjaan dinamis -->
-                </div>
+                <div id="outJobContainer" class="space-y-3"></div>
             </div>
 
-            <!-- Pendidikan (Dinamis Render) -->
+            <!-- Pendidikan -->
             <div>
                 <h3 class="section-title"><i class="fa-solid fa-graduation-cap"></i> Pendidikan</h3>
-                <div id="outEduContainer" class="space-y-3">
-                    <!-- Render hasil pendidikan dinamis -->
-                </div>
+                <div id="outEduContainer" class="space-y-3"></div>
             </div>
 
             <!-- Keahlian -->
@@ -193,7 +184,7 @@
     </div>
 </div>
 
-<!-- Firebase SDK & Auto-Save Logic -->
+<!-- Firebase SDK & Script Utama -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
@@ -230,13 +221,11 @@
             alert("Gagal sinkronisasi: " + e.message);
         }
     };
-});
 </script>
 
 <script>
     const standardFields = ['inNama', 'inProfesi', 'inEmail', 'inTelepon', 'inLokasi', 'inLinkedin', 'inRingkasan', 'inKeahlian', 'inSertifikasi', 'inBahasa'];
 
-    // Default data awal
     const defaultJobs = [
         { title: "Senior Full Stack Engineer | PT Teknologi Maju Indonesia", periode: "2023 - Sekarang", desc: "- Memimpin tim teknis dalam pengembangan aplikasi web skala enterprise.\n- Mengoptimalkan performa kueri database hingga meningkatkan kecepatan loading 35%.\n- Berkolaborasi dengan product manager untuk merancang fitur inovatif." },
         { title: "Frontend Developer | PT Solusi Digital Nusantara", periode: "2021 - 2023", desc: "- Mengembangkan antarmuka pengguna menggunakan React.js dan Tailwind CSS.\n- Mengintegrasikan RESTful API untuk mendukung fungsionalitas sistem." }
@@ -258,7 +247,6 @@
         });
     }
 
-    // Render Form Pekerjaan Dinamis
     function renderJobInputs(jobs = defaultJobs) {
         const container = document.getElementById('jobContainer');
         container.innerHTML = '';
@@ -278,7 +266,6 @@
         });
     }
 
-    // Render Form Pendidikan Dinamis
     function renderEduInputs(eduList = defaultEdu) {
         const container = document.getElementById('eduContainer');
         container.innerHTML = '';
@@ -332,11 +319,7 @@
         const descs = document.querySelectorAll('.job-desc');
         let jobs = [];
         for(let i=0; i<titles.length; i++) {
-            jobs.push({
-                title: titles[i].value,
-                periode: periodes[i].value,
-                desc: descs[i].value
-            });
+            jobs.push({ title: titles[i].value, periode: periodes[i].value, desc: descs[i].value });
         }
         return jobs;
     }
@@ -347,11 +330,7 @@
         const descs = document.querySelectorAll('.edu-desc');
         let eduList = [];
         for(let i=0; i<titles.length; i++) {
-            eduList.push({
-                title: titles[i].value,
-                periode: periodes[i].value,
-                desc: descs[i].value
-            });
+            eduList.push({ title: titles[i].value, periode: periodes[i].value, desc: descs[i].value });
         }
         return eduList;
     }
@@ -369,7 +348,6 @@
         bindList(document.getElementById('inSertifikasi').value, document.getElementById('outSertifikasi'));
         bindList(document.getElementById('inBahasa').value, document.getElementById('outBahasa'));
 
-        // Render Pengalaman ke Preview
         const outJobContainer = document.getElementById('outJobContainer');
         outJobContainer.innerHTML = '';
         collectJobsData().forEach(job => {
@@ -380,7 +358,7 @@
                         <span>${job.title}</span>
                         <span>${job.periode}</span>
                     </div>
-                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed mt-1 job-list-out"></ul>
+                    <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed mt-1"></ul>
                 `;
                 const ul = div.querySelector('ul');
                 bindList(job.desc, ul);
@@ -388,7 +366,6 @@
             }
         });
 
-        // Render Pendidikan ke Preview
         const outEduContainer = document.getElementById('outEduContainer');
         outEduContainer.innerHTML = '';
         collectEduData().forEach(edu => {
@@ -489,13 +466,19 @@
 
     function downloadPDF() {
         const element = document.getElementById('cvOutput');
-        const opt = { margin: 0, filename: 'CV_ATS_Professional.pdf', image: { type: 'jpeg', quality: 0.98 }, html2canvas: { scale: 2, useCORS: true }, jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } };
+        const opt = { 
+            margin: 0, 
+            filename: 'CV_ATS_Professional.pdf', 
+            image: { type: 'jpeg', quality: 0.98 }, 
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true }, 
+            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
+        };
         html2pdf().from(element).set(opt).save();
     }
 
     function downloadWord() {
         const cvContent = document.getElementById('cvOutput').innerHTML;
-        const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>CV ATS</title><style>body{font-family: Arial, sans-serif; text-align: justify;}</style></head><body>";
+        const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>CV ATS</title><style>body{font-family: Arial, sans-serif; text-align: justify; line-height: 1.4; color: #1e293b;} h3{border-bottom: 2px solid #2563eb; padding-bottom: 4px; margin-top: 15px;}</style></head><body>";
         const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(header + cvContent + "</body></html>");
         const fileDownload = document.createElement("a");
         fileDownload.href = source;
