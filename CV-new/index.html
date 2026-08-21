@@ -3,22 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ultimate ATS Professional CV Generator Multi-User</title>
+    <title>AAAAIIM OneCV - Ultimate ATS Professional CV Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         @page { size: A4; margin: 0; }
         body { font-family: 'Helvetica', 'Arial', sans-serif; background-color: #f1f5f9; }
-        .cv-page { width: 210mm; min-height: 297mm; background: white; margin: auto; padding: 15mm; box-sizing: border-box; text-align: justify; }
-        .section-title { border-bottom: 2px solid #2563eb; color: #1e293b; padding-bottom: 4px; margin-bottom: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; font-size: 13px; display: flex; align-items: center; gap: 8px; page-break-after: avoid; break-after: avoid; text-align: left; }
+        .cv-page { 
+            width: 210mm; 
+            min-height: 297mm; 
+            background: white; 
+            margin: auto; 
+            padding: 15mm; 
+            box-sizing: border-box; 
+            text-align: justify; 
+        }
+        .section-title { 
+            border-bottom: 2px solid #2563eb; 
+            color: #1e293b; 
+            padding-bottom: 4px; 
+            margin-bottom: 12px; 
+            font-weight: 700; 
+            text-transform: uppercase; 
+            letter-spacing: 0.05em; 
+            font-size: 13px; 
+            display: flex; 
+            align-items: center; 
+            gap: 8px; 
+            page-break-after: avoid; 
+            break-after: avoid; 
+            text-align: left; 
+        }
         .section-title i { color: #2563eb; }
-        .cv-section { margin-bottom: 18px; padding-bottom: 10px; border-bottom: 1px dashed #e2e8f0; page-break-inside: avoid; break-inside: avoid; }
+        .cv-section { 
+            margin-bottom: 16px; 
+            padding-bottom: 8px; 
+            border-bottom: 1px dashed #e2e8f0; 
+            page-break-inside: avoid; 
+            break-inside: avoid; 
+        }
         .cv-section:last-child { border-bottom: none; }
-        .cv-item { page-break-inside: avoid; break-inside: avoid; margin-bottom: 10px; }
+        .cv-item { 
+            page-break-inside: avoid; 
+            break-inside: avoid; 
+            margin-bottom: 10px; 
+        }
         ul { padding-left: 16px; margin: 0; text-align: justify; }
         li { margin-bottom: 3px; text-align: justify; }
         p { text-align: justify; }
+
         @media print { 
             .no-print { display: none !important; } 
             body { background: white; -webkit-print-color-adjust: exact; }
@@ -28,18 +62,23 @@
 </head>
 <body class="p-4 md:p-8">
 
+<!-- DASHBOARD VIEW -->
 <div id="dashboardView" class="max-w-5xl mx-auto space-y-6">
     <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-slate-200 text-center">
-        <h1 class="text-2xl md:text-3xl font-black text-slate-800 flex items-center justify-center gap-3">
-            <i class="fa-solid fa-house-laptop text-blue-600"></i> Portal Rumah CV ATS
+        <!-- Judul Ditambahkan -->
+        <h1 class="text-3xl md:text-4xl font-black text-blue-700 tracking-tight mb-1">
+            AAAAIIM OneCV
         </h1>
+        <h2 class="text-lg md:text-xl font-bold text-slate-800 flex items-center justify-center gap-2">
+            <i class="fa-solid fa-house-laptop text-blue-600"></i> Portal Rumah CV ATS
+        </h2>
         <p class="text-xs md:text-sm text-slate-500 mt-2">Pilih Rumah CV Anda dan masukkan kata sandi untuk mengakses editor.</p>
     </div>
 
-    <div id="rumahGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        </div>
+    <div id="rumahGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
 </div>
 
+<!-- PASSWORD MODAL -->
 <div id="passwordModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
     <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full space-y-4">
         <div class="text-center space-y-1">
@@ -60,7 +99,7 @@
     </div>
 </div>
 
-
+<!-- EDITOR VIEW -->
 <div id="editorView" class="hidden max-w-7xl mx-auto space-y-4">
     
     <div class="bg-white p-4 rounded-xl shadow border border-slate-200 flex flex-wrap items-center justify-between gap-3 no-print">
@@ -74,12 +113,13 @@
             </span>
         </div>
         <span class="text-[11px] bg-blue-50 text-blue-700 font-semibold px-3 py-1 rounded-full border border-blue-200">
-            Sistem Multi-User Aktif
+            AAAAIIM OneCV System
         </span>
     </div>
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
+        <!-- INPUT PANEL -->
         <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-xl no-print space-y-5 max-h-[88vh] overflow-y-auto border border-slate-200">
             <div class="flex items-center justify-between border-b pb-3">
                 <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
@@ -98,7 +138,7 @@
             <div class="space-y-3">
                 <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">1. Informasi Personal</h3>
                 <div>
-                    <label class="block text-xs font-medium text-slate-600 mb-1">Foto Profil (Tinggi & Gradasi Elegan)</label>
+                    <label class="block text-xs font-medium text-slate-600 mb-1">Foto Profil</label>
                     <input type="file" id="inFoto" accept="image/*" class="w-full text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100">
                 </div>
                 <input type="text" id="inNama" placeholder="Nama Lengkap & Gelar" class="w-full p-2.5 text-xs border rounded-lg">
@@ -114,7 +154,7 @@
             </div>
 
             <div class="space-y-2">
-                <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">2. Ringkasan Profesional (Rata Kanan Kiri)</h3>
+                <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">2. Ringkasan Profesional</h3>
                 <textarea id="inRingkasan" rows="3" class="w-full p-2.5 text-xs border rounded-lg leading-relaxed text-justify"></textarea>
             </div>
 
@@ -182,6 +222,7 @@
             </div>
         </div>
 
+        <!-- PREVIEW CV OUTPUT -->
         <div class="lg:col-span-7 flex justify-center">
             <div id="cvOutput" class="cv-page shadow-2xl space-y-4 text-slate-900 border border-slate-200 rounded-xl relative overflow-hidden">
                 
@@ -233,7 +274,7 @@
                     <ul id="outKeahlian" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
                 </div>
 
-                <div class="grid grid-cols-2 gap-4">
+                <div class="grid grid-cols-2 gap-4 cv-section" style="border-bottom:none;">
                     <div>
                         <h3 class="section-title"><i class="fa-solid fa-certificate"></i> Sertifikasi</h3>
                         <ul id="outSertifikasi" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
@@ -250,11 +291,6 @@
 </div>
 
 <script>
-    /* ======================================================
-      KONFIGURASI RUMAH CV & PASSWORD
-      Anda bisa menambah / mengubah nama rumah dan password di bawah ini.
-      ======================================================
-    */
     const rumahCVConfig = [
         { id: "rumah1", name: "Rumah CV 1", password: "123" },
         { id: "rumah2", name: "Rumah CV 2", password: "456" },
@@ -267,7 +303,6 @@
 
     let activeRumah = null;
 
-    // Menampilkan daftar rumah CV di Dashboard
     function renderDashboard() {
         const grid = document.getElementById('rumahGrid');
         grid.innerHTML = '';
@@ -313,7 +348,6 @@
         }
     }
 
-    // Mengizinkan tekan "Enter" pada field password
     document.getElementById('inputPassword')?.addEventListener('keyup', (e) => {
         if (e.key === 'Enter') verifyPassword();
     });
@@ -322,8 +356,6 @@
         document.getElementById('dashboardView').classList.add('hidden');
         document.getElementById('editorView').classList.remove('hidden');
         document.getElementById('activeRumahTitle').innerHTML = `<i class="fa-solid fa-house"></i> ${rumah.name}`;
-        
-        // Load data khusus rumah CV aktif dari LocalStorage
         loadDataForActiveRumah();
     }
 
@@ -619,26 +651,161 @@
         }
     });
 
+    // PERBAIKAN DOWNLOAD PDF: RAPI & TIDAK TERPOTONG
     function downloadPDF() {
         const element = document.getElementById('cvOutput');
+        
+        // Simpan style lama
+        const origShadow = element.style.boxShadow;
+        const origBorder = element.style.border;
+        const origBorderRadius = element.style.borderRadius;
+
+        // Bersihkan shadow & border sementara agar PDF benar-benar rapi
+        element.style.boxShadow = 'none';
+        element.style.border = 'none';
+        element.style.borderRadius = '0px';
+
         const opt = { 
-            margin: [0.4, 0.4, 0.4, 0.4], 
+            margin: [8, 8, 8, 8], // Margin tipis & presisi (dalam mm)
             filename: `CV_ATS_${activeRumah ? activeRumah.name.replace(/\s+/g, '_') : 'Professional'}.pdf`, 
             image: { type: 'jpeg', quality: 0.98 }, 
-            html2canvas: { scale: 2, useCORS: true, letterRendering: true, scrollX: 0, scrollY: 0 }, 
-            jsPDF: { unit: 'in', format: 'a4', orientation: 'portrait' } 
+            html2canvas: { 
+                scale: 2, 
+                useCORS: true, 
+                letterRendering: true,
+                scrollY: 0,
+                scrollX: 0
+            }, 
+            jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
+            pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
         };
-        html2pdf().from(element).set(opt).save();
+
+        html2pdf().set(opt).from(element).save().then(() => {
+            // Kembalikan style semula setelah download selesai
+            element.style.boxShadow = origShadow;
+            element.style.border = origBorder;
+            element.style.borderRadius = origBorderRadius;
+        });
     }
 
+    // PERBAIKAN DOWNLOAD WORD (.DOC): STRUKTUR RAPI BISA DIBUKA DI MS WORD
     function downloadWord() {
-        const cvContent = document.getElementById('cvOutput').innerHTML;
-        const header = "<html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'><head><meta charset='utf-8'><title>CV ATS Professional</title><style>body{font-family: Arial, sans-serif; text-align: justify; line-height: 1.4; color: #1e293b; margin: 20mm;} p, li {text-align: justify;} h3{border-bottom: 2px solid #2563eb; padding-bottom: 4px; margin-top: 15px; text-align: left; text-transform: uppercase; font-size: 13px;}</style></head><body>";
-        const source = 'data:application/vnd.ms-word;charset=utf-8,' + encodeURIComponent(header + cvContent + "</body></html>");
-        const fileDownload = document.createElement("a");
-        fileDownload.href = source;
-        fileDownload.download = `CV_ATS_${activeRumah ? activeRumah.name.replace(/\s+/g, '_') : 'Professional'}.doc`;
-        fileDownload.click();
+        const nama = document.getElementById('inNama').value || 'CV';
+        const profesi = document.getElementById('inProfesi').value || '';
+        const email = document.getElementById('inEmail').value || '';
+        const telepon = document.getElementById('inTelepon').value || '';
+        const lokasi = document.getElementById('inLokasi').value || '';
+        const linkedin = document.getElementById('inLinkedin').value || '';
+        const foto = document.getElementById('outFoto').src;
+
+        const getListHTML = (elemId) => {
+            const ul = document.getElementById(elemId);
+            let html = '';
+            ul.querySelectorAll('li').forEach(li => {
+                html += `<li style="margin-bottom: 3px; text-align: justify;">${li.textContent}</li>`;
+            });
+            return html ? `<ul style="margin: 4px 0 10px 18px; padding: 0;">${html}</ul>` : '';
+        };
+
+        const getDynamicHTML = (type) => {
+            const items = collectData(type);
+            let html = '';
+            items.forEach(item => {
+                if (item.title.trim() || item.desc.trim()) {
+                    let descList = '';
+                    item.desc.split('\n').forEach(line => {
+                        if (line.trim()) {
+                            descList += `<li style="margin-bottom:2px; text-align:justify;">${line.replace(/^- /, '')}</li>`;
+                        }
+                    });
+                    html += `
+                        <div style="margin-bottom: 10px;">
+                            <table width="100%" style="border-collapse:collapse;">
+                                <tr>
+                                    <td style="font-weight:bold; font-size:11pt; color:#0f172a;">${item.title}</td>
+                                    <td style="font-weight:bold; font-size:10pt; color:#0f172a; text-align:right;">${item.periode}</td>
+                                </tr>
+                            </table>
+                            ${descList ? `<ul style="margin: 3px 0 6px 18px; padding:0;">${descList}</ul>` : ''}
+                        </div>
+                    `;
+                }
+            });
+            return html;
+        };
+
+        const wordContent = `
+            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+            <head>
+                <meta charset='utf-8'>
+                <title>CV ATS Professional</title>
+                <style>
+                    body { font-family: 'Arial', sans-serif; font-size: 10pt; color: #1e293b; line-height: 1.4; margin: 15mm; }
+                    h1 { font-size: 18pt; text-transform: uppercase; margin: 0; color: #020617; }
+                    .profesi { font-size: 11pt; font-weight: bold; color: #2563eb; text-transform: uppercase; margin-top: 2px; }
+                    .contact-info { font-size: 9.5pt; color: #475569; margin-top: 6px; }
+                    .section-title { font-size: 11pt; font-weight: bold; color: #1e293b; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; margin-top: 14px; margin-bottom: 8px; }
+                    p { text-align: justify; margin: 0 0 6px 0; }
+                </style>
+            </head>
+            <body>
+                <table width="100%" style="border-collapse:collapse; margin-bottom: 12px; border-bottom: 1px solid #cbd5e1; padding-bottom: 10px;">
+                    <tr>
+                        ${foto && !foto.includes('placeholder') ? `<td width="110" style="vertical-align:top;"><img src="${foto}" width="95" height="130" style="border-radius:6px; object-fit:cover;"></td>` : ''}
+                        <td style="vertical-align:top;">
+                            <h1>${nama}</h1>
+                            <div class="profesi">${profesi}</div>
+                            <div class="contact-info">
+                                ${email ? `Email: ${email} | ` : ''}
+                                ${telepon ? `Telp: ${telepon} | ` : ''}
+                                ${lokasi ? `Lokasi: ${lokasi} | ` : ''}
+                                ${linkedin ? `LinkedIn: ${linkedin}` : ''}
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+
+                <div class="section-title">Ringkasan Profesional</div>
+                <p>${document.getElementById('inRingkasan').value}</p>
+
+                <div class="section-title">Pengalaman Kerja</div>
+                ${getDynamicHTML('job')}
+
+                <div class="section-title">Pendidikan</div>
+                ${getDynamicHTML('edu')}
+
+                ${collectData('org').length > 0 ? `<div class="section-title">Pengalaman Organisasi</div>${getDynamicHTML('org')}` : ''}
+
+                ${collectData('agenda').length > 0 ? `<div class="section-title">Agenda Experience / Kegiatan</div>${getDynamicHTML('agenda')}` : ''}
+
+                <div class="section-title">Keahlian & Keterampilan</div>
+                ${getListHTML('outKeahlian')}
+
+                <table width="100%" style="border-collapse:collapse; margin-top:5px;">
+                    <tr>
+                        <td width="50%" style="vertical-align:top; padding-right:10px;">
+                            <div class="section-title">Sertifikasi</div>
+                            ${getListHTML('outSertifikasi')}
+                        </td>
+                        <td width="50%" style="vertical-align:top; padding-left:10px;">
+                            <div class="section-title">Bahasa</div>
+                            ${getListHTML('outBahasa')}
+                        </td>
+                    </tr>
+                </table>
+            </body>
+            </html>
+        `;
+
+        const blob = new Blob(['\ufeff' + wordContent], { type: 'application/msword' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `CV_ATS_${activeRumah ? activeRumah.name.replace(/\s+/g, '_') : 'Professional'}.doc`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
     }
 </script>
 </body>
