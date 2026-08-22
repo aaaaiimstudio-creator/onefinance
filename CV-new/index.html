@@ -84,7 +84,7 @@
         <h2 class="text-base sm:text-xl md:text-2xl font-bold text-blue-600 tracking-wider mt-2">
             AAAAIIM ONECV
         </h2>
-        <p class="text-xs sm:text-sm text-slate-500 mt-2 max-w-md mx-auto">Pilih Rumah CV Anda dan masukkan kata sandi untuk mengakses editor responsif dan sinkronisasi lintas perangkat.</p>
+        <p class="text-xs sm:text-sm text-slate-500 mt-2 max-w-md mx-auto">Pilih Rumah CV Anda dan masukkan kata sandi untuk mengakses editor responsif dan sinkronisasi realtime lintas perangkat.</p>
     </div>
 
     <div id="rumahGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"></div>
@@ -139,7 +139,7 @@
                     <i class="fa-solid fa-pen-to-square text-blue-600"></i> Panel Data CV
                 </h2>
                 <span id="autoSaveIndicator" class="text-[10px] bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
-                    <i class="fa-solid fa-cloud text-emerald-600"></i> Data Siap
+                    <i class="fa-solid fa-bolt text-emerald-600"></i> Realtime Sync
                 </span>
             </div>
             
@@ -241,20 +241,16 @@
             </div>
 
             <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
-                <button onclick="syncToFirebaseCloud(false)" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-cloud-arrow-up"></i> Sinkronisasi Manual ke Firebase
-                </button>
                 <button onclick="downloadPDF()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
                     <i class="fa-solid fa-file-pdf"></i> Download PDF (Sempurna & Rapi)
                 </button>
-                <button onclick="downloadWord()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
-                    <i class="fa-solid fa-file-word"></i> Download Word (.doc)
-                </button>
                 
-                <!-- TOMBOL RESET DITAMBAHKAN -->
-                <button onclick="resetDataRumah()" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2 mt-2">
-                    <i class="fa-solid fa-trash-can"></i> Reset Data Rumah Ini
-                </button>
+                <!-- TOMBOL RESET UKURAN KECIL/MINIMALIS -->
+                <div class="flex justify-end pt-1">
+                    <button onclick="resetDataRumah()" class="text-[11px] text-red-500 hover:text-red-700 font-medium px-2 py-1 rounded-lg hover:bg-red-50 transition flex items-center gap-1 border border-transparent hover:border-red-200">
+                        <i class="fa-solid fa-rotate-left text-[10px]"></i> Reset Data Rumah Ini
+                    </button>
+                </div>
             </div>
         </div>
 
@@ -393,7 +389,7 @@
         document.getElementById('editorView').classList.remove('hidden');
         document.getElementById('activeRumahTitle').innerHTML = `<i class="fa-solid fa-house"></i> ${rumah.name}`;
         
-        // Panggil fungsi muat data tersinkronisasi
+        // Panggil fungsi muat data tersinkronisasi Realtime
         if (window.loadDataForActiveRumahCloud) {
             window.loadDataForActiveRumahCloud();
         } else {
@@ -404,6 +400,13 @@
     function backToDashboard() {
         document.getElementById('editorView').classList.add('hidden');
         document.getElementById('dashboardView').classList.remove('hidden');
+        
+        // Hentikan listener realtime saat kembali ke dashboard
+        if (window.unsubscribeRealtime) {
+            window.unsubscribeRealtime();
+            window.unsubscribeRealtime = null;
+        }
+
         activeRumah = null;
     }
 
@@ -421,11 +424,10 @@
     });
 </script>
 
-<!-- MODUL FIREBASE TERBARU -->
+<!-- MODUL FIREBASE REALTIME -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    // MENGGUNAKAN setDoc & getDoc agar sinkron per-ID Rumah
-    import { getFirestore, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    import { getFirestore, doc, setDoc, deleteDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyACLPGinyRVRDba_YGdaCnABeVm22-WglA",
@@ -437,69 +439,74 @@
         measurementId: "G-0KJ5PQ89BV"
     };
 
+    window.unsubscribeRealtime = null;
+
     try {
         const app = initializeApp(firebaseConfig);
         window.db = getFirestore(app);
         window.doc = doc;
         window.setDoc = setDoc;
-        window.getDoc = getDoc;
         window.deleteDoc = deleteDoc;
-        document.getElementById('firebaseStatus').innerHTML = `<span>Status: Terhubung ke Firebase Cloud ✅</span><span class="w-2 h-2 rounded-full bg-emerald-500"></span>`;
+        window.onSnapshot = onSnapshot;
+        document.getElementById('firebaseStatus').innerHTML = `<span>Status: Terhubung Realtime ✅</span><span class="w-2 h-2 rounded-full bg-emerald-500"></span>`;
     } catch (error) {
         document.getElementById('firebaseStatus').innerHTML = `<span>Status: Mode Offline (Browser LocalStorage) ℹ️</span><span class="w-2 h-2 rounded-full bg-blue-500"></span>`;
     }
 
-    // FUNGSI SINKRONISASI KE CLOUD
-    window.syncToFirebaseCloud = async function(isAuto = false) {
-        if (!window.db) {
-            if(!isAuto) alert("Firebase belum terkonfigurasi, data hanya tersimpan otomatis di LocalStorage browser!");
-            return;
-        }
-        if (!activeRumah) return;
+    // FUNGSI SINKRONISASI OTOMATIS KE CLOUD
+    window.syncToFirebaseCloud = async function() {
+        if (!window.db || !activeRumah) return;
         
         try {
             const cvData = getAllInputData();
             cvData.rumah_id = activeRumah.id;
             cvData.last_updated = new Date().toISOString();
             
-            // setDoc menimpa/memperbarui dokumen yang ada berdasarkan activeRumah.id
             await window.setDoc(window.doc(window.db, "cv_database", activeRumah.id), cvData);
-            
-            if(!isAuto) alert("Berhasil sinkronisasi manual ke Firebase Cloud!");
         } catch (e) {
-            if(!isAuto) alert("Gagal sinkronisasi: " + e.message);
+            console.error("Gagal menyimpan ke Cloud:", e);
         }
     };
     
-    // FUNGSI MEMUAT DARI CLOUD SAAT BUKA RUMAH
-    window.loadDataForActiveRumahCloud = async function() {
+    // FUNGSI LISTEN REALTIME DARI CLOUD
+    window.loadDataForActiveRumahCloud = function() {
         if (!activeRumah) return;
-        
-        document.getElementById('autoSaveIndicator').innerHTML = `<i class="fa-solid fa-spinner animate-spin text-blue-600"></i> Memuat Cloud...`;
 
-        let cloudSuccess = false;
+        if (window.unsubscribeRealtime) {
+            window.unsubscribeRealtime();
+            window.unsubscribeRealtime = null;
+        }
+
+        const indicator = document.getElementById('autoSaveIndicator');
+        indicator.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-blue-600"></i> Menghubungkan Realtime...`;
+
         if (window.db) {
-            try {
-                const docSnap = await window.getDoc(window.doc(window.db, "cv_database", activeRumah.id));
+            window.unsubscribeRealtime = window.onSnapshot(window.doc(window.db, "cv_database", activeRumah.id), (docSnap) => {
                 if (docSnap.exists()) {
                     const data = docSnap.data();
-                    populateFields(data);
-                    cloudSuccess = true;
+                    
+                    // Cegah pengalihan fokus saat sedang aktif mengetik
+                    if (document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+                        populateFields(data);
+                    }
+                    
+                    indicator.innerHTML = `<i class="fa-solid fa-bolt text-emerald-600"></i> Realtime Sync`;
+                } else {
+                    loadFromLocalStorageOrDefault();
+                    indicator.innerHTML = `<i class="fa-solid fa-cloud text-emerald-600"></i> Data Siap`;
                 }
-            } catch (e) {
-                console.error("Gagal memuat Firebase:", e);
-            }
-        }
-        
-        // Jika tidak ada data di cloud atau offline, fallback ke local storage
-        if (!cloudSuccess) {
+            }, (error) => {
+                console.error("Realtime Error:", error);
+                loadFromLocalStorageOrDefault();
+                indicator.innerHTML = `<i class="fa-solid fa-triangle-exclamation text-amber-600"></i> Offline Mode`;
+            });
+        } else {
             loadFromLocalStorageOrDefault();
+            indicator.innerHTML = `<i class="fa-solid fa-cloud text-emerald-600"></i> Offline Mode`;
         }
-        
-        document.getElementById('autoSaveIndicator').innerHTML = `<i class="fa-solid fa-cloud text-emerald-600"></i> Data Siap`;
     }
 
-    // FUNGSI RESET DATA
+    // FUNGSI RESET DATA RUMAH
     window.resetDataRumah = async function() {
         if(!confirm("⚠️ PERINGATAN: Anda yakin ingin me-reset (menghapus) seluruh isi data CV di Rumah ini? Data di perangkat ini dan di Cloud akan dikosongkan.")) return;
         
@@ -525,9 +532,6 @@
 
         // 3. Muat Ulang dengan Default Kosong
         loadFromLocalStorageOrDefault(true);
-        alert("Data CV berhasil direset!");
-        
-        // Trigger save untuk memastikan database benar-benar terupdate jadi kosong
         triggerUpdate(); 
     };
 </script>
@@ -679,7 +683,7 @@
         }
     }
 
-    // UPDATE TERBARU TRIGGER UPDATE (AUTO SAVE DEBOUNCE KE CLOUD)
+    // AUTO SAVE DEBOUNCE UNTUK SINKRONISASI REALTIME
     let syncTimeout = null;
     function triggerUpdate() {
         updatePreview();
@@ -688,17 +692,15 @@
         const indicator = document.getElementById('autoSaveIndicator');
         indicator.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-amber-600"></i> Menyimpan...`;
         
-        // Debounce auto-save ke Cloud (Tunggu 1.5 detik setelah berhenti mengetik)
         if(syncTimeout) clearTimeout(syncTimeout);
         syncTimeout = setTimeout(() => {
             if (window.syncToFirebaseCloud) {
-                window.syncToFirebaseCloud(true); // IsAuto = true
+                window.syncToFirebaseCloud();
             }
-            indicator.innerHTML = `<i class="fa-solid fa-cloud text-emerald-600"></i> Auto-Saved`;
-        }, 1500);
+            indicator.innerHTML = `<i class="fa-solid fa-bolt text-emerald-600"></i> Realtime Sync`;
+        }, 1000);
     }
 
-    // MENGAMBIL SELURUH DATA TERMASUK FOTO
     function getAllInputData() {
         let data = {};
         standardFields.forEach(f => data[f] = document.getElementById(f).value);
@@ -707,11 +709,10 @@
         data.organization = collectData('org');
         data.agenda = collectData('agenda');
         data.theme_color = currentThemeColor;
-        data.foto = document.getElementById('outFoto').src; // Menyimpan foto base64
+        data.foto = document.getElementById('outFoto').src;
         return data;
     }
 
-    // MENGISI FIELD DARI JSON (DARI FIREBASE/LOCAL)
     function populateFields(data) {
         setCVTheme(data.theme_color || '#2563eb');
         
@@ -746,7 +747,6 @@
         localStorage.setItem(getKey('inFoto'), document.getElementById('outFoto').src);
     }
 
-    // FALLBACK JIKA OFFLINE / DATA KOSONG SAAT RESET
     function loadFromLocalStorageOrDefault(isReset = false) {
         if (!activeRumah) return;
 
@@ -798,13 +798,12 @@
             const reader = new FileReader();
             reader.onload = event => {
                 document.getElementById('outFoto').src = event.target.result;
-                triggerUpdate(); // Simpan Foto Ke Cloud
+                triggerUpdate();
             };
             reader.readAsDataURL(file);
         }
     });
 
-    // DOWNLOAD PDF PRESISI
     function downloadPDF() {
         const element = document.getElementById('cvOutput');
         const origShadow = element.style.boxShadow;
@@ -829,127 +828,6 @@
             element.style.border = origBorder;
             element.style.borderRadius = origBorderRadius;
         });
-    }
-
-    // DOWNLOAD WORD
-    function downloadWord() {
-        const nama = document.getElementById('inNama').value || 'CV';
-        const profesi = document.getElementById('inProfesi').value || '';
-        const email = document.getElementById('inEmail').value || '';
-        const telepon = document.getElementById('inTelepon').value || '';
-        const lokasi = document.getElementById('inLokasi').value || '';
-        const linkedin = document.getElementById('inLinkedin').value || '';
-        const foto = document.getElementById('outFoto').src;
-        const tc = currentThemeColor;
-
-        const getListHTML = (elemId) => {
-            const ul = document.getElementById(elemId);
-            let html = '';
-            ul.querySelectorAll('li').forEach(li => {
-                html += `<li style="margin-bottom: 3px; text-align: justify;">${li.textContent}</li>`;
-            });
-            return html ? `<ul style="margin: 4px 0 10px 18px; padding: 0;">${html}</ul>` : '';
-        };
-
-        const getDynamicHTML = (type) => {
-            const items = collectData(type);
-            let html = '';
-            items.forEach(item => {
-                if (item.title.trim() || item.desc.trim()) {
-                    let descList = '';
-                    item.desc.split('\n').forEach(line => {
-                        if (line.trim()) {
-                            descList += `<li style="margin-bottom:2px; text-align:justify;">${line.replace(/^- /, '')}</li>`;
-                        }
-                    });
-                    html += `
-                        <div style="margin-bottom: 8px; page-break-inside: avoid;">
-                            <table width="100%" style="border-collapse:collapse;">
-                                <tr>
-                                    <td style="font-weight:bold; font-size:10.5pt; color:#0f172a;">${item.title}</td>
-                                    <td style="font-weight:bold; font-size:10pt; color:#334155; text-align:right; white-space:nowrap;">${item.periode}</td>
-                                </tr>
-                            </table>
-                            ${descList ? `<ul style="margin: 3px 0 6px 18px; padding:0;">${descList}</ul>` : ''}
-                        </div>
-                    `;
-                }
-            });
-            return html;
-        };
-
-        const wordContent = `
-            <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
-            <head>
-                <meta charset='utf-8'>
-                <title>CV ATS Professional</title>
-                <style>
-                    body { font-family: 'Arial', sans-serif; font-size: 10pt; color: #1e293b; line-height: 1.4; margin: 10mm; }
-                    h1 { font-size: 18pt; text-transform: uppercase; margin: 0; color: #020617; }
-                    .profesi { font-size: 11pt; font-weight: bold; color: ${tc}; text-transform: uppercase; margin-top: 2px; }
-                    .contact-info { font-size: 9.5pt; color: #475569; margin-top: 6px; }
-                    .section-title { font-size: 11pt; font-weight: bold; color: #1e293b; text-transform: uppercase; border-bottom: 2px solid ${tc}; padding-bottom: 3px; margin-top: 12px; margin-bottom: 8px; }
-                    p { text-align: justify; margin: 0 0 6px 0; }
-                </style>
-            </head>
-            <body>
-                <table width="100%" style="border-collapse:collapse; margin-bottom: 12px; border-bottom: 1px solid #cbd5e1; padding-bottom: 10px;">
-                    <tr>
-                        ${foto && !foto.includes('placeholder') ? `<td width="100" style="vertical-align:top;"><img src="${foto}" width="90" height="120" style="border-radius:6px; object-fit:cover;"></td>` : ''}
-                        <td style="vertical-align:top;">
-                            <h1>${nama}</h1>
-                            <div class="profesi">${profesi}</div>
-                            <div class="contact-info">
-                                ${email ? `Email: ${email} | ` : ''}
-                                ${telepon ? `Telp: ${telepon} | ` : ''}
-                                ${lokasi ? `Lokasi: ${lokasi} | ` : ''}
-                                ${linkedin ? `LinkedIn: ${linkedin}` : ''}
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-
-                <div class="section-title">Ringkasan Profesional</div>
-                <p>${document.getElementById('inRingkasan').value}</p>
-
-                <div class="section-title">Pengalaman Kerja</div>
-                ${getDynamicHTML('job')}
-
-                <div class="section-title">Pendidikan</div>
-                ${getDynamicHTML('edu')}
-
-                ${collectData('org').length > 0 ? `<div class="section-title">Pengalaman Organisasi</div>${getDynamicHTML('org')}` : ''}
-
-                ${collectData('agenda').length > 0 ? `<div class="section-title">Agenda Experience / Kegiatan</div>${getDynamicHTML('agenda')}` : ''}
-
-                <div class="section-title">Keahlian & Keterampilan</div>
-                ${getListHTML('outKeahlian')}
-
-                <table width="100%" style="border-collapse:collapse; margin-top:5px;">
-                    <tr>
-                        <td width="50%" style="vertical-align:top; padding-right:10px;">
-                            <div class="section-title">Sertifikasi</div>
-                            ${getListHTML('outSertifikasi')}
-                        </td>
-                        <td width="50%" style="vertical-align:top; padding-left:10px;">
-                            <div class="section-title">Bahasa</div>
-                            ${getListHTML('outBahasa')}
-                        </td>
-                    </tr>
-                </table>
-            </body>
-            </html>
-        `;
-
-        const blob = new Blob(['\ufeff' + wordContent], { type: 'application/msword' });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `CV_ATS_${activeRumah ? activeRumah.name.replace(/\s+/g, '_') : 'Professional'}.doc`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
     }
 </script>
 </body>
