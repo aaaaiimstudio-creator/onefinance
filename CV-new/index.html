@@ -11,7 +11,7 @@
         @page { size: A4; margin: 0; }
         body { font-family: 'Helvetica', 'Arial', sans-serif; background-color: #f1f5f9; }
         
-        /* TAMPILAN HASIL / PREVIEW CV (TETAP SAMA) */
+        /* TAMPILAN HASIL / PREVIEW CV */
         .cv-page { 
             width: 210mm; 
             min-height: 297mm; 
@@ -65,26 +65,16 @@
             .cv-page { box-shadow: none; margin: 0; padding: 10mm; width: 100%; min-height: auto; }
         }
 
-        /* CUSTOM SCROLLBAR UNTUK PANEL INPUT MODERNISED */
-        .custom-scroll::-webkit-scrollbar {
-            width: 6px;
-        }
-        .custom-scroll::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 8px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 8px;
-        }
-        .custom-scroll::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
+        /* CUSTOM SCROLLBAR */
+        .custom-scroll::-webkit-scrollbar { width: 6px; }
+        .custom-scroll::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 8px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 8px; }
+        .custom-scroll::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
     </style>
 </head>
 <body class="p-3 sm:p-5 md:p-8 min-h-screen">
 
-<!-- DASHBOARD VIEW (Ditingkatkan Responsif & Tampilannya) -->
+<!-- DASHBOARD VIEW -->
 <div id="dashboardView" class="max-w-6xl mx-auto space-y-6 sm:space-y-8">
     <div class="bg-white p-6 sm:p-10 rounded-2xl sm:rounded-3xl shadow-xl shadow-slate-200/60 border border-slate-200/80 text-center relative overflow-hidden">
         <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-500"></div>
@@ -94,7 +84,7 @@
         <h2 class="text-base sm:text-xl md:text-2xl font-bold text-blue-600 tracking-wider mt-2">
             AAAAIIM ONECV
         </h2>
-        <p class="text-xs sm:text-sm text-slate-500 mt-2 max-w-md mx-auto">Pilih Rumah CV Anda dan masukkan kata sandi untuk mengakses editor responsif.</p>
+        <p class="text-xs sm:text-sm text-slate-500 mt-2 max-w-md mx-auto">Pilih Rumah CV Anda dan masukkan kata sandi untuk mengakses editor responsif dan sinkronisasi lintas perangkat.</p>
     </div>
 
     <div id="rumahGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6"></div>
@@ -121,7 +111,7 @@
     </div>
 </div>
 
-<!-- EDITOR VIEW (Perbaikan Layout HP & PC) -->
+<!-- EDITOR VIEW -->
 <div id="editorView" class="hidden max-w-[1400px] mx-auto space-y-4">
     
     <!-- Top Header Bar -->
@@ -142,14 +132,14 @@
 
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
         
-        <!-- INPUT PANEL (Dioptimalkan untuk Layar HP & PC) -->
+        <!-- INPUT PANEL -->
         <div class="lg:col-span-5 bg-white p-4 sm:p-6 rounded-2xl shadow-lg shadow-slate-200/50 no-print space-y-5 lg:max-h-[85vh] lg:overflow-y-auto border border-slate-200 custom-scroll">
             <div class="flex items-center justify-between border-b border-slate-100 pb-3">
                 <h2 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                     <i class="fa-solid fa-pen-to-square text-blue-600"></i> Panel Data CV
                 </h2>
                 <span id="autoSaveIndicator" class="text-[10px] bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
-                    <i class="fa-solid fa-cloud text-emerald-600"></i> Auto-Saved
+                    <i class="fa-solid fa-cloud text-emerald-600"></i> Data Siap
                 </span>
             </div>
             
@@ -164,11 +154,11 @@
                     <i class="fa-solid fa-palette text-blue-600"></i> Warna Tema Template CV
                 </label>
                 <div class="flex items-center gap-2 flex-wrap pt-1">
-                    <button onclick="setCVTheme('#2563eb')" class="w-7 h-7 rounded-full bg-blue-600 hover:scale-110 transition border-2 border-white shadow-sm" title="Biru Utama"></button>
-                    <button onclick="setCVTheme('#059669')" class="w-7 h-7 rounded-full bg-emerald-600 hover:scale-110 transition border-2 border-white shadow-sm" title="Hijau Emerald"></button>
-                    <button onclick="setCVTheme('#7c3aed')" class="w-7 h-7 rounded-full bg-violet-600 hover:scale-110 transition border-2 border-white shadow-sm" title="Ungu Royal"></button>
-                    <button onclick="setCVTheme('#dc2626')" class="w-7 h-7 rounded-full bg-red-600 hover:scale-110 transition border-2 border-white shadow-sm" title="Merah Crimson"></button>
-                    <button onclick="setCVTheme('#0f172a')" class="w-7 h-7 rounded-full bg-slate-900 hover:scale-110 transition border-2 border-white shadow-sm" title="Hitam Modern"></button>
+                    <button onclick="setCVTheme('#2563eb')" class="w-7 h-7 rounded-full bg-blue-600 hover:scale-110 transition border-2 border-white shadow-sm"></button>
+                    <button onclick="setCVTheme('#059669')" class="w-7 h-7 rounded-full bg-emerald-600 hover:scale-110 transition border-2 border-white shadow-sm"></button>
+                    <button onclick="setCVTheme('#7c3aed')" class="w-7 h-7 rounded-full bg-violet-600 hover:scale-110 transition border-2 border-white shadow-sm"></button>
+                    <button onclick="setCVTheme('#dc2626')" class="w-7 h-7 rounded-full bg-red-600 hover:scale-110 transition border-2 border-white shadow-sm"></button>
+                    <button onclick="setCVTheme('#0f172a')" class="w-7 h-7 rounded-full bg-slate-900 hover:scale-110 transition border-2 border-white shadow-sm"></button>
                     <div class="flex items-center gap-1.5 ml-auto">
                         <span class="text-[11px] text-slate-500 font-medium">Kustom:</span>
                         <input type="color" id="customColorPicker" onchange="setCVTheme(this.value)" class="w-8 h-8 rounded border-none cursor-pointer p-0 bg-transparent">
@@ -251,7 +241,7 @@
             </div>
 
             <div class="pt-3 border-t border-slate-100 flex flex-col gap-2">
-                <button onclick="saveToFirebaseCloud()" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
+                <button onclick="syncToFirebaseCloud(false)" class="w-full bg-amber-600 hover:bg-amber-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
                     <i class="fa-solid fa-cloud-arrow-up"></i> Sinkronisasi Manual ke Firebase
                 </button>
                 <button onclick="downloadPDF()" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
@@ -260,13 +250,17 @@
                 <button onclick="downloadWord()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2">
                     <i class="fa-solid fa-file-word"></i> Download Word (.doc)
                 </button>
+                
+                <!-- TOMBOL RESET DITAMBAHKAN -->
+                <button onclick="resetDataRumah()" class="w-full bg-red-600 hover:bg-red-700 text-white font-semibold py-2.5 px-4 rounded-xl shadow transition text-xs flex items-center justify-center gap-2 mt-2">
+                    <i class="fa-solid fa-trash-can"></i> Reset Data Rumah Ini
+                </button>
             </div>
         </div>
 
-        <!-- PREVIEW CV OUTPUT (Sesuai Kodingan Asli) -->
+        <!-- PREVIEW CV OUTPUT -->
         <div class="lg:col-span-7 flex justify-center overflow-x-auto w-full pb-6">
             <div id="cvOutput" class="cv-page shadow-2xl space-y-3 text-slate-900 border border-slate-200 rounded-xl relative overflow-hidden shrink-0">
-                
                 <div id="topThemeBar" class="absolute top-0 left-0 right-0 h-2 bg-blue-600 dynamic-theme-bg"></div>
 
                 <div class="flex items-center gap-5 border-b border-slate-200 pb-4 pt-2 cv-section">
@@ -398,7 +392,13 @@
         document.getElementById('dashboardView').classList.add('hidden');
         document.getElementById('editorView').classList.remove('hidden');
         document.getElementById('activeRumahTitle').innerHTML = `<i class="fa-solid fa-house"></i> ${rumah.name}`;
-        loadDataForActiveRumah();
+        
+        // Panggil fungsi muat data tersinkronisasi
+        if (window.loadDataForActiveRumahCloud) {
+            window.loadDataForActiveRumahCloud();
+        } else {
+            loadFromLocalStorageOrDefault();
+        }
     }
 
     function backToDashboard() {
@@ -421,9 +421,11 @@
     });
 </script>
 
+<!-- MODUL FIREBASE TERBARU -->
 <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-    import { getFirestore, collection, addDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+    // MENGGUNAKAN setDoc & getDoc agar sinkron per-ID Rumah
+    import { getFirestore, doc, setDoc, getDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
     const firebaseConfig = {
         apiKey: "AIzaSyACLPGinyRVRDba_YGdaCnABeVm22-WglA",
@@ -435,29 +437,98 @@
         measurementId: "G-0KJ5PQ89BV"
     };
 
-    let db = null;
     try {
         const app = initializeApp(firebaseConfig);
-        db = getFirestore(app);
+        window.db = getFirestore(app);
+        window.doc = doc;
+        window.setDoc = setDoc;
+        window.getDoc = getDoc;
+        window.deleteDoc = deleteDoc;
         document.getElementById('firebaseStatus').innerHTML = `<span>Status: Terhubung ke Firebase Cloud ✅</span><span class="w-2 h-2 rounded-full bg-emerald-500"></span>`;
     } catch (error) {
         document.getElementById('firebaseStatus').innerHTML = `<span>Status: Mode Offline (Browser LocalStorage) ℹ️</span><span class="w-2 h-2 rounded-full bg-blue-500"></span>`;
     }
 
-    window.saveToFirebaseCloud = async function() {
-        if (!db) {
-            alert("Firebase belum terkonfigurasi penuh, data Anda aman tersimpan otomatis di LocalStorage browser!");
+    // FUNGSI SINKRONISASI KE CLOUD
+    window.syncToFirebaseCloud = async function(isAuto = false) {
+        if (!window.db) {
+            if(!isAuto) alert("Firebase belum terkonfigurasi, data hanya tersimpan otomatis di LocalStorage browser!");
             return;
         }
+        if (!activeRumah) return;
+        
         try {
             const cvData = getAllInputData();
-            cvData.rumah_id = activeRumah ? activeRumah.id : "unknown";
-            cvData.theme_color = currentThemeColor;
-            const docRef = await addDoc(collection(db, "cv_database"), cvData);
-            alert("Berhasil sinkronisasi ke Firebase Cloud! ID: " + docRef.id);
+            cvData.rumah_id = activeRumah.id;
+            cvData.last_updated = new Date().toISOString();
+            
+            // setDoc menimpa/memperbarui dokumen yang ada berdasarkan activeRumah.id
+            await window.setDoc(window.doc(window.db, "cv_database", activeRumah.id), cvData);
+            
+            if(!isAuto) alert("Berhasil sinkronisasi manual ke Firebase Cloud!");
         } catch (e) {
-            alert("Gagal sinkronisasi: " + e.message);
+            if(!isAuto) alert("Gagal sinkronisasi: " + e.message);
         }
+    };
+    
+    // FUNGSI MEMUAT DARI CLOUD SAAT BUKA RUMAH
+    window.loadDataForActiveRumahCloud = async function() {
+        if (!activeRumah) return;
+        
+        document.getElementById('autoSaveIndicator').innerHTML = `<i class="fa-solid fa-spinner animate-spin text-blue-600"></i> Memuat Cloud...`;
+
+        let cloudSuccess = false;
+        if (window.db) {
+            try {
+                const docSnap = await window.getDoc(window.doc(window.db, "cv_database", activeRumah.id));
+                if (docSnap.exists()) {
+                    const data = docSnap.data();
+                    populateFields(data);
+                    cloudSuccess = true;
+                }
+            } catch (e) {
+                console.error("Gagal memuat Firebase:", e);
+            }
+        }
+        
+        // Jika tidak ada data di cloud atau offline, fallback ke local storage
+        if (!cloudSuccess) {
+            loadFromLocalStorageOrDefault();
+        }
+        
+        document.getElementById('autoSaveIndicator').innerHTML = `<i class="fa-solid fa-cloud text-emerald-600"></i> Data Siap`;
+    }
+
+    // FUNGSI RESET DATA
+    window.resetDataRumah = async function() {
+        if(!confirm("⚠️ PERINGATAN: Anda yakin ingin me-reset (menghapus) seluruh isi data CV di Rumah ini? Data di perangkat ini dan di Cloud akan dikosongkan.")) return;
+        
+        // 1. Hapus dari Firebase Cloud
+        if (window.db && activeRumah) {
+            try {
+                await window.deleteDoc(window.doc(window.db, "cv_database", activeRumah.id));
+            } catch (e) {
+                console.error("Gagal menghapus di cloud", e);
+            }
+        }
+        
+        // 2. Hapus dari LocalStorage
+        if(activeRumah) {
+            standardFields.forEach(f => localStorage.removeItem(getKey(f)));
+            localStorage.removeItem(getKey('savedJobs'));
+            localStorage.removeItem(getKey('savedEdu'));
+            localStorage.removeItem(getKey('savedOrg'));
+            localStorage.removeItem(getKey('savedAgenda'));
+            localStorage.removeItem(getKey('inFoto'));
+            localStorage.removeItem(getKey('themeColor'));
+        }
+
+        // 3. Muat Ulang dengan Default Kosong
+        loadFromLocalStorageOrDefault(true);
+        alert("Data CV berhasil direset!");
+        
+        // Trigger save untuk memastikan database benar-benar terupdate jadi kosong
+        triggerUpdate(); 
     };
 </script>
 
@@ -468,15 +539,12 @@
         { title: "Senior Full Stack Engineer | PT Teknologi Maju Indonesia", periode: "2023 - Sekarang", desc: "- Memimpin tim teknis dalam pengembangan aplikasi web skala enterprise.\n- Mengoptimalkan performa kueri database hingga meningkatkan kecepatan loading 35%." },
         { title: "Frontend Developer | PT Solusi Digital Nusantara", periode: "2021 - 2023", desc: "- Mengembangkan antarmuka pengguna menggunakan React.js dan Tailwind CSS." }
     ];
-
     const defaultEdu = [
         { title: "S1 Teknik Informatika | Institut Teknologi Bandung", periode: "2017 - 2021", desc: "- IPK: 3.82 / 4.00 (Cum Laude)\n- Penerima Beasiswa Unggulan Prestasi Akademik" }
     ];
-
     const defaultOrg = [
         { title: "Ketua Umum | Himpunan Mahasiswa Informatika", periode: "2019 - 2020", desc: "- Mengkoordinasikan 50+ pengurus aktif dalam program kerja tahunan.\n- Mengelola anggaran dan kerja sama sponsor eksternal." }
     ];
-
     const defaultAgenda = [
         { title: "Speaker / Narasumber | Tech Talk Nasional", periode: "2024", desc: "- Membagikan wawasan mengenai arsitektur web modern kepada 300+ peserta." }
     ];
@@ -611,12 +679,26 @@
         }
     }
 
+    // UPDATE TERBARU TRIGGER UPDATE (AUTO SAVE DEBOUNCE KE CLOUD)
+    let syncTimeout = null;
     function triggerUpdate() {
         updatePreview();
-        saveToLocalStorage();
-        showAutoSaveIndicator();
+        saveToLocalStorage(); // Backup ke perangkat lokal
+
+        const indicator = document.getElementById('autoSaveIndicator');
+        indicator.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-amber-600"></i> Menyimpan...`;
+        
+        // Debounce auto-save ke Cloud (Tunggu 1.5 detik setelah berhenti mengetik)
+        if(syncTimeout) clearTimeout(syncTimeout);
+        syncTimeout = setTimeout(() => {
+            if (window.syncToFirebaseCloud) {
+                window.syncToFirebaseCloud(true); // IsAuto = true
+            }
+            indicator.innerHTML = `<i class="fa-solid fa-cloud text-emerald-600"></i> Auto-Saved`;
+        }, 1500);
     }
 
+    // MENGAMBIL SELURUH DATA TERMASUK FOTO
     function getAllInputData() {
         let data = {};
         standardFields.forEach(f => data[f] = document.getElementById(f).value);
@@ -624,7 +706,32 @@
         data.education = collectData('edu');
         data.organization = collectData('org');
         data.agenda = collectData('agenda');
+        data.theme_color = currentThemeColor;
+        data.foto = document.getElementById('outFoto').src; // Menyimpan foto base64
         return data;
+    }
+
+    // MENGISI FIELD DARI JSON (DARI FIREBASE/LOCAL)
+    function populateFields(data) {
+        setCVTheme(data.theme_color || '#2563eb');
+        
+        standardFields.forEach(f => {
+            document.getElementById(f).value = data[f] !== undefined ? data[f] : "";
+        });
+
+        renderDynamicInputs('job', data.jobs && data.jobs.length ? data.jobs : []);
+        renderDynamicInputs('edu', data.education && data.education.length ? data.education : []);
+        renderDynamicInputs('org', data.organization && data.organization.length ? data.organization : []);
+        renderDynamicInputs('agenda', data.agenda && data.agenda.length ? data.agenda : []);
+        
+        if (data.foto) {
+            document.getElementById('outFoto').src = data.foto;
+        } else {
+            document.getElementById('outFoto').src = "https://via.placeholder.com/180";
+        }
+
+        updatePreview();
+        saveToLocalStorage();
     }
 
     function saveToLocalStorage() {
@@ -636,9 +743,11 @@
         localStorage.setItem(getKey('savedEdu'), JSON.stringify(collectData('edu')));
         localStorage.setItem(getKey('savedOrg'), JSON.stringify(collectData('org')));
         localStorage.setItem(getKey('savedAgenda'), JSON.stringify(collectData('agenda')));
+        localStorage.setItem(getKey('inFoto'), document.getElementById('outFoto').src);
     }
 
-    function loadDataForActiveRumah() {
+    // FALLBACK JIKA OFFLINE / DATA KOSONG SAAT RESET
+    function loadFromLocalStorageOrDefault(isReset = false) {
         if (!activeRumah) return;
 
         const savedTheme = localStorage.getItem(getKey('themeColor'));
@@ -658,20 +767,20 @@
                 inSertifikasi: "- AWS Certified Solutions Architect (2024)\n- Professional Scrum Master I",
                 inBahasa: "- Bahasa Indonesia (Native)\n- Bahasa Inggris (Professional)"
             };
-            document.getElementById(f).value = saved !== null ? saved : (defaults[f] || "");
+            document.getElementById(f).value = saved !== null ? saved : (isReset ? "" : (defaults[f] || ""));
         });
 
         const savedJobs = localStorage.getItem(getKey('savedJobs'));
-        renderDynamicInputs('job', savedJobs ? JSON.parse(savedJobs) : defaultJobs);
+        renderDynamicInputs('job', savedJobs ? JSON.parse(savedJobs) : (isReset ? [] : defaultJobs));
 
         const savedEdu = localStorage.getItem(getKey('savedEdu'));
-        renderDynamicInputs('edu', savedEdu ? JSON.parse(savedEdu) : defaultEdu);
+        renderDynamicInputs('edu', savedEdu ? JSON.parse(savedEdu) : (isReset ? [] : defaultEdu));
 
         const savedOrg = localStorage.getItem(getKey('savedOrg'));
-        renderDynamicInputs('org', savedOrg ? JSON.parse(savedOrg) : defaultOrg);
+        renderDynamicInputs('org', savedOrg ? JSON.parse(savedOrg) : (isReset ? [] : defaultOrg));
 
         const savedAgenda = localStorage.getItem(getKey('savedAgenda'));
-        renderDynamicInputs('agenda', savedAgenda ? JSON.parse(savedAgenda) : defaultAgenda);
+        renderDynamicInputs('agenda', savedAgenda ? JSON.parse(savedAgenda) : (isReset ? [] : defaultAgenda));
         
         const savedFoto = localStorage.getItem(getKey('inFoto'));
         document.getElementById('outFoto').src = savedFoto ? savedFoto : "https://via.placeholder.com/180";
@@ -680,18 +789,8 @@
     }
 
     standardFields.forEach(f => {
-        document.getElementById(f).addEventListener('input', () => {
-            triggerUpdate();
-        });
+        document.getElementById(f).addEventListener('input', triggerUpdate);
     });
-
-    function showAutoSaveIndicator() {
-        const indicator = document.getElementById('autoSaveIndicator');
-        indicator.innerHTML = `<i class="fa-solid fa-spinner animate-spin text-amber-600"></i> Menyimpan...`;
-        setTimeout(() => {
-            indicator.innerHTML = `<i class="fa-solid fa-cloud text-emerald-600"></i> Auto-Saved`;
-        }, 500);
-    }
 
     document.getElementById('inFoto').addEventListener('change', e => {
         const file = e.target.files[0];
@@ -699,19 +798,15 @@
             const reader = new FileReader();
             reader.onload = event => {
                 document.getElementById('outFoto').src = event.target.result;
-                if(activeRumah) {
-                    localStorage.setItem(getKey('inFoto'), event.target.result);
-                }
-                showAutoSaveIndicator();
+                triggerUpdate(); // Simpan Foto Ke Cloud
             };
             reader.readAsDataURL(file);
         }
     });
 
-    // DOWNLOAD PDF PRESISI - BEBAS TERPOTONG & FIT PAGE
+    // DOWNLOAD PDF PRESISI
     function downloadPDF() {
         const element = document.getElementById('cvOutput');
-        
         const origShadow = element.style.boxShadow;
         const origBorder = element.style.border;
         const origBorderRadius = element.style.borderRadius;
@@ -724,13 +819,7 @@
             margin: [6, 6, 6, 6], 
             filename: `CV_ATS_${activeRumah ? activeRumah.name.replace(/\s+/g, '_') : 'Professional'}.pdf`, 
             image: { type: 'jpeg', quality: 0.98 }, 
-            html2canvas: { 
-                scale: 2, 
-                useCORS: true, 
-                letterRendering: true,
-                scrollY: 0,
-                scrollX: 0
-            }, 
+            html2canvas: { scale: 2, useCORS: true, letterRendering: true, scrollY: 0, scrollX: 0 }, 
             jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' },
             pagebreak: { mode: ['avoid-all', 'css', 'legacy'] }
         };
@@ -742,7 +831,7 @@
         });
     }
 
-    // DOWNLOAD WORD (.DOC) STRUKTUR RAPI DENGAN WARNA TEMA KHUSUS
+    // DOWNLOAD WORD
     function downloadWord() {
         const nama = document.getElementById('inNama').value || 'CV';
         const profesi = document.getElementById('inProfesi').value || '';
