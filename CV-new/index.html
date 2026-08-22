@@ -2,14 +2,24 @@
 <html lang="id">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>AAAAIIM OneCV - Ultimate ATS Professional CV Generator</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         @page { size: A4; margin: 0; }
-        body { font-family: 'Helvetica', 'Arial', sans-serif; background-color: #f1f5f9; }
+        body { font-family: 'Helvetica', 'Arial', sans-serif; background-color: #f1f5f9; overflow-x: hidden; }
+        
+        /* Container untuk penyesuaian skala A4 di mobile */
+        .cv-container-wrapper {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            overflow-x: auto;
+            padding: 10px 0;
+        }
+
         .cv-page { 
             width: 210mm; 
             min-height: 297mm; 
@@ -18,7 +28,35 @@
             padding: 12mm 15mm; 
             box-sizing: border-box; 
             text-align: justify; 
+            transform-origin: top center;
         }
+
+        /* Auto Fit Mobile Scaling */
+        @media (max-width: 768px) {
+            .cv-container-wrapper {
+                padding: 0;
+            }
+            .cv-page-scaler {
+                width: 100%;
+                max-width: 100vw;
+                overflow-x: hidden;
+            }
+            .cv-page {
+                zoom: 0.42; /* Otomatis mengecilkan tampilan A4 di HP agar pas di layar */
+                -moz-transform: scale(0.42);
+                -moz-transform-origin: top center;
+                margin: 0 auto;
+            }
+        }
+
+        @media (min-width: 769px) and (max-width: 1024px) {
+            .cv-page {
+                zoom: 0.7;
+                -moz-transform: scale(0.7);
+                -moz-transform-origin: top center;
+            }
+        }
+
         .section-title { 
             border-bottom: 2px solid var(--theme-color, #2563eb); 
             color: #1e293b; 
@@ -59,33 +97,41 @@
 
         @media print { 
             .no-print { display: none !important; } 
-            body { background: white; -webkit-print-color-adjust: exact; }
-            .cv-page { box-shadow: none; margin: 0; padding: 10mm; width: 100%; min-height: auto; }
+            body { background: white; -webkit-print-color-adjust: exact; padding: 0 !important; }
+            .cv-page { 
+                box-shadow: none; 
+                margin: 0; 
+                padding: 10mm; 
+                width: 100%; 
+                min-height: auto; 
+                zoom: 1 !important; 
+                transform: none !important; 
+            }
         }
     </style>
 </head>
-<body class="p-4 md:p-8">
+<body class="p-2 sm:p-4 md:p-8">
 
 <!-- DASHBOARD VIEW -->
-<div id="dashboardView" class="max-w-5xl mx-auto space-y-6">
-    <div class="bg-white p-6 md:p-8 rounded-2xl shadow-xl border border-slate-200 text-center">
+<div id="dashboardView" class="max-w-5xl mx-auto space-y-4 sm:space-y-6">
+    <div class="bg-white p-5 sm:p-8 rounded-2xl shadow-xl border border-slate-200 text-center">
         <!-- Portal Rumah CV ATS dibuat Besar dan Utama -->
-        <h1 class="text-3xl md:text-5xl font-black text-slate-800 flex items-center justify-center gap-3 tracking-tight">
+        <h1 class="text-2xl sm:text-3xl md:text-5xl font-black text-slate-800 flex items-center justify-center gap-2 sm:gap-3 tracking-tight">
             <i class="fa-solid fa-house-laptop text-blue-600"></i> Portal Rumah CV ATS
         </h1>
         <!-- AAAAIIM OneCV dipindah ke Bawah Portal -->
-        <h2 class="text-xl md:text-2xl font-bold text-blue-600 tracking-wide mt-2">
+        <h2 class="text-lg sm:text-xl md:text-2xl font-bold text-blue-600 tracking-wide mt-2">
             AAAAIIM ONECV
         </h2>
-        <p class="text-xs md:text-sm text-slate-500 mt-2">Pilih Rumah CV Anda dan masukkan kata sandi untuk mengakses editor.</p>
+        <p class="text-xs sm:text-sm text-slate-500 mt-2">Pilih Rumah CV Anda dan masukkan kata sandi untuk mengakses editor.</p>
     </div>
 
-    <div id="rumahGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"></div>
+    <div id="rumahGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6"></div>
 </div>
 
 <!-- PASSWORD MODAL -->
 <div id="passwordModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm hidden flex items-center justify-center z-50 p-4">
-    <div class="bg-white p-6 rounded-2xl shadow-2xl max-w-sm w-full space-y-4">
+    <div class="bg-white p-5 sm:p-6 rounded-2xl shadow-2xl max-w-sm w-full space-y-4">
         <div class="text-center space-y-1">
             <div class="w-12 h-12 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mx-auto text-xl mb-2">
                 <i class="fa-solid fa-lock"></i>
@@ -105,19 +151,19 @@
 </div>
 
 <!-- EDITOR VIEW -->
-<div id="editorView" class="hidden max-w-7xl mx-auto space-y-4">
+<div id="editorView" class="hidden max-w-7xl mx-auto space-y-4 pb-16 lg:pb-0">
     
-    <div class="bg-white p-4 rounded-xl shadow border border-slate-200 flex flex-wrap items-center justify-between gap-3 no-print">
-        <div class="flex items-center gap-3">
-            <button onclick="backToDashboard()" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-2 rounded-lg transition flex items-center gap-1.5">
-                <i class="fa-solid fa-arrow-left"></i> Kembali ke Dashboard
+    <div class="bg-white p-3 sm:p-4 rounded-xl shadow border border-slate-200 flex flex-wrap items-center justify-between gap-3 no-print">
+        <div class="flex items-center gap-2 sm:gap-3">
+            <button onclick="backToDashboard()" class="text-xs font-bold bg-slate-100 hover:bg-slate-200 text-slate-700 px-2.5 py-1.5 sm:px-3 sm:py-2 rounded-lg transition flex items-center gap-1.5">
+                <i class="fa-solid fa-arrow-left"></i> <span class="hidden sm:inline">Kembali ke Dashboard</span><span class="sm:hidden">Kembali</span>
             </button>
             <span class="text-slate-300">|</span>
             <span id="activeRumahTitle" class="text-xs font-bold text-blue-600 uppercase tracking-wider flex items-center gap-1.5">
                 <i class="fa-solid fa-house"></i> Rumah CV Active
             </span>
         </div>
-        <span class="text-[11px] bg-blue-50 text-blue-700 font-semibold px-3 py-1 rounded-full border border-blue-200">
+        <span class="text-[10px] sm:text-[11px] bg-blue-50 text-blue-700 font-semibold px-2.5 py-1 rounded-full border border-blue-200">
             AAAAIIM OneCV System
         </span>
     </div>
@@ -125,12 +171,12 @@
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
         <!-- INPUT PANEL -->
-        <div class="lg:col-span-5 bg-white p-6 rounded-2xl shadow-xl no-print space-y-5 max-h-[88vh] overflow-y-auto border border-slate-200">
+        <div id="panelForm" class="lg:col-span-5 bg-white p-4 sm:p-6 rounded-2xl shadow-xl no-print space-y-5 max-h-[85vh] lg:max-h-[88vh] overflow-y-auto border border-slate-200">
             <div class="flex items-center justify-between border-b pb-3">
-                <h2 class="text-lg font-bold text-slate-900 flex items-center gap-2">
+                <h2 class="text-base sm:text-lg font-bold text-slate-900 flex items-center gap-2">
                     <i class="fa-solid fa-pen-to-square text-blue-600"></i> Panel Data CV
                 </h2>
-                <span id="autoSaveIndicator" class="text-[10px] bg-emerald-100 text-emerald-700 px-2.5 py-1 rounded-full font-semibold flex items-center gap-1">
+                <span id="autoSaveIndicator" class="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 sm:px-2.5 sm:py-1 rounded-full font-semibold flex items-center gap-1">
                     <i class="fa-solid fa-cloud text-emerald-600"></i> Auto-Saved
                 </span>
             </div>
@@ -140,7 +186,7 @@
                 <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
             </div>
 
-            <!-- FITUR BARU: TEMA WARNA CV TEMPLATE -->
+            <!-- FITUR TEMA WARNA CV TEMPLATE -->
             <div class="p-3.5 bg-slate-50 border rounded-xl space-y-2">
                 <label class="block text-xs font-bold text-slate-700 flex items-center gap-2">
                     <i class="fa-solid fa-palette text-blue-600"></i> Warna Tema Template CV
@@ -166,11 +212,11 @@
                 </div>
                 <input type="text" id="inNama" placeholder="Nama Lengkap & Gelar" class="w-full p-2.5 text-xs border rounded-lg">
                 <input type="text" id="inProfesi" placeholder="Jabatan Utama" class="w-full p-2.5 text-xs border rounded-lg">
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <input type="text" id="inEmail" placeholder="Email" class="p-2.5 text-xs border rounded-lg">
                     <input type="text" id="inTelepon" placeholder="Telepon" class="p-2.5 text-xs border rounded-lg">
                 </div>
-                <div class="grid grid-cols-2 gap-2">
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     <input type="text" id="inLokasi" placeholder="Lokasi" class="p-2.5 text-xs border rounded-lg">
                     <input type="text" id="inLinkedin" placeholder="LinkedIn" class="p-2.5 text-xs border rounded-lg">
                 </div>
@@ -185,7 +231,7 @@
                 <div class="flex items-center justify-between">
                     <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">3. Pengalaman Kerja</h3>
                     <button onclick="addEntry('job')" class="text-[11px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1">
-                        <i class="fa-solid fa-plus"></i> Tambah Kerja
+                        <i class="fa-solid fa-plus"></i> Tambah
                     </button>
                 </div>
                 <div id="jobContainer" class="space-y-3"></div>
@@ -195,7 +241,7 @@
                 <div class="flex items-center justify-between">
                     <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">4. Pendidikan</h3>
                     <button onclick="addEntry('edu')" class="text-[11px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1">
-                        <i class="fa-solid fa-plus"></i> Tambah Pendidikan
+                        <i class="fa-solid fa-plus"></i> Tambah
                     </button>
                 </div>
                 <div id="eduContainer" class="space-y-3"></div>
@@ -205,7 +251,7 @@
                 <div class="flex items-center justify-between">
                     <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">5. Pengalaman Organisasi</h3>
                     <button onclick="addEntry('org')" class="text-[11px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1">
-                        <i class="fa-solid fa-plus"></i> Tambah Organisasi
+                        <i class="fa-solid fa-plus"></i> Tambah
                     </button>
                 </div>
                 <div id="orgContainer" class="space-y-3"></div>
@@ -215,7 +261,7 @@
                 <div class="flex items-center justify-between">
                     <h3 class="font-semibold text-xs text-blue-600 uppercase tracking-wider">6. Agenda Experience / Kegiatan</h3>
                     <button onclick="addEntry('agenda')" class="text-[11px] bg-blue-600 hover:bg-blue-700 text-white px-2.5 py-1 rounded-lg font-medium transition flex items-center gap-1">
-                        <i class="fa-solid fa-plus"></i> Tambah Agenda
+                        <i class="fa-solid fa-plus"></i> Tambah
                     </button>
                 </div>
                 <div id="agendaContainer" class="space-y-3"></div>
@@ -246,71 +292,85 @@
         </div>
 
         <!-- PREVIEW CV OUTPUT -->
-        <div class="lg:col-span-7 flex justify-center">
-            <div id="cvOutput" class="cv-page shadow-2xl space-y-3 text-slate-900 border border-slate-200 rounded-xl relative overflow-hidden">
-                
-                <div id="topThemeBar" class="absolute top-0 left-0 right-0 h-2 bg-blue-600 dynamic-theme-bg"></div>
+        <div id="panelPreview" class="hidden lg:block lg:col-span-7">
+            <div class="cv-container-wrapper">
+                <div class="cv-page-scaler">
+                    <div id="cvOutput" class="cv-page shadow-2xl space-y-3 text-slate-900 border border-slate-200 rounded-xl relative overflow-hidden">
+                        
+                        <div id="topThemeBar" class="absolute top-0 left-0 right-0 h-2 bg-blue-600 dynamic-theme-bg"></div>
 
-                <div class="flex items-center gap-5 border-b border-slate-200 pb-4 pt-2 cv-section">
-                    <div class="p-1 bg-slate-200 rounded-2xl shadow-md shrink-0">
-                        <img id="outFoto" src="https://via.placeholder.com/180" class="w-28 h-36 object-cover rounded-xl bg-white block">
-                    </div>
-                    <div class="flex-1">
-                        <h1 id="outNama" class="text-2xl font-black uppercase tracking-wide text-slate-950"></h1>
-                        <p id="outProfesi" class="text-sm font-bold uppercase tracking-wider mt-1 dynamic-theme-text"></p>
-                        <div class="text-[11px] text-slate-600 flex flex-wrap gap-x-3 gap-y-1 mt-2.5 font-medium">
-                            <span id="outEmail"></span>
-                            <span id="outTelepon"></span>
-                            <span id="outLokasi"></span>
-                            <span id="outLinkedin"></span>
+                        <div class="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:gap-5 border-b border-slate-200 pb-4 pt-2 cv-section">
+                            <div class="p-1 bg-slate-200 rounded-2xl shadow-md shrink-0">
+                                <img id="outFoto" src="https://via.placeholder.com/180" class="w-24 h-32 sm:w-28 sm:h-36 object-cover rounded-xl bg-white block">
+                            </div>
+                            <div class="flex-1">
+                                <h1 id="outNama" class="text-xl sm:text-2xl font-black uppercase tracking-wide text-slate-950"></h1>
+                                <p id="outProfesi" class="text-xs sm:text-sm font-bold uppercase tracking-wider mt-1 dynamic-theme-text"></p>
+                                <div class="text-[11px] text-slate-600 flex flex-wrap justify-center sm:justify-start gap-x-3 gap-y-1 mt-2.5 font-medium">
+                                    <span id="outEmail"></span>
+                                    <span id="outTelepon"></span>
+                                    <span id="outLokasi"></span>
+                                    <span id="outLinkedin"></span>
+                                </div>
+                            </div>
                         </div>
+
+                        <div class="cv-section">
+                            <h3 class="section-title"><i class="fa-solid fa-user-tie"></i> Ringkasan Profesional</h3>
+                            <p id="outRingkasan" class="text-xs text-slate-700 leading-relaxed text-justify"></p>
+                        </div>
+
+                        <div class="cv-section">
+                            <h3 class="section-title"><i class="fa-solid fa-briefcase"></i> Pengalaman Kerja</h3>
+                            <div id="outJobContainer" class="space-y-3"></div>
+                        </div>
+
+                        <div class="cv-section">
+                            <h3 class="section-title"><i class="fa-solid fa-graduation-cap"></i> Pendidikan</h3>
+                            <div id="outEduContainer" class="space-y-3"></div>
+                        </div>
+
+                        <div class="cv-section" id="sectionOrgWrapper">
+                            <h3 class="section-title"><i class="fa-solid fa-users-rectangle"></i> Pengalaman Organisasi</h3>
+                            <div id="outOrgContainer" class="space-y-3"></div>
+                        </div>
+
+                        <div class="cv-section" id="sectionAgendaWrapper">
+                            <h3 class="section-title"><i class="fa-solid fa-calendar-days"></i> Agenda Experience / Kegiatan</h3>
+                            <div id="outAgendaContainer" class="space-y-3"></div>
+                        </div>
+
+                        <div class="cv-section">
+                            <h3 class="section-title"><i class="fa-solid fa-code"></i> Keahlian & Keterampilan</h3>
+                            <ul id="outKeahlian" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
+                        </div>
+
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 cv-section" style="border-bottom:none;">
+                            <div>
+                                <h3 class="section-title"><i class="fa-solid fa-certificate"></i> Sertifikasi</h3>
+                                <ul id="outSertifikasi" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
+                            </div>
+                            <div>
+                                <h3 class="section-title"><i class="fa-solid fa-language"></i> Bahasa</h3>
+                                <ul id="outBahasa" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
-
-                <div class="cv-section">
-                    <h3 class="section-title"><i class="fa-solid fa-user-tie"></i> Ringkasan Profesional</h3>
-                    <p id="outRingkasan" class="text-xs text-slate-700 leading-relaxed text-justify"></p>
-                </div>
-
-                <div class="cv-section">
-                    <h3 class="section-title"><i class="fa-solid fa-briefcase"></i> Pengalaman Kerja</h3>
-                    <div id="outJobContainer" class="space-y-3"></div>
-                </div>
-
-                <div class="cv-section">
-                    <h3 class="section-title"><i class="fa-solid fa-graduation-cap"></i> Pendidikan</h3>
-                    <div id="outEduContainer" class="space-y-3"></div>
-                </div>
-
-                <div class="cv-section" id="sectionOrgWrapper">
-                    <h3 class="section-title"><i class="fa-solid fa-users-rectangle"></i> Pengalaman Organisasi</h3>
-                    <div id="outOrgContainer" class="space-y-3"></div>
-                </div>
-
-                <div class="cv-section" id="sectionAgendaWrapper">
-                    <h3 class="section-title"><i class="fa-solid fa-calendar-days"></i> Agenda Experience / Kegiatan</h3>
-                    <div id="outAgendaContainer" class="space-y-3"></div>
-                </div>
-
-                <div class="cv-section">
-                    <h3 class="section-title"><i class="fa-solid fa-code"></i> Keahlian & Keterampilan</h3>
-                    <ul id="outKeahlian" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 cv-section" style="border-bottom:none;">
-                    <div>
-                        <h3 class="section-title"><i class="fa-solid fa-certificate"></i> Sertifikasi</h3>
-                        <ul id="outSertifikasi" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
-                    </div>
-                    <div>
-                        <h3 class="section-title"><i class="fa-solid fa-language"></i> Bahasa</h3>
-                        <ul id="outBahasa" class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed text-justify"></ul>
-                    </div>
-                </div>
-
             </div>
         </div>
     </div>
+</div>
+
+<!-- BOTTOM MOBILE NAVIGATION BAR -->
+<div id="mobileBottomNav" class="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 shadow-2xl z-40 flex no-print">
+    <button id="btnTabEdit" onclick="switchMobileTab('edit')" class="flex-1 py-2.5 text-center text-xs font-bold text-blue-600 bg-blue-50 border-t-2 border-blue-600 flex items-center justify-center gap-2">
+        <i class="fa-solid fa-pen-to-square"></i> Edit Data CV
+    </button>
+    <button id="btnTabPreview" onclick="switchMobileTab('preview')" class="flex-1 py-2.5 text-center text-xs font-bold text-slate-500 hover:text-blue-600 flex items-center justify-center gap-2">
+        <i class="fa-solid fa-file-lines"></i> Lihat Preview CV
+    </button>
 </div>
 
 <script>
@@ -332,13 +392,13 @@
         grid.innerHTML = '';
         rumahCVConfig.forEach(rumah => {
             const card = document.createElement('div');
-            card.className = "bg-white p-6 rounded-2xl shadow-lg border border-slate-200 hover:shadow-2xl transition flex flex-col justify-between space-y-4";
+            card.className = "bg-white p-5 sm:p-6 rounded-2xl shadow-lg border border-slate-200 hover:shadow-2xl transition flex flex-col justify-between space-y-4";
             card.innerHTML = `
                 <div>
-                    <div class="w-12 h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-xl font-bold mb-3">
+                    <div class="w-10 h-10 sm:w-12 sm:h-12 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-lg sm:text-xl font-bold mb-3">
                         <i class="fa-solid fa-house"></i>
                     </div>
-                    <h3 class="text-base font-bold text-slate-800">${rumah.name}</h3>
+                    <h3 class="text-sm sm:text-base font-bold text-slate-800">${rumah.name}</h3>
                     <p class="text-xs text-slate-500 mt-1">Sistem ATS CV Khusus Pengguna (${rumah.id})</p>
                 </div>
                 <button onclick="openPasswordModal('${rumah.id}')" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2.5 px-4 rounded-xl text-xs transition flex items-center justify-center gap-2">
@@ -381,6 +441,7 @@
         document.getElementById('editorView').classList.remove('hidden');
         document.getElementById('activeRumahTitle').innerHTML = `<i class="fa-solid fa-house"></i> ${rumah.name}`;
         loadDataForActiveRumah();
+        switchMobileTab('edit');
     }
 
     function backToDashboard() {
@@ -397,6 +458,38 @@
         }
         updatePreview();
     }
+
+    // Switch Tab Khusus Tampilan Handphone
+    function switchMobileTab(tab) {
+        const formPanel = document.getElementById('panelForm');
+        const previewPanel = document.getElementById('panelPreview');
+        const btnEdit = document.getElementById('btnTabEdit');
+        const btnPreview = document.getElementById('btnTabPreview');
+
+        if (window.innerWidth < 1024) {
+            if (tab === 'edit') {
+                formPanel.classList.remove('hidden');
+                previewPanel.classList.add('hidden');
+                btnEdit.className = "flex-1 py-2.5 text-center text-xs font-bold text-blue-600 bg-blue-50 border-t-2 border-blue-600 flex items-center justify-center gap-2";
+                btnPreview.className = "flex-1 py-2.5 text-center text-xs font-bold text-slate-500 hover:text-blue-600 flex items-center justify-center gap-2";
+            } else {
+                formPanel.classList.add('hidden');
+                previewPanel.classList.remove('hidden');
+                btnPreview.className = "flex-1 py-2.5 text-center text-xs font-bold text-blue-600 bg-blue-50 border-t-2 border-blue-600 flex items-center justify-center gap-2";
+                btnEdit.className = "flex-1 py-2.5 text-center text-xs font-bold text-slate-500 hover:text-blue-600 flex items-center justify-center gap-2";
+            }
+        } else {
+            formPanel.classList.remove('hidden');
+            previewPanel.classList.remove('hidden');
+        }
+    }
+
+    window.addEventListener('resize', () => {
+        if (window.innerWidth >= 1024) {
+            document.getElementById('panelForm').classList.remove('hidden');
+            document.getElementById('panelPreview').classList.remove('hidden');
+        }
+    });
 
     window.addEventListener('DOMContentLoaded', () => {
         renderDashboard();
