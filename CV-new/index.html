@@ -15,12 +15,12 @@
             min-height: 297mm; 
             background: white; 
             margin: auto; 
-            padding: 15mm; 
+            padding: 12mm 15mm; 
             box-sizing: border-box; 
             text-align: justify; 
         }
         .section-title { 
-            border-bottom: 2px solid #2563eb; 
+            border-bottom: 2px solid var(--theme-color, #2563eb); 
             color: #1e293b; 
             padding-bottom: 4px; 
             margin-bottom: 12px; 
@@ -35,10 +35,10 @@
             break-after: avoid; 
             text-align: left; 
         }
-        .section-title i { color: #2563eb; }
+        .section-title i { color: var(--theme-color, #2563eb); }
         .cv-section { 
-            margin-bottom: 16px; 
-            padding-bottom: 8px; 
+            margin-bottom: 14px; 
+            padding-bottom: 6px; 
             border-bottom: 1px dashed #e2e8f0; 
             page-break-inside: avoid; 
             break-inside: avoid; 
@@ -47,11 +47,15 @@
         .cv-item { 
             page-break-inside: avoid; 
             break-inside: avoid; 
-            margin-bottom: 10px; 
+            margin-bottom: 8px; 
         }
         ul { padding-left: 16px; margin: 0; text-align: justify; }
         li { margin-bottom: 3px; text-align: justify; }
         p { text-align: justify; }
+
+        .dynamic-theme-text { color: var(--theme-color, #2563eb) !important; }
+        .dynamic-theme-bg { background-color: var(--theme-color, #2563eb) !important; }
+        .dynamic-theme-border { border-color: var(--theme-color, #2563eb) !important; }
 
         @media print { 
             .no-print { display: none !important; } 
@@ -134,6 +138,24 @@
             <div id="firebaseStatus" class="text-[11px] bg-slate-100 text-slate-600 p-2.5 rounded-lg border flex items-center justify-between">
                 <span>Status: Menghubungkan ke Firebase...</span>
                 <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+            </div>
+
+            <!-- FITUR BARU: TEMA WARNA CV TEMPLATE -->
+            <div class="p-3.5 bg-slate-50 border rounded-xl space-y-2">
+                <label class="block text-xs font-bold text-slate-700 flex items-center gap-2">
+                    <i class="fa-solid fa-palette text-blue-600"></i> Warna Tema Template CV
+                </label>
+                <div class="flex items-center gap-2 flex-wrap pt-1">
+                    <button onclick="setCVTheme('#2563eb')" class="w-7 h-7 rounded-full bg-blue-600 hover:scale-110 transition border-2 border-white shadow-sm" title="Biru Utama"></button>
+                    <button onclick="setCVTheme('#059669')" class="w-7 h-7 rounded-full bg-emerald-600 hover:scale-110 transition border-2 border-white shadow-sm" title="Hijau Emerald"></button>
+                    <button onclick="setCVTheme('#7c3aed')" class="w-7 h-7 rounded-full bg-violet-600 hover:scale-110 transition border-2 border-white shadow-sm" title="Ungu Royal"></button>
+                    <button onclick="setCVTheme('#dc2626')" class="w-7 h-7 rounded-full bg-red-600 hover:scale-110 transition border-2 border-white shadow-sm" title="Merah Crimson"></button>
+                    <button onclick="setCVTheme('#0f172a')" class="w-7 h-7 rounded-full bg-slate-900 hover:scale-110 transition border-2 border-white shadow-sm" title="Hitam Modern"></button>
+                    <div class="flex items-center gap-1.5 ml-auto">
+                        <span class="text-[11px] text-slate-500 font-medium">Kustom:</span>
+                        <input type="color" id="customColorPicker" onchange="setCVTheme(this.value)" class="w-8 h-8 rounded border-none cursor-pointer p-0 bg-transparent">
+                    </div>
+                </div>
             </div>
 
             <div class="space-y-3">
@@ -225,18 +247,18 @@
 
         <!-- PREVIEW CV OUTPUT -->
         <div class="lg:col-span-7 flex justify-center">
-            <div id="cvOutput" class="cv-page shadow-2xl space-y-4 text-slate-900 border border-slate-200 rounded-xl relative overflow-hidden">
+            <div id="cvOutput" class="cv-page shadow-2xl space-y-3 text-slate-900 border border-slate-200 rounded-xl relative overflow-hidden">
                 
-                <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-400"></div>
+                <div id="topThemeBar" class="absolute top-0 left-0 right-0 h-2 bg-blue-600 dynamic-theme-bg"></div>
 
-                <div class="flex items-center gap-6 border-b border-slate-200 pb-5 pt-2 cv-section">
-                    <div class="p-1.5 bg-gradient-to-tr from-blue-600 via-indigo-500 to-sky-400 rounded-2xl shadow-md shrink-0">
-                        <img id="outFoto" src="https://via.placeholder.com/180" class="w-32 h-44 object-cover rounded-xl bg-white block">
+                <div class="flex items-center gap-5 border-b border-slate-200 pb-4 pt-2 cv-section">
+                    <div class="p-1 bg-slate-200 rounded-2xl shadow-md shrink-0">
+                        <img id="outFoto" src="https://via.placeholder.com/180" class="w-28 h-36 object-cover rounded-xl bg-white block">
                     </div>
                     <div class="flex-1">
                         <h1 id="outNama" class="text-2xl font-black uppercase tracking-wide text-slate-950"></h1>
-                        <p id="outProfesi" class="text-sm font-bold text-blue-600 uppercase tracking-wider mt-1"></p>
-                        <div class="text-[11px] text-slate-600 flex flex-wrap gap-x-4 gap-y-1.5 mt-3 font-medium">
+                        <p id="outProfesi" class="text-sm font-bold uppercase tracking-wider mt-1 dynamic-theme-text"></p>
+                        <div class="text-[11px] text-slate-600 flex flex-wrap gap-x-3 gap-y-1 mt-2.5 font-medium">
                             <span id="outEmail"></span>
                             <span id="outTelepon"></span>
                             <span id="outLokasi"></span>
@@ -303,6 +325,7 @@
     ];
 
     let activeRumah = null;
+    let currentThemeColor = "#2563eb";
 
     function renderDashboard() {
         const grid = document.getElementById('rumahGrid');
@@ -366,6 +389,15 @@
         activeRumah = null;
     }
 
+    function setCVTheme(color) {
+        currentThemeColor = color;
+        document.documentElement.style.setProperty('--theme-color', color);
+        if(activeRumah) {
+            localStorage.setItem(getKey('themeColor'), color);
+        }
+        updatePreview();
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
         renderDashboard();
     });
@@ -402,6 +434,7 @@
         try {
             const cvData = getAllInputData();
             cvData.rumah_id = activeRumah ? activeRumah.id : "unknown";
+            cvData.theme_color = currentThemeColor;
             const docRef = await addDoc(collection(db, "cv_database"), cvData);
             alert("Berhasil sinkronisasi ke Firebase Cloud! ID: " + docRef.id);
         } catch (e) {
@@ -510,10 +543,12 @@
     function updatePreview() {
         document.getElementById('outNama').textContent = document.getElementById('inNama').value;
         document.getElementById('outProfesi').textContent = document.getElementById('inProfesi').value;
-        document.getElementById('outEmail').innerHTML = `<i class="fa-regular fa-envelope text-blue-600 mr-1"></i> ` + document.getElementById('inEmail').value;
-        document.getElementById('outTelepon').innerHTML = `<i class="fa-solid fa-phone text-blue-600 mr-1"></i> ` + document.getElementById('inTelepon').value;
-        document.getElementById('outLokasi').innerHTML = `<i class="fa-solid fa-location-dot text-blue-600 mr-1"></i> ` + document.getElementById('inLokasi').value;
-        document.getElementById('outLinkedin').innerHTML = `<i class="fa-brands fa-linkedin text-blue-600 mr-1"></i> ` + document.getElementById('inLinkedin').value;
+        
+        const tc = currentThemeColor;
+        document.getElementById('outEmail').innerHTML = `<i class="fa-regular fa-envelope mr-1" style="color:${tc}"></i> ` + document.getElementById('inEmail').value;
+        document.getElementById('outTelepon').innerHTML = `<i class="fa-solid fa-phone mr-1" style="color:${tc}"></i> ` + document.getElementById('inTelepon').value;
+        document.getElementById('outLokasi').innerHTML = `<i class="fa-solid fa-location-dot mr-1" style="color:${tc}"></i> ` + document.getElementById('inLokasi').value;
+        document.getElementById('outLinkedin').innerHTML = `<i class="fa-brands fa-linkedin mr-1" style="color:${tc}"></i> ` + document.getElementById('inLinkedin').value;
         document.getElementById('outRingkasan').textContent = document.getElementById('inRingkasan').value;
         
         bindList(document.getElementById('inKeahlian').value, document.getElementById('outKeahlian'));
@@ -538,9 +573,9 @@
                 const div = document.createElement('div');
                 div.className = "cv-item";
                 div.innerHTML = `
-                    <div class="flex justify-between font-bold text-xs text-slate-950">
-                        <span>${item.title}</span>
-                        <span>${item.periode}</span>
+                    <div class="flex justify-between items-baseline font-bold text-xs text-slate-950 gap-2">
+                        <span class="break-words">${item.title}</span>
+                        <span class="shrink-0 text-slate-700 font-semibold">${item.periode}</span>
                     </div>
                     <ul class="list-disc pl-4 text-xs text-slate-700 space-y-1 leading-relaxed mt-1 text-justify"></ul>
                 `;
@@ -587,6 +622,9 @@
 
     function loadDataForActiveRumah() {
         if (!activeRumah) return;
+
+        const savedTheme = localStorage.getItem(getKey('themeColor'));
+        setCVTheme(savedTheme ? savedTheme : '#2563eb');
 
         standardFields.forEach(f => {
             const saved = localStorage.getItem(getKey(f));
@@ -652,22 +690,20 @@
         }
     });
 
-    // PERBAIKAN DOWNLOAD PDF: RAPI & TIDAK TERPOTONG
+    // DOWNLOAD PDF PRESISI - BEBAS TERPOTONG & FIT PAGE
     function downloadPDF() {
         const element = document.getElementById('cvOutput');
         
-        // Simpan style lama
         const origShadow = element.style.boxShadow;
         const origBorder = element.style.border;
         const origBorderRadius = element.style.borderRadius;
 
-        // Bersihkan shadow & border sementara agar PDF benar-benar rapi
         element.style.boxShadow = 'none';
         element.style.border = 'none';
         element.style.borderRadius = '0px';
 
         const opt = { 
-            margin: [8, 8, 8, 8], // Margin tipis & presisi (dalam mm)
+            margin: [6, 6, 6, 6], 
             filename: `CV_ATS_${activeRumah ? activeRumah.name.replace(/\s+/g, '_') : 'Professional'}.pdf`, 
             image: { type: 'jpeg', quality: 0.98 }, 
             html2canvas: { 
@@ -682,14 +718,13 @@
         };
 
         html2pdf().set(opt).from(element).save().then(() => {
-            // Kembalikan style semula setelah download selesai
             element.style.boxShadow = origShadow;
             element.style.border = origBorder;
             element.style.borderRadius = origBorderRadius;
         });
     }
 
-    // PERBAIKAN DOWNLOAD WORD (.DOC): STRUKTUR RAPI BISA DIBUKA DI MS WORD
+    // DOWNLOAD WORD (.DOC) STRUKTUR RAPI DENGAN WARNA TEMA KHUSUS
     function downloadWord() {
         const nama = document.getElementById('inNama').value || 'CV';
         const profesi = document.getElementById('inProfesi').value || '';
@@ -698,6 +733,7 @@
         const lokasi = document.getElementById('inLokasi').value || '';
         const linkedin = document.getElementById('inLinkedin').value || '';
         const foto = document.getElementById('outFoto').src;
+        const tc = currentThemeColor;
 
         const getListHTML = (elemId) => {
             const ul = document.getElementById(elemId);
@@ -720,11 +756,11 @@
                         }
                     });
                     html += `
-                        <div style="margin-bottom: 10px;">
+                        <div style="margin-bottom: 8px; page-break-inside: avoid;">
                             <table width="100%" style="border-collapse:collapse;">
                                 <tr>
-                                    <td style="font-weight:bold; font-size:11pt; color:#0f172a;">${item.title}</td>
-                                    <td style="font-weight:bold; font-size:10pt; color:#0f172a; text-align:right;">${item.periode}</td>
+                                    <td style="font-weight:bold; font-size:10.5pt; color:#0f172a;">${item.title}</td>
+                                    <td style="font-weight:bold; font-size:10pt; color:#334155; text-align:right; white-space:nowrap;">${item.periode}</td>
                                 </tr>
                             </table>
                             ${descList ? `<ul style="margin: 3px 0 6px 18px; padding:0;">${descList}</ul>` : ''}
@@ -741,18 +777,18 @@
                 <meta charset='utf-8'>
                 <title>CV ATS Professional</title>
                 <style>
-                    body { font-family: 'Arial', sans-serif; font-size: 10pt; color: #1e293b; line-height: 1.4; margin: 15mm; }
+                    body { font-family: 'Arial', sans-serif; font-size: 10pt; color: #1e293b; line-height: 1.4; margin: 10mm; }
                     h1 { font-size: 18pt; text-transform: uppercase; margin: 0; color: #020617; }
-                    .profesi { font-size: 11pt; font-weight: bold; color: #2563eb; text-transform: uppercase; margin-top: 2px; }
+                    .profesi { font-size: 11pt; font-weight: bold; color: ${tc}; text-transform: uppercase; margin-top: 2px; }
                     .contact-info { font-size: 9.5pt; color: #475569; margin-top: 6px; }
-                    .section-title { font-size: 11pt; font-weight: bold; color: #1e293b; text-transform: uppercase; border-bottom: 2px solid #2563eb; padding-bottom: 3px; margin-top: 14px; margin-bottom: 8px; }
+                    .section-title { font-size: 11pt; font-weight: bold; color: #1e293b; text-transform: uppercase; border-bottom: 2px solid ${tc}; padding-bottom: 3px; margin-top: 12px; margin-bottom: 8px; }
                     p { text-align: justify; margin: 0 0 6px 0; }
                 </style>
             </head>
             <body>
                 <table width="100%" style="border-collapse:collapse; margin-bottom: 12px; border-bottom: 1px solid #cbd5e1; padding-bottom: 10px;">
                     <tr>
-                        ${foto && !foto.includes('placeholder') ? `<td width="110" style="vertical-align:top;"><img src="${foto}" width="95" height="130" style="border-radius:6px; object-fit:cover;"></td>` : ''}
+                        ${foto && !foto.includes('placeholder') ? `<td width="100" style="vertical-align:top;"><img src="${foto}" width="90" height="120" style="border-radius:6px; object-fit:cover;"></td>` : ''}
                         <td style="vertical-align:top;">
                             <h1>${nama}</h1>
                             <div class="profesi">${profesi}</div>
