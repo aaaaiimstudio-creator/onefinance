@@ -7,6 +7,49 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Firebase SDK (Modular v10) -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+
+        // Konfigurasi Firebase Anda (Ganti dengan kredensial proyek Firebase Anda)
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        // Inisialisasi Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Fungsi Sinkronisasi Cloud Firestore
+        window.firebaseCloudSync = async function(storageData) {
+            try {
+                await setDoc(doc(db, "pascasarjana", "hikarinaim_profile"), storageData);
+                console.log("Data berhasil disinkronkan ke Firebase Cloud!");
+            } catch (e) {
+                console.error("Gagal sinkronisasi Firebase:", e);
+            }
+        };
+
+        window.firebaseCloudLoad = async function() {
+            try {
+                const docSnap = await getDoc(doc(db, "pascasarjana", "hikarinaim_profile"));
+                if (docSnap.exists()) {
+                    return docSnap.data();
+                }
+            } catch (e) {
+                console.error("Gagal memuat dari Firebase:", e);
+            }
+            return null;
+        };
+    </script>
+
     <script>
         tailwind.config = {
             darkMode: 'class',
@@ -18,7 +61,6 @@
         }
     </script>
     <style>
-        /* REVISED NEAT NOTEBOOK LINES & TYPOGRAPHY */
         .notebook-page {
             background-color: transparent;
             background-image: repeating-linear-gradient(transparent, transparent 39px, rgba(148, 163, 184, 0.18) 39px, rgba(148, 163, 184, 0.18) 40px);
@@ -31,7 +73,6 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.25); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.4); }
 
-        /* THEME PALETTES */
         :root, html[data-theme="velvet"] {
             --bg-main: #0c0a14;
             --bg-sidebar: #13101f;
@@ -106,7 +147,6 @@
         <!-- SIDEBAR -->
         <aside class="w-72 border-r flex flex-col justify-between flex-shrink-0 transition-colors duration-300" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
             <div>
-                <!-- User Profile & Photo Upload -->
                 <div class="p-6 border-b flex items-center space-x-3" style="border-color: var(--border-color);">
                     <div class="relative group cursor-pointer" onclick="document.getElementById('avatar-upload').click()" title="Klik untuk ganti foto profil">
                         <img id="user-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="w-12 h-12 rounded-2xl object-cover border-2 shadow-md" style="border-color: var(--accent-color);" alt="Profil">
@@ -132,7 +172,6 @@
             </div>
 
             <div class="p-4 border-t space-y-3" style="border-color: var(--border-color);">
-                <!-- Semester Quick Switcher -->
                 <div class="space-y-1.5">
                     <div class="flex items-center justify-between px-1">
                         <span class="text-[10px] font-bold uppercase tracking-wider opacity-60">Fokus Semester</span>
@@ -146,7 +185,6 @@
                     </select>
                 </div>
 
-                <!-- Theme Palette Selector -->
                 <div class="space-y-1.5">
                     <span class="text-[10px] font-bold uppercase tracking-wider opacity-60 px-1">Tema Elegan</span>
                     <div class="grid grid-cols-4 gap-1.5">
@@ -161,7 +199,6 @@
 
         <!-- MAIN VIEWPORT -->
         <main class="flex-1 flex flex-col overflow-y-auto custom-scrollbar" style="background-color: var(--bg-main);">
-            <!-- TOP HEADER WITH LOGOUT AT THE VERY END TOP -->
             <header class="h-20 backdrop-blur-md border-b px-8 flex items-center justify-between sticky top-0 z-50 transition-colors duration-300" style="background-color: var(--bg-card); border-color: var(--border-color);">
                 <div>
                     <h2 id="tab-title" class="text-lg font-extrabold tracking-tight">Command Center</h2>
@@ -179,7 +216,6 @@
                 
                 <!-- TAB 1: COMMAND CENTER (DASHBOARD) -->
                 <div id="tab-dashboard" class="tab-content space-y-8">
-                    <!-- Quick Stats -->
                     <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <div class="border p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white shadow-md" style="background-color: var(--accent-color);"><i class="fa-solid fa-list-check"></i></div>
@@ -211,9 +247,7 @@
                         </div>
                     </div>
 
-                    <!-- REALTIME SCHEDULE REMINDER & DEADLINE SECTION -->
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <!-- Pengingat Jadwal Kuliah Hari Ini -->
                         <div class="border rounded-2xl p-6 shadow-sm flex flex-col justify-between backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div>
                                 <div class="flex items-center justify-between mb-4">
@@ -227,7 +261,6 @@
                             </div>
                         </div>
 
-                        <!-- Deadline Tugas Terdekat -->
                         <div class="border rounded-2xl p-6 shadow-sm flex flex-col justify-between backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div>
                                 <div class="flex items-center justify-between mb-4">
@@ -243,7 +276,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 2: KURIKULUM SEMESTER 1 s/d 4 -->
+                <!-- TAB 2: KURIKULUM -->
                 <div id="tab-kurikulum" class="tab-content hidden space-y-6">
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <button onclick="switchKurikulumTab(1)" id="kur-btn-1" class="p-4 rounded-2xl border text-left transition-all shadow-md" style="background-color: var(--accent-color); border-color: var(--accent-color); color: #fff;">
@@ -302,7 +335,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 3: JADWAL KULIAH & LOKASI KELAS -->
+                <!-- TAB 3: JADWAL -->
                 <div id="tab-jadwal" class="tab-content hidden space-y-6">
                     <div class="border rounded-2xl overflow-hidden shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                         <div class="p-6 border-b flex justify-between items-center" style="border-color: var(--border-color);">
@@ -330,7 +363,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 4: ABSENSI & MATERI KULIAH -->
+                <!-- TAB 4: ABSENSI -->
                 <div id="tab-absensi" class="tab-content hidden space-y-6">
                     <div class="border rounded-2xl p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -360,10 +393,9 @@
                     </div>
                 </div>
 
-                <!-- TAB 5: E-BOOK PER MATKUL (REVISED WITH ELEGANT NOTEBOOK LINES & INSPIRING TEXT) -->
+                <!-- TAB 5: E-BOOK PER MATKUL -->
                 <div id="tab-notebook" class="tab-content hidden space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                        <!-- Subject Selector Sidebar -->
                         <div class="lg:col-span-1 border rounded-2xl p-4 flex flex-col justify-between h-[680px] backdrop-blur-md shadow-lg" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div>
                                 <div class="flex items-center justify-between mb-4 px-2">
@@ -377,9 +409,7 @@
                             </div>
                         </div>
 
-                        <!-- Main Notebook Workspace -->
                         <div class="lg:col-span-3 border rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[680px] backdrop-blur-md relative" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <!-- Top Note Header with Inspiring Quote -->
                             <div class="p-5 border-b flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-8" style="border-color: var(--border-color); background: linear-gradient(135deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));">
                                 <div>
                                     <span class="text-[10px] font-extrabold uppercase tracking-widest" style="color: var(--accent-color);"><i class="fa-solid fa-feather-pointed mr-1"></i> Executive Academic Journal</span>
@@ -390,22 +420,20 @@
                                 </div>
                             </div>
 
-                            <!-- Notebook Page Content Area with Clean Lines -->
                             <div class="flex-1 p-0 overflow-y-auto custom-scrollbar relative">
                                 <div class="absolute left-6 top-0 bottom-0 w-0.5 opacity-25" style="background-color: var(--accent-color);"></div>
                                 <textarea id="ebook-textarea" oninput="saveCurrentNote(this.value)" class="w-full h-full notebook-page focus:outline-none pl-12 pr-8 py-2 font-medium resize-none text-sm placeholder:opacity-40" placeholder="Tuliskan intisari jurnal, catatan kuliah interaktif, atau draf kerangka tesis Anda di sini... Setiap baris dirancang rapi selaras dengan garis akademik."></textarea>
                             </div>
 
-                            <!-- Notebook Footer Info -->
                             <div class="px-8 py-3 border-t text-[11px] opacity-60 flex items-center justify-between" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">
-                                <span><i class="fa-solid fa-shield-halved text-emerald-400 mr-1"></i> Tersimpan otomatis di enkripsi lokal browser</span>
+                                <span><i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Tersimpan otomatis di enkripsi lokal & Firebase Cloud</span>
                                 <span class="font-bold uppercase tracking-wider text-[10px]" style="color: var(--accent-color);">AAAAIIM Pascasarjana Edition</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB 6: TUGAS & DEADLINE -->
+                <!-- TAB 6: TUGAS -->
                 <div id="tab-tugas" class="tab-content hidden space-y-6">
                     <div class="border rounded-2xl p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
@@ -461,7 +489,7 @@
         </div>
     </div>
 
-    <!-- SCRIPT ENGINE -->
+    <!-- MAIN SCRIPT ENGINE -->
     <script>
         let storage = {
             activeSemester: '1',
@@ -508,6 +536,18 @@
             theme: localStorage.getItem('aaaaíim_pasca_theme') || 'velvet'
         };
 
+        // Inisialisasi awal sinkronisasi Cloud Firebase
+        window.addEventListener('DOMContentLoaded', async () => {
+            if (typeof window.firebaseCloudLoad === 'function') {
+                const cloudData = await window.firebaseCloudLoad();
+                if(cloudData) {
+                    storage = { ...storage, ...cloudData };
+                    renderAll();
+                    console.log("Data berhasil dimuat dari Firebase Cloud!");
+                }
+            }
+        });
+
         function saveData() {
             localStorage.setItem('aaaaíim_pasca_kurikulum', JSON.stringify(storage.kurikulum));
             localStorage.setItem('aaaaíim_pasca_jadwal', JSON.stringify(storage.jadwal));
@@ -517,6 +557,11 @@
             localStorage.setItem('aaaaíim_pasca_theme', storage.theme);
             localStorage.setItem('aaaaíim_pasca_active_sem', storage.activeSemester);
             localStorage.setItem('aaaaíim_pasca_avatar', storage.userAvatar);
+
+            if (typeof window.firebaseCloudSync === 'function') {
+                window.firebaseCloudSync(storage);
+            }
+
             renderAll();
         }
 
@@ -689,7 +734,6 @@
             }
         }
 
-        // Realtime Clock
         setInterval(() => {
             const el = document.getElementById('realtime-clock');
             if(el) el.innerText = new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' });
@@ -731,7 +775,6 @@
             `).join('');
         }
 
-        // ABSENSI & MATERI KULIAH FUNCTIONS
         function addAbsensiSesi() {
             const pertemuan = prompt("Pertemuan ke (Contoh: Pertemuan 3):");
             const matkul = prompt("Nama Mata Kuliah:");
@@ -838,7 +881,7 @@
         function saveCurrentNote(val) {
             if(storage.activeSubject) {
                 storage.ebooks[storage.activeSubject] = val;
-                localStorage.setItem('aaaaíim_pasca_ebooks', JSON.stringify(storage.ebooks));
+                saveData();
             }
         }
 
@@ -881,7 +924,6 @@
             const avatarImg = document.getElementById('user-avatar-img');
             if(avatarImg) avatarImg.src = storage.userAvatar;
 
-            // Stats
             const pendingTugas = storage.tugas.filter(t => t.status !== 'Submitted').length;
             const statTugas = document.getElementById('dash-stat-tugas');
             if(statTugas) statTugas.innerText = pendingTugas;
@@ -893,14 +935,12 @@
             const statSks = document.getElementById('dash-stat-sks');
             if(statSks) statSks.innerText = totalSksAll + " SKS";
 
-            // Kehadiran Stat
             const totalAbsen = storage.absensi.length;
             const hadirAbsen = storage.absensi.filter(a => a.kehadiran === 'Hadir').length;
             const persentaseHadir = totalAbsen > 0 ? Math.round((hadirAbsen / totalAbsen) * 100) : 100;
             const statAbsen = document.getElementById('dash-stat-absensi');
             if(statAbsen) statAbsen.innerText = persentaseHadir + "%";
 
-            // Day matching
             const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
             const todayName = days[new Date().getDay()];
             const dayBadge = document.getElementById('current-day-badge');
@@ -910,7 +950,6 @@
             const statJadwal = document.getElementById('dash-stat-jadwal');
             if(statJadwal) statJadwal.innerText = todaySchedules.length + " Sesi";
 
-            // Daily Schedule Reminder Widget
             const dailyContainer = document.getElementById('dashboard-daily-schedule');
             if(dailyContainer) {
                 if(todaySchedules.length > 0) {
@@ -929,7 +968,6 @@
                 }
             }
 
-            // Deadline Widget
             const deadlineContainer = document.getElementById('dashboard-deadline-list');
             if(deadlineContainer) {
                 const activeTugas = storage.tugas.filter(t => t.status !== 'Submitted');
@@ -952,7 +990,6 @@
             renderJadwalTable();
             renderAbsensiTable();
 
-            // Tugas Cards
             const tugasContainer = document.getElementById('tugas-container');
             if(tugasContainer) {
                 tugasContainer.innerHTML = storage.tugas.map((t, i) => {
