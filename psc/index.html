@@ -10,22 +10,23 @@
     
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
+        import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-       const firebaseConfig = {
-          apiKey: "AIzaSyAElGVmqqeJFYW7O4VX-eYXhCxa8LDjWkA",
-          authDomain: "aaaaimm-pascasarjana.firebaseapp.com",
-          projectId: "aaaaimm-pascasarjana",
-          storageBucket: "aaaaimm-pascasarjana.firebasestorage.app",
-          messagingSenderId: "330116117840",
-          appId: "1:330116117840:web:ff637fbae78b63d46c2855",
-          measurementId: "G-RGBT9MV6Q5"
-    };
+        const firebaseConfig = {
+            apiKey: "AIzaSyAElGVmqqeJFYW7O4VX-eYXhCxa8LDjWkA",
+            authDomain: "aaaaimm-pascasarjana.firebaseapp.com",
+            projectId: "aaaaimm-pascasarjana",
+            storageBucket: "aaaaimm-pascasarjana.firebasestorage.app",
+            messagingSenderId: "330116117840",
+            appId: "1:330116117840:web:ff637fbae78b63d46c2855",
+            measurementId: "G-RGBT9MV6Q5"
+        };
 
         // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
+        const db = getFirestore(app); // FIXED: Inisialisasi Firestore dengan benar
 
+        // Fungsi Simpan ke Cloud
         window.firebaseCloudSync = async function(storageData) {
             try {
                 await setDoc(doc(db, "pascasarjana_unnes", "hikarinaim_profile"), storageData);
@@ -35,16 +36,16 @@
             }
         };
 
-        window.firebaseCloudLoad = async function() {
-            try {
-                const docSnap = await getDoc(doc(db, "pascasarjana_unnes", "hikarinaim_profile"));
+        // Fungsi Listener Real-Time (Otomatis update di HP & Laptop tanpa refresh)
+        window.initFirebaseRealtimeListener = function(callback) {
+            onSnapshot(doc(db, "pascasarjana_unnes", "hikarinaim_profile"), (docSnap) => {
                 if (docSnap.exists()) {
-                    return docSnap.data();
+                    console.log("Perubahan real-time terdeteksi dari cloud!");
+                    callback(docSnap.data());
                 }
-            } catch (e) {
-                console.error("Gagal memuat dari Firebase:", e);
-            }
-            return null;
+            }, (error) => {
+                console.error("Error real-time listener:", error);
+            });
         };
     </script>
 
@@ -445,7 +446,7 @@
                             </div>
 
                             <div class="px-4 sm:px-8 py-3 border-t text-[10px] sm:text-[11px] opacity-60 flex flex-col sm:flex-row items-center justify-between gap-1" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">
-                                <span id="save-status-indicator"><i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Tersimpan otomatis di enkripsi lokal & Firebase Cloud</span>
+                                <span id="save-status-indicator"><i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Sinkronisasi Real-Time Firebase Aktif</span>
                                 <span class="font-bold uppercase tracking-wider text-[10px]" style="color: var(--accent-color);">Pascasarjana UNNES Edition</span>
                             </div>
                         </div>
@@ -510,8 +511,8 @@
         let storage = {
             activeSemester: '1',
             activeKurikulumTab: 1,
-            userAvatar: localStorage.getItem('aaaaíim_pasca_avatar') || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
-            kurikulum: JSON.parse(localStorage.getItem('aaaaíim_pasca_kurikulum')) || {
+            userAvatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
+            kurikulum: {
                 1: [
                     { kode: 'UNN801', nama: 'Filsafat Ilmu & Epistemologi Pendidikan', sks: 3, dosen: 'Prof. Dr. Tri Joko Raharjo, M.Pd.', status: 'Lulus' },
                     { kode: 'UNN802', nama: 'Statistika & Analisis Data Kuantitatif Lanjut', sks: 3, dosen: 'Dr. Hardi Suyitno, M.Pd.', status: 'Sedang Berjalan' },
@@ -534,40 +535,47 @@
                     { kode: 'UNN813', nama: 'Sidang Ujian Tesis Magister', sks: 6, dosen: 'Promotor & Co-Promotor UNNES', status: 'Belum Ambil' }
                 ]
             },
-            jadwal: JSON.parse(localStorage.getItem('aaaaíim_pasca_jadwal')) || [
+            jadwal: [
                 { hari: 'Senin', matkul: 'Filsafat Ilmu & Epistemologi Pendidikan', sks: 3, waktu: '13.30 - 16.00', lokasi: 'Gedung Pascasarjana UNNES Lt. 3, Ruang 301', dosen: 'Prof. Dr. Tri Joko Raharjo, M.Pd.', info: 'https://lms.unnes.ac.id (LMS Kuliah)' },
                 { hari: 'Rabu', matkul: 'Statistika & Analisis Data Kuantitatif Lanjut', sks: 3, waktu: '09.00 - 11.30', lokasi: 'Lab Komputer Pascasarjana UNNES Lt. 2', dosen: 'Dr. Hardi Suyitno, M.Pd.', info: 'Membawa laptop terinstal software SPSS / R' }
             ],
-            absensi: JSON.parse(localStorage.getItem('aaaaíim_pasca_absensi')) || [],
-            ebooks: JSON.parse(localStorage.getItem('aaaaíim_pasca_ebooks')) || {
-                'Filsafat Ilmu & Epistemologi Pendidikan': '✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Landasan Ontologis & Epistemologis Ilmu Pendidikan\n\nPoin Penting:\n1. Hakikat kebenaran ilmiah dalam perspektif post-positivisme.\n2. Konstruksi paradigma berpikir kritis bagi mahasiswa magister.\n3. Relevansi filsafat ilmu dengan pengembangan tesis.',
-                'Statistika & Analisis Data Kuantitatif Lanjut': '✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Analisis Multivariat & Pengujian Hipotesis Kompleks\n\nPoin Penting:\n1. Pemilihan uji statistik parametrik dan non-parametrik yang tepat.\n2. Interpretasi output SPSS untuk publikasi jurnal ilmiah.\n3. Validitas dan reliabilitas instrumen penelitian.'
+            absensi: [],
+            ebooks: {
+                'Filsafat Ilmu & Epistemologi Pendidikan': '✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Landasan Ontologis & Epistemologis Ilmu Pendidikan\n\nPoin Penting:\n1. Hakikat kebenaran ilmiah dalam perspektif post-positivisme.\n2. Konstruksi paradigma berpikir kritis bagi mahasiswa magister.\n3. Relevansi filsafat ilmu dengan pengembangan tesis.'
             },
             activeSubject: 'Filsafat Ilmu & Epistemologi Pendidikan',
-            tugas: JSON.parse(localStorage.getItem('aaaaíim_pasca_tugas')) || [
+            tugas: [
                 { matkul: 'Filsafat Ilmu & Epistemologi Pendidikan', judul: 'Review Literatur Epistemologi Modern', deadline: '30 September 2026, 23.59 WIB', status: 'Pending' }
             ],
-            theme: localStorage.getItem('aaaaíim_pasca_theme') || 'velvet'
+            theme: 'velvet'
         };
 
-        window.addEventListener('DOMContentLoaded', async () => {
-            if (typeof window.firebaseCloudLoad === 'function') {
-                const cloudData = await window.firebaseCloudLoad();
-                if(cloudData) {
-                    storage = { ...storage, ...cloudData };
-                    if(!storage.absensi || storage.absensi.length === 0) {
-                        generateAutomatedAbsensi(false);
+        window.addEventListener('DOMContentLoaded', () => {
+            // Aktifkan Real-Time Listener Firebase (Otomatis sinkron antara Laptop dan HP)
+            if (typeof window.initFirebaseRealtimeListener === 'function') {
+                window.initFirebaseRealtimeListener((cloudData) => {
+                    if (cloudData) {
+                        storage = { ...storage, ...cloudData };
+                        applyStateToUI();
                     }
-                }
+                });
             }
-            setTheme(storage.theme);
+
+            updateClock();
+            setInterval(updateClock, 1000);
+        });
+
+        // Terapkan data ke antarmuka tanpa mereset posisi ketikan pengguna
+        function applyStateToUI() {
+            setTheme(storage.theme || 'velvet');
             document.getElementById('sidebar-username').innerText = "Hikarinaim Aistimas";
             if(storage.userAvatar) document.getElementById('user-avatar-img').src = storage.userAvatar;
             
-            updateClock();
-            setInterval(updateClock, 1000);
+            if(!storage.absensi || storage.absensi.length === 0) {
+                generateAutomatedAbsensi(false);
+            }
             renderAll();
-        });
+        }
 
         function updateClock() {
             const now = new Date();
@@ -582,6 +590,7 @@
             if(user === 'admin' && pass === 'admin123') {
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('main-dashboard').classList.remove('hidden');
+                applyStateToUI();
             } else {
                 document.getElementById('login-error').classList.remove('hidden');
             }
@@ -917,7 +926,7 @@
             const titleEl = document.getElementById('active-subject-title');
             const textarea = document.getElementById('ebook-textarea');
             if(titleEl) titleEl.innerText = storage.activeSubject || 'Pilih Mata Kuliah';
-            if(textarea) {
+            if(textarea && document.activeElement !== textarea) {
                 textarea.value = storage.activeSubject ? (storage.ebooks[storage.activeSubject] || '') : '';
             }
         }
@@ -972,27 +981,19 @@
             }
         }
 
-        // --- OPTIMASI UTAMA: DEBOUNCED NOTE SAVING (AGAR MENGETIK TIDAK LEMOT) ---
         let saveTimeout = null;
         function saveCurrentNote(val) {
             if(storage.activeSubject) {
                 storage.ebooks[storage.activeSubject] = val;
                 
-                // Ubah status indikator penyimpanan menjadi "Mengetik..."
                 const indicator = document.getElementById('save-status-indicator');
                 if(indicator) indicator.innerHTML = `<i class="fa-solid fa-pen text-amber-400 mr-1 animate-pulse"></i> Mengetik (menyimpan otomatis)...`;
 
-                // Batalkan timeout sebelumnya agar tidak spam simpan setiap huruf
                 clearTimeout(saveTimeout);
-                
-                // Simpan instan ke localStorage secara ringan agar data tidak hilang jika ditutup mendadak
-                localStorage.setItem('aaaaíim_pasca_ebooks', JSON.stringify(storage.ebooks));
-
-                // Tunda sinkronisasi penuh (localStorage menyeluruh & Firebase Cloud) selama 1000ms (1 detik) setelah berhenti mengetik
                 saveTimeout = setTimeout(() => {
-                    saveDataQuiet();
-                    if(indicator) indicator.innerHTML = `<i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Tersimpan otomatis di enkripsi lokal & Firebase Cloud`;
-                }, 1000);
+                    saveData();
+                    if(indicator) indicator.innerHTML = `<i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Sinkronisasi Real-Time Firebase Aktif`;
+                }, 800);
             }
         }
 
@@ -1029,33 +1030,10 @@
         }
 
         function saveData() {
-            localStorage.setItem('aaaaíim_pasca_kurikulum', JSON.stringify(storage.kurikulum));
-            localStorage.setItem('aaaaíim_pasca_jadwal', JSON.stringify(storage.jadwal));
-            localStorage.setItem('aaaaíim_pasca_absensi', JSON.stringify(storage.absensi));
-            localStorage.setItem('aaaaíim_pasca_ebooks', JSON.stringify(storage.ebooks));
-            localStorage.setItem('aaaaíim_pasca_tugas', JSON.stringify(storage.tugas));
-            localStorage.setItem('aaaaíim_pasca_theme', storage.theme);
-            localStorage.setItem('aaaaíim_pasca_avatar', storage.userAvatar);
-            
             if(typeof window.firebaseCloudSync === 'function') {
                 window.firebaseCloudSync(storage);
             }
             renderAll();
-        }
-
-        // Simpan data tanpa memicu re-render besar yang mengganggu UI
-        function saveDataQuiet() {
-            localStorage.setItem('aaaaíim_pasca_kurikulum', JSON.stringify(storage.kurikulum));
-            localStorage.setItem('aaaaíim_pasca_jadwal', JSON.stringify(storage.jadwal));
-            localStorage.setItem('aaaaíim_pasca_absensi', JSON.stringify(storage.absensi));
-            localStorage.setItem('aaaaíim_pasca_ebooks', JSON.stringify(storage.ebooks));
-            localStorage.setItem('aaaaíim_pasca_tugas', JSON.stringify(storage.tugas));
-            localStorage.setItem('aaaaíim_pasca_theme', storage.theme);
-            localStorage.setItem('aaaaíim_pasca_avatar', storage.userAvatar);
-            
-            if(typeof window.firebaseCloudSync === 'function') {
-                window.firebaseCloudSync(storage);
-            }
         }
 
         function renderAll() {
