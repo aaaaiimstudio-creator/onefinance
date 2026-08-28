@@ -1,780 +1,544 @@
 <!DOCTYPE html>
 <html lang="id" class="dark">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>AAAIIM OneFinance — Enterprise Wealth & Audit Platform</title>
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AAAIIM OneFinance - Sistem Keuangan Perusahaan</title>
+  <!-- Tailwind CSS CDN -->
   <script src="https://cdn.tailwindcss.com"></script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
   <script>
     tailwind.config = {
       darkMode: 'class',
       theme: {
         extend: {
-          fontFamily: { 
-            sans: ['Outfit', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace']
-          },
           colors: {
-            brand: {
-              primary: 'var(--brand-primary)',
-              hover: 'var(--brand-hover)',
-              light: 'var(--brand-light)',
-              glow: 'var(--brand-glow)'
-            },
-            corporate: {
-              950: '#030712',
-              900: '#0b0f19',
-              800: '#111827',
-              700: '#1f2937',
-              border: 'rgba(255, 255, 255, 0.08)'
-            }
+            brand: { 500: '#6366f1', 600: '#4f46e5' }
           }
         }
       }
     }
   </script>
-
   <style>
-    :root {
-      --brand-primary: #10b981;
-      --brand-hover: #059669;
-      --brand-light: rgba(16, 185, 129, 0.15);
-      --brand-glow: rgba(16, 185, 129, 0.35);
-    }
-
-    body { 
-      font-family: 'Outfit', sans-serif; 
-      transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1); 
-    }
-    
-    html.dark body { background-color: #030712; color: #f3f4f6; }
-    html.dark .glass-card {
-      background: rgba(17, 24, 39, 0.65);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5);
-    }
-    html.dark .glass-input {
-      background: rgba(3, 7, 18, 0.7);
-      border: 1px solid rgba(255, 255, 255, 0.12);
-      color: #fff;
-    }
-    html.dark .glass-input:focus {
-      border-color: var(--brand-primary);
-      box-shadow: 0 0 15px var(--brand-glow);
-    }
-    html.dark .header-bg { 
-      background: rgba(3, 7, 18, 0.85); 
-      backdrop-filter: blur(16px);
-      border-color: rgba(255, 255, 255, 0.08); 
-    }
-    html.dark .text-adaptive-main { color: #f9fafb; }
-    html.dark .text-adaptive-sub { color: #9ca3af; }
-    html.dark .text-adaptive-muted { color: #6b7280; }
-    html.dark .border-adaptive { border-color: rgba(255, 255, 255, 0.08); }
-
-    html:not(.dark) body { background-color: #f8fafc; color: #1e293b; }
-    html:not(.dark) .glass-card {
-      background: rgba(255, 255, 255, 0.85);
-      backdrop-filter: blur(20px);
-      border: 1px solid rgba(226, 232, 240, 0.8);
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.05);
-    }
-    html:not(.dark) .glass-input {
-      background: #f1f5f9;
-      border: 1px solid #cbd5e1;
-      color: #0f172a;
-    }
-    html:not(.dark) .glass-input::placeholder { color: #94a3b8; }
-    html:not(.dark) .header-bg { background: rgba(255, 255, 255, 0.9); backdrop-filter: blur(16px); border-color: #e2e8f0; }
-    html:not(.dark) .text-adaptive-main { color: #0f172a; }
-    html:not(.dark) .text-adaptive-sub { color: #334155; }
-    html:not(.dark) .text-adaptive-muted { color: #64748b; }
-    html:not(.dark) .border-adaptive { border-color: #e2e8f0; }
-
-    .theme-emerald { --brand-primary: #10b981; --brand-hover: #059669; --brand-light: rgba(16, 185, 129, 0.15); --brand-glow: rgba(16, 185, 129, 0.35); }
-    .theme-cyan { --brand-primary: #06b6d4; --brand-hover: #0891b2; --brand-light: rgba(6, 182, 212, 0.15); --brand-glow: rgba(6, 182, 212, 0.35); }
-    .theme-amber { --brand-primary: #f59e0b; --brand-hover: #d97706; --brand-light: rgba(245, 158, 11, 0.15); --brand-glow: rgba(245, 158, 11, 0.35); }
-    .theme-purple { --brand-primary: #8b5cf6; --brand-hover: #7c3aed; --brand-light: rgba(139, 92, 246, 0.15); --brand-glow: rgba(139, 92, 246, 0.35); }
-    .theme-rose { --brand-primary: #f43f5e; --brand-hover: #e11d48; --brand-light: rgba(244, 63, 94, 0.15); --brand-glow: rgba(244, 63, 94, 0.35); }
-    .theme-blue { --brand-primary: #3b82f6; --brand-hover: #2563eb; --brand-light: rgba(59, 130, 246, 0.15); --brand-glow: rgba(59, 130, 246, 0.35); }
-
-    .brand-gradient { background: linear-gradient(135deg, var(--brand-primary), var(--brand-hover)); }
-    .brand-text { color: var(--brand-primary); }
-
-    .custom-scroll {
-      overflow-x: auto;
-      scrollbar-width: thin;
-      scrollbar-color: var(--brand-primary) rgba(156, 163, 175, 0.15);
-    }
-    .custom-scroll::-webkit-scrollbar { height: 8px; width: 8px; }
-    .custom-scroll::-webkit-scrollbar-track { background: rgba(156, 163, 175, 0.1); border-radius: 8px; }
-    .custom-scroll::-webkit-scrollbar-thumb { background: var(--brand-primary); border-radius: 8px; }
-
-    @media print {
-      body * { visibility: hidden; }
-      #printableReport, #printableReport * { visibility: visible; color: #0f172a !important; }
-      #printableReport { 
-        position: absolute; left: 0; top: 0; width: 100%; 
-        background: #ffffff !important; padding: 30px !important; box-shadow: none !important; border: none !important; 
-      }
-      .no-print { display: none !important; }
-    }
+    .brand-text { color: #6366f1; }
   </style>
 </head>
-<body class="min-h-screen antialiased selection:bg-emerald-500 selection:text-white flex flex-col justify-between theme-emerald">
+<body class="bg-slate-950 text-slate-100 font-sans antialiased min-h-screen flex flex-col">
 
-  <div>
-    <div id="colorCustomizerPanel" class="fixed bottom-6 right-6 z-50 transition-all duration-300 no-print">
-      <div id="colorPickerBox" class="hidden glass-card p-4 rounded-2xl border border-adaptive shadow-2xl mb-3 flex flex-col gap-3 min-w-[200px]">
-        <div class="flex justify-between items-center pb-2 border-b border-adaptive">
-          <span class="text-xs font-bold text-adaptive-main uppercase tracking-wider flex items-center gap-1.5">
-            <i class="fa-solid fa-palette brand-text"></i> Tema Aksen
-          </span>
-          <button onclick="toggleColorPicker()" class="text-adaptive-muted hover:text-adaptive-main"><i class="fa-solid fa-xmark text-xs"></i></button>
-        </div>
-        <div class="grid grid-cols-3 gap-2.5">
-          <button onclick="changeThemeAccent('theme-emerald')" class="w-8 h-8 rounded-xl bg-emerald-500 hover:scale-110 transition-transform shadow-md flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></button>
-          <button onclick="changeThemeAccent('theme-cyan')" class="w-8 h-8 rounded-xl bg-cyan-500 hover:scale-110 transition-transform shadow-md flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></button>
-          <button onclick="changeThemeAccent('theme-amber')" class="w-8 h-8 rounded-xl bg-amber-500 hover:scale-110 transition-transform shadow-md flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></button>
-          <button onclick="changeThemeAccent('theme-purple')" class="w-8 h-8 rounded-xl bg-purple-500 hover:scale-110 transition-transform shadow-md flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></button>
-          <button onclick="changeThemeAccent('theme-rose')" class="w-8 h-8 rounded-xl bg-rose-500 hover:scale-110 transition-transform shadow-md flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></button>
-          <button onclick="changeThemeAccent('theme-blue')" class="w-8 h-8 rounded-xl bg-blue-500 hover:scale-110 transition-transform shadow-md flex items-center justify-center text-white text-xs"><i class="fa-solid fa-check"></i></button>
+  <!-- Header / Navbar -->
+  <header class="bg-slate-900 border-b border-slate-800 sticky top-0 z-50">
+    <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
+      <div class="flex items-center space-x-3">
+        <div class="bg-brand-600 text-white font-bold p-2 rounded-lg">A1</div>
+        <div>
+          <h1 class="font-bold text-lg tracking-wide">AAAIIM OneFinance</h1>
+          <p class="text-xs text-slate-400">Sistem Akuntansi & Rekening Koran Akurat</p>
         </div>
       </div>
-      <button onclick="toggleColorPicker()" class="w-12 h-12 rounded-2xl brand-gradient text-slate-950 shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center justify-center font-bold text-lg border border-white/20 ml-auto" title="Ubah Warna Tema UI">
-        <i class="fa-solid fa-paintbrush"></i>
-      </button>
+      <div class="flex space-x-2">
+        <button onclick="switchTab('dashboard')" id="btn-dashboard" class="px-3 py-1.5 text-xs font-semibold rounded-lg bg-brand-600 text-white transition">Dashboard</button>
+        <button onclick="switchTab('transactions')" id="btn-transactions" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 transition">Transaksi</button>
+        <button onclick="switchTab('statement')" id="btn-statement" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 transition">Rekening Koran</button>
+        <button onclick="switchTab('report')" id="btn-report" class="px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 transition">Laporan Keuangan</button>
+      </div>
     </div>
+  </header>
 
-    <div id="toast" class="fixed top-4 right-4 sm:top-6 sm:right-6 z-50 hidden flex items-center gap-3 glass-card border-l-4 border-l-[var(--brand-primary)] text-slate-800 dark:text-white px-4 py-3 sm:px-5 sm:py-4 rounded-2xl shadow-2xl text-xs sm:text-sm font-medium transition-all max-w-xs sm:max-w-md">
-      <i class="fa-solid fa-shield-check brand-text text-lg"></i>
-      <span id="toastMsg" class="text-adaptive-main">Notifikasi Audit</span>
-    </div>
+  <!-- Main Content Container -->
+  <main class="max-w-7xl mx-auto px-4 py-6 flex-grow w-full">
 
-    <div id="loginOverlay" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/90 backdrop-blur-xl no-print">
-      <div class="glass-card max-w-md w-full p-6 sm:p-10 rounded-3xl border border-adaptive shadow-2xl relative overflow-hidden">
-        <div class="absolute -top-24 -left-24 w-48 h-48 rounded-full bg-[var(--brand-primary)] opacity-20 blur-3xl pointer-events-none"></div>
-        <div class="text-center mb-8 relative">
-          <div class="inline-flex p-4 bg-[var(--brand-light)] border border-[var(--brand-glow)] rounded-2xl brand-text shadow-2xl mb-4">
-            <i class="fa-solid fa-file-shield text-4xl"></i>
-          </div>
-          <h2 class="text-2xl font-black tracking-wider uppercase text-adaptive-main">AAAIIM <span class="brand-text">OneFinance</span></h2>
-          <p class="text-[10px] text-adaptive-muted mt-1 uppercase tracking-widest font-bold">Enterprise Audit & Reconciliation Portal</p>
+    <!-- TAB 1: DASHBOARD -->
+    <section id="tab-dashboard" class="space-y-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+          <p class="text-xs text-slate-400">Total Pendapatan</p>
+          <h3 id="dashTotalIncome" class="text-xl font-bold font-mono text-emerald-400 mt-1">Rp 0</h3>
         </div>
-        <form onsubmit="handleLogin(event)" class="space-y-4 relative">
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+          <p class="text-xs text-slate-400">Total Pengeluaran</p>
+          <h3 id="dashTotalExpense" class="text-xl font-bold font-mono text-rose-400 mt-1">Rp 0</h3>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+          <p class="text-xs text-slate-400">Laba Bersih</p>
+          <h3 id="dashNetIncome" class="text-xl font-bold font-mono brand-text mt-1">Rp 0</h3>
+        </div>
+        <div class="bg-slate-900 border border-slate-800 p-4 rounded-xl">
+          <p class="text-xs text-slate-400">Total Saldo Akun (Kas/Bank)</p>
+          <h3 id="dashTotalBalance" class="text-xl font-bold font-mono text-cyan-400 mt-1">Rp 0</h3>
+        </div>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+        <h3 class="font-bold text-sm mb-4">Daftar Akun / Rekening Aktif (Saldo Awal Murni Rp 0)</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400">
+                <th class="py-2 px-3">Nama Rekening / Akun</th>
+                <th class="py-2 px-3">Tipe</th>
+                <th class="py-2 px-3 text-right">Saldo Berjalan (Akumulasi Transaksi)</th>
+              </tr>
+            </thead>
+            <tbody id="accountTableBody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: TRANSAKSI -->
+    <section id="tab-transactions" class="space-y-6 hidden">
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+        <h3 class="font-bold text-sm mb-4">Tambah Transaksi Baru</h3>
+        <form id="transactionForm" onsubmit="handleFormSubmit(event)" class="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div>
-            <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Username / Auditor ID</label>
-            <div class="relative">
-              <i class="fa-solid fa-user-shield absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
-              <input type="text" id="loginUser" required placeholder="admin / auditor" class="w-full pl-10 pr-3 py-3.5 rounded-xl glass-input text-xs outline-none font-medium">
-            </div>
+            <label class="block text-xs text-slate-400 mb-1">Tanggal</label>
+            <input type="date" id="txDate" required class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white">
           </div>
           <div>
-            <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Kata Sandi</label>
-            <div class="relative">
-              <i class="fa-solid fa-key absolute left-3.5 top-3.5 text-slate-400 text-xs"></i>
-              <input type="password" id="loginPass" required placeholder="••••••••" class="w-full pl-10 pr-3 py-3.5 rounded-xl glass-input text-xs outline-none font-medium">
-            </div>
+            <label class="block text-xs text-slate-400 mb-1">Tipe Transaksi</label>
+            <select id="txType" onchange="toggleTransferField()" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white">
+              <option value="Pendapatan">Pendapatan</option>
+              <option value="Pengeluaran">Pengeluaran</option>
+              <option value="Transfer Antar Akun">Transfer Antar Akun</option>
+            </select>
           </div>
-          <button type="submit" class="w-full py-4 brand-gradient text-slate-950 font-extrabold rounded-xl transition-all shadow-xl hover:scale-[1.01] flex items-center justify-center gap-2 text-xs tracking-wider uppercase mt-3">
-            <i class="fa-solid fa-right-to-bracket"></i> Mulai Sesi Audit
-          </button>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Akun / Rekening Sumber</label>
+            <select id="txAccount" required class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white">
+              <!-- Rendered by JS -->
+            </select>
+          </div>
+          <div id="targetAccountWrapper" class="hidden">
+            <label class="block text-xs text-slate-400 mb-1">Akun / Rekening Tujuan</label>
+            <select id="txTargetAccount" class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white">
+              <!-- Rendered by JS -->
+            </select>
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Kategori</label>
+            <input type="text" id="txCategory" placeholder="Contoh: Penjualan, Operasional, dll" required class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white">
+          </div>
+          <div>
+            <label class="block text-xs text-slate-400 mb-1">Nominal (Rp)</label>
+            <input type="number" id="txAmount" placeholder="0" required class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white font-mono">
+          </div>
+          <div class="md:col-span-3">
+            <label class="block text-xs text-slate-400 mb-1">Catatan / Keterangan</label>
+            <input type="text" id="txNotes" placeholder="Catatan opsional..." class="w-full bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white">
+          </div>
+          <div class="md:col-span-3 flex justify-end">
+            <button type="submit" class="bg-brand-600 hover:bg-brand-500 text-white px-4 py-2 rounded-lg text-xs font-bold transition">Simpan Transaksi</button>
+          </div>
         </form>
-        <div class="mt-8 pt-4 border-t border-adaptive text-center">
-          <p class="text-[10px] text-adaptive-muted"> Demo Akses: <span class="brand-text font-mono font-bold">admin | admin123</span></p>
+      </div>
+
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl">
+        <h3 class="font-bold text-sm mb-4">Riwayat Jurnal Transaksi</h3>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400">
+                <th class="py-2 px-3">Tanggal</th>
+                <th class="py-2 px-3">Tipe</th>
+                <th class="py-2 px-3">Akun</th>
+                <th class="py-2 px-3">Kategori</th>
+                <th class="py-2 px-3">Catatan</th>
+                <th class="py-2 px-3 text-right">Nominal</th>
+                <th class="py-2 px-3 text-center">Aksi</th>
+              </tr>
+            </thead>
+            <tbody id="transactionTableBody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
         </div>
       </div>
-    </div>
+    </section>
 
-    <div id="mainApp" class="hidden">
-      <header class="sticky top-0 z-40 border-b header-bg no-print">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between">
-          <div class="flex items-center gap-3 sm:gap-4">
-            <div class="p-2.5 bg-[var(--brand-light)] border border-[var(--brand-glow)] rounded-2xl brand-text shadow-md">
-              <i class="fa-solid fa-file-shield text-lg sm:text-2xl"></i>
-            </div>
-            <div>
-              <h1 class="text-base sm:text-xl font-extrabold tracking-wider uppercase text-adaptive-main flex items-center gap-2">
-                AAAIIM <span class="brand-text">OneFinance</span>
-              </h1>
-              <p class="text-[9px] sm:text-[10px] text-adaptive-muted font-bold tracking-widest uppercase">Audit & Rekonsiliasi Saldo Riil</p>
-            </div>
-          </div>
-
-          <div class="flex items-center gap-2 sm:gap-3">
-            <div class="flex items-center gap-1.5 bg-slate-800/40 p-1.5 rounded-xl border border-adaptive">
-              <button onclick="downloadCSVReport()" class="px-3 py-1.5 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5" title="Download Excel / CSV Transaksi">
-                <i class="fa-solid fa-file-excel"></i> <span class="hidden lg:inline">CSV</span>
-              </button>
-              <button onclick="downloadBackupJSON()" class="px-3 py-1.5 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-400 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5" title="Download Backup JSON">
-                <i class="fa-solid fa-download"></i> <span class="hidden lg:inline">Backup</span>
-              </button>
-              <button onclick="window.print()" class="px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5" title="Cetak / PDF Laporan">
-                <i class="fa-solid fa-print"></i> <span class="hidden lg:inline">Print PDF</span>
-              </button>
-            </div>
-
-            <button onclick="toggleDarkMode()" class="p-2.5 bg-slate-100 dark:bg-slate-800/40 brand-text rounded-xl border border-adaptive text-xs" title="Mode Tampilan">
-              <i id="themeIcon" class="fa-solid fa-moon"></i>
-            </button>
-            <button onclick="handleLogout()" class="p-2.5 bg-rose-500/10 text-rose-500 rounded-xl border border-rose-500/20 text-xs" title="Keluar">
-              <i class="fa-solid fa-power-off"></i>
-            </button>
-          </div>
+    <!-- TAB 3: REKENING KORAN -->
+    <section id="tab-statement" class="space-y-6 hidden">
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl flex flex-col md:flex-row justify-between items-center gap-4">
+        <div>
+          <h3 class="font-bold text-sm">Filter Rekening Koran (Buku Besar)</h3>
+          <p class="text-xs text-slate-400">Menampilkan mutasi kronologis dengan saldo awal mutasi murni dari 0.</p>
         </div>
-
-        <div class="border-t border-adaptive bg-slate-900/30 dark:bg-black/20">
-          <div class="max-w-7xl mx-auto px-4 flex space-x-4 overflow-x-auto custom-scroll py-2">
-            <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn active border-b-2 border-[var(--brand-primary)] brand-text font-extrabold flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-wider whitespace-nowrap">
-              <i class="fa-solid fa-chart-pie"></i> Eksekutif Dashboard
-            </button>
-            <button onclick="switchTab('rekonsiliasi')" id="nav-rekonsiliasi" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main font-bold flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-wider whitespace-nowrap">
-              <i class="fa-solid fa-scale-balanced"></i> Tool Rekonsiliasi Saldo Riil
-            </button>
-            <button onclick="switchTab('pencatatan')" id="nav-pencatatan" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main font-bold flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-wider whitespace-nowrap">
-              <i class="fa-solid fa-pen-to-square"></i> Jurnal Transaksi
-            </button>
-            <button onclick="switchTab('akun')" id="nav-akun" class="tab-btn border-b-2 border-transparent text-adaptive-muted hover:text-adaptive-main font-bold flex items-center gap-2 px-4 py-2 text-xs uppercase tracking-wider whitespace-nowrap">
-              <i class="fa-solid fa-vault"></i> Manajemen Kas & Rekening
-            </button>
-          </div>
+        <div class="flex items-center space-x-2 w-full md:w-auto">
+          <select id="statementAccountSelect" onchange="renderAccountStatement()" class="bg-slate-950 border border-slate-800 rounded-lg p-2 text-xs text-white w-full md:w-64">
+            <!-- Rendered by JS -->
+          </select>
         </div>
-      </header>
-
-      <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 space-y-6">
-
-        <section id="tab-dashboard" class="tab-content space-y-6">
-          <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            <div class="glass-card p-5 rounded-3xl border border-adaptive shadow-xl relative overflow-hidden">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider">Total Aset Likuid</span>
-                <div class="p-2.5 bg-emerald-500/10 text-emerald-500 rounded-2xl"><i class="fa-solid fa-wallet text-base"></i></div>
-              </div>
-              <h3 id="statTotalAsset" class="text-xl sm:text-2xl font-black font-mono text-adaptive-main">Rp 0</h3>
-              <p class="text-[10px] text-adaptive-muted mt-1">Akumulasi seluruh kas & bank</p>
-            </div>
-            <div class="glass-card p-5 rounded-3xl border border-adaptive shadow-xl relative overflow-hidden">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider">Total Pendapatan</span>
-                <div class="p-2.5 bg-cyan-500/10 text-cyan-500 rounded-2xl"><i class="fa-solid fa-arrow-trend-up text-base"></i></div>
-              </div>
-              <h3 id="statTotalIncome" class="text-xl sm:text-2xl font-black font-mono text-adaptive-main">Rp 0</h3>
-              <p class="text-[10px] text-adaptive-muted mt-1">Pemasukan tercatat</p>
-            </div>
-            <div class="glass-card p-5 rounded-3xl border border-adaptive shadow-xl relative overflow-hidden">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider">Total Pengeluaran</span>
-                <div class="p-2.5 bg-rose-500/10 text-rose-500 rounded-2xl"><i class="fa-solid fa-arrow-trend-down text-base"></i></div>
-              </div>
-              <h3 id="statTotalExpense" class="text-xl sm:text-2xl font-black font-mono text-adaptive-main">Rp 0</h3>
-              <p class="text-[10px] text-adaptive-muted mt-1">Beban & pengeluaran</p>
-            </div>
-            <div class="glass-card p-5 rounded-3xl border border-adaptive shadow-xl relative overflow-hidden">
-              <div class="flex items-center justify-between mb-2">
-                <span class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider">Status Audit Selisih</span>
-                <div class="p-2.5 bg-amber-500/10 text-amber-500 rounded-2xl"><i class="fa-solid fa-scale-balanced text-base"></i></div>
-              </div>
-              <h3 id="statAuditStatus" class="text-lg font-black font-mono text-adaptive-main">Sinkron</h3>
-              <p class="text-[10px] text-adaptive-muted mt-1">Berdasarkan rekonsiliasi terakhir</p>
-            </div>
-          </div>
-
-          <div class="glass-card p-6 rounded-3xl brand-gradient text-slate-950 flex flex-col md:flex-row items-center justify-between gap-4 shadow-2xl">
-            <div>
-              <h4 class="text-lg font-black uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-file-invoice-dollar"></i> Siap Melakukan Rekonsiliasi Saldo Riil?
-              </h4>
-              <p class="text-xs font-medium opacity-90 mt-1">Gunakan tool rekonsiliasi khusus untuk menyesuaikan saldo pembukuan sistem agar tepat sama dengan saldo aktual buku tabungan / rekening koran Anda.</p>
-            </div>
-            <button onclick="switchTab('rekonsiliasi')" class="px-6 py-3.5 bg-slate-950 text-white font-bold rounded-2xl text-xs uppercase tracking-wider shadow-xl hover:scale-105 transition-all whitespace-nowrap">
-              Buka Tool Rekonsiliasi <i class="fa-solid fa-arrow-right ml-1"></i>
-            </button>
-          </div>
-        </section>
-
-        <section id="tab-rekonsiliasi" class="tab-content hidden space-y-6">
-          <div class="glass-card p-6 sm:p-8 rounded-3xl border border-adaptive shadow-2xl">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-6 border-b border-adaptive">
-              <div>
-                <h3 class="text-base sm:text-lg font-black text-adaptive-main uppercase tracking-wider flex items-center gap-2.5">
-                  <i class="fa-solid fa-scale-balanced brand-text"></i> Pusat Rekonsiliasi Saldo Rekening & Kas
-                </h3>
-                <p class="text-xs text-adaptive-sub mt-1">Masukkan saldo riil yang tertera pada mutasi/rekening koran Anda untuk menghitung selisih dan melakukan penyesuaian otomatis.</p>
-              </div>
-              <button onclick="renderReconciliationList()" class="px-4 py-2.5 bg-slate-800 text-white rounded-xl text-xs font-bold hover:bg-slate-700 transition-all flex items-center gap-2">
-                <i class="fa-solid fa-rotate"></i> Muat Ulang Data
-              </button>
-            </div>
-
-            <div class="mt-6 space-y-4" id="reconciliationContainer">
-              </div>
-          </div>
-        </section>
-
-        <section id="tab-pencatatan" class="tab-content hidden space-y-6">
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="glass-card p-6 rounded-3xl border border-adaptive shadow-xl h-fit">
-              <h3 class="text-sm font-bold text-adaptive-main uppercase tracking-wider mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-plus-circle brand-text"></i> Entri Transaksi Baru
-              </h3>
-              <form onsubmit="handleAddTransaction(event)" class="space-y-4">
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Tipe Transaksi</label>
-                  <select id="txType" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                    <option value="Pendapatan">Pendapatan (+)</option>
-                    <option value="Pengeluaran">Pengeluaran (-)</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Nominal (Rp)</label>
-                  <input type="number" id="txAmount" min="1" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium font-mono" placeholder="0">
-                </div>
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Rekening / Akun</label>
-                  <select id="txAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium"></select>
-                </div>
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Kategori</label>
-                  <input type="text" id="txCategory" required placeholder="Contoh: Operasional / Gaji / Penjualan" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                </div>
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Tanggal</label>
-                  <input type="date" id="txDate" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                </div>
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Catatan / Keterangan</label>
-                  <textarea id="txNotes" rows="2" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium" placeholder="Memo transaksi..."></textarea>
-                </div>
-                <button type="submit" class="w-full py-3.5 brand-gradient text-slate-950 font-bold rounded-xl text-xs uppercase shadow-lg transition-all">Simpan Transaksi</button>
-              </form>
-            </div>
-
-            <div class="lg:col-span-2 glass-card p-6 rounded-3xl border border-adaptive shadow-xl space-y-4">
-              <div class="flex items-center justify-between">
-                <h3 class="text-sm font-bold text-adaptive-main uppercase tracking-wider flex items-center gap-2">
-                  <i class="fa-solid fa-list brand-text"></i> Daftar Riwayat Transaksi
-                </h3>
-              </div>
-              <div class="overflow-x-auto custom-scroll">
-                <table class="w-full text-left text-xs">
-                  <thead>
-                    <tr class="border-b border-adaptive text-adaptive-muted uppercase font-bold text-[10px]">
-                      <th class="pb-3 px-2">Tanggal</th>
-                      <th class="pb-3 px-2">Kategori & Memo</th>
-                      <th class="pb-3 px-2">Akun</th>
-                      <th class="pb-3 px-2">Tipe</th>
-                      <th class="pb-3 px-2 text-right">Nominal</th>
-                      <th class="pb-3 px-2 text-center">Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody id="transactionTableBody" class="divide-y divide-adaptive font-medium">
-                    </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section id="tab-akun" class="tab-content hidden space-y-6">
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="glass-card p-6 rounded-3xl border border-adaptive shadow-xl h-fit">
-              <h3 class="text-sm font-bold text-adaptive-main uppercase tracking-wider mb-4 flex items-center gap-2">
-                <i class="fa-solid fa-vault brand-text"></i> Tambah Rekening / Kas
-              </h3>
-              <form onsubmit="handleAddAccount(event)" class="space-y-4">
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Nama Akun / Bank</label>
-                  <input type="text" id="accName" required placeholder="Contoh: BCA / Cash / Dompet Digital" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                </div>
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Tipe Instrumen</label>
-                  <select id="accType" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                    <option value="Bank">Rekening Bank</option>
-                    <option value="Kas">Kas Tunai</option>
-                    <option value="E-Wallet">E-Wallet</option>
-                  </select>
-                </div>
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Saldo Awal (Rp)</label>
-                  <input type="number" id="accBalance" required value="0" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium font-mono">
-                </div>
-                <button type="submit" class="w-full py-3.5 brand-gradient text-slate-950 font-bold rounded-xl text-xs uppercase shadow-lg transition-all">Tambah Akun</button>
-              </form>
-            </div>
-
-            <div class="lg:col-span-2 glass-card p-6 rounded-3xl border border-adaptive shadow-xl space-y-4">
-              <h3 class="text-sm font-bold text-adaptive-main uppercase tracking-wider flex items-center gap-2">
-                <i class="fa-solid fa-list-check brand-text"></i> Daftar Rekening & Saldo Sistem
-              </h3>
-              <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="accountsGrid">
-                </div>
-            </div>
-          </div>
-        </section>
-
-      </main>
-
-      <div id="printableReport" class="hidden">
-        <h2 style="font-size: 20px; font-weight: bold; margin-bottom: 10px;">LAPORAN AUDIT & REKONSILIASI KEUANGAN</h2>
-        <p style="font-size: 12px; margin-bottom: 20px;">Dicetak dari AAAIIM OneFinance Platform</p>
-        <div id="printReportContent"></div>
       </div>
-    </div>
-  </div>
 
-  <footer class="w-full border-t border-adaptive py-6 text-center text-xs text-adaptive-muted no-print">
-    <p>AAAIIM OneFinance Enterprise Wealth & Audit System &copy; 2026. Seluruh hak cipta dilindungi.</p>
-  </footer>
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-4">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+          <div>
+            <h4 id="stmtTitle" class="font-bold text-sm text-brand-text">Rekening Koran: -</h4>
+            <p class="text-[11px] text-slate-400">Saldo Awal Periode Mutasi: <span class="font-mono text-white">Rp 0</span></p>
+          </div>
+          <div class="text-right">
+            <p class="text-[11px] text-slate-400">Saldo Akhir Berjalan:</p>
+            <p id="stmtEndingBalance" class="text-base font-bold font-mono text-cyan-400">Rp 0</p>
+          </div>
+        </div>
 
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-slate-950/50 p-3 rounded-lg border border-slate-800/60">
+            <p class="text-[11px] text-slate-400">Total Mutasi Masuk (Debet/Masuk)</p>
+            <p id="stmtTotalIn" class="font-mono text-sm font-bold text-emerald-400 mt-1">Rp 0</p>
+          </div>
+          <div class="bg-slate-950/50 p-3 rounded-lg border border-slate-800/60">
+            <p class="text-[11px] text-slate-400">Total Mutasi Keluar (Kredit/Keluar)</p>
+            <p id="stmtTotalOut" class="font-mono text-sm font-bold text-rose-400 mt-1">Rp 0</p>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs">
+            <thead>
+              <tr class="border-b border-slate-800 text-slate-400">
+                <th class="py-2 px-3">Tanggal</th>
+                <th class="py-2 px-3">Jenis Mutasi</th>
+                <th class="py-2 px-3">Keterangan</th>
+                <th class="py-2 px-3 text-right">Masuk (+)</th>
+                <th class="py-2 px-3 text-right">Keluar (-)</th>
+                <th class="py-2 px-3 text-right">Saldo Berjalan</th>
+              </tr>
+            </thead>
+            <tbody id="statementTableBody">
+              <!-- Rendered by JS -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 4: LAPORAN KEUANGAN -->
+    <section id="tab-report" class="space-y-6 hidden">
+      <div class="bg-slate-900 border border-slate-800 p-5 rounded-xl space-y-4">
+        <h3 class="font-bold text-sm">Laporan Laba Rugi & Neraca Ringkas</h3>
+        <p class="text-xs text-slate-400">Penyusunan laporan berdasarkan akumulasi seluruh transaksi valid (transfer antar akun otomatis dikecualikan dari perhitungan laba rugi).</p>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <p class="text-xs text-slate-400">Total Pendapatan Usaha</p>
+            <h4 id="reportTotalIncome" class="text-lg font-bold font-mono text-emerald-400 mt-1">Rp 0</h4>
+          </div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <p class="text-xs text-slate-400">Total Beban / Pengeluaran</p>
+            <h4 id="reportTotalExpense" class="text-lg font-bold font-mono text-rose-400 mt-1">Rp 0</h4>
+          </div>
+          <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
+            <p class="text-xs text-slate-400">Laba / Rugi Bersih</p>
+            <h4 id="reportNetIncome" class="text-lg font-bold font-mono brand-text mt-1">Rp 0</h4>
+          </div>
+        </div>
+
+        <div id="expenseBreakdownContainer" class="mt-4 pt-4 border-t border-slate-800 space-y-2">
+          <h4 class="text-xs font-bold text-slate-300">Rincian Kategori Pengeluaran:</h4>
+          <div id="expenseListDetail" class="space-y-1">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Script Logika Aplikasi -->
   <script>
-    // LocalStorage State Management
-    let db = JSON.parse(localStorage.getItem('aaaiim_audit_db')) || {
-      accounts: [
-        { id: 'acc1', name: 'BCA Utama', type: 'Bank', balance: 15450000 },
-        { id: 'acc2', name: 'Mandiri Korporat', type: 'Bank', balance: 28500000 },
-        { id: 'acc3', name: 'Kas Tunai Kantor', type: 'Kas', balance: 3200000 }
-      ],
-      transactions: [
-        { id: 'tx1', type: 'Pendapatan', amount: 15000000, account: 'BCA Utama', category: 'Penjualan Klien', date: '2026-06-01', notes: 'Termin 1' },
-        { id: 'tx2', type: 'Pengeluaran', amount: 2500000, account: 'Kas Tunai Kantor', category: 'Alat Tulis Kantor', date: '2026-06-03', notes: 'Pembelian bulanan' }
-      ]
-    };
+    // Data Default Akun (Saldo awal murni 0)
+    let accounts = [
+      { name: 'Kas Utama', type: 'Kas' },
+      { name: 'Bank BCA', type: 'Bank' },
+      { name: 'Bank Mandiri', type: 'Bank' }
+    ];
 
-    function saveDB() {
-      localStorage.setItem('aaaiim_audit_db', JSON.stringify(db));
-    }
+    // Data Contoh Transaksi Awal (Bisa kosong atau diisi contoh)
+    let transactions = [
+      { id: 1, date: '2026-06-01', type: 'Pendapatan', account: 'Bank BCA', category: 'Penjualan Produk', amount: 10000000, notes: 'Pembayaran Termin 1' },
+      { id: 2, date: '2026-06-02', type: 'Pengeluaran', account: 'Kas Utama', category: 'Biaya Sewa Kantor', amount: 2500000, notes: 'Sewa Bulan Juni' },
+      { id: 3, date: '2026-06-03', type: 'Transfer Antar Akun', account: 'Bank BCA', targetAccount: 'Kas Utama', category: 'Transfer Antar Akun', amount: 3000000, notes: 'Pengisian Kas Kecil' }
+    ];
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      document.getElementById('toastMsg').innerText = msg;
-      t.classList.remove('hidden');
-      setTimeout(() => t.classList.add('hidden'), 3000);
-    }
-
-    function toggleDarkMode() {
-      document.documentElement.classList.toggle('dark');
-      const isDark = document.documentElement.classList.contains('dark');
-      document.getElementById('themeIcon').className = isDark ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-      showToast(isDark ? 'Mode Malam diaktifkan' : 'Mode Siang diaktifkan');
-    }
-
-    function changeThemeAccent(themeClass) {
-      document.body.className = document.body.className.replace(/theme-\w+/, '') + ' ' + themeClass;
-      showToast('Tema warna berhasil diperbarui');
-    }
-
-    function toggleColorPicker() {
-      const box = document.getElementById('colorPickerBox');
-      box.classList.toggle('hidden');
-    }
-
-    function handleLogin(e) {
-      e.preventDefault();
-      document.getElementById('loginOverlay').classList.add('hidden');
-      document.getElementById('mainApp').classList.remove('hidden');
-      initApp();
-      showToast('Autentikasi Berhasil. Selamat bekerja, Auditor!');
-    }
-
-    function handleLogout() {
-      document.getElementById('loginOverlay').classList.remove('hidden');
-      document.getElementById('mainApp').classList.add('hidden');
-      showToast('Sesi audit ditutup.');
-    }
+    // Inisialisasi Saat Halaman Dimuat
+    document.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('txDate').valueAsDate = new Date();
+      refreshAll();
+    });
 
     function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(el => {
-        el.classList.remove('border-[var(--brand-primary)]', 'brand-text', 'font-extrabold');
-        el.classList.add('border-transparent', 'text-adaptive-muted');
+      ['dashboard', 'transactions', 'statement', 'report'].forEach(t => {
+        document.getElementById(`tab-${t}`).classList.add('hidden');
+        document.getElementById(`btn-${t}`).className = 'px-3 py-1.5 text-xs font-semibold rounded-lg text-slate-300 hover:bg-slate-800 transition';
       });
+      document.getElementById(`tab-${tabId}`).classList.remove('hidden');
+      document.getElementById(`btn-${tabId}`).className = 'px-3 py-1.5 text-xs font-semibold rounded-lg bg-brand-600 text-white transition';
 
-      document.getElementById('tab-' + tabId).classList.remove('hidden');
-      const btn = document.getElementById('nav-' + tabId);
-      btn.classList.add('border-[var(--brand-primary)]', 'brand-text', 'font-extrabold');
-      btn.classList.remove('border-transparent', 'text-adaptive-muted');
-
-      if (tabId === 'rekonsiliasi') renderReconciliationList();
+      if(tabId === 'statement') renderAccountStatement();
+      if(tabId === 'report') renderFinancialReport();
     }
 
-    function formatRupiah(num) {
-      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(num);
+    function formatRp(val) {
+      return 'Rp ' + Number(val).toLocaleString('id-ID');
     }
 
-    function initApp() {
-      renderDashboard();
-      populateAccountDropdowns();
+    function toggleTransferField() {
+      const type = document.getElementById('txType').value;
+      const targetWrapper = document.getElementById('targetAccountWrapper');
+      if (type === 'Transfer Antar Akun') {
+        targetWrapper.classList.remove('hidden');
+      } else {
+        targetWrapper.classList.add('hidden');
+      }
     }
 
     function populateAccountDropdowns() {
-      const selects = [document.getElementById('txAccount')];
-      selects.forEach(sel => {
-        if (!sel) return;
-        sel.innerHTML = '';
-        db.accounts.forEach(acc => {
-          const opt = document.createElement('option');
-          opt.value = acc.name;
-          opt.textContent = `${acc.name} (${acc.type}) - ${formatRupiah(acc.balance)}`;
-          sel.appendChild(opt);
-        });
+      const txAccount = document.getElementById('txAccount');
+      const txTargetAccount = document.getElementById('txTargetAccount');
+      const statementSelect = document.getElementById('statementAccountSelect');
+
+      let optionsHtml = '';
+      accounts.forEach(acc => {
+        optionsHtml += `<option value="${acc.name}">${acc.name} (${acc.type})</option>`;
       });
+
+      txAccount.innerHTML = optionsHtml;
+      txTargetAccount.innerHTML = optionsHtml;
+      
+      // Pertahankan pilihan statement jika ada
+      const currentSelectedStmt = statementSelect.value;
+      statementSelect.innerHTML = optionsHtml;
+      if(currentSelectedStmt) statementSelect.value = currentSelectedStmt;
+    }
+
+    function handleFormSubmit(e) {
+      e.preventDefault();
+      const date = document.getElementById('txDate').value;
+      const type = document.getElementById('txType').value;
+      const account = document.getElementById('txAccount').value;
+      const targetAccount = document.getElementById('txTargetAccount').value;
+      const category = document.getElementById('txCategory').value;
+      const amount = parseFloat(document.getElementById('txAmount').value);
+      const notes = document.getElementById('txNotes').value;
+
+      if (type === 'Transfer Antar Akun' && account === targetAccount) {
+        alert('Akun sumber dan akun tujuan transfer tidak boleh sama!');
+        return;
+      }
+
+      const newTx = {
+        id: Date.now(),
+        date,
+        type,
+        account,
+        targetAccount: type === 'Transfer Antar Akun' ? targetAccount : '',
+        category,
+        amount,
+        notes
+      };
+
+      transactions.push(newTx);
+      document.getElementById('transactionForm').reset();
+      document.getElementById('txDate').valueAsDate = new Date();
+      toggleTransferField();
+      refreshAll();
+      alert('Transaksi berhasil disimpan!');
+    }
+
+    function deleteTransaction(id) {
+      if(confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) {
+        transactions = transactions.filter(t => t.id !== id);
+        refreshAll();
+      }
+    }
+
+    function refreshAll() {
+      populateAccountDropdowns();
+      renderDashboard();
+      renderTransactionsTable();
+      renderAccountStatement();
+      renderFinancialReport();
+    }
+
+    // Kalkulasi Saldo Akun Berdasarkan Akumulasi Murni Transaksi
+    function calculateAccountBalances() {
+      let balances = {};
+      accounts.forEach(acc => balances[acc.name] = 0); // Saldo awal murni 0
+
+      transactions.forEach(t => {
+        let amt = parseFloat(t.amount || 0);
+        if (t.type === 'Pendapatan') {
+          if (balances[t.account] !== undefined) balances[t.account] += amt;
+        } else if (t.type === 'Pengeluaran') {
+          if (balances[t.account] !== undefined) balances[t.account] -= amt;
+        } else if (t.type === 'Transfer Antar Akun') {
+          if (balances[t.account] !== undefined) balances[t.account] -= amt;
+          if (balances[t.targetAccount] !== undefined) balances[t.targetAccount] += amt;
+        }
+      });
+      return balances;
     }
 
     function renderDashboard() {
-      let totalAsset = db.accounts.reduce((sum, a) => sum + Number(a.balance), 0);
-      let totalInc = db.transactions.filter(t => t.type === 'Pendapatan').reduce((sum, t) => sum + Number(t.amount), 0);
-      let totalExp = db.transactions.filter(t => t.type === 'Pengeluaran').reduce((sum, t) => sum + Number(t.amount), 0);
+      let totalIncome = 0;
+      let totalExpense = 0;
+      let balances = calculateAccountBalances();
+      let totalAssetBalance = 0;
 
-      document.getElementById('statTotalAsset').innerText = formatRupiah(totalAsset);
-      document.getElementById('statTotalIncome').innerText = formatRupiah(totalInc);
-      document.getElementById('statTotalExpense').innerText = formatRupiah(totalExp);
+      transactions.forEach(t => {
+        let amt = parseFloat(t.amount || 0);
+        if (t.type === 'Pendapatan') totalIncome += amt;
+        if (t.type === 'Pengeluaran') totalExpense += amt;
+      });
 
-      renderTransactionsTable();
-      renderAccountsGrid();
+      Object.values(balances).forEach(val => totalAssetBalance += val);
+
+      document.getElementById('dashTotalIncome').innerText = formatRp(totalIncome);
+      document.getElementById('dashTotalExpense').innerText = formatRp(totalExpense);
+      document.getElementById('dashNetIncome').innerText = formatRp(totalIncome - totalExpense);
+      document.getElementById('dashTotalBalance').innerText = formatRp(totalAssetBalance);
+
+      let tbody = '';
+      accounts.forEach(acc => {
+        let bal = balances[acc.name] || 0;
+        tbody += `
+          <tr class="border-b border-slate-800/50">
+            <td class="py-2.5 px-3 font-bold">${acc.name}</td>
+            <td class="py-2.5 px-3 text-slate-400">${acc.type}</td>
+            <td class="py-2.5 px-3 text-right font-mono ${bal >= 0 ? 'text-cyan-400' : 'text-rose-400'} font-bold">${formatRp(bal)}</td>
+          </tr>
+        `;
+      });
+      document.getElementById('accountTableBody').innerHTML = tbody;
     }
 
     function renderTransactionsTable() {
-      const tbody = document.getElementById('transactionTableBody');
-      tbody.innerHTML = '';
-      if (db.transactions.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-adaptive-muted">Belum ada data transaksi.</td></tr>`;
-        return;
-      }
-      db.transactions.slice().reverse().forEach(tx => {
-        const tr = document.createElement('tr');
-        tr.innerHTML = `
-          <td class="py-3 px-2 font-mono">${tx.date}</td>
-          <td class="py-3 px-2"><strong>${tx.category}</strong><br><span class="text-[10px] text-adaptive-muted">${tx.notes || '-'}</span></td>
-          <td class="py-3 px-2">${tx.account}</td>
-          <td class="py-3 px-2"><span class="px-2 py-1 rounded-md text-[10px] font-bold ${tx.type === 'Pendapatan' ? 'bg-emerald-500/10 text-emerald-500' : 'bg-rose-500/10 text-rose-500'}">${tx.type}</span></td>
-          <td class="py-3 px-2 text-right font-mono font-bold ${tx.type === 'Pendapatan' ? 'text-emerald-500' : 'text-rose-500'}">${tx.type === 'Pendapatan' ? '+' : '-'}${formatRupiah(tx.amount)}</td>
-          <td class="py-3 px-2 text-center">
-            <button onclick="deleteTx('${tx.id}')" class="text-rose-500 hover:text-rose-700 p-1" title="Hapus"><i class="fa-solid fa-trash text-xs"></i></button>
-          </td>
+      let tbody = '';
+      // Urutkan transaksi dari terbaru ke terlama untuk tabel jurnal
+      let sortedTxs = [...transactions].sort((a,b) => new Date(b.date) - new Date(a.date));
+
+      sortedTxs.forEach(t => {
+        let badgeColor = t.type === 'Pendapatan' ? 'text-emerald-400 bg-emerald-500/10' : (t.type === 'Pengeluaran' ? 'text-rose-400 bg-rose-500/10' : 'text-amber-400 bg-amber-500/10');
+        let displayAccount = t.type === 'Transfer Antar Akun' ? `${t.account} ➔ ${t.targetAccount}` : t.account;
+
+        tbody += `
+          <tr class="border-b border-slate-800/50 hover:bg-slate-900/50">
+            <td class="py-2.5 px-3 font-mono">${t.date}</td>
+            <td class="py-2.5 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold ${badgeColor}">${t.type}</span></td>
+            <td class="py-2.5 px-3">${displayAccount}</td>
+            <td class="py-2.5 px-3 text-slate-300">${t.category}</td>
+            <td class="py-2.5 px-3 text-slate-400">${t.notes || '-'}</td>
+            <td class="py-2.5 px-3 text-right font-mono font-bold">${formatRp(t.amount)}</td>
+            <td class="py-2.5 px-3 text-center">
+              <button onclick="deleteTransaction(${t.id})" class="text-rose-500 hover:text-rose-400 text-xs font-bold px-2 py-1 rounded bg-rose-500/10">Hapus</button>
+            </td>
+          </tr>
         `;
-        tbody.appendChild(tr);
       });
+      document.getElementById('transactionTableBody').innerHTML = tbody || `<tr><td colspan="7" class="py-4 text-center text-slate-500">Belum ada data transaksi.</td></tr>`;
     }
 
-    function renderAccountsGrid() {
-      const grid = document.getElementById('accountsGrid');
-      grid.innerHTML = '';
-      db.accounts.forEach(acc => {
-        const div = document.createElement('div');
-        div.className = 'glass-card p-4 rounded-2xl border border-adaptive flex flex-col justify-between';
-        div.innerHTML = `
-          <div>
-            <div class="flex items-center justify-between mb-1">
-              <span class="text-xs font-bold text-adaptive-main">${acc.name}</span>
-              <span class="px-2 py-0.5 bg-[var(--brand-light)] brand-text rounded-md text-[9px] font-bold uppercase">${acc.type}</span>
-            </div>
-            <p class="text-lg font-black font-mono brand-text mt-2">${formatRupiah(acc.balance)}</p>
-          </div>
-          <div class="mt-4 pt-3 border-t border-adaptive flex justify-between items-center text-[10px]">
-            <span class="text-adaptive-muted">Status: Aktif</span>
-            <button onclick="deleteAccount('${acc.id}')" class="text-rose-500 hover:underline"><i class="fa-solid fa-trash mr-1"></i> Hapus</button>
-          </div>
-        `;
-        grid.appendChild(div);
-      });
-      populateAccountDropdowns();
-    }
+    // ==========================================
+    // RENDER REKENING KORAN (BUKU BESAR KRONOLOGIS)
+    // ==========================================
+    function renderAccountStatement() {
+      const accName = document.getElementById('statementAccountSelect').value;
+      if (!accName) return;
 
-    // --- RECONCILIATION TOOL LOGIC ---
-    function renderReconciliationList() {
-      const container = document.getElementById('reconciliationContainer');
-      container.innerHTML = '';
+      // Ambil seluruh transaksi yang melibatkan akun ini
+      let accountTxs = transactions.filter(t => 
+        t.account === accName || t.targetAccount === accName
+      );
 
-      if (db.accounts.length === 0) {
-        container.innerHTML = `<p class="text-xs text-adaptive-muted text-center py-6">Tidak ada rekening untuk direkonsiliasi.</p>`;
-        return;
-      }
+      // Urutkan secara kronologis (terlama ke terbaru untuk kalkulasi running balance)
+      accountTxs.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-      db.accounts.forEach(acc => {
-        const div = document.createElement('div');
-        div.className = 'glass-card p-5 rounded-2xl border border-adaptive flex flex-col md:flex-row items-center justify-between gap-4';
-        div.innerHTML = `
-          <div class="w-full md:w-1/3">
-            <span class="text-[10px] brand-text font-bold uppercase tracking-wider">${acc.type}</span>
-            <h4 class="text-sm font-extrabold text-adaptive-main">${acc.name}</h4>
-            <p class="text-xs text-adaptive-muted mt-0.5">Saldo Sistem: <strong class="font-mono text-adaptive-main">${formatRupiah(acc.balance)}</strong></p>
-          </div>
-          <div class="w-full md:w-1/3">
-            <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Saldo Riil di Rekening / Bank (Rp)</label>
-            <input type="number" id="realBal_${acc.id}" value="${acc.balance}" oninput="calculateVariance('${acc.id}', ${acc.balance})" class="w-full p-2.5 rounded-xl glass-input text-xs font-mono font-bold outline-none">
-          </div>
-          <div class="w-full md:w-1/3 flex items-center justify-between md:justify-end gap-4">
-            <div class="text-right">
-              <span class="text-[10px] text-adaptive-muted block">Selisih (Variance)</span>
-              <span id="varText_${acc.id}" class="text-xs font-mono font-bold text-emerald-400">Rp 0 (Sinkron)</span>
-            </div>
-            <button onclick="applyReconciliation('${acc.id}', '${acc.name}')" class="px-4 py-2.5 brand-gradient text-slate-950 font-bold rounded-xl text-xs uppercase shadow-md hover:scale-105 transition-all">
-              Rekonsiliasi
-            </button>
-          </div>
-        `;
-        container.appendChild(div);
-      });
-    }
+      let runningBalance = 0; // Saldo awal mutasi murni dari 0
+      let totalIn = 0;
+      let totalOut = 0;
+      let tbodyHtml = '';
 
-    function calculateVariance(accId, systemBalance) {
-      const realVal = Number(document.getElementById(`realBal_${accId}`).value) || 0;
-      const variance = realVal - systemBalance;
-      const varText = document.getElementById(`varText_${accId}`);
-      
-      if (variance === 0) {
-        varText.className = 'text-xs font-mono font-bold text-emerald-400';
-        varText.innerText = `Rp 0 (Sinkron)`;
-      } else if (variance > 0) {
-        varText.className = 'text-xs font-mono font-bold text-cyan-400';
-        varText.innerText = `+${formatRupiah(variance)} (Kurang Catat)`;
-      } else {
-        varText.className = 'text-xs font-mono font-bold text-rose-400';
-        varText.innerText = `${formatRupiah(variance)} (Lebih Catat)`;
-      }
-    }
+      accountTxs.forEach(t => {
+        let isIncome = false;
+        let isExpense = false;
+        let amt = parseFloat(t.amount || 0);
 
-    function applyReconciliation(accId, accName) {
-      const realVal = Number(document.getElementById(`realBal_${accId}`).value) || 0;
-      const acc = db.accounts.find(a => a.id === accId);
-      if (!acc) return;
-
-      const diff = realVal - acc.balance;
-      if (diff === 0) {
-        showToast(`Rekening ${accName} sudah sinkron sempurna!`);
-        return;
-      }
-
-      // Automatically create an adjustment transaction or direct balance fix
-      acc.balance = realVal;
-      db.transactions.push({
-        id: 'tx_' + Date.now(),
-        type: diff > 0 ? 'Pendapatan' : 'Pengeluaran',
-        amount: Math.abs(diff),
-        account: accName,
-        category: 'Penyesuaian Audit Rekonsiliasi',
-        date: new Date().toISOString().split('T')[0],
-        notes: 'Adjustment otomatis dari tool rekonsiliasi saldo riil'
-      });
-
-      saveDB();
-      renderDashboard();
-      renderReconciliationList();
-      showToast(`Rekonsiliasi ${accName} berhasil diterapkan. Saldo disesuaikan ke ${formatRupiah(realVal)}!`);
-    }
-
-    // --- DOWNLOAD & EXPORT TOOLS ---
-    function downloadCSVReport() {
-      let csvContent = "data:text/csv;charset=utf-8,ID,Tanggal,Tipe,Kategori,Akun,Nominal,Catatan\r\n";
-      db.transactions.forEach(t => {
-        csvContent += `"${t.id}","${t.date}","${t.type}","${t.category}","${t.account}",${t.amount},"${t.notes || ''}"\r\n`;
-      });
-
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", `laporan_audit_transaksi_${new Date().toISOString().split('T')[0]}.csv`);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      showToast('File CSV Transaksi berhasil diunduh!');
-    }
-
-    function downloadBackupJSON() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(db, null, 2));
-      const downloadAnchor = document.createElement('a');
-      downloadAnchor.setAttribute("href", dataStr);
-      downloadAnchor.setAttribute("download", `aaaiim_onefinance_backup_${new Date().toISOString().split('T')[0]}.json`);
-      document.body.appendChild(downloadAnchor);
-      downloadAnchor.click();
-      downloadAnchor.remove();
-      showToast('Backup database JSON berhasil diunduh!');
-    }
-
-    // --- TRANSACTION & ACCOUNT FORMS ---
-    function handleAddTransaction(e) {
-      e.preventDefault();
-      const type = document.getElementById('txType').value;
-      const amount = Number(document.getElementById('txAmount').value);
-      const accountName = document.getElementById('txAccount').value;
-      const category = document.getElementById('txCategory').value;
-      const date = document.getElementById('txDate').value;
-      const notes = document.getElementById('txNotes').value;
-
-      const acc = db.accounts.find(a => a.name === accountName);
-      if (!acc) return;
-
-      if (type === 'Pendapatan') acc.balance += amount;
-      else {
-        if (acc.balance < amount) {
-          alert('Peringatan: Saldo rekening tidak mencukupi untuk pengeluaran ini!');
-          return;
+        if (t.account === accName) {
+          if (t.type === 'Pendapatan') {
+            isIncome = true;
+          } else if (t.type === 'Pengeluaran' || t.type === 'Transfer Antar Akun') {
+            isExpense = true;
+          }
+        } else if (t.targetAccount === accName) {
+          if (t.type === 'Transfer Antar Akun') {
+            isIncome = true;
+          }
         }
-        acc.balance -= amount;
-      }
 
-      db.transactions.push({ id: 'tx_' + Date.now(), type, amount, account: accountName, category, date, notes });
-      saveDB();
-      renderDashboard();
-      e.target.reset();
-      document.getElementById('txDate').value = new Date().toISOString().split('T')[0];
-      showToast('Transaksi berhasil dicatat & saldo diperbarui!');
+        if (isIncome) {
+          totalIn += amt;
+          runningBalance += amt;
+        } else if (isExpense) {
+          totalOut += amt;
+          runningBalance -= amt;
+        }
+
+        tbodyHtml += `
+          <tr class="border-b border-slate-800/40 hover:bg-slate-900/40">
+            <td class="py-2.5 px-3 font-mono text-slate-300">${t.date}</td>
+            <td class="py-2.5 px-3 font-semibold text-white">${t.category}</td>
+            <td class="py-2.5 px-3 text-slate-400">${t.notes || t.type}</td>
+            <td class="py-2.5 px-3 text-right font-mono text-emerald-400 font-bold">${isIncome ? '+' + formatRp(amt) : '-'}</td>
+            <td class="py-2.5 px-3 text-right font-mono text-rose-400 font-bold">${isExpense ? '-' + formatRp(amt) : '-'}</td>
+            <td class="py-2.5 px-3 text-right font-mono text-cyan-400 font-bold">${formatRp(runningBalance)}</td>
+          </tr>
+        `;
+      });
+
+      document.getElementById('stmtTitle').innerText = `Rekening Koran: ${accName}`;
+      document.getElementById('stmtEndingBalance').innerText = formatRp(runningBalance);
+      document.getElementById('stmtTotalIn').innerText = formatRp(totalIn);
+      document.getElementById('stmtTotalOut').innerText = formatRp(totalOut);
+      document.getElementById('statementTableBody').innerHTML = tbodyHtml || `<tr><td colspan="6" class="py-6 text-center text-slate-500">Tidak ada mutasi transaksi pada rekening ini. Saldo awal mutasi: Rp 0.</td></tr>`;
     }
 
-    function handleAddAccount(e) {
-      e.preventDefault();
-      const name = document.getElementById('accName').value;
-      const type = document.getElementById('accType').value;
-      const balance = Number(document.getElementById('accBalance').value);
+    // ==========================================
+    // RENDER LAPORAN KEUANGAN AKURAT
+    // ==========================================
+    function renderFinancialReport() {
+      let totalIncome = 0;
+      let totalExpense = 0;
+      let expenseBreakdown = {};
 
-      db.accounts.push({ id: 'acc_' + Date.now(), name, type, balance });
-      saveDB();
-      renderDashboard();
-      e.target.reset();
-      showToast('Rekening / Kas baru berhasil ditambahkan!');
+      transactions.forEach(t => {
+        const amt = parseFloat(t.amount || 0);
+        // Transfer antar akun dikecualikan agar laba rugi tidak terdistorsi
+        if (t.type === 'Pendapatan') {
+          totalIncome += amt;
+        } else if (t.type === 'Pengeluaran') {
+          totalExpense += amt;
+          expenseBreakdown[t.category] = (expenseBreakdown[t.category] || 0) + amt;
+        }
+      });
+
+      const netIncome = totalIncome - totalExpense;
+
+      document.getElementById('reportTotalIncome').innerText = formatRp(totalIncome);
+      document.getElementById('reportTotalExpense').innerText = formatRp(totalExpense);
+      document.getElementById('reportNetIncome').innerText = formatRp(netIncome);
+
+      let expenseListHtml = '';
+      Object.keys(expenseBreakdown).forEach(cat => {
+        expenseListHtml += `
+          <div class="flex justify-between py-1 px-2 rounded bg-slate-950/40 text-xs text-slate-300">
+            <span>• ${cat}</span>
+            <span class="font-mono text-rose-400">-${formatRp(expenseBreakdown[cat])}</span>
+          </div>
+        `;
+      });
+      document.getElementById('expenseListDetail').innerHTML = expenseListHtml || '<p class="text-xs text-slate-500">Belum ada pengeluaran operasional tercatat.</p>';
     }
-
-    function deleteTx(id) {
-      const tx = db.transactions.find(t => t.id === id);
-      if (!tx) return;
-      const acc = db.accounts.find(a => a.name === tx.account);
-      if (acc) {
-        if (tx.type === 'Pendapatan') acc.balance -= tx.amount;
-        else acc.balance += tx.amount;
-      }
-      db.transactions = db.transactions.filter(t => t.id !== id);
-      saveDB();
-      renderDashboard();
-      showToast('Transaksi dihapus & saldo dikembalikan.');
-    }
-
-    function deleteAccount(id) {
-      if (confirm('Yakin ingin menghapus rekening ini?')) {
-        db.accounts = db.accounts.filter(a => a.id !== id);
-        saveDB();
-        renderDashboard();
-        showToast('Rekening berhasil dihapus.');
-      }
-    }
-
-    // Set default date
-    document.addEventListener('DOMContentLoaded', () => {
-      const today = new Date().toISOString().split('T')[0];
-      const txDateInput = document.getElementById('txDate');
-      if (txDateInput) txDateInput.value = today;
-      initApp();
-    });
   </script>
 </body>
 </html>
