@@ -348,7 +348,7 @@
                         <div class="p-6 border-b flex justify-between items-center" style="border-color: var(--border-color);">
                             <div>
                                 <h3 class="font-extrabold text-sm">Jadwal Kuliah & Lokasi Ruangan Kelas Pascasarjana UNNES</h3>
-                                <p class="text-xs opacity-60 mt-0.5">Kelola jadwal mingguan, SKS, lokasi ruangan, serta link materi atau catatan.</p>
+                                <p class="text-xs opacity-65 mt-0.5">Kelola jadwal mingguan, SKS, lokasi ruangan, serta link materi atau catatan.</p>
                             </div>
                             <button onclick="addJadwal()" class="text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md" style="background-color: var(--accent-color);">+ Tambah Jadwal</button>
                         </div>
@@ -402,7 +402,7 @@
                     </div>
                 </div>
 
-                <!-- TAB 5: E-BOOK PER MATKUL (LENGKAP DENGAN TOOLS TAMBAH, EDIT, HAPUS EBOOK) -->
+                <!-- TAB 5: E-BOOK PER MATKUL -->
                 <div id="tab-notebook" class="tab-content hidden space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                         <div class="lg:col-span-1 border rounded-2xl p-4 flex flex-col justify-between h-[680px] backdrop-blur-md shadow-lg" style="background-color: var(--bg-card); border-color: var(--border-color);">
@@ -565,7 +565,6 @@
             if(!storage.absensi || storage.absensi.length === 0) {
                 generateAutomatedAbsensi(false);
             }
-            // Update avatar di login & dashboard awal
             document.getElementById('user-avatar-img').src = storage.userAvatar;
             document.getElementById('user-avatar-login-img').src = storage.userAvatar;
         });
@@ -753,7 +752,6 @@
                 if(!storage.kurikulum[storage.activeKurikulumTab]) storage.kurikulum[storage.activeKurikulumTab] = [];
                 storage.kurikulum[storage.activeKurikulumTab].push({ kode, nama, sks: Number(sks), dosen: dosen || 'Tim Dosen UNNES', status: 'Sedang Berjalan' });
                 
-                // Otomatis tambahkan juga ke e-book jika belum ada
                 if(!storage.ebooks[nama]) {
                     storage.ebooks[nama] = "✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: " + nama + "\n\nTuliskan ringkasan e-book, jurnal, atau catatan penting di sini.";
                 }
@@ -779,7 +777,6 @@
             if(hari && matkul) {
                 storage.jadwal.push({ hari, matkul, sks: Number(sks || 3), waktu, lokasi: lokasi || 'Ruang Kuliah Pascasarjana UNNES', dosen, info: info || '-' });
                 
-                // Otomatis buat e-book untuk matkul jadwal baru jika belum ada
                 if(!storage.ebooks[matkul]) {
                     storage.ebooks[matkul] = "✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: " + matkul + "\n\nTuliskan ringkasan e-book dan jurnal di sini.";
                 }
@@ -836,7 +833,6 @@
             `).join('');
         }
 
-        // AUTO-GENERATE ABSENSI BERDASARKAN JADWAL BERULANG TIAP MINGGU
         function generateAutomatedAbsensi(showAlert = true) {
             const dayMap = { 'Minggu': 0, 'Senin': 1, 'Selasa': 2, 'Rabu': 3, 'Kamis': 4, 'Jumat': 5, 'Sabtu': 6 };
             let newAbsensiList = [];
@@ -937,7 +933,6 @@
             }).join('');
         }
 
-        // --- TOOLS E-BOOK PER MATKUL (TAMBAH, EDIT, HAPUS) ---
         function renderNotebookSubjects() {
             const container = document.getElementById('subject-list-container');
             if(!container) return;
