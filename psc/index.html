@@ -128,13 +128,13 @@
         }
     </style>
 </head>
-<body style="background-color: var(--bg-main); color: var(--text-main);" class="font-sans antialiased transition-colors duration-300 overflow-hidden">
+<body style="background-color: var(--bg-main); color: var(--text-main);" class="font-sans antialiased transition-colors duration-300 overflow-x-hidden">
 
     <div id="login-section" class="fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-2xl" style="background-color: var(--bg-main);">
         <div class="w-full max-w-md p-6 sm:p-8 rounded-3xl shadow-2xl relative overflow-hidden border" style="background-color: var(--bg-card); border-color: var(--border-color);">
             <div class="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-3xl opacity-25" style="background-color: var(--accent-color);"></div>
-            <div class="text-center mb-8 relative">
-                <div class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg text-white text-2xl font-bold" style="background: linear-gradient(135deg, var(--accent-color), #c084fc);">
+            <div class="text-center mb-6 sm:mb-8 relative">
+                <div class="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg text-white text-xl sm:text-2xl font-bold" style="background: linear-gradient(135deg, var(--accent-color), #c084fc);">
                     <i class="fa-solid fa-graduation-cap"></i>
                 </div>
                 <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight">AAAAIIM PASCASARJANA UNNES</h2>
@@ -159,13 +159,14 @@
 
     <div id="main-dashboard" class="flex h-screen overflow-hidden hidden relative">
         
-        <!-- SIDEBAR (RESPONSIVE DRAWER UNTUK HP & DESKTOP) -->
-        <aside id="sidebar-drawer" class="absolute lg:relative inset-y-0 left-0 z-50 w-72 border-r flex flex-col justify-between flex-shrink-0 transition-transform duration-300 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
+        <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 lg:hidden hidden backdrop-blur-sm"></div>
+
+        <aside id="app-sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-72 border-r flex flex-col justify-between flex-shrink-0 transition-transform duration-300 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
             <div>
-                <div class="p-6 border-b flex items-center justify-between" style="border-color: var(--border-color);">
+                <div class="p-5 sm:p-6 border-b flex items-center justify-between" style="border-color: var(--border-color);">
                     <div class="flex items-center space-x-3 overflow-hidden">
                         <div class="relative group cursor-pointer flex-shrink-0" onclick="document.getElementById('avatar-upload').click()" title="Klik untuk ganti foto profil">
-                            <img id="user-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="w-12 h-12 rounded-2xl object-cover border-2 shadow-md" style="border-color: var(--accent-color);" alt="Profil">
+                            <img id="user-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="w-11 h-11 sm:w-12 sm:h-12 rounded-2xl object-cover border-2 shadow-md" style="border-color: var(--accent-color);" alt="Profil">
                             <div class="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-[10px]">
                                 <i class="fa-solid fa-camera"></i>
                             </div>
@@ -176,10 +177,10 @@
                             <span class="text-[10px] opacity-60 block truncate">Pascasarjana UNNES</span>
                         </div>
                     </div>
-                    <button onclick="toggleMobileSidebar()" class="lg:hidden text-base opacity-70 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>
+                    <button onclick="toggleSidebar()" class="lg:hidden text-lg opacity-70 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
-                <nav class="p-4 space-y-1.5 overflow-y-auto max-h-[calc(100vh-260px)] custom-scrollbar">
+                <nav class="p-3 sm:p-4 space-y-1.5 overflow-y-auto max-h-[calc(100vh-260px)] custom-scrollbar">
                     <button onclick="showTab('dashboard')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-white font-semibold text-xs transition-all shadow-md" style="background-color: var(--accent-color);"><i class="fa-solid fa-chart-pie w-5"></i><span>Command Center</span></button>
                     <button onclick="showTab('kurikulum')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl opacity-70 hover:opacity-100 hover:bg-black/10 font-medium text-xs transition-all"><i class="fa-solid fa-layer-group w-5"></i><span>Kurikulum (Sem 1 - 4)</span></button>
                     <button onclick="showTab('jadwal')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl opacity-70 hover:opacity-100 hover:bg-black/10 font-medium text-xs transition-all"><i class="fa-solid fa-calendar-days w-5"></i><span>Jadwal & Lokasi Kelas</span></button>
@@ -217,23 +218,18 @@
             </div>
         </aside>
 
-        <!-- OVERLAY UNTUK MOBILE SAAT SIDEBAR TERBUKA -->
-        <div id="sidebar-overlay" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-black/50 z-40 lg:hidden hidden backdrop-blur-sm"></div>
-
-        <main class="flex-1 flex flex-col overflow-y-auto custom-scrollbar w-full" style="background-color: var(--bg-main);">
-            <header class="h-20 backdrop-blur-md border-b px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30 transition-colors duration-300" style="background-color: var(--bg-card); border-color: var(--border-color);">
+        <main class="flex-1 flex flex-col overflow-y-auto custom-scrollbar" style="background-color: var(--bg-main);">
+            <header class="h-16 sm:h-20 backdrop-blur-md border-b px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30 transition-colors duration-300" style="background-color: var(--bg-card); border-color: var(--border-color);">
                 <div class="flex items-center space-x-3">
-                    <button onclick="toggleMobileSidebar()" class="lg:hidden w-10 h-10 rounded-xl border flex items-center justify-center text-sm shadow-sm" style="border-color: var(--border-color); background-color: var(--bg-main);">
-                        <i class="fa-solid fa-bars"></i>
-                    </button>
+                    <button onclick="toggleSidebar()" class="lg:hidden text-base p-2 rounded-xl border" style="background-color: var(--bg-main); border-color: var(--border-color);"><i class="fa-solid fa-bars"></i></button>
                     <div>
-                        <h2 id="tab-title" class="text-base sm:text-lg font-extrabold tracking-tight truncate max-w-[180px] sm:max-w-none">Command Center</h2>
+                        <h2 id="tab-title" class="text-base sm:text-lg font-extrabold tracking-tight truncate max-w-[200px] sm:max-w-none">Command Center</h2>
                         <p class="text-[11px] sm:text-xs opacity-60 hidden sm:block">Selamat datang kembali di Pascasarjana UNNES.</p>
                     </div>
                 </div>
                 <div class="flex items-center space-x-2 sm:space-x-4">
-                    <div id="realtime-clock" class="text-xs font-semibold px-4 py-2 rounded-xl border shadow-inner hidden md:block" style="background-color: var(--bg-main); border-color: var(--border-color);"></div>
-                    <button onclick="handleLogout()" class="flex items-center space-x-2 px-3 sm:px-4 py-2.5 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all text-xs font-bold border border-rose-500/20 shadow-sm">
+                    <div id="realtime-clock" class="text-xs font-semibold px-3 py-2 rounded-xl border shadow-inner hidden md:block" style="background-color: var(--bg-main); border-color: var(--border-color);"></div>
+                    <button onclick="handleLogout()" class="flex items-center space-x-1.5 sm:space-x-2 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all text-xs font-bold border border-rose-500/20 shadow-sm">
                         <i class="fa-solid fa-power-off"></i><span class="hidden sm:inline">Logout</span>
                     </button>
                 </div>
@@ -242,33 +238,33 @@
             <div class="p-4 sm:p-8 space-y-6 sm:space-y-8 max-w-7xl mx-auto w-full">
                 
                 <div id="tab-dashboard" class="tab-content space-y-6 sm:space-y-8">
-                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
-                        <div class="border p-5 sm:p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white shadow-md flex-shrink-0" style="background-color: var(--accent-color);"><i class="fa-solid fa-list-check"></i></div>
-                            <div>
-                                <p class="text-xs opacity-70 font-medium">Tugas Pending</p>
-                                <h3 id="dash-stat-tugas" class="text-2xl font-extrabold">0</h3>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                        <div class="border p-4 sm:p-6 rounded-2xl shadow-sm flex items-center space-x-3 sm:space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-lg sm:text-xl font-bold text-white shadow-md flex-shrink-0" style="background-color: var(--accent-color);"><i class="fa-solid fa-list-check"></i></div>
+                            <div class="overflow-hidden">
+                                <p class="text-[11px] sm:text-xs opacity-70 font-medium truncate">Tugas Pending</p>
+                                <h3 id="dash-stat-tugas" class="text-xl sm:text-2xl font-extrabold">0</h3>
                             </div>
                         </div>
-                        <div class="border p-5 sm:p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl font-bold flex-shrink-0"><i class="fa-solid fa-calendar-day"></i></div>
-                            <div>
-                                <p class="text-xs opacity-70 font-medium">Jadwal Hari Ini</p>
-                                <h3 id="dash-stat-jadwal" class="text-2xl font-extrabold">0 Sesi</h3>
+                        <div class="border p-4 sm:p-6 rounded-2xl shadow-sm flex items-center space-x-3 sm:space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-lg sm:text-xl font-bold flex-shrink-0"><i class="fa-solid fa-calendar-day"></i></div>
+                            <div class="overflow-hidden">
+                                <p class="text-[11px] sm:text-xs opacity-70 font-medium truncate">Jadwal Hari Ini</p>
+                                <h3 id="dash-stat-jadwal" class="text-xl sm:text-2xl font-extrabold">0 Sesi</h3>
                             </div>
                         </div>
-                        <div class="border p-5 sm:p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xl font-bold flex-shrink-0"><i class="fa-solid fa-clipboard-user"></i></div>
-                            <div>
-                                <p class="text-xs opacity-70 font-medium">Kehadiran Kuliah</p>
-                                <h3 id="dash-stat-absensi" class="text-2xl font-extrabold">0%</h3>
+                        <div class="border p-4 sm:p-6 rounded-2xl shadow-sm flex items-center space-x-3 sm:space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-lg sm:text-xl font-bold flex-shrink-0"><i class="fa-solid fa-clipboard-user"></i></div>
+                            <div class="overflow-hidden">
+                                <p class="text-[11px] sm:text-xs opacity-70 font-medium truncate">Kehadiran Kuliah</p>
+                                <h3 id="dash-stat-absensi" class="text-xl sm:text-2xl font-extrabold">0%</h3>
                             </div>
                         </div>
-                        <div class="border p-5 sm:p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-xl font-bold flex-shrink-0"><i class="fa-solid fa-graduation-cap"></i></div>
-                            <div>
-                                <p class="text-xs opacity-70 font-medium">Total SKS Tempuh</p>
-                                <h3 id="dash-stat-sks" class="text-2xl font-extrabold">0 SKS</h3>
+                        <div class="border p-4 sm:p-6 rounded-2xl shadow-sm flex items-center space-x-3 sm:space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                            <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-lg sm:text-xl font-bold flex-shrink-0"><i class="fa-solid fa-graduation-cap"></i></div>
+                            <div class="overflow-hidden">
+                                <p class="text-[11px] sm:text-xs opacity-70 font-medium truncate">Total SKS Tempuh</p>
+                                <h3 id="dash-stat-sks" class="text-xl sm:text-2xl font-extrabold">0 SKS</h3>
                             </div>
                         </div>
                     </div>
@@ -277,7 +273,7 @@
                         <div class="border rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div>
                                 <div class="flex items-center justify-between mb-4">
-                                    <h3 class="font-extrabold text-sm flex items-center space-x-2">
+                                    <h3 class="font-extrabold text-xs sm:text-sm flex items-center space-x-2">
                                         <i class="fa-solid fa-bell text-amber-400 animate-pulse"></i>
                                         <span>Pengingat Jadwal Kuliah Hari Ini</span>
                                     </h3>
@@ -290,7 +286,7 @@
                         <div class="border rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div>
                                 <div class="flex items-center justify-between mb-4">
-                                    <h3 class="font-extrabold text-sm flex items-center space-x-2">
+                                    <h3 class="font-extrabold text-xs sm:text-sm flex items-center space-x-2">
                                         <i class="fa-solid fa-hourglass-half text-rose-400"></i>
                                         <span>Deadline Tugas Pascasarjana</span>
                                     </h3>
@@ -305,22 +301,22 @@
                 <div id="tab-kurikulum" class="tab-content hidden space-y-6">
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
                         <button onclick="switchKurikulumTab(1)" id="kur-btn-1" class="p-3 sm:p-4 rounded-2xl border text-left transition-all shadow-md" style="background-color: var(--accent-color); border-color: var(--accent-color); color: #fff;">
-                            <span class="text-[10px] uppercase tracking-wider font-bold opacity-80">Fase I</span>
+                            <span class="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold opacity-80">Fase I</span>
                             <h4 class="font-extrabold text-xs sm:text-sm mt-0.5">Semester 1</h4>
                             <p class="text-[10px] sm:text-[11px] opacity-80 mt-1">Foundational Core</p>
                         </button>
                         <button onclick="switchKurikulumTab(2)" id="kur-btn-2" class="p-3 sm:p-4 rounded-2xl border text-left transition-all" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <span class="text-[10px] uppercase tracking-wider font-bold opacity-60">Fase II</span>
+                            <span class="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold opacity-60">Fase II</span>
                             <h4 class="font-extrabold text-xs sm:text-sm mt-0.5">Semester 2</h4>
                             <p class="text-[10px] sm:text-[11px] opacity-70 mt-1">Advanced Methods</p>
                         </button>
                         <button onclick="switchKurikulumTab(3)" id="kur-btn-3" class="p-3 sm:p-4 rounded-2xl border text-left transition-all" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <span class="text-[10px] uppercase tracking-wider font-bold opacity-60">Fase III</span>
+                            <span class="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold opacity-60">Fase III</span>
                             <h4 class="font-extrabold text-xs sm:text-sm mt-0.5">Semester 3</h4>
                             <p class="text-[10px] sm:text-[11px] opacity-70 mt-1">Specialization & Proposal</p>
                         </button>
                         <button onclick="switchKurikulumTab(4)" id="kur-btn-4" class="p-3 sm:p-4 rounded-2xl border text-left transition-all" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <span class="text-[10px] uppercase tracking-wider font-bold opacity-60">Fase IV</span>
+                            <span class="text-[9px] sm:text-[10px] uppercase tracking-wider font-bold opacity-60">Fase IV</span>
                             <h4 class="font-extrabold text-xs sm:text-sm mt-0.5">Semester 4</h4>
                             <p class="text-[10px] sm:text-[11px] opacity-70 mt-1">Thesis & Defense</p>
                         </button>
@@ -332,26 +328,26 @@
                                 <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);" id="kur-header-tag">Semester 1</span>
                                 <h3 class="font-extrabold text-base sm:text-lg mt-1" id="kur-header-title">Mata Kuliah Semester 1</h3>
                             </div>
-                            <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto space-x-3">
+                            <div class="flex items-center justify-between w-full sm:w-auto space-x-3">
                                 <div class="text-left sm:text-right">
                                     <span class="text-[10px] uppercase tracking-wider opacity-60 block font-bold">Total SKS Semester</span>
                                     <span class="text-sm sm:text-base font-extrabold" id="kur-total-sks">18 SKS</span>
                                 </div>
-                                <button onclick="addKurikulumSubject()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2" style="background-color: var(--accent-color);">
-                                    <i class="fa-solid fa-plus"></i><span>Tambah</span>
+                                <button onclick="addKurikulumSubject()" class="text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2 flex-shrink-0" style="background-color: var(--accent-color);">
+                                    <i class="fa-solid fa-plus"></i><span>Tambah Matkul</span>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="overflow-x-auto custom-scrollbar">
+                        <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs min-w-[650px]">
                                 <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                                     <tr>
-                                        <th class="px-6 py-4">Kode / Mata Kuliah</th>
-                                        <th class="px-6 py-4">SKS</th>
-                                        <th class="px-6 py-4">Dosen Pengampu</th>
-                                        <th class="px-6 py-4">Status Kelulusan</th>
-                                        <th class="px-6 py-4 text-center">Aksi</th>
+                                        <th class="px-4 sm:px-6 py-4">Kode / Mata Kuliah</th>
+                                        <th class="px-4 sm:px-6 py-4">SKS</th>
+                                        <th class="px-4 sm:px-6 py-4">Dosen Pengampu</th>
+                                        <th class="px-4 sm:px-6 py-4">Status Kelulusan</th>
+                                        <th class="px-4 sm:px-6 py-4 text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="kurikulum-table-body" class="divide-y" style="border-color: var(--border-color);"></tbody>
@@ -367,20 +363,20 @@
                                 <h3 class="font-extrabold text-sm">Jadwal Kuliah & Lokasi Ruangan Kelas Pascasarjana UNNES</h3>
                                 <p class="text-xs opacity-60 mt-0.5">Kelola jadwal mingguan, SKS, lokasi ruangan, serta link materi atau catatan.</p>
                             </div>
-                            <button onclick="addJadwal()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md w-full sm:w-auto text-center" style="background-color: var(--accent-color);">+ Tambah Jadwal</button>
+                            <button onclick="addJadwal()" class="text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md w-full sm:w-auto" style="background-color: var(--accent-color);">+ Tambah Jadwal</button>
                         </div>
-                        <div class="overflow-x-auto custom-scrollbar">
-                            <table class="w-full text-left text-xs min-w-[750px]">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs min-w-[800px]">
                                 <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                                     <tr>
-                                        <th class="px-6 py-4">Hari</th>
-                                        <th class="px-6 py-4">Mata Kuliah</th>
-                                        <th class="px-6 py-4">SKS</th>
-                                        <th class="px-6 py-4">Waktu</th>
-                                        <th class="px-6 py-4">Lokasi / Ruang Kelas</th>
-                                        <th class="px-6 py-4">Dosen Pengampu</th>
-                                        <th class="px-6 py-4">Link / Keterangan</th>
-                                        <th class="px-6 py-4 text-center">Aksi</th>
+                                        <th class="px-4 sm:px-6 py-4">Hari</th>
+                                        <th class="px-4 sm:px-6 py-4">Mata Kuliah</th>
+                                        <th class="px-4 sm:px-6 py-4">SKS</th>
+                                        <th class="px-4 sm:px-6 py-4">Waktu</th>
+                                        <th class="px-4 sm:px-6 py-4">Lokasi / Ruang Kelas</th>
+                                        <th class="px-4 sm:px-6 py-4">Dosen Pengampu</th>
+                                        <th class="px-4 sm:px-6 py-4">Link / Keterangan</th>
+                                        <th class="px-4 sm:px-6 py-4 text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-jadwal-body" class="divide-y" style="border-color: var(--border-color);"></tbody>
@@ -393,23 +389,23 @@
                     <div class="border rounded-2xl p-5 sm:p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                             <div>
-                                <h3 class="font-extrabold text-base">Tools Absensi & Materi Perkuliahan Pascasarjana</h3>
-                                <p class="text-xs opacity-65">Absensi dan materi terisi otomatis dari jadwal berulang mingguan.</p>
+                                <h3 class="font-extrabold text-sm sm:text-base">Tools Absensi & Materi Perkuliahan Pascasarjana</h3>
+                                <p class="text-xs opacity-65">Absensi dan materi terisi otomatis dari jadwal berulang mingguan. Anda cukup mengisi status Hadir dan Materi.</p>
                             </div>
                             <button onclick="generateAutomatedAbsensi()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 w-full sm:w-auto">
-                                <i class="fa-solid fa-rotate"></i><span>Sinkronkan Sesi Otomatis</span>
+                                <i class="fa-solid fa-rotate"></i><span>Sinkronkan & Generate Sesi</span>
                             </button>
                         </div>
-                        <div class="overflow-x-auto custom-scrollbar">
-                            <table class="w-full text-left text-xs min-w-[700px]">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs min-w-[750px]">
                                 <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                                     <tr>
-                                        <th class="px-6 py-4">Pertemuan & Matkul</th>
-                                        <th class="px-6 py-4">Tanggal & Hari</th>
-                                        <th class="px-6 py-4">Status Pelaksanaan</th>
-                                        <th class="px-6 py-4">Materi Pembahasan</th>
-                                        <th class="px-6 py-4">Kehadiran Saya</th>
-                                        <th class="px-6 py-4 text-center">Aksi</th>
+                                        <th class="px-4 sm:px-6 py-4">Pertemuan & Matkul</th>
+                                        <th class="px-4 sm:px-6 py-4">Tanggal & Hari</th>
+                                        <th class="px-4 sm:px-6 py-4">Status Pelaksanaan</th>
+                                        <th class="px-4 sm:px-6 py-4">Materi Pembahasan</th>
+                                        <th class="px-4 sm:px-6 py-4">Kehadiran Saya</th>
+                                        <th class="px-4 sm:px-6 py-4 text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-absensi-body" class="divide-y" style="border-color: var(--border-color);"></tbody>
@@ -420,39 +416,39 @@
 
                 <div id="tab-notebook" class="tab-content hidden space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                        <div class="lg:col-span-1 border rounded-2xl p-4 flex flex-col justify-between h-[300px] lg:h-[680px] backdrop-blur-md shadow-lg" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <div class="lg:col-span-1 border rounded-2xl p-4 flex flex-col justify-between h-auto lg:h-[680px] backdrop-blur-md shadow-lg" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div>
                                 <div class="flex items-center justify-between mb-4 px-2">
                                     <div>
                                         <h3 class="font-extrabold text-xs uppercase tracking-wider opacity-90">Katalog E-Book</h3>
-                                        <p class="text-[10px] opacity-60 mt-0.5">Pilih atau tambah mata kuliah</p>
+                                        <p class="text-[10px] opacity-60 mt-0.5">Pilih, ubah, atau hapus judul buku</p>
                                     </div>
-                                    <button onclick="addSubjectBook()" class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shadow-md transition-transform active:scale-95" style="background-color: var(--accent-color);" title="Tambah Mata Kuliah Baru"><i class="fa-solid fa-plus"></i></button>
+                                    <button onclick="addSubjectBook()" class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shadow-md transition-transform active:scale-95 flex-shrink-0" style="background-color: var(--accent-color);" title="Tambah Mata Kuliah Baru"><i class="fa-solid fa-plus"></i></button>
                                 </div>
-                                <div id="subject-list-container" class="space-y-1.5 overflow-y-auto max-h-[220px] lg:max-h-[580px] custom-scrollbar pr-1"></div>
+                                <div id="subject-list-container" class="space-y-1.5 overflow-y-auto max-h-[300px] lg:max-h-[580px] custom-scrollbar pr-1"></div>
                             </div>
                         </div>
 
                         <div class="lg:col-span-3 border rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[550px] lg:h-[680px] backdrop-blur-md relative" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="p-4 sm:p-5 border-b flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-6 sm:px-8" style="border-color: var(--border-color); background: linear-gradient(135deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));">
+                            <div class="p-4 sm:p-5 border-b flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:px-8" style="border-color: var(--border-color); background: linear-gradient(135deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));">
                                 <div>
                                     <span class="text-[10px] font-extrabold uppercase tracking-widest" style="color: var(--accent-color);"><i class="fa-solid fa-feather-pointed mr-1"></i> Executive Academic Journal</span>
                                     <h3 id="active-subject-title" class="font-extrabold text-sm sm:text-base mt-0.5">Pilih Mata Kuliah di Sidebar</h3>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <button onclick="renameActiveSubjectBook()" class="px-3 py-1.5 rounded-lg border text-[11px] font-bold opacity-80 hover:opacity-100 transition-all shadow-sm" style="background-color: var(--bg-main); border-color: var(--border-color);" title="Ganti Judul"><i class="fa-solid fa-pen mr-1"></i> Ganti Judul</button>
-                                    <button onclick="deleteActiveSubjectBook()" class="px-3 py-1.5 rounded-lg border text-[11px] font-bold text-rose-400 border-rose-500/30 bg-rose-500/10 hover:bg-rose-500 hover:text-white transition-all shadow-sm" title="Hapus"><i class="fa-solid fa-trash-can mr-1"></i> Hapus</button>
+                                    <button onclick="renameActiveSubjectBook()" class="px-3 py-1.5 rounded-lg border text-[11px] font-bold opacity-80 hover:opacity-100 transition-all shadow-sm" style="background-color: var(--bg-main); border-color: var(--border-color);" title="Ganti Judul E-Book Aktif"><i class="fa-solid fa-pen mr-1"></i> Ganti Judul</button>
+                                    <button onclick="deleteActiveSubjectBook()" class="px-3 py-1.5 rounded-lg border text-[11px] font-bold text-rose-400 border-rose-500/30 bg-rose-500/10 hover:bg-rose-500 hover:text-white transition-all shadow-sm" title="Hapus E-Book Aktif"><i class="fa-solid fa-trash-can mr-1"></i> Hapus</button>
                                 </div>
                             </div>
 
                             <div class="flex-1 p-0 overflow-y-auto custom-scrollbar relative">
                                 <div class="absolute left-6 top-0 bottom-0 w-0.5 opacity-25" style="background-color: var(--accent-color);"></div>
-                                <textarea id="ebook-textarea" oninput="saveCurrentNote(this.value)" class="w-full h-full notebook-page focus:outline-none pl-12 pr-6 sm:pr-8 py-2 font-medium resize-none text-sm placeholder:opacity-40" placeholder="Tuliskan intisari jurnal, catatan kuliah interaktif, atau draf kerangka tesis Anda di sini..."></textarea>
+                                <textarea id="ebook-textarea" oninput="saveCurrentNote(this.value)" class="w-full h-full notebook-page focus:outline-none pl-12 pr-4 sm:pr-8 py-2 font-medium resize-none text-xs sm:text-sm placeholder:opacity-40" placeholder="Tuliskan intisari jurnal, catatan kuliah interaktif, atau draf kerangka tesis Anda di sini... Setiap baris dirancang rapi selaras dengan garis akademik."></textarea>
                             </div>
 
-                            <div class="px-6 sm:px-8 py-3 border-t text-[10px] sm:text-[11px] opacity-60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">
+                            <div class="px-4 sm:px-8 py-3 border-t text-[10px] sm:text-[11px] opacity-60 flex flex-col sm:flex-row items-center justify-between gap-1" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">
                                 <span><i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Tersimpan otomatis di enkripsi lokal & Firebase Cloud</span>
-                                <span class="font-bold uppercase tracking-wider" style="color: var(--accent-color);">Pascasarjana UNNES Edition</span>
+                                <span class="font-bold uppercase tracking-wider text-[10px]" style="color: var(--accent-color);">Pascasarjana UNNES Edition</span>
                             </div>
                         </div>
                     </div>
@@ -462,7 +458,7 @@
                     <div class="border rounded-2xl p-5 sm:p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                             <div>
-                                <h3 class="font-extrabold text-base">Manajemen Tugas & Tenggat Waktu</h3>
+                                <h3 class="font-extrabold text-sm sm:text-base">Manajemen Tugas & Tenggat Waktu</h3>
                                 <p class="text-xs opacity-65">Pantau status pengerjaan tugas pascasarjana Anda secara terstruktur.</p>
                             </div>
                             <button onclick="openTaskModal()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center space-x-2 w-full sm:w-auto" style="background-color: var(--accent-color);">
@@ -490,7 +486,7 @@
                 </div>
                 <div>
                     <label class="block font-bold uppercase mb-1 opacity-70">Judul / Detail Tugas</label>
-                    <input type="text" id="input-judul" required placeholder="Contoh: Review Jurnal Internasional" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                    <input type="text" id="input-judul" required placeholder="Contoh: Review Jurnal Internasional Bereputasi" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
                 </div>
                 <div>
                     <label class="block font-bold uppercase mb-1 opacity-70">Deadline Waktu & Tanggal</label>
@@ -589,13 +585,6 @@
             renderAll();
         }
 
-        function toggleMobileSidebar() {
-            const drawer = document.getElementById('sidebar-drawer');
-            const overlay = document.getElementById('sidebar-overlay');
-            drawer.classList.toggle('-translate-x-full');
-            overlay.classList.toggle('hidden');
-        }
-
         function handleLogin() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
@@ -617,6 +606,13 @@
             if(confirm("Apakah Anda ingin keluar dari sistem pascasarjana UNNES?")) {
                 location.reload();
             }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('app-sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
         }
 
         function handleAvatarUpload(e) {
@@ -672,7 +668,7 @@
             };
             document.getElementById('tab-title').innerText = titles[tabId];
             if(window.innerWidth < 1024) {
-                toggleMobileSidebar();
+                toggleSidebar(); // Tutup sidebar otomatis di HP setelah klik menu
             }
             if(tabId === 'notebook') renderNotebookSubjects();
             if(tabId === 'kurikulum') renderKurikulumTable(storage.activeKurikulumTab);
@@ -721,20 +717,20 @@
 
                 return `
                     <tr class="transition-all hover:bg-black/5">
-                        <td class="px-6 py-4">
-                            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded border mr-2" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${sub.kode}</span>
-                            <span class="font-extrabold">${sub.nama}</span>
+                        <td class="px-4 sm:px-6 py-4">
+                            <span class="text-[9px] sm:text-[10px] font-extrabold px-2 py-0.5 rounded border mr-2 inline-block mb-1 sm:mb-0" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${sub.kode}</span>
+                            <span class="font-extrabold block sm:inline">${sub.nama}</span>
                         </td>
-                        <td class="px-6 py-4 font-bold">${sub.sks} SKS</td>
-                        <td class="px-6 py-4 opacity-75">${sub.dosen}</td>
-                        <td class="px-6 py-4">
-                            <select onchange="updateKurikulumStatus(${semNum}, ${idx}, this.value)" class="px-3 py-1.5 rounded-lg font-bold border ${badgeClass} outline-none cursor-pointer" style="background: rgba(0,0,0,0.2);">
+                        <td class="px-4 sm:px-6 py-4 font-bold">${sub.sks} SKS</td>
+                        <td class="px-4 sm:px-6 py-4 opacity-75">${sub.dosen}</td>
+                        <td class="px-4 sm:px-6 py-4">
+                            <select onchange="updateKurikulumStatus(${semNum}, ${idx}, this.value)" class="px-2.5 sm:px-3 py-1.5 rounded-lg font-bold border ${badgeClass} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
                                 <option value="Belum Ambil" ${sub.status === 'Belum Ambil' ? 'selected' : ''}>Belum Ambil</option>
                                 <option value="Sedang Berjalan" ${sub.status === 'Sedang Berjalan' ? 'selected' : ''}>Sedang Berjalan</option>
                                 <option value="Lulus" ${sub.status === 'Lulus' ? 'selected' : ''}>Lulus</option>
                             </select>
                         </td>
-                        <td class="px-6 py-4 text-center">
+                        <td class="px-4 sm:px-6 py-4 text-center">
                             <button onclick="deleteKurikulumSubject(${semNum}, ${idx})" class="text-rose-400 hover:text-rose-500 p-1.5"><i class="fa-solid fa-trash-can"></i></button>
                         </td>
                     </tr>
@@ -778,9 +774,9 @@
             const matkul = prompt("Nama Mata Kuliah:");
             const sks = prompt("Jumlah SKS (Contoh: 3):", "3");
             const waktu = prompt("Waktu (Contoh: 13.30 - 16.00):");
-            const lokasi = prompt("Lokasi / Ruang Kelas:");
+            const lokasi = prompt("Lokasi / Ruang Kelas (Contoh: Gedung Pasca UNNES Lt. 3, Ruang 301):");
             const dosen = prompt("Dosen Pengampu:");
-            const info = prompt("Link / Keterangan:");
+            const info = prompt("Link / Keterangan (Contoh: https://lms.unnes.ac.id atau Catatan):");
             if(hari && matkul) {
                 storage.jadwal.push({ hari, matkul, sks: Number(sks || 3), waktu, lokasi: lokasi || 'Ruang Kuliah Pascasarjana UNNES', dosen, info: info || '-' });
                 generateAutomatedAbsensi(false);
@@ -818,18 +814,18 @@
             if(!tbody) return;
             tbody.innerHTML = storage.jadwal.map((j, i) => `
                 <tr class="transition-all hover:bg-black/5">
-                    <td class="px-6 py-4 font-bold" style="color: var(--accent-color);">${j.hari}</td>
-                    <td class="px-6 py-4 font-extrabold">${j.matkul}</td>
-                    <td class="px-6 py-4 font-bold">${j.sks || 3} SKS</td>
-                    <td class="px-6 py-4 opacity-75">${j.waktu}</td>
-                    <td class="px-6 py-4 font-semibold text-amber-400"><i class="fa-solid fa-location-dot mr-1"></i> ${j.lokasi || 'Ruang Pascasarjana UNNES'}</td>
-                    <td class="px-6 py-4 opacity-75">${j.dosen}</td>
-                    <td class="px-6 py-4 font-medium max-w-xs truncate">
+                    <td class="px-4 sm:px-6 py-4 font-bold" style="color: var(--accent-color);">${j.hari}</td>
+                    <td class="px-4 sm:px-6 py-4 font-extrabold">${j.matkul}</td>
+                    <td class="px-4 sm:px-6 py-4 font-bold">${j.sks || 3} SKS</td>
+                    <td class="px-4 sm:px-6 py-4 opacity-75">${j.waktu}</td>
+                    <td class="px-4 sm:px-6 py-4 font-semibold text-amber-400"><i class="fa-solid fa-location-dot mr-1"></i> ${j.lokasi || 'Ruang Pascasarjana UNNES'}</td>
+                    <td class="px-4 sm:px-6 py-4 opacity-75">${j.dosen}</td>
+                    <td class="px-4 sm:px-6 py-4 font-medium max-w-xs truncate">
                         <a href="${j.info && j.info.startsWith('http') ? j.info : '#'}" target="_blank" class="underline hover:opacity-100" style="color: var(--accent-color);" title="${j.info || '-'}">${j.info || '-'}</a>
                     </td>
-                    <td class="px-6 py-4 text-center space-x-1">
-                        <button onclick="editJadwal(${i})" class="text-blue-400 hover:text-blue-500 p-1.5" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteJadwal(${i})" class="text-rose-400 hover:text-rose-500 p-1.5" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                    <td class="px-4 sm:px-6 py-4 text-center space-x-1">
+                        <button onclick="editJadwal(${i})" class="text-blue-400 hover:text-blue-500 p-1.5" title="Edit Jadwal"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="deleteJadwal(${i})" class="text-rose-400 hover:text-rose-500 p-1.5" title="Hapus Jadwal"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 </tr>
             `).join('');
@@ -876,7 +872,7 @@
             storage.absensi = newAbsensiList;
             saveData();
             if(showAlert) {
-                alert("Absensi dan materi berhasil di-generate secara otomatis!");
+                alert("Absensi dan materi berhasil di-generate secara otomatis berdasarkan jadwal mingguan berulang!");
             }
         }
 
@@ -906,29 +902,29 @@
 
                 return `
                     <tr class="transition-all hover:bg-black/5">
-                        <td class="px-6 py-4">
-                            <span class="font-extrabold text-[10px] px-2 py-0.5 rounded border mr-1" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${a.pertemuan}</span>
-                            <span class="font-extrabold block mt-1">${a.matkul}</span>
+                        <td class="px-4 sm:px-6 py-4">
+                            <span class="font-extrabold text-[9px] sm:text-[10px] px-2 py-0.5 rounded border mr-1 inline-block mb-1 sm:mb-0" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${a.pertemuan}</span>
+                            <span class="font-extrabold block mt-0.5">${a.matkul}</span>
                         </td>
-                        <td class="px-6 py-4 opacity-75 font-semibold">${a.tanggal}</td>
-                        <td class="px-6 py-4">
-                            <select onchange="updateAbsensiStatus(${i}, 'statusKuliah', this.value)" class="px-3 py-1.5 rounded-lg font-bold border ${badgeStatus} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
+                        <td class="px-4 sm:px-6 py-4 opacity-75 font-semibold">${a.tanggal}</td>
+                        <td class="px-4 sm:px-6 py-4">
+                            <select onchange="updateAbsensiStatus(${i}, 'statusKuliah', this.value)" class="px-2.5 sm:px-3 py-1.5 rounded-lg font-bold border ${badgeStatus} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
                                 <option value="Sudah Dilaksanakan" ${a.statusKuliah === 'Sudah Dilaksanakan' ? 'selected' : ''}>Sudah Dilaksanakan</option>
                                 <option value="Belum Dilaksanakan" ${a.statusKuliah === 'Belum Dilaksanakan' ? 'selected' : ''}>Belum Dilaksanakan</option>
                             </select>
                         </td>
-                        <td class="px-6 py-4 font-medium">
-                            <input type="text" value="${a.materi}" onchange="updateAbsensiStatus(${i}, 'materi', this.value)" class="w-full bg-transparent border-b border-dashed outline-none py-1" style="border-color: var(--border-color);">
+                        <td class="px-4 sm:px-6 py-4 font-medium">
+                            <input type="text" value="${a.materi}" onchange="updateAbsensiStatus(${i}, 'materi', this.value)" class="w-full bg-transparent border-b border-dashed outline-none py-1 text-xs" style="border-color: var(--border-color);" title="Klik untuk edit materi">
                         </td>
-                        <td class="px-6 py-4">
-                            <select onchange="updateAbsensiStatus(${i}, 'kehadiran', this.value)" class="px-3 py-1.5 rounded-lg font-bold border ${badgeHadir} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
+                        <td class="px-4 sm:px-6 py-4">
+                            <select onchange="updateAbsensiStatus(${i}, 'kehadiran', this.value)" class="px-2.5 sm:px-3 py-1.5 rounded-lg font-bold border ${badgeHadir} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
                                 <option value="Hadir" ${a.kehadiran === 'Hadir' ? 'selected' : ''}>Hadir</option>
                                 <option value="Izin" ${a.kehadiran === 'Izin' ? 'selected' : ''}>Izin</option>
                                 <option value="Alpha" ${a.kehadiran === 'Alpha' ? 'selected' : ''}>Alpha</option>
                             </select>
                         </td>
-                        <td class="px-6 py-4 text-center">
-                            <button onclick="deleteAbsensi(${i})" class="text-rose-400 hover:text-rose-500 p-1.5" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                        <td class="px-4 sm:px-6 py-4 text-center">
+                            <button onclick="deleteAbsensi(${i})" class="text-rose-400 hover:text-rose-500 p-1.5" title="Hapus Sesi"><i class="fa-solid fa-trash-can"></i></button>
                         </td>
                     </tr>
                 `;
@@ -965,7 +961,7 @@
         function addSubjectBook() {
             const newSub = prompt("Masukkan Nama Mata Kuliah Baru untuk E-Book:");
             if(newSub && !storage.ebooks[newSub]) {
-                storage.ebooks[newSub] = "✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Pengantar & Landasan Teori " + newSub + "\n\nPoin Penting:\n1. Tuliskan ringkasan jurnal dan literatur wajib di sini.\n2. Catat instruksi khusus dari dosen pengampu.";
+                storage.ebooks[newSub] = "✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Pengantar & Landasan Teori " + newSub + "\n\nPoin Penting:\n1. Tuliskan ringkasan jurnal dan literatur wajib di sini.\n2. Catat instruksi khusus dari dosen pengampu.\n3. Susun kerangka gagasan untuk analisis tesis.";
                 storage.activeSubject = newSub;
                 saveData();
                 renderNotebookSubjects();
@@ -981,7 +977,7 @@
             const newName = prompt("Ubah Nama / Judul Mata Kuliah E-Book:", oldName);
             if(newName && newName.trim() !== "" && newName !== oldName) {
                 if(storage.ebooks[newName]) {
-                    alert("Nama mata kuliah tersebut sudah ada!");
+                    alert("Nama mata kuliah tersebut sudah ada di katalog!");
                     return;
                 }
                 storage.ebooks[newName] = storage.ebooks[oldName];
@@ -998,7 +994,7 @@
                 return;
             }
             const target = storage.activeSubject;
-            if(confirm(`Apakah Anda yakin ingin menghapus e-book "${target}"?`)) {
+            if(confirm(`Apakah Anda yakin ingin menghapus e-book dan catatan untuk mata kuliah "${target}"?`)) {
                 delete storage.ebooks[target];
                 const remainingKeys = Object.keys(storage.ebooks);
                 storage.activeSubject = remainingKeys.length > 0 ? remainingKeys[0] : '';
@@ -1087,12 +1083,13 @@
                             <div>
                                 <span class="font-extrabold">${s.matkul}</span>
                                 <p class="opacity-70 text-[11px] mt-0.5"><i class="fa-regular fa-clock mr-1"></i> ${s.waktu} • <span class="text-amber-400 font-semibold"><i class="fa-solid fa-location-dot"></i> ${s.lokasi || 'Ruang Pasca UNNES'}</span></p>
+                                <p class="opacity-60 text-[10px] mt-0.5">Dosen: ${s.dosen} | SKS: ${s.sks || 3}</p>
                             </div>
-                            <span class="px-2.5 py-1 rounded font-bold text-[10px] animate-pulse self-end sm:self-auto" style="background-color: var(--accent-color); color: #fff;">Aktif</span>
+                            <span class="px-2.5 py-1 rounded font-bold text-[10px] animate-pulse self-end sm:self-auto" style="background-color: var(--accent-color); color: #fff;">Pengingat Aktif</span>
                         </div>
                     `).join('');
                 } else {
-                    dailyContainer.innerHTML = `<div class="p-4 rounded-xl text-center opacity-60 text-xs italic border" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">Tidak ada jadwal kuliah hari ${todayName}. Waktu optimal untuk riset literatur.</div>`;
+                    dailyContainer.innerHTML = `<div class="p-4 rounded-xl text-center opacity-60 text-xs italic border" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">Tidak ada jadwal kuliah hari ${todayName}. Waktu optimal untuk riset literatur tesis Pascasarjana UNNES.</div>`;
                 }
             }
 
@@ -1111,7 +1108,7 @@
                         </div>
                     `).join('');
                 } else {
-                    deadlineContainer.innerHTML = `<div class="p-4 rounded-xl text-center opacity-60 text-xs italic border" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">Semua tugas akademik telah diselesaikan! 🚀</div>`;
+                    deadlineContainer.innerHTML = `<div class="p-4 rounded-xl text-center opacity-60 text-xs italic border" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">Semua tugas akademik Pascasarjana UNNES telah diselesaikan dengan sangat baik! 🚀</div>`;
                 }
             }
 
@@ -1128,7 +1125,7 @@
                     return `
                         <div class="p-5 rounded-2xl border shadow-sm flex flex-col justify-between space-y-4 text-xs backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div class="space-y-1">
-                                <span class="font-extrabold px-2 py-0.5 rounded uppercase text-[10px]" style="background-color: var(--accent-color); color: #fff;">${t.matkul}</span>
+                                <span class="font-extrabold px-2 py-0.5 rounded uppercase text-[10px] inline-block mb-1" style="background-color: var(--accent-color); color: #fff;">${t.matkul}</span>
                                 <h4 class="font-extrabold text-sm mt-1">${t.judul}</h4>
                                 <p class="opacity-70"><i class="fa-regular fa-clock mr-1"></i> Deadline: ${t.deadline}</p>
                             </div>
