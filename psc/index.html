@@ -12,18 +12,19 @@
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
         import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-        const firebaseConfig = {
-              apiKey: "AIzaSyAElGVmqqeJFYW7O4VX-eYXhCxa8LDjWkA",
-              authDomain: "aaaaimm-pascasarjana.firebaseapp.com",
-              projectId: "aaaaimm-pascasarjana",
-              storageBucket: "aaaaimm-pascasarjana.firebasestorage.app",
-              messagingSenderId: "330116117840",
-              appId: "1:330116117840:web:ff637fbae78b63d46c2855",
-              measurementId: "G-RGBT9MV6Q5"
-        };
+       const firebaseConfig = {
+          apiKey: "AIzaSyAElGVmqqeJFYW7O4VX-eYXhCxa8LDjWkA",
+          authDomain: "aaaaimm-pascasarjana.firebaseapp.com",
+          projectId: "aaaaimm-pascasarjana",
+          storageBucket: "aaaaimm-pascasarjana.firebasestorage.app",
+          messagingSenderId: "330116117840",
+          appId: "1:330116117840:web:ff637fbae78b63d46c2855",
+          measurementId: "G-RGBT9MV6Q5"
+    };
 
+        // Initialize Firebase
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        const analytics = getAnalytics(app);
 
         window.firebaseCloudSync = async function(storageData) {
             try {
