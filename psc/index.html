@@ -22,23 +22,20 @@
         measurementId: "G-RGBT9MV6Q5"
     };
 
-    // Initialize Firebase
     const app = initializeApp(firebaseConfig);
-    const db = getFirestore(app); // Inisialisasi Firestore Database
+    const db = getFirestore(app);
+    let isRemoteUpdate = false;
 
-    let isRemoteUpdate = false; // Flag untuk mencegah loop tak terbatas
-
-    // Real-time Listener: Otomatis mendengarkan perubahan data dari Cloud secara live
     const docRef = doc(db, "pascasarjana_unnes", "hikarinaim_profile");
+
+    // Real-time listener agar perubahan di laptop langsung tampil di HP secara live
     onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
             const cloudData = docSnap.data();
-            // Jika data dari cloud berbeda, perbarui local storage dan render ulang UI secara otomatis
             if (JSON.stringify(cloudData) !== JSON.stringify(storage)) {
                 isRemoteUpdate = true;
                 storage = { ...storage, ...cloudData };
                 
-                // Simpan ke local storage lokal
                 localStorage.setItem('aaaaíim_pasca_kurikulum', JSON.stringify(storage.kurikulum));
                 localStorage.setItem('aaaaíim_pasca_jadwal', JSON.stringify(storage.jadwal));
                 localStorage.setItem('aaaaíim_pasca_absensi', JSON.stringify(storage.absensi));
@@ -47,7 +44,6 @@
                 localStorage.setItem('aaaaíim_pasca_theme', storage.theme);
                 localStorage.setItem('aaaaíim_pasca_avatar', storage.userAvatar);
                 
-                // Render ulang tampilan layar secara langsung
                 if (typeof renderAll === 'function') {
                     renderAll();
                 }
@@ -57,12 +53,12 @@
     });
 
     window.firebaseCloudSync = async function(storageData) {
-        if (isRemoteUpdate) return; // Mencegah Infinite Loop sinkronisasi
+        if (isRemoteUpdate) return;
         try {
-            await setDoc(docRef, storageData);
+            await setDoc(docRef, storageData, { merge: true });
             console.log("Data berhasil disinkronkan ke Firebase Cloud!");
         } catch (e) {
-            console.error("Gagal sinkronisasi Firebase:", e);
+            console.error("Gagal sinkronisasi Firebase (Cek Firestore Rules):", e);
         }
     };
 
@@ -100,61 +96,30 @@
         .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.25); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.4); }
 
         :root, html[data-theme="velvet"] {
-            --bg-main: #0c0a14;
-            --bg-sidebar: #13101f;
-            --bg-card: rgba(22, 18, 36, 0.85);
-            --border-color: rgba(91, 75, 143, 0.3);
-            --accent-color: #8b5cf6;
-            --text-main: #f5f3ff;
-            --text-muted: #c4b5fd;
+            --bg-main: #0c0a14; --bg-sidebar: #13101f; --bg-card: rgba(22, 18, 36, 0.85);
+            --border-color: rgba(91, 75, 143, 0.3); --accent-color: #8b5cf6; --text-main: #f5f3ff; --text-muted: #c4b5fd;
         }
         html[data-theme="obsidian"] {
-            --bg-main: #030712;
-            --bg-sidebar: #0b0f19;
-            --bg-card: rgba(15, 23, 42, 0.85);
-            --border-color: rgba(56, 189, 248, 0.2);
-            --accent-color: #0ea5e9;
-            --text-main: #f0f9ff;
-            --text-muted: #7dd3fc;
+            --bg-main: #030712; --bg-sidebar: #0b0f19; --bg-card: rgba(15, 23, 42, 0.85);
+            --border-color: rgba(56, 189, 248, 0.2); --accent-color: #0ea5e9; --text-main: #f0f9ff; --text-muted: #7dd3fc;
         }
         html[data-theme="sunset"] {
-            --bg-main: #140808;
-            --bg-sidebar: #1f0f0f;
-            --bg-card: rgba(36, 18, 18, 0.85);
-            --border-color: rgba(244, 63, 94, 0.25);
-            --accent-color: #f43f5e;
-            --text-main: #fff1f2;
-            --text-muted: #fecdd3;
+            --bg-main: #140808; --bg-sidebar: #1f0f0f; --bg-card: rgba(36, 18, 18, 0.85);
+            --border-color: rgba(244, 63, 94, 0.25); --accent-color: #f43f5e; --text-main: #fff1f2; --text-muted: #fecdd3;
         }
         html[data-theme="emerald"] {
-            --bg-main: #06120c;
-            --bg-sidebar: #0b1f14;
-            --bg-card: rgba(13, 33, 22, 0.85);
-            --border-color: rgba(16, 185, 129, 0.25);
-            --accent-color: #10b981;
-            --text-main: #ecfdf5;
-            --text-muted: #a7f3d0;
+            --bg-main: #06120c; --bg-sidebar: #0b1f14; --bg-card: rgba(13, 33, 22, 0.85);
+            --border-color: rgba(16, 185, 129, 0.25); --accent-color: #10b981; --text-main: #ecfdf5; --text-muted: #a7f3d0;
         }
         html[data-theme="cyberpunk"] {
-            --bg-main: #09090b;
-            --bg-sidebar: #121217;
-            --bg-card: rgba(24, 24, 32, 0.85);
-            --border-color: rgba(236, 72, 153, 0.3);
-            --accent-color: #ec4899;
-            --text-main: #fdf2f8;
-            --text-muted: #fbcfe8;
+            --bg-main: #09090b; --bg-sidebar: #121217; --bg-card: rgba(24, 24, 32, 0.85);
+            --border-color: rgba(236, 72, 153, 0.3); --accent-color: #ec4899; --text-main: #fdf2f8; --text-muted: #fbcfe8;
         }
         html[data-theme="frost"] {
-            --bg-main: #f1f5f9;
-            --bg-sidebar: #ffffff;
-            --bg-card: rgba(255, 255, 255, 0.95);
-            --border-color: #cbd5e1;
-            --accent-color: #2563eb;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
+            --bg-main: #f1f5f9; --bg-sidebar: #ffffff; --bg-card: rgba(255, 255, 255, 0.95);
+            --border-color: #cbd5e1; --accent-color: #2563eb; --text-main: #0f172a; --text-muted: #64748b;
         }
     </style>
 </head>
@@ -351,23 +316,22 @@
                         </button>
                     </div>
 
-                    <div class="border rounded-2xl p-5 sm:p-6 shadow-sm backdrop-blur-md space-y-6" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b" style="border-color: var(--border-color);">
+                    <div class="border rounded-2xl overflow-hidden shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <div class="p-5 sm:p-6 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4" style="border-color: var(--border-color);">
                             <div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);" id="kur-header-tag">Semester 1</span>
-                                <h3 class="font-extrabold text-base sm:text-lg mt-1" id="kur-header-title">Mata Kuliah Semester 1</h3>
+                                <span id="kur-header-tag" class="text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full border inline-block mb-1" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">Semester 1</span>
+                                <h3 id="kur-header-title" class="font-extrabold text-sm sm:text-base">Mata Kuliah Semester 1</h3>
                             </div>
-                            <div class="flex items-center justify-between w-full sm:w-auto space-x-3">
-                                <div class="text-left sm:text-right">
-                                    <span class="text-[10px] uppercase tracking-wider opacity-60 block font-bold">Total SKS Semester</span>
-                                    <span class="text-sm sm:text-base font-extrabold" id="kur-total-sks">18 SKS</span>
+                            <div class="flex items-center space-x-3 w-full sm:w-auto justify-between sm:justify-end">
+                                <div class="text-right">
+                                    <span class="text-[10px] opacity-60 block">Beban Studi</span>
+                                    <span id="kur-total-sks" class="font-extrabold text-sm" style="color: var(--accent-color);">0 SKS</span>
                                 </div>
-                                <button onclick="addKurikulumSubject()" class="text-white px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2 flex-shrink-0" style="background-color: var(--accent-color);">
+                                <button onclick="addKurikulumSubject()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2 flex-shrink-0" style="background-color: var(--accent-color);">
                                     <i class="fa-solid fa-plus"></i><span>Tambah Matkul</span>
                                 </button>
                             </div>
                         </div>
-
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs min-w-[650px]">
                                 <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
@@ -392,19 +356,19 @@
                                 <h3 class="font-extrabold text-sm">Jadwal Kuliah & Lokasi Ruangan Kelas Pascasarjana UNNES</h3>
                                 <p class="text-xs opacity-60 mt-0.5">Kelola jadwal mingguan, SKS, lokasi ruangan, serta link materi atau catatan.</p>
                             </div>
-                            <button onclick="addJadwal()" class="text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md w-full sm:w-auto" style="background-color: var(--accent-color);">+ Tambah Jadwal</button>
+                            <button onclick="addJadwal()" class="text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2" style="background-color: var(--accent-color);">
+                                <i class="fa-solid fa-plus"></i><span>Tambah Jadwal</span>
+                            </button>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs min-w-[800px]">
+                            <table class="w-full text-left text-xs min-w-[700px]">
                                 <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                                     <tr>
                                         <th class="px-4 sm:px-6 py-4">Hari</th>
-                                        <th class="px-4 sm:px-6 py-4">Mata Kuliah</th>
-                                        <th class="px-4 sm:px-6 py-4">SKS</th>
+                                        <th class="px-4 sm:px-6 py-4">Mata Kuliah & SKS</th>
                                         <th class="px-4 sm:px-6 py-4">Waktu</th>
-                                        <th class="px-4 sm:px-6 py-4">Lokasi / Ruang Kelas</th>
+                                        <th class="px-4 sm:px-6 py-4">Lokasi / Ruangan</th>
                                         <th class="px-4 sm:px-6 py-4">Dosen Pengampu</th>
-                                        <th class="px-4 sm:px-6 py-4">Link / Keterangan</th>
                                         <th class="px-4 sm:px-6 py-4 text-center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -415,26 +379,24 @@
                 </div>
 
                 <div id="tab-absensi" class="tab-content hidden space-y-6">
-                    <div class="border rounded-2xl p-5 sm:p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                    <div class="border rounded-2xl overflow-hidden shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <div class="p-5 sm:p-6 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4" style="border-color: var(--border-color);">
                             <div>
-                                <h3 class="font-extrabold text-sm sm:text-base">Tools Absensi & Materi Perkuliahan Pascasarjana</h3>
-                                <p class="text-xs opacity-65">Absensi dan materi terisi otomatis dari jadwal berulang mingguan. Anda cukup mengisi status Hadir dan Materi.</p>
+                                <h3 class="font-extrabold text-sm">Absensi Perkuliahan & Rekap Kehadiran</h3>
+                                <p class="text-xs opacity-60 mt-0.5">Dibuat otomatis dari daftar jadwal mingguan Anda.</p>
                             </div>
-                            <button onclick="generateAutomatedAbsensi()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 w-full sm:w-auto">
-                                <i class="fa-solid fa-rotate"></i><span>Sinkronkan & Generate Sesi</span>
+                            <button onclick="generateAutomatedAbsensi(true)" class="text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2" style="background-color: var(--accent-color);">
+                                <i class="fa-solid fa-rotate"></i><span>Refresh Absensi</span>
                             </button>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs min-w-[750px]">
+                            <table class="w-full text-left text-xs min-w-[700px]">
                                 <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                                     <tr>
-                                        <th class="px-4 sm:px-6 py-4">Pertemuan & Matkul</th>
-                                        <th class="px-4 sm:px-6 py-4">Tanggal & Hari</th>
-                                        <th class="px-4 sm:px-6 py-4">Status Pelaksanaan</th>
-                                        <th class="px-4 sm:px-6 py-4">Materi Pembahasan</th>
+                                        <th class="px-4 sm:px-6 py-4">Pertemuan & Mata Kuliah</th>
+                                        <th class="px-4 sm:px-6 py-4">Tanggal Perkiraan</th>
+                                        <th class="px-4 sm:px-6 py-4">Status Kuliah</th>
                                         <th class="px-4 sm:px-6 py-4">Kehadiran Saya</th>
-                                        <th class="px-4 sm:px-6 py-4 text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-absensi-body" class="divide-y" style="border-color: var(--border-color);"></tbody>
@@ -443,58 +405,53 @@
                     </div>
                 </div>
 
-                <div id="tab-notebook" class="tab-content hidden space-y-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                        <div class="lg:col-span-1 border rounded-2xl p-4 flex flex-col justify-between h-auto lg:h-[680px] backdrop-blur-md shadow-lg" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div>
-                                <div class="flex items-center justify-between mb-4 px-2">
-                                    <div>
-                                        <h3 class="font-extrabold text-xs uppercase tracking-wider opacity-90">Katalog E-Book</h3>
-                                        <p class="text-[10px] opacity-60 mt-0.5">Pilih, ubah, atau hapus judul buku</p>
-                                    </div>
-                                    <button onclick="addSubjectBook()" class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shadow-md transition-transform active:scale-95 flex-shrink-0" style="background-color: var(--accent-color);" title="Tambah Mata Kuliah Baru"><i class="fa-solid fa-plus"></i></button>
+                <div id="tab-notebook" class="tab-content hidden grid grid-cols-1 lg:grid-cols-4 gap-6">
+                    <div class="lg:col-span-1 border rounded-2xl p-4 flex flex-col justify-between h-auto lg:h-[680px] backdrop-blur-md shadow-lg" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <div>
+                            <div class="flex items-center justify-between mb-4 px-2">
+                                <div>
+                                    <h3 class="font-extrabold text-xs uppercase tracking-wider opacity-90">Katalog E-Book</h3>
+                                    <p class="text-[10px] opacity-60 mt-0.5">Pilih, ubah, atau hapus judul buku</p>
                                 </div>
-                                <div id="subject-list-container" class="space-y-1.5 overflow-y-auto max-h-[300px] lg:max-h-[580px] custom-scrollbar pr-1"></div>
+                                <button onclick="addSubjectBook()" class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shadow-md transition-transform active:scale-95 flex-shrink-0" style="background-color: var(--accent-color);" title="Tambah Mata Kuliah Baru"><i class="fa-solid fa-plus"></i></button>
+                            </div>
+                            <div id="subject-list-container" class="space-y-1.5 overflow-y-auto max-h-[300px] lg:max-h-[580px] custom-scrollbar pr-1"></div>
+                        </div>
+                    </div>
+
+                    <div class="lg:col-span-3 border rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[550px] lg:h-[680px] backdrop-blur-md relative" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <div class="p-4 sm:p-5 border-b flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:px-8" style="border-color: var(--border-color); background: linear-gradient(135deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));">
+                            <div>
+                                <span id="active-notebook-title" class="text-[10px] font-extrabold uppercase tracking-wider px-2.5 py-1 rounded-md border" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">Pilih Matkul</span>
+                                <h3 class="font-extrabold text-sm sm:text-base mt-1">E-Book & Catatan Literatur Mandiri</h3>
+                            </div>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="renameActiveSubjectBook()" class="px-3 py-1.5 rounded-lg border text-xs font-semibold hover:bg-black/10 transition-colors flex items-center space-x-1.5" style="border-color: var(--border-color);"><i class="fa-solid fa-pen text-[10px]"></i><span>Ubah Nama</span></button>
+                                <button onclick="deleteActiveSubjectBook()" class="px-3 py-1.5 rounded-lg border text-xs font-semibold text-rose-400 border-rose-500/30 hover:bg-rose-500/10 transition-colors flex items-center space-x-1.5"><i class="fa-solid fa-trash-can text-[10px]"></i><span>Hapus</span></button>
                             </div>
                         </div>
-
-                        <div class="lg:col-span-3 border rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[550px] lg:h-[680px] backdrop-blur-md relative" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="p-4 sm:p-5 border-b flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:px-8" style="border-color: var(--border-color); background: linear-gradient(135deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));">
-                                <div>
-                                    <span class="text-[10px] font-extrabold uppercase tracking-widest" style="color: var(--accent-color);"><i class="fa-solid fa-feather-pointed mr-1"></i> Executive Academic Journal</span>
-                                    <h3 id="active-subject-title" class="font-extrabold text-sm sm:text-base mt-0.5">Pilih Mata Kuliah di Sidebar</h3>
-                                </div>
-                                <div class="flex items-center space-x-2">
-                                    <button onclick="renameActiveSubjectBook()" class="px-3 py-1.5 rounded-lg border text-[11px] font-bold opacity-80 hover:opacity-100 transition-all shadow-sm" style="background-color: var(--bg-main); border-color: var(--border-color);" title="Ganti Judul E-Book Aktif"><i class="fa-solid fa-pen mr-1"></i> Ganti Judul</button>
-                                    <button onclick="deleteActiveSubjectBook()" class="px-3 py-1.5 rounded-lg border text-[11px] font-bold text-rose-400 border-rose-500/30 bg-rose-500/10 hover:bg-rose-500 hover:text-white transition-all shadow-sm" title="Hapus E-Book Aktif"><i class="fa-solid fa-trash-can mr-1"></i> Hapus</button>
-                                </div>
-                            </div>
-
-                            <div class="flex-1 p-0 overflow-y-auto custom-scrollbar relative">
-                                <div class="absolute left-6 top-0 bottom-0 w-0.5 opacity-25" style="background-color: var(--accent-color);"></div>
-                                <textarea id="ebook-textarea" oninput="saveCurrentNote(this.value)" class="w-full h-full notebook-page focus:outline-none pl-12 pr-4 sm:pr-8 py-2 font-medium resize-none text-xs sm:text-sm placeholder:opacity-40" placeholder="Tuliskan intisari jurnal, catatan kuliah interaktif, atau draf kerangka tesis Anda di sini... Setiap baris dirancang rapi selaras dengan garis akademik."></textarea>
-                            </div>
-
-                            <div class="px-4 sm:px-8 py-3 border-t text-[10px] sm:text-[11px] opacity-60 flex flex-col sm:flex-row items-center justify-between gap-1" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">
-                                <span id="save-status-indicator"><i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Tersimpan otomatis di enkripsi lokal & Firebase Cloud</span>
-                                <span class="font-bold uppercase tracking-wider text-[10px]" style="color: var(--accent-color);">Pascasarjana UNNES Edition</span>
+                        <div class="flex-1 p-4 sm:p-8 overflow-hidden flex flex-col">
+                            <textarea id="notebook-textarea" oninput="saveCurrentNote(this.value)" class="w-full flex-1 notebook-page outline-none resize-none custom-scrollbar p-2 rounded-xl" style="color: var(--text-main);" placeholder="Mulai mengetik catatan literatur, ringkasan jurnal, atau e-book di sini..."></textarea>
+                            <div class="pt-3 border-t flex items-center justify-between text-[11px] opacity-60" style="border-color: var(--border-color);">
+                                <span id="notebook-status-indicator">Perubahan disimpan otomatis ke Cloud</span>
+                                <span>Markdown & Teks Didukung</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div id="tab-tugas" class="tab-content hidden space-y-6">
-                    <div class="border rounded-2xl p-5 sm:p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
+                    <div class="border rounded-2xl overflow-hidden shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <div class="p-5 sm:p-6 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4" style="border-color: var(--border-color);">
                             <div>
-                                <h3 class="font-extrabold text-sm sm:text-base">Daftar Tugas & Deadline Akademik</h3>
-                                <p class="text-xs opacity-65">Kelola penugasan mata kuliah magister/doktoral.</p>
+                                <h3 class="font-extrabold text-sm">Daftar Tugas & Deadline Pascasarjana</h3>
+                                <p class="text-xs opacity-60 mt-0.5">Kelola tenggat waktu pengumpulan tugas makalah atau review jurnal.</p>
                             </div>
-                            <button onclick="openTaskModal()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2 w-full sm:w-auto" style="background-color: var(--accent-color);">
-                                <i class="fa-solid fa-plus"></i><span>Tambah Tugas Baru</span>
+                            <button onclick="openTaskModal()" class="text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2" style="background-color: var(--accent-color);">
+                                <i class="fa-solid fa-plus"></i><span>Tambah Tugas</span>
                             </button>
                         </div>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="task-list-container"></div>
+                        <div class="p-5 sm:p-6 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="tugas-card-container"></div>
                     </div>
                 </div>
 
@@ -518,20 +475,12 @@
                     <input type="text" id="input-judul" required placeholder="Contoh: Review Jurnal Internasional" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
                 </div>
                 <div>
-                    <label class="block font-bold uppercase mb-1 opacity-70">Deadline Waktu & Tanggal</label>
-                    <input type="text" id="input-deadline" required placeholder="Contoh: 30 September 2026, 23.59 WIB" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
-                </div>
-                <div>
-                    <label class="block font-bold uppercase mb-1 opacity-70">Status Pengumpulan</label>
-                    <select id="input-status" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
-                        <option value="Pending" style="background: #1e293b;">Pending (Belum Dikerjakan)</option>
-                        <option value="In Progress" style="background: #1e293b;">In Progress (Sedang Dikerjakan)</option>
-                        <option value="Submitted" style="background: #1e293b;">Submitted (Sudah Dikumpul)</option>
-                    </select>
+                    <label class="block font-bold uppercase mb-1 opacity-70">Deadline / Tanggal Pengumpulan</label>
+                    <input type="text" id="input-deadline" required placeholder="Contoh: 15 November 2026" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
                 </div>
                 <div class="flex justify-end space-x-3 pt-2">
-                    <button type="button" onclick="closeTaskModal()" class="px-4 py-2 rounded-xl font-semibold opacity-70 hover:opacity-100 transition-all">Batal</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl font-semibold text-white shadow-md transition-all" style="background-color: var(--accent-color);">Simpan Tugas</button>
+                    <button type="button" onclick="closeTaskModal()" class="px-4 py-2 rounded-xl border font-bold" style="border-color: var(--border-color);">Batal</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-white font-bold shadow-md" style="background-color: var(--accent-color);">Simpan Tugas</button>
                 </div>
             </form>
         </div>
@@ -539,17 +488,17 @@
 
     <script>
         let storage = {
-            activeSemester: '1',
+            activeSem: 1,
             activeKurikulumTab: 1,
+            activeSubject: '',
+            theme: localStorage.getItem('aaaaíim_pasca_theme') || 'velvet',
             userAvatar: localStorage.getItem('aaaaíim_pasca_avatar') || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
             kurikulum: JSON.parse(localStorage.getItem('aaaaíim_pasca_kurikulum')) || {
                 1: [
-                    { kode: 'UNN801', nama: 'Filsafat Ilmu & Epistemologi Pendidikan', sks: 3, dosen: 'Prof. Dr. Tri Joko Raharjo, M.Pd.', status: 'Lulus' },
-                    { kode: 'UNN802', nama: 'Statistika & Analisis Data Kuantitatif Lanjut', sks: 3, dosen: 'Dr. Hardi Suyitno, M.Pd.', status: 'Sedang Berjalan' },
-                    { kode: 'UNN803', nama: 'Metodologi Penelitian Pendidikan Lanjut', sks: 3, dosen: 'Prof. Dr. Soesanto, M.Pd.', status: 'Sedang Berjalan' },
-                    { kode: 'UNN804', nama: 'Teori Belajar & Pembelajaran Kontemporer', sks: 3, dosen: 'Prof. Dr. Masrukhin, M.Pd.', status: 'Belum Ambil' },
-                    { kode: 'UNN805', nama: 'Kepemimpinan & Kebijakan Pendidikan', sks: 3, dosen: 'Dr. Ngabiyanto, M.Si.', status: 'Belum Ambil' },
-                    { kode: 'UNN806', nama: 'Kajian Kurikulum & Pengembangan Inovasi', sks: 3, dosen: 'Dr. Sungkono, M.Pd.', status: 'Belum Ambil' }
+                    { kode: 'UNN801', nama: 'Filsafat Ilmu & Epistemologi Pendidikan', sks: 3, dosen: 'Prof. Dr. Tri Joko Raharjo, M.Pd.', status: 'Sedang Berjalan' },
+                    { kode: 'UNN802', nama: 'Statistika Lanjutan & Metodologi Riset', sks: 3, dosen: 'Prof. Dr. Rustono, M.Hum.', status: 'Belum Ambil' },
+                    { kode: 'UNN803', nama: 'Teori Belajar & Pembelajaran Kontemporer', sks: 3, dosen: 'Prof. Dr.rer.nat. Wahyu Hardyanto, M.Si.', status: 'Belum Ambil' },
+                    { kode: 'UNN804', nama: 'Kebijakan Publik & Perencanaan Pendidikan', sks: 3, dosen: 'Prof. Dr. Fakhruddin, M.Pd.', status: 'Belum Ambil' }
                 ],
                 2: [
                     { kode: 'UNN807', nama: 'Evaluasi Program & Desain Penilaian', sks: 3, dosen: 'Prof. Dr. Subiyanto, M.Pd.', status: 'Belum Ambil' },
@@ -566,23 +515,20 @@
                 ]
             },
             jadwal: JSON.parse(localStorage.getItem('aaaaíim_pasca_jadwal')) || [
-                { hari: 'Senin', matkul: 'Filsafat Ilmu & Epistemologi Pendidikan', sks: 3, waktu: '13.30 - 16.00', lokasi: 'Gedung Pascasarjana UNNES Lt. 3, Ruang 301', dosen: 'Prof. Dr. Tri Joko Raharjo, M.Pd.', info: 'https://lms.unnes.ac.id (LMS Kuliah)' },
-                { hari: 'Rabu', matkul: 'Statistika & Analisis Data Kuantitatif Lanjut', sks: 3, waktu: '09.00 - 11.30', lokasi: 'Lab Komputer Pascasarjana UNNES Lt. 2', dosen: 'Dr. Hardi Suyitno, M.Pd.', info: 'Membawa laptop terinstal software SPSS / R' }
+                { hari: 'Senin', matkul: 'Filsafat Ilmu & Epistemologi Pendidikan', sks: 3, waktu: '15:30 - 18:00', lokasi: 'Gedung Pascasarjana Lt. 3 Ruang 301', dosen: 'Prof. Dr. Tri Joko Raharjo, M.Pd.', info: 'https://lms.unnes.ac.id' },
+                { hari: 'Rabu', matkul: 'Statistika Lanjutan & Metodologi Riset', sks: 3, waktu: '13:00 - 15:30', lokasi: 'Lab Komputer Pascasarjana UNNES', dosen: 'Prof. Dr. Rustono, M.Hum.', info: 'https://lms.unnes.ac.id' }
             ],
             absensi: JSON.parse(localStorage.getItem('aaaaíim_pasca_absensi')) || [],
             ebooks: JSON.parse(localStorage.getItem('aaaaíim_pasca_ebooks')) || {
-                'Filsafat Ilmu & Epistemologi Pendidikan': '✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Landasan Ontologis & Epistemologis Ilmu Pendidikan\n\nPoin Penting:\n1. Hakikat kebenaran ilmiah dalam perspektif post-positivisme.\n2. Konstruksi paradigma berpikir kritis bagi mahasiswa magister.\n3. Relevansi filsafat ilmu dengan pengembangan tesis.',
-                'Statistika & Analisis Data Kuantitatif Lanjut': '✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Analisis Multivariat & Pengujian Hipotesis Kompleks\n\nPoin Penting:\n1. Pemilihan uji statistik parametrik dan non-parametrik yang tepat.\n2. Interpretasi output SPSS untuk publikasi jurnal ilmiah.\n3. Validitas dan reliabilitas instrumen penelitian.'
+                "Filsafat Ilmu": "✨ RINGKASAN LITERATUR FILSAFAT ILMU\n\n1. Hakikat Ontologi, Epistemologi, dan Aksiologi dalam ilmu pengetahuan.\n2. Perkembangan paradigma positivisme, post-positivisme, hingga konstruktivisme dalam riset pendidikan pascasarjana."
             },
-            activeSubject: 'Filsafat Ilmu & Epistemologi Pendidikan',
             tugas: JSON.parse(localStorage.getItem('aaaaíim_pasca_tugas')) || [
-                { matkul: 'Filsafat Ilmu & Epistemologi Pendidikan', judul: 'Review Literatur Epistemologi Modern', deadline: '30 September 2026, 23.59 WIB', status: 'Pending' }
-            ],
-            theme: localStorage.getItem('aaaaíim_pasca_theme') || 'velvet'
+                { matkul: 'Filsafat Ilmu', judul: 'Membuat Resume Aliran Epistemologi Modern', deadline: '20 November 2026', status: 'Pending' }
+            ]
         };
 
         window.addEventListener('DOMContentLoaded', async () => {
-            if (typeof window.firebaseCloudLoad === 'function') {
+            if(typeof window.firebaseCloudLoad === 'function') {
                 const cloudData = await window.firebaseCloudLoad();
                 if(cloudData) {
                     storage = { ...storage, ...cloudData };
@@ -594,7 +540,6 @@
             setTheme(storage.theme);
             document.getElementById('sidebar-username').innerText = "Hikarinaim Aistimas";
             if(storage.userAvatar) document.getElementById('user-avatar-img').src = storage.userAvatar;
-            
             updateClock();
             setInterval(updateClock, 1000);
             renderAll();
@@ -604,7 +549,7 @@
             const now = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
             const clockEl = document.getElementById('realtime-clock');
-            if(clockEl) clockEl.innerHTML = `<i class="fa-solid fa-clock text-accent mr-1.5" style="color:var(--accent-color)"></i> ${now.toLocaleDateString('id-ID', options)}`;
+            if(clockEl) clockEl.innerHTML = `<i class="fa-solid fa-clock mr-1.5" style="color:var(--accent-color)"></i> ${now.toLocaleDateString('id-ID', options)}`;
         }
 
         function handleLogin() {
@@ -629,6 +574,12 @@
             overlay.classList.toggle('hidden');
         }
 
+        function setTheme(themeName) {
+            storage.theme = themeName;
+            document.documentElement.setAttribute('data-theme', themeName);
+            saveData();
+        }
+
         function handleAvatarUpload(e) {
             const file = e.target.files[0];
             if(file) {
@@ -642,421 +593,35 @@
             }
         }
 
-        function setTheme(themeName) {
-            storage.theme = themeName;
-            const html = document.documentElement;
-            html.setAttribute('data-theme', themeName);
-            if(themeName === 'frost') {
-                html.classList.remove('dark');
-            } else {
-                html.classList.add('dark');
-            }
-            saveData();
-        }
-
-        function changeActiveSemester(val) {
-            storage.activeSemester = val;
-            document.getElementById('active-sem-badge').innerText = 'Sem ' + val;
-            saveData();
-        }
-
         function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
             document.getElementById('tab-' + tabId).classList.remove('hidden');
-            document.querySelectorAll('.nav-btn').forEach(b => {
-                b.style.backgroundColor = 'transparent';
-                b.style.boxShadow = 'none';
-                b.className = "nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl opacity-70 hover:opacity-100 hover:bg-black/10 font-medium text-xs transition-all";
+
+            document.querySelectorAll('aside nav button').forEach(btn => {
+                btn.style.backgroundColor = 'transparent';
+                btn.classList.add('opacity-70');
+                btn.classList.remove('shadow-md', 'text-white');
             });
-            event.currentTarget.className = "nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-white font-semibold text-xs transition-all shadow-md";
             event.currentTarget.style.backgroundColor = 'var(--accent-color)';
-            
+            event.currentTarget.classList.remove('opacity-70');
+            event.currentTarget.classList.add('shadow-md', 'text-white');
+
             const titles = {
-                dashboard: "Command Center",
-                kurikulum: "Kurikulum Pascasarjana UNNES (Semester 1 - 4)",
-                jadwal: "Jadwal Perkuliahan & Lokasi Kelas",
-                absensi: "Absensi & Materi Kuliah",
-                notebook: "E-Book Per Mata Kuliah",
-                tugas: "Tugas & Deadline Akademik"
+                'dashboard': 'Command Center',
+                'kurikulum': 'Kurikulum Pascasarjana (Semester 1 - 4)',
+                'jadwal': 'Jadwal Kuliah & Lokasi Ruangan',
+                'absensi': 'Absensi & Rekap Kehadiran Kuliah',
+                'notebook': 'E-Book & Catatan Literatur',
+                'tugas': 'Daftar Tugas & Deadline'
             };
-            document.getElementById('tab-title').innerText = titles[tabId];
-            if(window.innerWidth < 1024) {
-                toggleSidebar();
-            }
-            if(tabId === 'notebook') renderNotebookSubjects();
-            if(tabId === 'kurikulum') renderKurikulumTable(storage.activeKurikulumTab);
-            if(tabId === 'absensi') renderAbsensiTable();
-            if(tabId === 'jadwal') renderJadwalTable();
+            document.getElementById('tab-title').innerText = titles[tabId] || 'Dashboard';
+            if(window.innerWidth < 1024) toggleSidebar();
         }
 
-        function switchKurikulumTab(semNum) {
-            storage.activeKurikulumTab = semNum;
-            for(let i=1; i<=4; i++) {
-                const btn = document.getElementById('kur-btn-' + i);
-                if(i === semNum) {
-                    btn.style.backgroundColor = 'var(--accent-color)';
-                    btn.style.borderColor = 'var(--accent-color)';
-                    btn.style.color = '#fff';
-                    btn.className = "p-3 sm:p-4 rounded-2xl border text-left transition-all shadow-md";
-                } else {
-                    btn.style.backgroundColor = 'var(--bg-card)';
-                    btn.style.borderColor = 'var(--border-color)';
-                    btn.style.color = 'var(--text-main)';
-                    btn.className = "p-3 sm:p-4 rounded-2xl border text-left transition-all";
-                }
-            }
-            renderKurikulumTable(semNum);
-        }
-
-        function renderKurikulumTable(semNum) {
-            const subjects = storage.kurikulum[semNum] || [];
-            const tbody = document.getElementById('kurikulum-table-body');
-            const totalSksEl = document.getElementById('kur-total-sks');
-            const headerTitle = document.getElementById('kur-header-title');
-            const headerTag = document.getElementById('kur-header-tag');
-
-            if(headerTitle) headerTitle.innerText = `Mata Kuliah Semester ${semNum}`;
-            if(headerTag) headerTag.innerText = `Semester ${semNum}`;
-
-            const totalSks = subjects.reduce((acc, curr) => acc + (curr.sks || 3), 0);
-            if(totalSksEl) totalSksEl.innerText = totalSks + " SKS";
-
-            if(!tbody) return;
-            tbody.innerHTML = subjects.map((sub, idx) => {
-                let badgeClass = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
-                if(sub.status === 'Lulus') badgeClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-                if(sub.status === 'Sedang Berjalan') badgeClass = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
-
-                return `
-                    <tr class="transition-all hover:bg-black/5">
-                        <td class="px-4 sm:px-6 py-4">
-                            <span class="text-[9px] sm:text-[10px] font-extrabold px-2 py-0.5 rounded border mr-2 inline-block mb-1 sm:mb-0" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${sub.kode}</span>
-                            <span class="font-extrabold block sm:inline">${sub.nama}</span>
-                        </td>
-                        <td class="px-4 sm:px-6 py-4 font-bold">${sub.sks} SKS</td>
-                        <td class="px-4 sm:px-6 py-4 opacity-75">${sub.dosen}</td>
-                        <td class="px-4 sm:px-6 py-4">
-                            <select onchange="updateKurikulumStatus(${semNum}, ${idx}, this.value)" class="px-2.5 sm:px-3 py-1.5 rounded-lg font-bold border ${badgeClass} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
-                                <option value="Belum Ambil" ${sub.status === 'Belum Ambil' ? 'selected' : ''}>Belum Ambil</option>
-                                <option value="Sedang Berjalan" ${sub.status === 'Sedang Berjalan' ? 'selected' : ''}>Sedang Berjalan</option>
-                                <option value="Lulus" ${sub.status === 'Lulus' ? 'selected' : ''}>Lulus</option>
-                            </select>
-                        </td>
-                        <td class="px-4 sm:px-6 py-4 text-center">
-                            <button onclick="deleteKurikulumSubject(${semNum}, ${idx})" class="text-rose-400 hover:text-rose-500 p-1.5"><i class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function updateKurikulumStatus(semNum, idx, newStatus) {
-            storage.kurikulum[semNum][idx].status = newStatus;
+        function changeActiveSemester(semVal) {
+            storage.activeSem = Number(semVal);
+            document.getElementById('active-sem-badge').innerText = "Sem " + semVal;
             saveData();
-        }
-
-        function deleteKurikulumSubject(semNum, idx) {
-            if(confirm("Hapus mata kuliah ini dari kurikulum?")) {
-                storage.kurikulum[semNum].splice(idx, 1);
-                saveData();
-                renderKurikulumTable(semNum);
-            }
-        }
-
-        function addKurikulumSubject() {
-            const kode = prompt("Masukkan Kode Matkul (Contoh: UNN809):");
-            const nama = prompt("Nama Mata Kuliah:");
-            const sks = prompt("Jumlah SKS (Contoh: 3):", "3");
-            const dosen = prompt("Nama Dosen Pengampu:");
-            if(kode && nama) {
-                if(!storage.kurikulum[storage.activeKurikulumTab]) storage.kurikulum[storage.activeKurikulumTab] = [];
-                storage.kurikulum[storage.activeKurikulumTab].push({ kode, nama, sks: Number(sks || 3), dosen: dosen || 'Dosen Pascasarjana UNNES', status: 'Belum Ambil' });
-                saveData();
-                renderKurikulumTable(storage.activeKurikulumTab);
-            }
-        }
-
-        function addJadwal() {
-            const hari = prompt("Hari (Senin / Selasa / Rabu / Kamis / Jumat / Sabtu):", "Senin");
-            const matkul = prompt("Nama Mata Kuliah:");
-            const sks = prompt("Jumlah SKS:", "3");
-            const waktu = prompt("Waktu (Contoh: 13.30 - 16.00):", "13.30 - 16.00");
-            const lokasi = prompt("Lokasi Ruangan:", "Gedung Pascasarjana UNNES Lt. 3");
-            const dosen = prompt("Dosen Pengampu:");
-            const info = prompt("Link LMS / Keterangan Tambahan:", "https://lms.unnes.ac.id");
-            if(hari && matkul) {
-                storage.jadwal.push({ hari, matkul, sks: Number(sks || 3), waktu, lokasi, dosen, info });
-                generateAutomatedAbsensi(false);
-                saveData();
-                renderJadwalTable();
-            }
-        }
-
-        function editJadwal(index) {
-            const j = storage.jadwal[index];
-            const hari = prompt("Edit Hari:", j.hari);
-            const matkul = prompt("Edit Mata Kuliah:", j.matkul);
-            const sks = prompt("Edit SKS:", j.sks || 3);
-            const waktu = prompt("Edit Waktu:", j.waktu);
-            const lokasi = prompt("Edit Lokasi:", j.lokasi);
-            const dosen = prompt("Edit Dosen Pengampu:", j.dosen);
-            const info = prompt("Edit Link / Keterangan:", j.info || '');
-            if(hari && matkul) {
-                storage.jadwal[index] = { hari, matkul, sks: Number(sks || 3), waktu, lokasi, dosen, info };
-                generateAutomatedAbsensi(false);
-                saveData();
-                renderJadwalTable();
-            }
-        }
-
-        function deleteJadwal(index) {
-            if(confirm("Hapus jadwal ini?")) {
-                storage.jadwal.splice(index, 1);
-                generateAutomatedAbsensi(false);
-                saveData();
-                renderJadwalTable();
-            }
-        }
-
-        function renderJadwalTable() {
-            const tbody = document.getElementById('table-jadwal-body');
-            if(!tbody) return;
-            tbody.innerHTML = storage.jadwal.map((j, i) => `
-                <tr class="transition-all hover:bg-black/5">
-                    <td class="px-4 sm:px-6 py-4 font-bold" style="color: var(--accent-color);">${j.hari}</td>
-                    <td class="px-4 sm:px-6 py-4 font-extrabold">${j.matkul}</td>
-                    <td class="px-4 sm:px-6 py-4 font-bold">${j.sks || 3} SKS</td>
-                    <td class="px-4 sm:px-6 py-4 opacity-75">${j.waktu}</td>
-                    <td class="px-4 sm:px-6 py-4 font-semibold text-amber-400"><i class="fa-solid fa-location-dot mr-1"></i> ${j.lokasi || 'Ruang Pascasarjana UNNES'}</td>
-                    <td class="px-4 sm:px-6 py-4 opacity-75">${j.dosen}</td>
-                    <td class="px-4 sm:px-6 py-4 font-medium max-w-xs truncate">
-                        <a href="${j.info && j.info.startsWith('http') ? j.info : '#'}" target="_blank" class="underline hover:opacity-100" style="color: var(--accent-color);" title="${j.info || '-'}">${j.info || '-'}</a>
-                    </td>
-                    <td class="px-4 sm:px-6 py-4 text-center space-x-1">
-                        <button onclick="editJadwal(${i})" class="text-blue-400 hover:text-blue-500 p-1.5" title="Edit Jadwal"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteJadwal(${i})" class="text-rose-400 hover:text-rose-500 p-1.5" title="Hapus Jadwal"><i class="fa-solid fa-trash-can"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function generateAutomatedAbsensi(showAlert = true) {
-            if(!storage.absensi || storage.absensi.length === 0) {
-                storage.absensi = storage.jadwal.map((j, idx) => ({
-                    pertemuan: `Pertemuan 1 (${j.hari})`,
-                    matkul: j.matkul,
-                    tanggal: '1 September 2026',
-                    statusKuliah: 'Belum Dilaksanakan',
-                    materi: 'Pengantar & Pendalaman Silabus ' + j.matkul,
-                    kehadiran: 'Hadir'
-                }));
-            } else {
-                storage.jadwal.forEach(j => {
-                    const exists = storage.absensi.find(a => a.matkul === j.matkul);
-                    if(!exists) {
-                        storage.absensi.push({
-                            pertemuan: `Pertemuan 1 (${j.hari})`,
-                            matkul: j.matkul,
-                            tanggal: '1 September 2026',
-                            statusKuliah: 'Belum Dilaksanakan',
-                            materi: 'Pengantar & Pendalaman Silabus ' + j.matkul,
-                            kehadiran: 'Hadir'
-                        });
-                    }
-                });
-            }
-            saveData();
-            renderAbsensiTable();
-            if(showAlert) alert("Absensi & Materi berhasil disinkronkan dengan jadwal kuliah!");
-        }
-
-        function updateAbsensiStatus(index, field, val) {
-            storage.absensi[index][field] = val;
-            saveData();
-        }
-
-        function deleteAbsensi(index) {
-            if(confirm("Hapus sesi absensi ini?")) {
-                storage.absensi.splice(index, 1);
-                saveData();
-                renderAbsensiTable();
-            }
-        }
-
-        function renderAbsensiTable() {
-            const tbody = document.getElementById('table-absensi-body');
-            if(!tbody) return;
-            tbody.innerHTML = storage.absensi.map((a, i) => {
-                let badgeStatus = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
-                if(a.statusKuliah === 'Sudah Dilaksanakan') badgeStatus = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-                if(a.statusKuliah === 'Belum Dilaksanakan') badgeStatus = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
-
-                let badgeHadir = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-                if(a.kehadiran === 'Izin') badgeHadir = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
-                if(a.kehadiran === 'Alpha') badgeHadir = 'bg-rose-500/20 text-rose-300 border-rose-500/30';
-
-                return `
-                    <tr class="transition-all hover:bg-black/5">
-                        <td class="px-4 sm:px-6 py-4">
-                            <span class="font-extrabold text-[9px] sm:text-[10px] px-2 py-0.5 rounded border mr-1 inline-block mb-1 sm:mb-0" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${a.pertemuan}</span>
-                            <span class="font-extrabold block mt-0.5">${a.matkul}</span>
-                        </td>
-                        <td class="px-4 sm:px-6 py-4 opacity-75 font-semibold">${a.tanggal}</td>
-                        <td class="px-4 sm:px-6 py-4">
-                            <select onchange="updateAbsensiStatus(${i}, 'statusKuliah', this.value)" class="px-2.5 sm:px-3 py-1.5 rounded-lg font-bold border ${badgeStatus} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
-                                <option value="Sudah Dilaksanakan" ${a.statusKuliah === 'Sudah Dilaksanakan' ? 'selected' : ''}>Sudah Dilaksanakan</option>
-                                <option value="Belum Dilaksanakan" ${a.statusKuliah === 'Belum Dilaksanakan' ? 'selected' : ''}>Belum Dilaksanakan</option>
-                            </select>
-                        </td>
-                        <td class="px-4 sm:px-6 py-4 font-medium">
-                            <input type="text" value="${a.materi}" onchange="updateAbsensiStatus(${i}, 'materi', this.value)" class="w-full px-3 py-1.5 rounded-lg border outline-none text-xs" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
-                        </td>
-                        <td class="px-4 sm:px-6 py-4">
-                            <select onchange="updateAbsensiStatus(${i}, 'kehadiran', this.value)" class="px-2.5 sm:px-3 py-1.5 rounded-lg font-bold border ${badgeHadir} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
-                                <option value="Hadir" ${a.kehadiran === 'Hadir' ? 'selected' : ''}>Hadir</option>
-                                <option value="Izin" ${a.kehadiran === 'Izin' ? 'selected' : ''}>Izin</option>
-                                <option value="Alpha" ${a.kehadiran === 'Alpha' ? 'selected' : ''}>Alpha</option>
-                            </select>
-                        </td>
-                        <td class="px-4 sm:px-6 py-4 text-center">
-                            <button onclick="deleteAbsensi(${i})" class="text-rose-400 hover:text-rose-500 p-1"><i class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function renderNotebookSubjects() {
-            const container = document.getElementById('subject-list-container');
-            const subjects = Object.keys(storage.ebooks);
-            if(subjects.length > 0 && (!storage.activeSubject || !storage.ebooks[storage.activeSubject])) {
-                storage.activeSubject = subjects[0];
-            }
-            if(!container) return;
-            container.innerHTML = subjects.map(sub => {
-                const isActive = sub === storage.activeSubject;
-                const activeStyle = isActive ? 'font-extrabold shadow-md' : 'opacity-75 font-medium hover:opacity-100';
-                const activeBg = isActive ? 'background-color: var(--accent-color); color: #fff;' : 'background-color: rgba(0,0,0,0.1);';
-                return `
-                    <button onclick="selectNotebookSubject('${sub}')" class="w-full text-left px-3.5 py-3 rounded-xl text-xs transition-all flex items-center justify-between ${activeStyle}" style="${activeBg}">
-                        <span class="truncate pr-2"><i class="fa-solid fa-book mr-2"></i>${sub}</span>
-                        ${isActive ? '<i class="fa-solid fa-chevron-right text-[10px]"></i>' : ''}
-                    </button>
-                `;
-            }).join('');
-
-            const titleEl = document.getElementById('active-subject-title');
-            const textarea = document.getElementById('ebook-textarea');
-            if(titleEl) titleEl.innerText = storage.activeSubject || 'Pilih Mata Kuliah';
-            if(textarea) {
-                textarea.value = storage.activeSubject ? (storage.ebooks[storage.activeSubject] || '') : '';
-            }
-        }
-
-        function selectNotebookSubject(sub) {
-            storage.activeSubject = sub;
-            renderNotebookSubjects();
-        }
-
-        function addSubjectBook() {
-            const newSub = prompt("Masukkan Nama Mata Kuliah Baru untuk E-Book:");
-            if(newSub && newSub.trim() !== "" && !storage.ebooks[newSub]) {
-                storage.ebooks[newSub] = "✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Pengantar & Landasan Teori " + newSub + "\n\nPoin Penting:\n1. Tuliskan ringkasan jurnal dan literatur wajib di sini.\n2. Catat instruksi khusus dari dosen pengampu.\n3. Susun kerangka gagasan untuk analisis tesis.";
-                storage.activeSubject = newSub;
-                saveData();
-                renderNotebookSubjects();
-            }
-        }
-
-        function renameActiveSubjectBook() {
-            if(!storage.activeSubject || !storage.ebooks[storage.activeSubject]) {
-                alert("Pilih e-book yang ingin diganti judulnya terlebih dahulu!");
-                return;
-            }
-            const oldName = storage.activeSubject;
-            const newName = prompt("Ubah Nama / Judul Mata Kuliah E-Book:", oldName);
-            if(newName && newName.trim() !== "" && newName !== oldName) {
-                if(storage.ebooks[newName]) {
-                    alert("Nama mata kuliah tersebut sudah ada di katalog!");
-                    return;
-                }
-                storage.ebooks[newName] = storage.ebooks[oldName];
-                delete storage.ebooks[oldName];
-                storage.activeSubject = newName;
-                saveData();
-                renderNotebookSubjects();
-            }
-        }
-
-        function deleteActiveSubjectBook() {
-            if(!storage.activeSubject || !storage.ebooks[storage.activeSubject]) {
-                alert("Pilih e-book yang ingin dihapus terlebih dahulu!");
-                return;
-            }
-            const target = storage.activeSubject;
-            if(confirm(`Apakah Anda yakin ingin menghapus e-book dan catatan untuk mata kuliah "${target}"?`)) {
-                delete storage.ebooks[target];
-                const remainingKeys = Object.keys(storage.ebooks);
-                storage.activeSubject = remainingKeys.length > 0 ? remainingKeys[0] : '';
-                saveData();
-                renderNotebookSubjects();
-            }
-        }
-
-        // --- OPTIMASI UTAMA: DEBOUNCED NOTE SAVING (AGAR MENGETIK TIDAK LEMOT) ---
-        let saveTimeout = null;
-        function saveCurrentNote(val) {
-            if(storage.activeSubject) {
-                storage.ebooks[storage.activeSubject] = val;
-                
-                // Ubah status indikator penyimpanan menjadi "Mengetik..."
-                const indicator = document.getElementById('save-status-indicator');
-                if(indicator) indicator.innerHTML = `<i class="fa-solid fa-pen text-amber-400 mr-1 animate-pulse"></i> Mengetik (menyimpan otomatis)...`;
-
-                // Batalkan timeout sebelumnya agar tidak spam simpan setiap huruf
-                clearTimeout(saveTimeout);
-                
-                // Simpan instan ke localStorage secara ringan agar data tidak hilang jika ditutup mendadak
-                localStorage.setItem('aaaaíim_pasca_ebooks', JSON.stringify(storage.ebooks));
-
-                // Tunda sinkronisasi penuh (localStorage menyeluruh & Firebase Cloud) selama 1000ms (1 detik) setelah berhenti mengetik
-                saveTimeout = setTimeout(() => {
-                    saveDataQuiet();
-                    if(indicator) indicator.innerHTML = `<i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Tersimpan otomatis di enkripsi lokal & Firebase Cloud`;
-                }, 1000);
-            }
-        }
-
-        function openTaskModal() {
-            document.getElementById('task-modal').classList.remove('hidden');
-        }
-
-        function closeTaskModal() {
-            document.getElementById('task-modal').classList.add('hidden');
-            document.getElementById('task-form').reset();
-        }
-
-        function handleSaveTask(e) {
-            e.preventDefault();
-            const matkul = document.getElementById('input-matkul').value;
-            const judul = document.getElementById('input-judul').value;
-            const deadline = document.getElementById('input-deadline').value;
-            const status = document.getElementById('input-status').value;
-            storage.tugas.push({ matkul, judul, deadline, status });
-            saveData();
-            closeTaskModal();
-        }
-
-        function updateTaskStatus(index, newStatus) {
-            storage.tugas[index].status = newStatus;
-            saveData();
-        }
-
-        function deleteTugas(index) {
-            if(confirm("Hapus tugas ini?")) {
-                storage.tugas.splice(index, 1);
-                saveData();
-            }
         }
 
         function saveData() {
@@ -1074,7 +639,6 @@
             renderAll();
         }
 
-        // Simpan data tanpa memicu re-render besar yang mengganggu UI
         function saveDataQuiet() {
             localStorage.setItem('aaaaíim_pasca_kurikulum', JSON.stringify(storage.kurikulum));
             localStorage.setItem('aaaaíim_pasca_jadwal', JSON.stringify(storage.jadwal));
@@ -1090,102 +654,364 @@
         }
 
         function renderAll() {
-            const semSelect = document.getElementById('sidebar-sem-select');
-            if(semSelect) semSelect.value = storage.activeSemester;
-            const semBadge = document.getElementById('active-sem-badge');
-            if(semBadge) semBadge.innerText = 'Sem ' + storage.activeSemester;
+            renderKurikulumTable(storage.activeKurikulumTab);
+            renderJadwalTable();
+            renderAbsensiTable();
+            renderNotebookSubjects();
+            renderTugasCards();
+            renderDashboardStats();
+        }
 
-            const pendingTugas = storage.tugas.filter(t => t.status !== 'Submitted');
-            const statTugas = document.getElementById('dash-stat-tugas');
-            if(statTugas) statTugas.innerText = pendingTugas.length;
+        // --- KURIKULUM ---
+        function switchKurikulumTab(semNum) {
+            storage.activeKurikulumTab = semNum;
+            for(let i=1; i<=4; i++) {
+                const btn = document.getElementById(`kur-btn-${i}`);
+                if(i === semNum) {
+                    btn.style.backgroundColor = 'var(--accent-color)';
+                    btn.style.borderColor = 'var(--accent-color)';
+                    btn.style.color = '#fff';
+                } else {
+                    btn.style.backgroundColor = 'var(--bg-card)';
+                    btn.style.borderColor = 'var(--border-color)';
+                    btn.style.color = 'var(--text-main)';
+                }
+            }
+            renderKurikulumTable(semNum);
+        }
 
-            const totalSksTempuh = Object.values(storage.kurikulum).flat()
-                .filter(s => s.status === 'Lulus' || s.status === 'Sedang Berjalan')
-                .reduce((acc, curr) => acc + (curr.sks || 3), 0);
-            const statSks = document.getElementById('dash-stat-sks');
-            if(statSks) statSks.innerText = totalSksTempuh + " SKS";
+        function renderKurikulumTable(semNum) {
+            const subjects = storage.kurikulum[semNum] || [];
+            const tbody = document.getElementById('kurikulum-table-body');
+            const totalSksEl = document.getElementById('kur-total-sks');
+            const headerTitle = document.getElementById('kur-header-title');
+            const headerTag = document.getElementById('kur-header-tag');
+            if(headerTitle) headerTitle.innerText = `Mata Kuliah Semester ${semNum}`;
+            if(headerTag) headerTag.innerText = `Semester ${semNum}`;
+            const totalSks = subjects.reduce((acc, curr) => acc + (curr.sks || 3), 0);
+            if(totalSksEl) totalSksEl.innerText = totalSks + " SKS";
+            if(!tbody) return;
 
-            const totalAbsen = storage.absensi.length;
-            const hadirAbsen = storage.absensi.filter(a => a.kehadiran === 'Hadir').length;
-            const persentaseHadir = totalAbsen > 0 ? Math.round((hadirAbsen / totalAbsen) * 100) : 100;
-            const statAbsensi = document.getElementById('dash-stat-absensi');
-            if(statAbsensi) statAbsensi.innerText = persentaseHadir + "%";
+            tbody.innerHTML = subjects.map((sub, idx) => {
+                let badgeClass = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+                if(sub.status === 'Lulus') badgeClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
+                if(sub.status === 'Sedang Berjalan') badgeClass = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+                return `
+                    <tr class="transition-all hover:bg-black/5">
+                        <td class="px-4 sm:px-6 py-4">
+                            <span class="text-[9px] font-extrabold px-2 py-0.5 rounded border mr-2" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${sub.kode}</span>
+                            <span class="font-bold">${sub.nama}</span>
+                        </td>
+                        <td class="px-4 sm:px-6 py-4 font-semibold">${sub.sks || 3} SKS</td>
+                        <td class="px-4 sm:px-6 py-4 opacity-80">${sub.dosen}</td>
+                        <td class="px-4 sm:px-6 py-4">
+                            <select onchange="updateKurikulumStatus(${semNum}, ${idx}, this.value)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border ${badgeClass} outline-none cursor-pointer" style="background: rgba(0,0,0,0.2);">
+                                <option value="Belum Ambil" ${sub.status === 'Belum Ambil' ? 'selected' : ''}>Belum Ambil</option>
+                                <option value="Sedang Berjalan" ${sub.status === 'Sedang Berjalan' ? 'selected' : ''}>Sedang Berjalan</option>
+                                <option value="Lulus" ${sub.status === 'Lulus' ? 'selected' : ''}>Lulus</option>
+                            </select>
+                        </td>
+                        <td class="px-4 sm:px-6 py-4 text-center">
+                            <button onclick="deleteKurikulumSubject(${semNum}, ${idx})" class="opacity-50 hover:text-rose-400 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
 
-            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const todayName = days[new Date().getDay()];
-            const dayBadge = document.getElementById('current-day-badge');
-            if(dayBadge) dayBadge.innerText = todayName;
+        function updateKurikulumStatus(sem, idx, status) {
+            storage.kurikulum[sem][idx].status = status;
+            saveData();
+        }
 
-            const todaySchedules = storage.jadwal.filter(j => j.hari.toLowerCase() === todayName.toLowerCase());
-            const statJadwal = document.getElementById('dash-stat-jadwal');
-            if(statJadwal) statJadwal.innerText = todaySchedules.length + " Sesi";
+        function addKurikulumSubject() {
+            const kode = prompt("Masukkan Kode Matkul (Contoh: UNN850):");
+            const nama = prompt("Masukkan Nama Mata Kuliah:");
+            const sks = prompt("Masukkan Jumlah SKS:", "3");
+            const dosen = prompt("Masukkan Nama Dosen Pengampu:");
+            if(kode && nama) {
+                if(!storage.kurikulum[storage.activeKurikulumTab]) storage.kurikulum[storage.activeKurikulumTab] = [];
+                storage.kurikulum[storage.activeKurikulumTab].push({ kode, nama, sks: Number(sks || 3), dosen: dosen || 'Dosen Pascasarjana', status: 'Sedang Berjalan' });
+                saveData();
+            }
+        }
 
+        function deleteKurikulumSubject(sem, idx) {
+            if(confirm("Hapus mata kuliah ini dari kurikulum?")) {
+                storage.kurikulum[sem].splice(idx, 1);
+                saveData();
+            }
+        }
+
+        // --- JADWAL ---
+        function addJadwal() {
+            const hari = prompt("Hari Kuliah (Contoh: Senin):");
+            const matkul = prompt("Nama Mata Kuliah:");
+            const sks = prompt("Jumlah SKS:", "3");
+            const waktu = prompt("Waktu (Contoh: 15:30 - 18:00):");
+            const lokasi = prompt("Lokasi Ruangan:", "Gedung Pascasarjana UNNES");
+            const dosen = prompt("Nama Dosen Pengampu:");
+            const info = prompt("Link / Keterangan:", "https://lms.unnes.ac.id");
+            if(hari && matkul) {
+                storage.jadwal.push({ hari, matkul, sks: Number(sks || 3), waktu, lokasi, dosen, info });
+                generateAutomatedAbsensi(false);
+                saveData();
+            }
+        }
+
+        function renderJadwalTable() {
+            const tbody = document.getElementById('table-jadwal-body');
+            if(!tbody) return;
+            tbody.innerHTML = storage.jadwal.map((j, i) => `
+                <tr class="transition-all hover:bg-black/5">
+                    <td class="px-4 sm:px-6 py-4 font-bold" style="color: var(--accent-color);">${j.hari}</td>
+                    <td class="px-4 sm:px-6 py-4 font-extrabold">${j.matkul} <span class="text-[10px] opacity-70 block font-normal">${j.sks || 3} SKS</span></td>
+                    <td class="px-4 sm:px-6 py-4 opacity-80">${j.waktu}</td>
+                    <td class="px-4 sm:px-6 py-4 font-medium">${j.lokasi}</td>
+                    <td class="px-4 sm:px-6 py-4 opacity-80">${j.dosen}</td>
+                    <td class="px-4 sm:px-6 py-4 text-center">
+                        <button onclick="deleteJadwal(${i})" class="opacity-50 hover:text-rose-400 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function deleteJadwal(i) {
+            if(confirm("Hapus jadwal ini?")) {
+                storage.jadwal.splice(i, 1);
+                generateAutomatedAbsensi(false);
+                saveData();
+            }
+        }
+
+        // --- ABSENSI ---
+        function generateAutomatedAbsensi(force) {
+            if(!force && storage.absensi && storage.absensi.length > 0) return;
+            let newAbsensi = [];
+            storage.jadwal.forEach(j => {
+                for(let p=1; p<=4; p++) {
+                    newAbsensi.push({
+                        pertemuan: `Pertemuan ${p}`,
+                        matkul: j.matkul,
+                        tanggal: `Sesuai Jadwal ${j.hari}`,
+                        statusKuliah: p === 1 ? 'Sudah Dilaksanakan' : 'Belum Dilaksanakan',
+                        kehadiran: 'Hadir'
+                    });
+                }
+            });
+            storage.absensi = newAbsensi;
+            saveData();
+        }
+
+        function renderAbsensiTable() {
+            const tbody = document.getElementById('table-absensi-body');
+            if(!tbody) return;
+            tbody.innerHTML = storage.absensi.map((a, i) => `
+                <tr class="transition-all hover:bg-black/5">
+                    <td class="px-4 sm:px-6 py-4">
+                        <span class="font-extrabold text-[9px] px-2 py-0.5 rounded border mr-1" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${a.pertemuan}</span>
+                        <span class="font-bold block mt-0.5">${a.matkul}</span>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4 opacity-75">${a.tanggal}</td>
+                    <td class="px-4 sm:px-6 py-4">
+                        <select onchange="updateAbsensiStatus(${i}, this.value)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border outline-none" style="background: rgba(0,0,0,0.2); border-color: var(--border-color);">
+                            <option value="Belum Dilaksanakan" ${a.statusKuliah === 'Belum Dilaksanakan' ? 'selected' : ''}>Belum Dilaksanakan</option>
+                            <option value="Sudah Dilaksanakan" ${a.statusKuliah === 'Sudah Dilaksanakan' ? 'selected' : ''}>Sudah Dilaksanakan</option>
+                        </select>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4">
+                        <select onchange="updateAbsensiHadir(${i}, this.value)" class="px-2.5 py-1 rounded-lg text-[11px] font-bold border outline-none" style="background: rgba(0,0,0,0.2); border-color: var(--border-color);">
+                            <option value="Hadir" ${a.kehadiran === 'Hadir' ? 'selected' : ''}>Hadir</option>
+                            <option value="Izin" ${a.kehadiran === 'Izin' ? 'selected' : ''}>Izin</option>
+                            <option value="Alpha" ${a.kehadiran === 'Alpha' ? 'selected' : ''}>Alpha</option>
+                        </select>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function updateAbsensiStatus(i, val) { storage.absensi[i].statusKuliah = val; saveData(); }
+        function updateAbsensiHadir(i, val) { storage.absensi[i].kehadiran = val; saveData(); }
+
+        // --- NOTEBOOK / E-BOOK ---
+        function renderNotebookSubjects() {
+            const container = document.getElementById('subject-list-container');
+            if(!container) return;
+            const keys = Object.keys(storage.ebooks);
+            if(keys.length > 0 && (!storage.activeSubject || !storage.ebooks[storage.activeSubject])) {
+                storage.activeSubject = keys[0];
+            }
+            container.innerHTML = keys.map(sub => `
+                <button onclick="selectNotebookSubject('${sub}')" class="w-full text-left px-3.5 py-2.5 rounded-xl text-xs font-bold transition-all truncate border ${storage.activeSubject === sub ? 'shadow-md text-white' : 'opacity-70 hover:opacity-100 hover:bg-black/10'}" style="${storage.activeSubject === sub ? 'background-color: var(--accent-color); border-color: var(--accent-color);' : 'background: transparent; border-color: transparent;'}">
+                    <i class="fa-solid fa-book mr-2"></i>${sub}
+                </button>
+            `).join('');
+            
+            const titleEl = document.getElementById('active-notebook-title');
+            const textarea = document.getElementById('notebook-textarea');
+            if(titleEl) titleEl.innerText = storage.activeSubject || 'Pilih Matkul';
+            if(textarea) {
+                textarea.value = storage.ebooks[storage.activeSubject] || '';
+            }
+        }
+
+        function selectNotebookSubject(sub) {
+            storage.activeSubject = sub;
+            renderNotebookSubjects();
+        }
+
+        function addSubjectBook() {
+            const newSub = prompt("Masukkan Nama Mata Kuliah Baru untuk E-Book:");
+            if(newSub && newSub.trim() !== "" && !storage.ebooks[newSub]) {
+                storage.ebooks[newSub] = "✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: " + newSub;
+                storage.activeSubject = newSub;
+                saveData();
+            }
+        }
+
+        function renameActiveSubjectBook() {
+            if(!storage.activeSubject) return;
+            const oldName = storage.activeSubject;
+            const newName = prompt("Ubah Nama Mata Kuliah E-Book:", oldName);
+            if(newName && newName.trim() !== "" && newName !== oldName) {
+                storage.ebooks[newName] = storage.ebooks[oldName];
+                delete storage.ebooks[oldName];
+                storage.activeSubject = newName;
+                saveData();
+            }
+        }
+
+        function deleteActiveSubjectBook() {
+            if(!storage.activeSubject) return;
+            if(confirm(`Hapus e-book mata kuliah "${storage.activeSubject}"?`)) {
+                delete storage.ebooks[storage.activeSubject];
+                const keys = Object.keys(storage.ebooks);
+                storage.activeSubject = keys.length > 0 ? keys[0] : '';
+                saveData();
+            }
+        }
+
+        let saveTimeout = null;
+        function saveCurrentNote(val) {
+            if(storage.activeSubject) {
+                storage.ebooks[storage.activeSubject] = val;
+                const status = document.getElementById('notebook-status-indicator');
+                if(status) status.innerText = "Mengetik... (Menyimpan ke Cloud)";
+                clearTimeout(saveTimeout);
+                saveTimeout = setTimeout(() => {
+                    saveDataQuiet();
+                    if(status) status.innerText = "Perubahan tersimpan otomatis ke Cloud";
+                }, 800);
+            }
+        }
+
+        // --- TUGAS ---
+        function openTaskModal() { document.getElementById('task-modal').classList.remove('hidden'); }
+        function closeTaskModal() { document.getElementById('task-modal').classList.add('hidden'); }
+
+        function handleSaveTask(e) {
+            e.preventDefault();
+            const matkul = document.getElementById('input-matkul').value;
+            const judul = document.getElementById('input-judul').value;
+            const deadline = document.getElementById('input-deadline').value;
+            storage.tugas.push({ matkul, judul, deadline, status: 'Pending' });
+            closeTaskModal();
+            document.getElementById('task-form').reset();
+            saveData();
+        }
+
+        function updateTaskStatus(i, val) {
+            storage.tugas[i].status = val;
+            saveData();
+        }
+
+        function deleteTugas(i) {
+            if(confirm("Hapus tugas ini?")) {
+                storage.tugas.splice(i, 1);
+                saveData();
+            }
+        }
+
+        function renderTugasCards() {
+            const container = document.getElementById('tugas-card-container');
+            if(!container) return;
+            container.innerHTML = storage.tugas.map((t, i) => {
+                let badgeColor = 'border-amber-500/30 text-amber-300';
+                if(t.status === 'In Progress') badgeColor = 'border-blue-500/30 text-blue-300';
+                if(t.status === 'Submitted') badgeColor = 'border-emerald-500/30 text-emerald-300';
+                return `
+                    <div class="border p-5 rounded-2xl flex flex-col justify-between backdrop-blur-md shadow-sm" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <div class="mb-4">
+                            <span class="text-[10px] font-extrabold px-2.5 py-1 rounded-md border inline-block mb-2" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${t.matkul}</span>
+                            <h4 class="font-extrabold text-sm mt-1">${t.judul}</h4>
+                            <p class="opacity-70 text-xs mt-1"><i class="fa-regular fa-clock mr-1"></i> Deadline: ${t.deadline}</p>
+                        </div>
+                        <div class="flex items-center justify-between pt-3 border-t" style="border-color: var(--border-color);">
+                            <select onchange="updateTaskStatus(${i}, this.value)" class="px-3 py-1.5 rounded-lg text-xs font-bold border ${badgeColor} outline-none cursor-pointer" style="background: rgba(0,0,0,0.2);">
+                                <option value="Pending" ${t.status === 'Pending' ? 'selected' : ''}>Pending</option>
+                                <option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
+                                <option value="Submitted" ${t.status === 'Submitted' ? 'selected' : ''}>Submitted</option>
+                            </select>
+                            <button onclick="deleteTugas(${i})" class="opacity-50 hover:text-rose-400 p-2"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderDashboardStats() {
+            const pendingTugas = storage.tugas.filter(t => t.status !== 'Submitted').length;
+            const dashTugas = document.getElementById('dash-stat-tugas');
+            if(dashTugas) dashTugas.innerText = pendingTugas;
+
+            const dashJadwal = document.getElementById('dash-stat-jadwal');
+            if(dashJadwal) dashJadwal.innerText = storage.jadwal.length + " Sesi";
+
+            let totalSks = 0;
+            Object.values(storage.kurikulum).forEach(semList => {
+                semList.forEach(s => {
+                    if(s.status === 'Lulus' || s.status === 'Sedang Berjalan') {
+                        totalSks += (s.sks || 3);
+                    }
+                });
+            });
+            const dashSks = document.getElementById('dash-stat-sks');
+            if(dashSks) dashSks.innerText = totalSks + " SKS";
+
+            const dashAbs = document.getElementById('dash-stat-absensi');
+            if(dashAbs) {
+                const hadirCount = storage.absensi.filter(a => a.kehadiran === 'Hadir').length;
+                const percent = storage.absensi.length > 0 ? Math.round((hadirCount / storage.absensi.length) * 100) : 100;
+                dashAbs.innerText = percent + "%";
+            }
+
+            // Render Daily Schedule di Dashboard
             const dailyContainer = document.getElementById('dashboard-daily-schedule');
             if(dailyContainer) {
-                if(todaySchedules.length > 0) {
-                    dailyContainer.innerHTML = todaySchedules.map(s => `
-                        <div class="p-3.5 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
-                            <div>
-                                <span class="font-extrabold">${s.matkul}</span>
-                                <p class="opacity-70 text-[11px] mt-0.5"><i class="fa-regular fa-clock mr-1"></i> ${s.waktu} • <span class="text-amber-400 font-semibold"><i class="fa-solid fa-location-dot"></i> ${s.lokasi || 'Ruang Pasca UNNES'}</span></p>
-                                <p class="opacity-60 text-[10px] mt-0.5">Dosen: ${s.dosen} | SKS: ${s.sks || 3}</p>
-                            </div>
-                            <span class="px-2.5 py-1 rounded font-bold text-[10px] border bg-emerald-500/20 text-emerald-300 border-emerald-500/30">Aktif Hari Ini</span>
+                dailyContainer.innerHTML = storage.jadwal.slice(0, 2).map(j => `
+                    <div class="p-3 rounded-xl border flex items-center justify-between text-xs" style="background-color: var(--bg-main); border-color: var(--border-color);">
+                        <div>
+                            <span class="font-extrabold" style="color: var(--accent-color);">${j.hari} - ${j.waktu}</span>
+                            <p class="font-bold mt-0.5">${j.matkul}</p>
                         </div>
-                    `).join('');
-                } else {
-                    dailyContainer.innerHTML = `<p class="text-xs opacity-60 italic py-2">Tidak ada jadwal perkuliahan terjadwal untuk hari ${todayName}. Waktu yang tepat untuk riset literatur atau pengerjaan tesis.</p>`;
-                }
+                        <span class="opacity-70 text-[10px]">${j.lokasi}</span>
+                    </div>
+                `).join('') || '<p class="text-xs opacity-60">Tidak ada jadwal kuliah.</p>';
             }
 
+            // Render Deadline di Dashboard
             const deadlineContainer = document.getElementById('dashboard-deadline-list');
-            if(container = deadlineContainer) {
-                const activeTasks = storage.tugas.slice(0, 3);
-                if(activeTasks.length > 0) {
-                    container.innerHTML = activeTasks.map(t => `
-                        <div class="p-3.5 rounded-xl border flex items-center justify-between text-xs" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
-                            <div>
-                                <span class="text-[9px] font-bold px-2 py-0.5 rounded border mr-2" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${t.matkul}</span>
-                                <h4 class="font-extrabold mt-1">${t.judul}</h4>
-                                <p class="opacity-70 text-[11px] mt-0.5"><i class="fa-regular fa-clock mr-1"></i> Deadline: ${t.deadline}</p>
-                            </div>
-                            <span class="px-2.5 py-1 rounded font-bold text-[10px] border ${t.status === 'Submitted' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'}">${t.status}</span>
+            if(deadlineContainer) {
+                deadlineContainer.innerHTML = storage.tugas.slice(0, 2).map(t => `
+                    <div class="p-3 rounded-xl border flex items-center justify-between text-xs" style="background-color: var(--bg-main); border-color: var(--border-color);">
+                        <div>
+                            <span class="font-extrabold text-rose-400">Deadline: ${t.deadline}</span>
+                            <p class="font-bold mt-0.5">${t.judul}</p>
                         </div>
-                    `).join('');
-                } else {
-                    container.innerHTML = `<p class="text-xs opacity-60 italic py-2">Belum ada tugas akademik yang tercatat.</p>`;
-                }
+                        <span class="text-[10px] px-2 py-0.5 rounded border" style="border-color: var(--border-color);">${t.status}</span>
+                    </div>
+                `).join('') || '<p class="text-xs opacity-60">Tidak ada deadline aktif.</p>';
             }
-
-            const taskListContainer = document.getElementById('task-list-container');
-            if(taskListContainer) {
-                taskListContainer.innerHTML = storage.tugas.map((t, i) => {
-                    let badgeColor = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
-                    if(t.status === 'In Progress') badgeColor = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
-                    if(t.status === 'Submitted') badgeColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-
-                    return `
-                        <div class="p-4 rounded-2xl border flex flex-col justify-between space-y-3 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div>
-                                <span class="text-[9px] font-extrabold px-2 py-0.5 rounded border inline-block mb-1" style="background-color: var(--accent-color); color: #fff;">${t.matkul}</span>
-                                <h4 class="font-extrabold text-sm mt-1">${t.judul}</h4>
-                                <p class="opacity-70"><i class="fa-regular fa-clock mr-1"></i> Deadline: ${t.deadline}</p>
-                            </div>
-                            <div class="flex items-center justify-between pt-2 border-t" style="border-color: var(--border-color);">
-                                <select onchange="updateTaskStatus(${i}, this.value)" class="px-3 py-1.5 rounded-lg font-bold border ${badgeColor} outline-none cursor-pointer" style="background: rgba(0,0,0,0.2);">
-                                    <option value="Pending" ${t.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                                    <option value="Submitted" ${t.status === 'Submitted' ? 'selected' : ''}>Submitted</option>
-                                </select>
-                                <button onclick="deleteTugas(${i})" class="opacity-50 hover:text-rose-400 p-2"><i class="fa-solid fa-trash-can"></i></button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            renderKurikulumTable(storage.activeKurikulumTab);
-            renderNotebookSubjects();
         }
     </script>
 </body>
