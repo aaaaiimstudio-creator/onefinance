@@ -28,7 +28,7 @@
 
     const docRef = doc(db, "pascasarjana_unnes", "hikarinaim_profile");
 
-    // Real-time listener agar perubahan di laptop langsung tampil di HP secara live
+    // Real-time listener agar perubahan di satu browser/perangkat langsung tampil di perangkat lain secara live
     onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
             const cloudData = docSnap.data();
@@ -745,7 +745,7 @@
 
         // --- JADWAL ---
         function addJadwal() {
-            const hari = prompt("Hari Kuliah (Contoh: Senin):");
+            const hari = prompt("Hari Kuliah (Contoh: Senin, Selasa, Rabu, Kamis, Jumat, Sabtu):");
             const matkul = prompt("Nama Mata Kuliah:");
             const sks = prompt("Jumlah SKS:", "3");
             const waktu = prompt("Waktu (Contoh: 15:30 - 18:00):");
@@ -753,7 +753,7 @@
             const dosen = prompt("Nama Dosen Pengampu:");
             const info = prompt("Link / Keterangan:", "https://lms.unnes.ac.id");
             if(hari && matkul) {
-                storage.jadwal.push({ hari, matkul, sks: Number(sks || 3), waktu, lokasi, dosen, info });
+                storage.jadwal.push({ hari: hari.trim(), matkul, sks: Number(sks || 3), waktu, lokasi, dosen, info });
                 generateAutomatedAbsensi(false);
                 saveData();
             }
@@ -964,8 +964,17 @@
             const dashTugas = document.getElementById('dash-stat-tugas');
             if(dashTugas) dashTugas.innerText = pendingTugas;
 
+            // Hitung jadwal hari ini secara otomatis berdasarkan nama hari perangkat
+            const daysMap = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const currentDayName = daysMap[new Date().getDay()];
+            
+            const todaySchedules = storage.jadwal.filter(j => j.hari.toLowerCase() === currentDayName.toLowerCase());
+            
             const dashJadwal = document.getElementById('dash-stat-jadwal');
-            if(dashJadwal) dashJadwal.innerText = storage.jadwal.length + " Sesi";
+            if(dashJadwal) dashJadwal.innerText = todaySchedules.length + " Sesi";
+
+            const dayBadge = document.getElementById('current-day-badge');
+            if(dayBadge) dayBadge.innerText = currentDayName;
 
             let totalSks = 0;
             Object.values(storage.kurikulum).forEach(semList => {
@@ -985,10 +994,10 @@
                 dashAbs.innerText = percent + "%";
             }
 
-            // Render Daily Schedule di Dashboard
+            // Render Daily Schedule di Dashboard berdasarkan hari aktif hari ini
             const dailyContainer = document.getElementById('dashboard-daily-schedule');
             if(dailyContainer) {
-                dailyContainer.innerHTML = storage.jadwal.slice(0, 2).map(j => `
+                dailyContainer.innerHTML = todaySchedules.length > 0 ? todaySchedules.map(j => `
                     <div class="p-3 rounded-xl border flex items-center justify-between text-xs" style="background-color: var(--bg-main); border-color: var(--border-color);">
                         <div>
                             <span class="font-extrabold" style="color: var(--accent-color);">${j.hari} - ${j.waktu}</span>
@@ -996,7 +1005,7 @@
                         </div>
                         <span class="opacity-70 text-[10px]">${j.lokasi}</span>
                     </div>
-                `).join('') || '<p class="text-xs opacity-60">Tidak ada jadwal kuliah.</p>';
+                `).join('') : `<p class="text-xs opacity-60 italic">Tidak ada jadwal kuliah untuk hari ${currentDayName} ini.</p>`;
             }
 
             // Render Deadline di Dashboard
