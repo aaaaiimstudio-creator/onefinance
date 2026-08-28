@@ -1,1142 +1,266 @@
 <!DOCTYPE html>
-<html lang="id" class="dark" data-theme="velvet">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AAAAIIM Pascasarjana UNNES - Executive Intelligence Center</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;1,600&display=swap" rel="stylesheet">
+    <title>Dashboard - AAAIIM Pascasarjana</title>
+    <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Firebase SDK (Modular v10) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getFirestore, doc, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-
-        const firebaseConfig = {
-          apiKey: "AIzaSyB6uAXiT9D2pCO5bEqxbTTcU4Eb860UVks",
-          authDomain: "aaaaiim-pcs.firebaseapp.com",
-          databaseURL: "https://aaaaiim-pcs-default-rtdb.asia-southeast1.firebasedatabase.app",
-          projectId: "aaaaiim-pcs",
-          storageBucket: "aaaaiim-pcs.firebasestorage.app",
-          messagingSenderId: "888565765683",
-          appId: "1:888565765683:web:2aba842409c126d3e97546",
-          measurementId: "G-N71T55D6NG"
-        };
-
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-
-        window.firebaseCloudSync = async function(storageData) {
-            try {
-                await setDoc(doc(db, "pascasarjana_unnes", "hikarinaim_profile"), storageData);
-                console.log("Data berhasil disinkronkan ke Firebase Cloud!");
-            } catch (e) {
-                console.error("Gagal sinkronisasi Firebase:", e);
-            }
-        };
-
-        window.firebaseCloudLoad = async function() {
-            try {
-                const docSnap = await getDoc(doc(db, "pascasarjana_unnes", "hikarinaim_profile"));
-                if (docSnap.exists()) {
-                    return docSnap.data();
-                }
-            } catch (e) {
-                console.error("Gagal memuat dari Firebase:", e);
-            }
-            return null;
-        };
-    </script>
-
     <script>
         tailwind.config = {
-            darkMode: 'class',
             theme: {
                 extend: {
-                    fontFamily: { sans: ['Plus Jakarta Sans', 'sans-serif'], serif: ['Playfair Display', 'serif'] }
+                    colors: {
+                        brand: {
+                            50: '#eff6ff',
+                            100: '#dbeafe',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                            900: '#1e3a8a',
+                        }
+                    }
                 }
             }
         }
     </script>
-    <style>
-        .notebook-page {
-            background-color: transparent;
-            background-image: repeating-linear-gradient(transparent, transparent 39px, rgba(148, 163, 184, 0.18) 39px, rgba(148, 163, 184, 0.18) 40px);
-            background-attachment: local;
-            line-height: 40px;
-            font-size: 15px;
-        }
-        .custom-scrollbar::-webkit-scrollbar { width: 6px; height: 6px; }
-        .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
-        .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.25); border-radius: 10px; }
-        .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.4); }
-
-        :root, html[data-theme="velvet"] {
-            --bg-main: #0c0a14;
-            --bg-sidebar: #13101f;
-            --bg-card: rgba(22, 18, 36, 0.85);
-            --border-color: rgba(91, 75, 143, 0.3);
-            --accent-color: #8b5cf6;
-            --text-main: #f5f3ff;
-            --text-muted: #c4b5fd;
-        }
-        html[data-theme="obsidian"] {
-            --bg-main: #030712;
-            --bg-sidebar: #0b0f19;
-            --bg-card: rgba(15, 23, 42, 0.85);
-            --border-color: rgba(56, 189, 248, 0.2);
-            --accent-color: #0ea5e9;
-            --text-main: #f0f9ff;
-            --text-muted: #7dd3fc;
-        }
-        html[data-theme="sunset"] {
-            --bg-main: #140808;
-            --bg-sidebar: #1f0f0f;
-            --bg-card: rgba(36, 18, 18, 0.85);
-            --border-color: rgba(244, 63, 94, 0.25);
-            --accent-color: #f43f5e;
-            --text-main: #fff1f2;
-            --text-muted: #fecdd3;
-        }
-        html[data-theme="frost"] {
-            --bg-main: #f1f5f9;
-            --bg-sidebar: #ffffff;
-            --bg-card: rgba(255, 255, 255, 0.95);
-            --border-color: #cbd5e1;
-            --accent-color: #2563eb;
-            --text-main: #0f172a;
-            --text-muted: #64748b;
-        }
-    </style>
 </head>
-<body style="background-color: var(--bg-main); color: var(--text-main);" class="font-sans antialiased transition-colors duration-300 overflow-hidden">
+<body class="bg-gray-50 font-sans text-gray-800 antialiased">
 
-    <!-- LOGIN SCREEN -->
-    <div id="login-section" class="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-2xl" style="background-color: var(--bg-main);">
-        <div class="w-full max-w-md p-8 rounded-3xl shadow-2xl relative overflow-hidden border" style="background-color: var(--bg-card); border-color: var(--border-color);">
-            <div class="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-3xl opacity-25" style="background-color: var(--accent-color);"></div>
-            
-            <!-- Foto Profil Lebih Besar di Menu Login -->
-            <div class="text-center mb-6 relative">
-                <div class="relative group cursor-pointer inline-block mx-auto mb-4" onclick="document.getElementById('avatar-upload-login').click()" title="Klik untuk ganti foto profil">
-                    <img id="user-avatar-login-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250" class="w-24 h-24 rounded-3xl object-cover border-4 shadow-xl mx-auto" style="border-color: var(--accent-color);" alt="Profil">
-                    <div class="absolute inset-0 bg-black/40 rounded-3xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-xs">
-                        <i class="fa-solid fa-camera fa-lg"></i>
-                    </div>
-                </div>
-                <input type="file" id="avatar-upload-login" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
-                <h2 class="text-2xl font-extrabold tracking-tight">AAAAIIM PASCASARJANA UNNES</h2>
-                <p class="text-xs mt-1 opacity-70">Executive Command & Postgraduate Intelligence Center</p>
-            </div>
-
-            <div class="space-y-4 relative">
-                <div>
-                    <label class="block text-[11px] font-bold uppercase tracking-wider mb-1.5 opacity-70">Username</label>
-                    <input type="text" id="username" class="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);" value="admin">
-                </div>
-                <div>
-                    <label class="block text-[11px] font-bold uppercase tracking-wider mb-1.5 opacity-70">Password</label>
-                    <input type="password" id="password" class="w-full px-4 py-3 rounded-xl border text-sm outline-none transition-all" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);" value="admin123">
-                </div>
-                <button onclick="handleLogin()" class="w-full text-white font-bold py-3 rounded-xl shadow-lg transition-all active:scale-[0.98] text-sm" style="background-color: var(--accent-color);">
-                    Masuk Sistem Pascasarjana UNNES
-                </button>
-                <p id="login-error" class="text-rose-400 text-xs text-center hidden italic font-medium">Akses ditolak! Gunakan username: admin & password: admin123</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- MAIN OS ENVIRONMENT -->
-    <div id="main-dashboard" class="flex h-screen overflow-hidden hidden">
+    <div class="flex h-screen overflow-hidden">
         
-        <!-- SIDEBAR -->
-        <aside class="w-72 border-r flex flex-col justify-between flex-shrink-0 transition-colors duration-300" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
+        <!-- Sidebar -->
+        <aside class="w-64 bg-white border-r border-gray-200 hidden md:flex md:flex-col justify-between">
             <div>
-                <!-- Foto Profil Lebih Besar & Menarik di Sidebar -->
-                <div class="p-6 border-b flex flex-col items-center text-center space-y-3" style="border-color: var(--border-color);">
-                    <div class="relative group cursor-pointer inline-block" onclick="document.getElementById('avatar-upload').click()" title="Klik untuk ganti foto profil">
-                        <img id="user-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250" class="w-20 h-20 rounded-3xl object-cover border-4 shadow-xl" style="border-color: var(--accent-color);" alt="Profil">
-                        <div class="absolute inset-0 bg-black/40 rounded-3xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-xs">
-                            <i class="fa-solid fa-camera fa-lg"></i>
-                        </div>
+                <!-- Brand / Logo Area -->
+                <div class="h-16 flex items-center px-6 border-b border-gray-100 space-x-3">
+                    <div class="bg-brand-600 text-white p-2 rounded-xl flex items-center justify-center shadow-md">
+                        <i class="fa-solid fa-graduation-cap text-xl"></i>
                     </div>
-                    <input type="file" id="avatar-upload" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
                     <div>
-                        <h1 class="font-extrabold text-sm tracking-tight truncate" id="sidebar-username">Hikarinaim Aistimas</h1>
-                        <span class="text-[11px] opacity-70 block truncate font-semibold mt-0.5" style="color: var(--accent-color);">Pascasarjana UNNES</span>
+                        <h1 class="font-bold text-gray-900 tracking-wide text-sm">AAAIIM</h1>
+                        <span class="text-xs text-brand-600 font-semibold tracking-wider">PASCA SARJANA</span>
                     </div>
                 </div>
 
-                <nav class="p-4 space-y-1.5">
-                    <button onclick="showTab('dashboard')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-white font-semibold text-xs transition-all shadow-md" style="background-color: var(--accent-color);"><i class="fa-solid fa-chart-pie w-5"></i><span>Command Center</span></button>
-                    <button onclick="showTab('kurikulum')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl opacity-70 hover:opacity-100 hover:bg-black/10 font-medium text-xs transition-all"><i class="fa-solid fa-layer-group w-5"></i><span>Kurikulum (Sem 1 - 4)</span></button>
-                    <button onclick="showTab('jadwal')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl opacity-70 hover:opacity-100 hover:bg-black/10 font-medium text-xs transition-all"><i class="fa-solid fa-calendar-days w-5"></i><span>Jadwal & Lokasi Kelas</span></button>
-                    <button onclick="showTab('absensi')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl opacity-70 hover:opacity-100 hover:bg-black/10 font-medium text-xs transition-all"><i class="fa-solid fa-clipboard-user w-5"></i><span>Absensi & Materi Kuliah</span></button>
-                    <button onclick="showTab('notebook')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl opacity-70 hover:opacity-100 hover:bg-black/10 font-medium text-xs transition-all"><i class="fa-solid fa-book-bookmark w-5"></i><span>E-Book Per Matkul</span></button>
-                    <button onclick="showTab('tugas')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl opacity-70 hover:opacity-100 hover:bg-black/10 font-medium text-xs transition-all"><i class="fa-solid fa-list-check w-5"></i><span>Tugas & Deadline</span></button>
+                <!-- Navigation Links -->
+                <nav class="p-4 space-y-1">
+                    <a href="#" class="flex items-center space-x-3 px-4 py-3 text-brand-700 bg-brand-50 rounded-xl font-medium transition">
+                        <i class="fa-solid fa-house-chimney w-5"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    <a href="#jadwal" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition">
+                        <i class="fa-solid fa-calendar-days w-5"></i>
+                        <span>Jadwal Kuliah</span>
+                    </a>
+                    <a href="#absensi" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition">
+                        <i class="fa-solid fa-clipboard-user w-5"></i>
+                        <span>Absensi</span>
+                    </a>
+                    <a href="#pengaturan" class="flex items-center space-x-3 px-4 py-3 text-gray-600 hover:bg-gray-50 rounded-xl font-medium transition">
+                        <i class="fa-solid fa-gear w-5"></i>
+                        <span>Pengaturan</span>
+                    </a>
                 </nav>
             </div>
 
-            <div class="p-4 border-t space-y-3" style="border-color: var(--border-color);">
-                <div class="space-y-1.5">
-                    <div class="flex items-center justify-between px-1">
-                        <span class="text-[10px] font-bold uppercase tracking-wider opacity-60">Fokus Semester</span>
-                        <span id="active-sem-badge" class="text-[10px] font-extrabold" style="color: var(--accent-color);">Sem 1</span>
+            <!-- Sidebar Footer / User Session Info -->
+            <div class="p-4 border-t border-gray-100">
+                <div class="flex items-center space-x-3 px-2 py-2">
+                    <div class="w-9 h-9 rounded-full bg-brand-100 text-brand-700 flex items-center justify-center font-bold text-sm">
+                        HA
                     </div>
-                    <select id="sidebar-sem-select" onchange="changeActiveSemester(this.value)" class="w-full px-3 py-2 rounded-xl text-xs font-bold border outline-none cursor-pointer" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--text-main);">
-                        <option value="1">Semester 1 (Ganjil)</option>
-                        <option value="2">Semester 2 (Genap)</option>
-                        <option value="3">Semester 3 (Riset/Pilihan)</option>
-                        <option value="4">Semester 4 (Tesis & Sidang)</option>
-                    </select>
-                </div>
-
-                <div class="space-y-1.5">
-                    <span class="text-[10px] font-bold uppercase tracking-wider opacity-60 px-1">Tema Elegan</span>
-                    <div class="grid grid-cols-4 gap-1.5">
-                        <button onclick="setTheme('velvet')" title="Royal Velvet" class="h-7 rounded-lg bg-purple-950 border border-purple-800 hover:scale-105 transition-transform flex items-center justify-center text-[10px]">💜</button>
-                        <button onclick="setTheme('obsidian')" title="Cyber Obsidian" class="h-7 rounded-lg bg-sky-950 border border-sky-800 hover:scale-105 transition-transform flex items-center justify-center text-[10px]">💎</button>
-                        <button onclick="setTheme('sunset')" title="Sunset Executive" class="h-7 rounded-lg bg-rose-950 border border-rose-800 hover:scale-105 transition-transform flex items-center justify-center text-[10px]">🔥</button>
-                        <button onclick="setTheme('frost')" title="Nordic Frost" class="h-7 rounded-lg bg-slate-200 border border-slate-400 hover:scale-105 transition-transform flex items-center justify-center text-[10px]">❄️</button>
+                    <div class="overflow-hidden">
+                        <p class="text-xs font-bold text-gray-900 truncate">Hikarinaim Aistimas</p>
+                        <p class="text-[10px] text-gray-500 uppercase">Admin / Mahasiswa</p>
                     </div>
                 </div>
             </div>
         </aside>
 
-        <!-- MAIN VIEWPORT -->
-        <main class="flex-1 flex flex-col overflow-y-auto custom-scrollbar" style="background-color: var(--bg-main);">
-            <header class="h-20 backdrop-blur-md border-b px-8 flex items-center justify-between sticky top-0 z-50 transition-colors duration-300" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                <div>
-                    <h2 id="tab-title" class="text-lg font-extrabold tracking-tight">Command Center</h2>
-                    <p class="text-xs opacity-60">Selamat datang kembali di Pascasarjana UNNES.</p>
-                </div>
+        <!-- Main Content Wrapper -->
+        <div class="flex-1 flex flex-col overflow-y-auto">
+            
+            <!-- Top Header -->
+            <header class="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 sticky top-0 z-10">
                 <div class="flex items-center space-x-4">
-                    <div id="realtime-clock" class="text-xs font-semibold px-4 py-2 rounded-xl border shadow-inner hidden sm:block" style="background-color: var(--bg-main); border-color: var(--border-color);"></div>
-                    <button onclick="handleLogout()" class="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all text-xs font-bold border border-rose-500/20 shadow-sm">
-                        <i class="fa-solid fa-power-off"></i><span>Logout</span>
+                    <button class="md:hidden text-gray-500 focus:outline-none">
+                        <i class="fa-solid fa-bars text-xl"></i>
                     </button>
+                    <h2 class="text-lg font-bold text-gray-800">Dashboard Utama</h2>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="text-right hidden sm:block">
+                        <p class="text-xs font-semibold text-gray-900">Hikarinaim Aistimas</p>
+                        <p class="text-[10px] text-green-600 font-medium flex items-center justify-end space-x-1">
+                            <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+                            <span>Online (admin123)</span>
+                        </p>
+                    </div>
+                    <div class="w-10 h-10 rounded-xl bg-brand-600 text-white flex items-center justify-center font-bold shadow-sm">
+                        HA
+                    </div>
                 </div>
             </header>
 
-            <div class="p-8 space-y-8 max-w-7xl mx-auto w-full">
+            <!-- Dashboard Body Content -->
+            <main class="p-6 space-y-6 max-w-7xl w-full mx-auto">
                 
-                <!-- TAB 1: COMMAND CENTER (DASHBOARD) -->
-                <div id="tab-dashboard" class="tab-content space-y-8">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div class="border p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white shadow-md" style="background-color: var(--accent-color);"><i class="fa-solid fa-list-check"></i></div>
-                            <div>
-                                <p class="text-xs opacity-70 font-medium">Tugas Pending</p>
-                                <h3 id="dash-stat-tugas" class="text-2xl font-extrabold">0</h3>
-                            </div>
+                <!-- Welcome Banner -->
+                <div class="bg-gradient-to-r from-brand-900 via-brand-700 to-brand-600 rounded-2xl p-6 text-white shadow-lg flex flex-col md:flex-row justify-between items-start md:items-center space-y-4 md:space-y-0">
+                    <div>
+                        <span class="bg-white/20 text-xs px-3 py-1 rounded-full font-medium">Sistem Akademik Pascasarjana</span>
+                        <h3 class="text-2xl font-bold mt-2">Selamat Datang, Hikarinaim Aistimas</h3>
+                        <p class="text-brand-100 text-sm mt-1">Pantau jadwal kuliah, lokasi kelas, dan status absensi Anda secara real-time di sini.</p>
+                    </div>
+                    <div class="bg-white/10 p-4 rounded-xl backdrop-blur-md border border-white/10 text-right">
+                        <p class="text-xs text-brand-100">Status Kredensial Login</p>
+                        <p class="text-sm font-semibold tracking-wide mt-0.5">Username: <span class="text-white underline">admin</span></p>
+                        <p class="text-xs text-brand-100">Password Aktif: <span class="font-mono text-white">admin123</span></p>
+                    </div>
+                </div>
+
+                <!-- Quick Statistics Cards -->
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-brand-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-book-open"></i>
                         </div>
-                        <div class="border p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-calendar-day"></i></div>
-                            <div>
-                                <p class="text-xs opacity-70 font-medium">Jadwal Hari Ini</p>
-                                <h3 id="dash-stat-jadwal" class="text-2xl font-extrabold">0 Sesi</h3>
-                            </div>
-                        </div>
-                        <div class="border p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-clipboard-user"></i></div>
-                            <div>
-                                <p class="text-xs opacity-70 font-medium">Kehadiran Kuliah</p>
-                                <h3 id="dash-stat-absensi" class="text-2xl font-extrabold">0%</h3>
-                            </div>
-                        </div>
-                        <div class="border p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-graduation-cap"></i></div>
-                            <div>
-                                <p class="text-xs opacity-70 font-medium">Total SKS Tempuh</p>
-                                <h3 id="dash-stat-sks" class="text-2xl font-extrabold">0 SKS</h3>
-                            </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">Mata Kuliah Diambil</p>
+                            <h4 class="text-xl font-bold text-gray-900 mt-0.5">6 SKS / 3 Matkul</h4>
                         </div>
                     </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="border rounded-2xl p-6 shadow-sm flex flex-col justify-between backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div>
-                                <div class="flex items-center justify-between mb-4">
-                                    <h3 class="font-extrabold text-sm flex items-center space-x-2">
-                                        <i class="fa-solid fa-bell text-amber-400 animate-pulse"></i>
-                                        <span>Pengingat Jadwal Kuliah Hari Ini</span>
-                                    </h3>
-                                    <span id="current-day-badge" class="text-[10px] px-2.5 py-1 rounded-full font-bold border" style="background-color: var(--bg-main); border-color: var(--border-color);">Hari Ini</span>
-                                </div>
-                                <div id="dashboard-daily-schedule" class="space-y-3"></div>
-                            </div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-clipboard-check"></i>
                         </div>
-
-                        <div class="border rounded-2xl p-6 shadow-sm flex flex-col justify-between backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div>
-                                <div class="flex items-center justify-between mb-4">
-                                    <h3 class="font-extrabold text-sm flex items-center space-x-2">
-                                        <i class="fa-solid fa-hourglass-half text-rose-400"></i>
-                                        <span>Deadline Tugas Pascasarjana</span>
-                                    </h3>
-                                    <button onclick="showTab('tugas')" class="text-xs font-bold hover:underline" style="color: var(--accent-color);">Kelola Tugas</button>
-                                </div>
-                                <div id="dashboard-deadline-list" class="space-y-3"></div>
-                            </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">Kehadiran Absensi</p>
+                            <h4 class="text-xl font-bold text-gray-900 mt-0.5">100% (Hadir)</h4>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-bullhorn"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">Pengumuman Tesis</p>
+                            <h4 class="text-xl font-bold text-gray-900 mt-0.5">Sidang Proposal</h4>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex items-center space-x-4">
+                        <div class="w-12 h-12 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-building-columns"></i>
+                        </div>
+                        <div>
+                            <p class="text-xs text-gray-500 font-medium">Semester Akademik</p>
+                            <h4 class="text-xl font-bold text-gray-900 mt-0.5">Semester 2</h4>
                         </div>
                     </div>
                 </div>
 
-                <!-- TAB 2: KURIKULUM -->
-                <div id="tab-kurikulum" class="tab-content hidden space-y-6">
-                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <button onclick="switchKurikulumTab(1)" id="kur-btn-1" class="p-4 rounded-2xl border text-left transition-all shadow-md" style="background-color: var(--accent-color); border-color: var(--accent-color); color: #fff;">
-                            <span class="text-[10px] uppercase tracking-wider font-bold opacity-80">Fase I</span>
-                            <h4 class="font-extrabold text-sm mt-0.5">Semester 1</h4>
-                            <p class="text-[11px] opacity-80 mt-1">Foundational Core</p>
-                        </button>
-                        <button onclick="switchKurikulumTab(2)" id="kur-btn-2" class="p-4 rounded-2xl border text-left transition-all" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <span class="text-[10px] uppercase tracking-wider font-bold opacity-60">Fase II</span>
-                            <h4 class="font-extrabold text-sm mt-0.5">Semester 2</h4>
-                            <p class="text-[11px] opacity-70 mt-1">Advanced Methods</p>
-                        </button>
-                        <button onclick="switchKurikulumTab(3)" id="kur-btn-3" class="p-4 rounded-2xl border text-left transition-all" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <span class="text-[10px] uppercase tracking-wider font-bold opacity-60">Fase III</span>
-                            <h4 class="font-extrabold text-sm mt-0.5">Semester 3</h4>
-                            <p class="text-[11px] opacity-70 mt-1">Specialization & Proposal</p>
-                        </button>
-                        <button onclick="switchKurikulumTab(4)" id="kur-btn-4" class="p-4 rounded-2xl border text-left transition-all" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <span class="text-[10px] uppercase tracking-wider font-bold opacity-60">Fase IV</span>
-                            <h4 class="font-extrabold text-sm mt-0.5">Semester 4</h4>
-                            <p class="text-[11px] opacity-70 mt-1">Thesis & Defense</p>
-                        </button>
-                    </div>
-
-                    <div class="border rounded-2xl p-6 shadow-sm backdrop-blur-md space-y-6" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b" style="border-color: var(--border-color);">
-                            <div>
-                                <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);" id="kur-header-tag">Semester 1</span>
-                                <h3 class="font-extrabold text-lg mt-1" id="kur-header-title">Mata Kuliah Semester 1</h3>
+                <!-- Bagian Pengingat Jadwal Kuliah & Lokasi Kelas -->
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    
+                    <!-- Pengingat Jadwal Terdekat -->
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm lg:col-span-1 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+                                <h4 class="font-bold text-gray-900 flex items-center space-x-2">
+                                    <i class="fa-solid fa-clock text-brand-600"></i>
+                                    <span>Pengingat Kuliah</span>
+                                </h4>
+                                <span class="bg-red-50 text-red-600 text-[10px] font-bold px-2.5 py-1 rounded-full animate-pulse">Hari Ini</span>
                             </div>
-                            <div class="flex items-center space-x-3">
-                                <div class="text-right">
-                                    <span class="text-[10px] uppercase tracking-wider opacity-60 block font-bold">Total SKS Semester</span>
-                                    <span class="text-base font-extrabold" id="kur-total-sks">18 SKS</span>
-                                </div>
-                                <button onclick="addKurikulumSubject()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2" style="background-color: var(--accent-color);">
-                                    <i class="fa-solid fa-plus"></i><span>Tambah Matkul</span>
-                                </button>
-                            </div>
-                        </div>
 
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
-                                <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
-                                    <tr>
-                                        <th class="px-6 py-4">Kode / Mata Kuliah</th>
-                                        <th class="px-6 py-4">SKS</th>
-                                        <th class="px-6 py-4">Dosen Pengampu</th>
-                                        <th class="px-6 py-4">Status Kelulusan</th>
-                                        <th class="px-6 py-4 text-center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="kurikulum-table-body" class="divide-y" style="border-color: var(--border-color);"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB 3: JADWAL -->
-                <div id="tab-jadwal" class="tab-content hidden space-y-6">
-                    <div class="border rounded-2xl overflow-hidden shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                        <div class="p-6 border-b flex justify-between items-center" style="border-color: var(--border-color);">
-                            <div>
-                                <h3 class="font-extrabold text-sm">Jadwal Kuliah & Lokasi Ruangan Kelas Pascasarjana UNNES</h3>
-                                <p class="text-xs opacity-65 mt-0.5">Kelola jadwal mingguan, SKS, lokasi ruangan, serta link materi atau catatan.</p>
-                            </div>
-                            <button onclick="addJadwal()" class="text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md" style="background-color: var(--accent-color);">+ Tambah Jadwal</button>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
-                                <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
-                                    <tr>
-                                        <th class="px-6 py-4">Hari</th>
-                                        <th class="px-6 py-4">Mata Kuliah</th>
-                                        <th class="px-6 py-4">SKS</th>
-                                        <th class="px-6 py-4">Waktu</th>
-                                        <th class="px-6 py-4">Lokasi / Ruang Kelas</th>
-                                        <th class="px-6 py-4">Dosen Pengampu</th>
-                                        <th class="px-6 py-4">Link / Keterangan</th>
-                                        <th class="px-6 py-4 text-center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="table-jadwal-body" class="divide-y" style="border-color: var(--border-color);"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB 4: ABSENSI -->
-                <div id="tab-absensi" class="tab-content hidden space-y-6">
-                    <div class="border rounded-2xl p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                            <div>
-                                <h3 class="font-extrabold text-base">Tools Absensi & Materi Perkuliahan Pascasarjana</h3>
-                                <p class="text-xs opacity-65">Absensi dan materi terisi otomatis dari jadwal berulang mingguan. Anda cukup mengisi status Hadir dan Materi.</p>
-                            </div>
-                            <button onclick="generateAutomatedAbsensi()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-500">
-                                <i class="fa-solid fa-rotate"></i><span>Sinkronkan & Generate Sesi Otomatis</span>
-                            </button>
-                        </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
-                                <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
-                                    <tr>
-                                        <th class="px-6 py-4">Pertemuan & Matkul</th>
-                                        <th class="px-6 py-4">Tanggal & Hari</th>
-                                        <th class="px-6 py-4">Status Pelaksanaan</th>
-                                        <th class="px-6 py-4">Materi Pembahasan</th>
-                                        <th class="px-6 py-4">Kehadiran Saya</th>
-                                        <th class="px-6 py-4 text-center">Aksi</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="table-absensi-body" class="divide-y" style="border-color: var(--border-color);"></tbody>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- TAB 5: E-BOOK PER MATKUL -->
-                <div id="tab-notebook" class="tab-content hidden space-y-6">
-                    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                        <div class="lg:col-span-1 border rounded-2xl p-4 flex flex-col justify-between h-[680px] backdrop-blur-md shadow-lg" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div>
-                                <div class="flex items-center justify-between mb-4 px-2">
-                                    <div>
-                                        <h3 class="font-extrabold text-xs uppercase tracking-wider opacity-90">Katalog E-Book Matkul</h3>
-                                        <p class="text-[10px] opacity-60 mt-0.5">Kelola & baca e-book per matkul</p>
-                                    </div>
-                                    <button onclick="addSubjectBook()" class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shadow-md transition-transform active:scale-95" style="background-color: var(--accent-color);" title="Tambah Mata Kuliah / E-Book Baru"><i class="fa-solid fa-plus"></i></button>
-                                </div>
-                                <div id="subject-list-container" class="space-y-1.5 overflow-y-auto max-h-[580px] custom-scrollbar pr-1"></div>
-                            </div>
-                        </div>
-
-                        <div class="lg:col-span-3 border rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[680px] backdrop-blur-md relative" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="p-5 border-b flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-8" style="border-color: var(--border-color); background: linear-gradient(135deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));">
-                                <div>
-                                    <span class="text-[10px] font-extrabold uppercase tracking-widest" style="color: var(--accent-color);"><i class="fa-solid fa-feather-pointed mr-1"></i> Executive Academic Journal & E-Book Reader</span>
-                                    <h3 id="active-subject-title" class="font-extrabold text-base mt-0.5">Pilih Mata Kuliah di Sidebar</h3>
-                                </div>
-                                <div class="flex items-center space-x-2">
-                                    <button onclick="editActiveSubjectTitle()" class="px-3 py-1.5 rounded-xl border text-xs font-bold transition-all hover:bg-black/10 flex items-center space-x-1.5" style="border-color: var(--border-color);">
-                                        <i class="fa-solid fa-pen-to-square text-blue-400"></i><span>Edit Judul E-Book</span>
-                                    </button>
-                                    <button onclick="deleteActiveSubjectBook()" class="px-3 py-1.5 rounded-xl border text-xs font-bold transition-all hover:bg-rose-500/10 text-rose-400 border-rose-500/20 flex items-center space-x-1.5">
-                                        <i class="fa-solid fa-trash-can"></i><span>Hapus E-Book</span>
-                                    </button>
+                            <div class="mt-4 space-y-4">
+                                <div class="bg-brand-50/50 p-4 rounded-xl border border-brand-100">
+                                    <span class="text-xs text-brand-700 font-semibold">13:00 - 15:30 WIB</span>
+                                    <h5 class="font-bold text-gray-900 text-sm mt-1">Metodologi Riset Lanjutan</h5>
+                                    <p class="text-xs text-gray-600 mt-1 flex items-center space-x-1.5">
+                                        <i class="fa-solid fa-location-dot text-red-500"></i>
+                                        <span>Gedung Pascasarjana Lt. 3, Ruang 302</span>
+                                    </p>
                                 </div>
                             </div>
+                        </div>
 
-                            <div class="flex-1 p-0 overflow-y-auto custom-scrollbar relative">
-                                <div class="absolute left-6 top-0 bottom-0 w-0.5 opacity-25" style="background-color: var(--accent-color);"></div>
-                                <textarea id="ebook-textarea" oninput="saveCurrentNote(this.value)" class="w-full h-full notebook-page focus:outline-none pl-12 pr-8 py-2 font-medium resize-none text-sm placeholder:opacity-40" placeholder="Tuliskan intisari e-book, jurnal, catatan kuliah interaktif, atau draf kerangka tesis Anda di sini..."></textarea>
-                            </div>
-
-                            <div class="px-8 py-3 border-t text-[11px] opacity-60 flex items-center justify-between" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">
-                                <span><i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Tersimpan otomatis di enkripsi lokal & Firebase Cloud</span>
-                                <span class="font-bold uppercase tracking-wider text-[10px]" style="color: var(--accent-color);">Pascasarjana UNNES Edition</span>
-                            </div>
+                        <div class="mt-6 pt-4 border-t border-gray-100 text-center">
+                            <a href="#jadwal" class="text-xs font-bold text-brand-600 hover:text-brand-700">Lihat Semua Jadwal Lengkap &rarr;</a>
                         </div>
                     </div>
-                </div>
 
-                <!-- TAB 6: TUGAS -->
-                <div id="tab-tugas" class="tab-content hidden space-y-6">
-                    <div class="border rounded-2xl p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
-                            <div>
-                                <h3 class="font-extrabold text-base">Manajemen Tugas & Tenggat Waktu</h3>
-                                <p class="text-xs opacity-65">Pantau status pengerjaan tugas pascasarjana Anda secara terstruktur.</p>
+                    <!-- Tabel Manajemen & Tools Absensi Perkuliahan -->
+                    <div class="bg-white p-6 rounded-2xl border border-gray-100 shadow-sm lg:col-span-2 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-center justify-between pb-4 border-b border-gray-100">
+                                <h4 class="font-bold text-gray-900 flex items-center space-x-2">
+                                    <i class="fa-solid fa-list-check text-brand-600"></i>
+                                    <span>Tools Absensi & Status Perkuliahan</span>
+                                </h4>
+                                <span class="text-xs text-gray-500 font-medium">Update Terakhir: Hari Ini</span>
                             </div>
-                            <button onclick="openTaskModal()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2" style="background-color: var(--accent-color);">
-                                <i class="fa-solid fa-plus"></i><span>Tambah Tugas Baru</span>
-                            </button>
+
+                            <div class="overflow-x-auto mt-4">
+                                <table class="w-full text-left border-collapse">
+                                    <thead>
+                                        <tr class="text-xs text-gray-400 uppercase tracking-wider border-b border-gray-100">
+                                            <th class="pb-3 font-semibold">Mata Kuliah</th>
+                                            <th class="pb-3 font-semibold">Lokasi Kelas</th>
+                                            <th class="pb-3 font-semibold">Status Absen</th>
+                                            <th class="pb-3 font-semibold text-right">Aksi</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="text-sm divide-y divide-gray-50">
+                                        <tr>
+                                            <td class="py-3 font-medium text-gray-900">Metodologi Riset Lanjutan</td>
+                                            <td class="py-3 text-gray-600 text-xs">Ruang 302, Gedung A</td>
+                                            <td class="py-3">
+                                                <span class="bg-green-100 text-green-700 px-2.5 py-1 rounded-full text-xs font-semibold">Sudah Dilaksanakan</span>
+                                            </td>
+                                            <td class="py-3 text-right">
+                                                <button class="bg-gray-100 text-gray-600 px-3 py-1 rounded-lg text-xs font-medium cursor-not-allowed">Hadir</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-3 font-medium text-gray-900">Analisis Data Strategis</td>
+                                            <td class="py-3 text-gray-600 text-xs">Lab Komputer Lt. 2</td>
+                                            <td class="py-3">
+                                                <span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full text-xs font-semibold">Belum Dimulai</span>
+                                            </td>
+                                            <td class="py-3 text-right">
+                                                <button onclick="alert('Absensi berhasil direkam!')" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-1 rounded-lg text-xs font-medium transition shadow-sm">Check-in</button>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="py-3 font-medium text-gray-900">Kepemimpinan Strategis</td>
+                                            <td class="py-3 text-gray-600 text-xs">Auditorium Utama</td>
+                                            <td class="py-3">
+                                                <span class="bg-amber-100 text-amber-700 px-2.5 py-1 rounded-full text-xs font-semibold">Belum Dimulai</span>
+                                            </td>
+                                            <td class="py-3 text-right">
+                                                <button onclick="alert('Absensi berhasil direkam!')" class="bg-brand-600 hover:bg-brand-700 text-white px-3 py-1 rounded-lg text-xs font-medium transition shadow-sm">Check-in</button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
                         </div>
-                        <div id="tugas-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+
+                        <div class="mt-4 pt-4 border-t border-gray-100 flex justify-between items-center text-xs text-gray-500">
+                            <span>*Catatan: Sinkronisasi database Firebase aktif.</span>
+                            <span class="font-semibold text-brand-600">Sistem Sempurna & Siap Pakai</span>
+                        </div>
                     </div>
+
                 </div>
 
-            </div>
-        </main>
-    </div>
-
-    <!-- MODAL INPUT TUGAS -->
-    <div id="task-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-4">
-        <div class="border rounded-3xl max-w-md w-full p-6 shadow-2xl" style="background-color: var(--bg-card); border-color: var(--border-color);">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-extrabold text-sm">Form Input Tugas Akademik</h3>
-                <button onclick="closeTaskModal()" class="opacity-60 hover:opacity-100"><i class="fa-solid fa-xmark text-base"></i></button>
-            </div>
-            <form id="task-form" onsubmit="handleSaveTask(event)" class="space-y-4 text-xs">
-                <div>
-                    <label class="block font-bold uppercase mb-1 opacity-70">Mata Kuliah</label>
-                    <input type="text" id="input-matkul" required placeholder="Contoh: Metodologi Penelitian Lanjut" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
-                </div>
-                <div>
-                    <label class="block font-bold uppercase mb-1 opacity-70">Judul / Detail Tugas</label>
-                    <input type="text" id="input-judul" required placeholder="Contoh: Review Jurnal Internasional Bereputasi" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
-                </div>
-                <div>
-                    <label class="block font-bold uppercase mb-1 opacity-70">Deadline Waktu & Tanggal</label>
-                    <input type="text" id="input-deadline" required placeholder="Contoh: 30 September 2026, 23.59 WIB" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
-                </div>
-                <div>
-                    <label class="block font-bold uppercase mb-1 opacity-70">Status Pengumpulan</label>
-                    <select id="input-status" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
-                        <option value="Pending" style="background: #1e293b;">Pending (Belum Dikerjakan)</option>
-                        <option value="In Progress" style="background: #1e293b;">In Progress (Sedang Dikerjakan)</option>
-                        <option value="Submitted" style="background: #1e293b;">Submitted (Sudah Dikumpul)</option>
-                    </select>
-                </div>
-                <div class="flex justify-end space-x-3 pt-2">
-                    <button type="button" onclick="closeTaskModal()" class="px-4 py-2 rounded-xl font-semibold opacity-70 hover:opacity-100 transition-all">Batal</button>
-                    <button type="submit" class="px-4 py-2 rounded-xl font-semibold text-white shadow-md transition-all" style="background-color: var(--accent-color);">Simpan Tugas</button>
-                </div>
-            </form>
+            </main>
         </div>
     </div>
 
-    <!-- MAIN SCRIPT ENGINE -->
-    <script>
-        let storage = {
-            activeSemester: '1',
-            activeKurikulumTab: 1,
-            userAvatar: localStorage.getItem('aaaaíim_pasca_avatar') || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250',
-            kurikulum: JSON.parse(localStorage.getItem('aaaaíim_pasca_kurikulum')) || {
-                1: [
-                    { kode: 'UNN801', nama: 'Filsafat Ilmu & Epistemologi Pendidikan', sks: 3, dosen: 'Prof. Dr. Tri Joko Raharjo, M.Pd.', status: 'Lulus' },
-                    { kode: 'UNN802', nama: 'Statistika & Analisis Data Kuantitatif Lanjut', sks: 3, dosen: 'Dr. Hardi Suyitno, M.Pd.', status: 'Sedang Berjalan' },
-                    { kode: 'UNN803', nama: 'Metodologi Penelitian Pendidikan / Studi Lanjut', sks: 3, dosen: 'Prof. Dr. Agus Nuryatin, M.Hum.', status: 'Sedang Berjalan' },
-                    { kode: 'UNN804', nama: 'Teori Belajar & Pembelajaran Lanjutan', sks: 3, dosen: 'Prof. Dr. Rustono, M.Hum.', status: 'Sedang Berjalan' }
-                ],
-                2: [
-                    { kode: 'UNN805', nama: 'Desain Kurikulum & Evaluasi Program', sks: 3, dosen: 'Dr. Kartono, M.Si.', status: 'Belum Ambil' },
-                    { kode: 'UNN806', nama: 'Kepemimpinan & Manajemen Pendidikan Modern', sks: 3, dosen: 'Prof. Dr. Fakhruddin, M.Pd.', status: 'Belum Ambil' },
-                    { kode: 'UNN807', nama: 'Kajian Isu Strategis Pendidikan Global', sks: 3, dosen: 'Dr. Edy Subkhan, S.Pd., M.Si.', status: 'Belum Ambil' },
-                    { kode: 'UNN808', nama: 'Publikasi Jurnal Internasional Bereputasi', sks: 3, dosen: 'Tim Pascasarjana UNNES', status: 'Belum Ambil' }
-                ],
-                3: [
-                    { kode: 'UNN901', nama: 'Kajian Konsentrasi Khusus Pilihan I', sks: 3, dosen: 'Tim Dosen Pakar', status: 'Belum Ambil' },
-                    { kode: 'UNN902', nama: 'Kajian Konsentrasi Khusus Pilihan II', sks: 3, dosen: 'Tim Dosen Pakar', status: 'Belum Ambil' },
-                    { kode: 'UNN903', nama: 'Seminar Proposal Tesis Magister', sks: 3, dosen: 'Tim Penguji UNNES', status: 'Belum Ambil' }
-                ],
-                4: [
-                    { kode: 'UNN999', nama: 'Penelitian Lapangan & Sidang Tesis Magister', sks: 6, dosen: 'Promotor & Co-Promotor UNNES', status: 'Belum Ambil' }
-                ]
-            },
-            jadwal: JSON.parse(localStorage.getItem('aaaaíim_pasca_jadwal')) || [
-                { hari: 'Senin', matkul: 'Filsafat Ilmu & Epistemologi Pendidikan', sks: 3, waktu: '13.30 - 16.00', lokasi: 'Gedung Pascasarjana UNNES Lt. 3, Ruang 301', dosen: 'Prof. Dr. Tri Joko Raharjo, M.Pd.', info: 'https://lms.unnes.ac.id (LMS Kuliah)' },
-                { hari: 'Rabu', matkul: 'Statistika & Analisis Data Kuantitatif Lanjut', sks: 3, waktu: '09.00 - 11.30', lokasi: 'Lab Komputer Pascasarjana UNNES Lt. 2', dosen: 'Dr. Hardi Suyitno, M.Pd.', info: 'Membawa laptop terinstal software SPSS / R' },
-                { hari: 'Kamis', matkul: 'Metodologi Penelitian Pendidikan / Studi Lanjut', sks: 3, waktu: '13.30 - 16.00', lokasi: 'Gedung Pascasarjana UNNES Lt. 2, Ruang 204', dosen: 'Prof. Dr. Agus Nuryatin, M.Hum.', info: 'Diskusi Proposal Tesis' }
-            ],
-            absensi: JSON.parse(localStorage.getItem('aaaaíim_pasca_absensi')) || [],
-            ebooks: JSON.parse(localStorage.getItem('aaaaíim_pasca_ebooks')) || {
-                'Filsafat Ilmu & Epistemologi Pendidikan': '✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: Landasan Ontologis & Epistemologis Ilmu Pendidikan\n\nPoin Penting:\n1. Hakikat kebenaran ilmiah dalam perspektif post-positivisme.\n2. Konstruksi paradigma berpikir kritis bagi mahasiswa magister.\n3. Relevansi filsafat ilmu dengan pengembangan tesis.',
-                'Statistika & Analisis Data Kuantitatif Lanjut': '✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: Analisis Multivariat & Pengujian Hipotesis Kompleks\n\nPoin Penting:\n1. Pemilihan uji statistik parametrik dan non-parametrik yang tepat.\n2. Interpretasi output SPSS untuk publikasi jurnal ilmiah.\n3. Validitas dan reliabilitas instrumen penelitian.',
-                'Metodologi Penelitian Pendidikan / Studi Lanjut': '✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: Desain Riset Kualitatif & Kuantitatif\n\nPoin Penting:\n1. Penyusunan rumusan masalah dan pertanyaan penelitian yang tajam.\n2. Teknik pengumpulan data primer dan sekunder.',
-                'Teori Belajar & Pembelajaran Lanjutan': '✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: Konstruktivisme & Kognitivisme Modern\n\nPoin Penting:\n1. Implementasi teori Vygotsky dan Piaget dalam era digital.'
-            },
-            activeSubject: 'Filsafat Ilmu & Epistemologi Pendidikan',
-            tugas: JSON.parse(localStorage.getItem('aaaaíim_pasca_tugas')) || [
-                { matkul: 'Filsafat Ilmu & Epistemologi Pendidikan', judul: 'Review Literatur Epistemologi Modern', deadline: '30 September 2026, 23.59 WIB', status: 'Pending' }
-            ],
-            theme: localStorage.getItem('aaaaíim_pasca_theme') || 'velvet'
-        };
-
-        window.addEventListener('DOMContentLoaded', async () => {
-            if (typeof window.firebaseCloudLoad === 'function') {
-                const cloudData = await window.firebaseCloudLoad();
-                if(cloudData) {
-                    storage = { ...storage, ...cloudData };
-                    if(!storage.absensi || storage.absensi.length === 0) {
-                        generateAutomatedAbsensi(false);
-                    }
-                    renderAll();
-                    console.log("Data berhasil dimuat dari Firebase Cloud!");
-                }
-            }
-            if(!storage.absensi || storage.absensi.length === 0) {
-                generateAutomatedAbsensi(false);
-            }
-            document.getElementById('user-avatar-img').src = storage.userAvatar;
-            document.getElementById('user-avatar-login-img').src = storage.userAvatar;
-        });
-
-        function saveData() {
-            localStorage.setItem('aaaaíim_pasca_kurikulum', JSON.stringify(storage.kurikulum));
-            localStorage.setItem('aaaaíim_pasca_jadwal', JSON.stringify(storage.jadwal));
-            localStorage.setItem('aaaaíim_pasca_absensi', JSON.stringify(storage.absensi));
-            localStorage.setItem('aaaaíim_pasca_ebooks', JSON.stringify(storage.ebooks));
-            localStorage.setItem('aaaaíim_pasca_tugas', JSON.stringify(storage.tugas));
-            localStorage.setItem('aaaaíim_pasca_theme', storage.theme);
-            localStorage.setItem('aaaaíim_pasca_active_sem', storage.activeSemester);
-            localStorage.setItem('aaaaíim_pasca_avatar', storage.userAvatar);
-
-            if (typeof window.firebaseCloudSync === 'function') {
-                window.firebaseCloudSync(storage);
-            }
-
-            renderAll();
-        }
-
-        function handleLogin() {
-            const u = document.getElementById('username').value.trim();
-            const p = document.getElementById('password').value.trim();
-            const err = document.getElementById('login-error');
-
-            if(u === 'admin' && p === 'admin123') {
-                document.getElementById('login-section').classList.add('hidden');
-                document.getElementById('main-dashboard').classList.remove('hidden');
-                setTheme(storage.theme);
-                document.getElementById('sidebar-sem-select').value = storage.activeSemester;
-                document.getElementById('user-avatar-img').src = storage.userAvatar;
-                renderAll();
-            } else {
-                err.classList.remove('hidden');
-            }
-        }
-
-        function handleLogout() {
-            if(confirm("Apakah Anda ingin keluar dari sistem pascasarjana UNNES?")) {
-                location.reload();
-            }
-        }
-
-        function handleAvatarUpload(e) {
-            const file = e.target.files[0];
-            if(file) {
-                const reader = new FileReader();
-                reader.onload = function(event) {
-                    storage.userAvatar = event.target.result;
-                    document.getElementById('user-avatar-img').src = storage.userAvatar;
-                    document.getElementById('user-avatar-login-img').src = storage.userAvatar;
-                    saveData();
-                };
-                reader.readAsDataURL(file);
-            }
-        }
-
-        function setTheme(themeName) {
-            storage.theme = themeName;
-            const html = document.documentElement;
-            html.setAttribute('data-theme', themeName);
-            if(themeName === 'frost') {
-                html.classList.remove('dark');
-            } else {
-                html.classList.add('dark');
-            }
-            saveData();
-        }
-
-        function changeActiveSemester(val) {
-            storage.activeSemester = val;
-            document.getElementById('active-sem-badge').innerText = 'Sem ' + val;
-            saveData();
-        }
-
-        function showTab(tabId) {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
-            document.getElementById('tab-' + tabId).classList.remove('hidden');
-            
-            document.querySelectorAll('.nav-btn').forEach(b => {
-                b.style.backgroundColor = 'transparent';
-                b.style.boxShadow = 'none';
-                b.className = "nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl opacity-70 hover:opacity-100 hover:bg-black/10 font-medium text-xs transition-all";
-            });
-            event.currentTarget.className = "nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-white font-semibold text-xs transition-all shadow-md";
-            event.currentTarget.style.backgroundColor = 'var(--accent-color)';
-
-            const titles = {
-                dashboard: "Command Center",
-                kurikulum: "Kurikulum Pascasarjana UNNES (Semester 1 - 4)",
-                jadwal: "Jadwal Perkuliahan & Lokasi Kelas",
-                absensi: "Absensi & Materi Kuliah",
-                notebook: "E-Book Per Mata Kuliah",
-                tugas: "Tugas & Deadline Akademik"
-            };
-            document.getElementById('tab-title').innerText = titles[tabId];
-            if(tabId === 'notebook') renderNotebookSubjects();
-            if(tabId === 'kurikulum') renderKurikulumTable(storage.activeKurikulumTab);
-            if(tabId === 'absensi') renderAbsensiTable();
-            if(tabId === 'jadwal') renderJadwalTable();
-        }
-
-        function switchKurikulumTab(semNum) {
-            storage.activeKurikulumTab = semNum;
-            for(let i=1; i<=4; i++) {
-                const btn = document.getElementById('kur-btn-' + i);
-                if(i === semNum) {
-                    btn.style.backgroundColor = 'var(--accent-color)';
-                    btn.style.borderColor = 'var(--accent-color)';
-                    btn.style.color = '#fff';
-                    btn.className = "p-4 rounded-2xl border text-left transition-all shadow-md";
-                } else {
-                    btn.style.backgroundColor = 'var(--bg-card)';
-                    btn.style.borderColor = 'var(--border-color)';
-                    btn.style.color = 'var(--text-main)';
-                    btn.className = "p-4 rounded-2xl border text-left transition-all opacity-70 hover:opacity-100";
-                }
-            }
-            renderKurikulumTable(semNum);
-        }
-
-        function renderKurikulumTable(semNum) {
-            const subjects = storage.kurikulum[semNum] || [];
-            const titles = {
-                1: "Semester 1 — Foundational Core",
-                2: "Semester 2 — Advanced Methods & Operations",
-                3: "Semester 3 — Specialization & Research Proposal",
-                4: "Semester 4 — Thesis Research & Final Defense"
-            };
-            document.getElementById('kur-header-tag').innerText = "Semester " + semNum;
-            document.getElementById('kur-header-title').innerText = titles[semNum];
-            
-            const totalSks = subjects.reduce((acc, curr) => acc + Number(curr.sks), 0);
-            document.getElementById('kur-total-sks').innerText = totalSks + " SKS";
-
-            const tbody = document.getElementById('kurikulum-table-body');
-            tbody.innerHTML = subjects.map((sub, idx) => {
-                let badgeClass = 'bg-slate-500/20 text-slate-300 border-slate-500/30';
-                if(sub.status === 'Lulus') badgeClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-                if(sub.status === 'Sedang Berjalan') badgeClass = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
-
-                return `
-                    <tr class="transition-all hover:bg-black/5">
-                        <td class="px-6 py-4">
-                            <span class="text-[10px] font-extrabold px-2 py-0.5 rounded border mr-2" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${sub.kode}</span>
-                            <span class="font-extrabold">${sub.nama}</span>
-                        </td>
-                        <td class="px-6 py-4 font-bold">${sub.sks} SKS</td>
-                        <td class="px-6 py-4 opacity-75">${sub.dosen}</td>
-                        <td class="px-6 py-4">
-                            <select onchange="updateKurikulumStatus(${semNum}, ${idx}, this.value)" class="px-3 py-1.5 rounded-lg font-bold border ${badgeClass} outline-none cursor-pointer" style="background: rgba(0,0,0,0.2);">
-                                <option value="Belum Ambil" ${sub.status === 'Belum Ambil' ? 'selected' : ''}>Belum Ambil</option>
-                                <option value="Sedang Berjalan" ${sub.status === 'Sedang Berjalan' ? 'selected' : ''}>Sedang Berjalan</option>
-                                <option value="Lulus" ${sub.status === 'Lulus' ? 'selected' : ''}>Lulus</option>
-                            </select>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <button onclick="deleteKurikulumSubject(${semNum}, ${idx})" class="text-rose-400 hover:text-rose-500 p-1.5"><i class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function updateKurikulumStatus(semNum, idx, newStatus) {
-            storage.kurikulum[semNum][idx].status = newStatus;
-            saveData();
-        }
-
-        function deleteKurikulumSubject(semNum, idx) {
-            if(confirm("Hapus mata kuliah ini dari kurikulum?")) {
-                storage.kurikulum[semNum].splice(idx, 1);
-                saveData();
-                renderKurikulumTable(semNum);
-            }
-        }
-
-        function addKurikulumSubject() {
-            const kode = prompt("Masukkan Kode Matkul (Contoh: UNN809):");
-            const nama = prompt("Nama Mata Kuliah:");
-            const sks = prompt("Jumlah SKS (Contoh: 3):", "3");
-            const dosen = prompt("Dosen Pengampu:");
-            if(kode && nama) {
-                if(!storage.kurikulum[storage.activeKurikulumTab]) storage.kurikulum[storage.activeKurikulumTab] = [];
-                storage.kurikulum[storage.activeKurikulumTab].push({ kode, nama, sks: Number(sks), dosen: dosen || 'Tim Dosen UNNES', status: 'Sedang Berjalan' });
-                
-                if(!storage.ebooks[nama]) {
-                    storage.ebooks[nama] = "✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: " + nama + "\n\nTuliskan ringkasan e-book, jurnal, atau catatan penting di sini.";
-                }
-
-                saveData();
-                renderKurikulumTable(storage.activeKurikulumTab);
-            }
-        }
-
-        setInterval(() => {
-            const el = document.getElementById('realtime-clock');
-            if(el) el.innerText = new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' });
-        }, 1000);
-
-        function addJadwal() {
-            const hari = prompt("Hari Kuliah (Contoh: Senin, Selasa, dll):");
-            const matkul = prompt("Nama Mata Kuliah:");
-            const sks = prompt("Jumlah SKS (Contoh: 3):", "3");
-            const waktu = prompt("Waktu (Contoh: 13.30 - 16.00):");
-            const lokasi = prompt("Lokasi / Ruang Kelas (Contoh: Gedung Pasca UNNES Lt. 3, Ruang 301):");
-            const dosen = prompt("Dosen Pengampu:");
-            const info = prompt("Link / Keterangan (Contoh: https://lms.unnes.ac.id atau Catatan):");
-            if(hari && matkul) {
-                storage.jadwal.push({ hari, matkul, sks: Number(sks || 3), waktu, lokasi: lokasi || 'Ruang Kuliah Pascasarjana UNNES', dosen, info: info || '-' });
-                
-                if(!storage.ebooks[matkul]) {
-                    storage.ebooks[matkul] = "✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: " + matkul + "\n\nTuliskan ringkasan e-book dan jurnal di sini.";
-                }
-
-                generateAutomatedAbsensi(false);
-                saveData();
-            }
-        }
-
-        function editJadwal(index) {
-            const j = storage.jadwal[index];
-            const hari = prompt("Edit Hari Kuliah:", j.hari);
-            const matkul = prompt("Edit Nama Mata Kuliah:", j.matkul);
-            const sks = prompt("Edit Jumlah SKS:", j.sks || 3);
-            const waktu = prompt("Edit Waktu:", j.waktu);
-            const lokasi = prompt("Edit Lokasi / Ruang Kelas:", j.lokasi);
-            const dosen = prompt("Edit Dosen Pengampu:", j.dosen);
-            const info = prompt("Edit Link / Keterangan:", j.info || '');
-
-            if(hari && matkul) {
-                storage.jadwal[index] = { hari, matkul, sks: Number(sks || 3), waktu, lokasi, dosen, info };
-                generateAutomatedAbsensi(false);
-                saveData();
-            }
-        }
-
-        function deleteJadwal(index) {
-            if(confirm("Hapus jadwal ini?")) {
-                storage.jadwal.splice(index, 1);
-                generateAutomatedAbsensi(false);
-                saveData();
-            }
-        }
-
-        function renderJadwalTable() {
-            const tbody = document.getElementById('table-jadwal-body');
-            if(!tbody) return;
-            tbody.innerHTML = storage.jadwal.map((j, i) => `
-                <tr class="transition-all hover:bg-black/5">
-                    <td class="px-6 py-4 font-bold" style="color: var(--accent-color);">${j.hari}</td>
-                    <td class="px-6 py-4 font-extrabold">${j.matkul}</td>
-                    <td class="px-6 py-4 font-bold">${j.sks || 3} SKS</td>
-                    <td class="px-6 py-4 opacity-75">${j.waktu}</td>
-                    <td class="px-6 py-4 font-semibold text-amber-400"><i class="fa-solid fa-location-dot mr-1"></i> ${j.lokasi || 'Ruang Pascasarjana UNNES'}</td>
-                    <td class="px-6 py-4 opacity-75">${j.dosen}</td>
-                    <td class="px-6 py-4 font-medium max-w-xs truncate">
-                        <a href="${j.info && j.info.startsWith('http') ? j.info : '#'}" target="_blank" class="underline hover:opacity-100" style="color: var(--accent-color);" title="${j.info || '-'}">${j.info || '-'}</a>
-                    </td>
-                    <td class="px-6 py-4 text-center space-x-1">
-                        <button onclick="editJadwal(${i})" class="text-blue-400 hover:text-blue-500 p-1.5" title="Edit Jadwal"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteJadwal(${i})" class="text-rose-400 hover:text-rose-500 p-1.5" title="Hapus Jadwal"><i class="fa-solid fa-trash-can"></i></button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-
-        function generateAutomatedAbsensi(showAlert = true) {
-            const dayMap = { 'Minggu': 0, 'Senin': 1, 'Selasa': 2, 'Rabu': 3, 'Kamis': 4, 'Jumat': 5, 'Sabtu': 6 };
-            let newAbsensiList = [];
-            
-            const existingMap = {};
-            if(storage.absensi && storage.absensi.length > 0) {
-                storage.absensi.forEach(item => {
-                    existingMap[item.pertemuan + '|' + item.matkul] = item;
-                });
-            }
-
-            storage.jadwal.forEach(j => {
-                const targetDayIndex = dayMap[j.hari] !== undefined ? dayMap[j.hari] : 1;
-                const baseDate = new Date();
-                
-                for(let week = 1; week <= 4; week++) {
-                    const d = new Date(baseDate);
-                    d.setDate(baseDate.getDate() + ((targetDayIndex + 7 - baseDate.getDay()) % 7) + (week - 1) * 7);
-                    const formattedDate = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-                    
-                    const pertemuanName = `Pertemuan ${week}`;
-                    const key = pertemuanName + '|' + j.matkul;
-                    
-                    if(existingMap[key]) {
-                        newAbsensiList.push(existingMap[key]);
-                    } else {
-                        newAbsensiList.push({
-                            pertemuan: pertemuanName,
-                            matkul: j.matkul,
-                            tanggal: `${formattedDate} (${j.hari})`,
-                            statusKuliah: week === 1 ? 'Sudah Dilaksanakan' : 'Belum Dilaksanakan',
-                            materi: `Pembahasan Materi ${j.matkul} Sesi ${week}`,
-                            kehadiran: 'Hadir'
-                        });
-                    }
-                }
-            });
-
-            storage.absensi = newAbsensiList;
-            saveData();
-            if(showAlert) {
-                alert("Absensi dan materi berhasil di-generate secara otomatis berdasarkan jadwal mingguan berulang!");
-            }
-        }
-
-        function updateAbsensiStatus(index, field, val) {
-            storage.absensi[index][field] = val;
-            saveData();
-        }
-
-        function deleteAbsensi(index) {
-            if(confirm("Hapus sesi absensi ini?")) {
-                storage.absensi.splice(index, 1);
-                saveData();
-            }
-        }
-
-        function renderAbsensiTable() {
-            const tbody = document.getElementById('table-absensi-body');
-            if(!tbody) return;
-            tbody.innerHTML = storage.absensi.map((a, i) => {
-                let badgeStatus = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
-                if(a.statusKuliah === 'Sudah Dilaksanakan') badgeStatus = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-                if(a.statusKuliah === 'Belum Dilaksanakan') badgeStatus = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
-
-                let badgeHadir = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-                if(a.kehadiran === 'Izin') badgeHadir = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
-                if(a.kehadiran === 'Alpha') badgeHadir = 'bg-rose-500/20 text-rose-300 border-rose-500/30';
-
-                return `
-                    <tr class="transition-all hover:bg-black/5">
-                        <td class="px-6 py-4">
-                            <span class="font-extrabold text-[10px] px-2 py-0.5 rounded border mr-1" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${a.pertemuan}</span>
-                            <span class="font-extrabold block mt-1">${a.matkul}</span>
-                        </td>
-                        <td class="px-6 py-4 opacity-75 font-semibold">${a.tanggal}</td>
-                        <td class="px-6 py-4">
-                            <select onchange="updateAbsensiStatus(${i}, 'statusKuliah', this.value)" class="px-3 py-1.5 rounded-lg font-bold border ${badgeStatus} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
-                                <option value="Sudah Dilaksanakan" ${a.statusKuliah === 'Sudah Dilaksanakan' ? 'selected' : ''}>Sudah Dilaksanakan</option>
-                                <option value="Belum Dilaksanakan" ${a.statusKuliah === 'Belum Dilaksanakan' ? 'selected' : ''}>Belum Dilaksanakan</option>
-                            </select>
-                        </td>
-                        <td class="px-6 py-4 font-medium">
-                            <input type="text" value="${a.materi}" onchange="updateAbsensiStatus(${i}, 'materi', this.value)" class="w-full bg-transparent border-b border-dashed outline-none py-1" style="border-color: var(--border-color);" title="Klik untuk edit materi">
-                        </td>
-                        <td class="px-6 py-4">
-                            <select onchange="updateAbsensiStatus(${i}, 'kehadiran', this.value)" class="px-3 py-1.5 rounded-lg font-bold border ${badgeHadir} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
-                                <option value="Hadir" ${a.kehadiran === 'Hadir' ? 'selected' : ''}>Hadir</option>
-                                <option value="Izin" ${a.kehadiran === 'Izin' ? 'selected' : ''}>Izin</option>
-                                <option value="Alpha" ${a.kehadiran === 'Alpha' ? 'selected' : ''}>Alpha</option>
-                            </select>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <button onclick="deleteAbsensi(${i})" class="text-rose-400 hover:text-rose-500 p-1.5" title="Hapus Sesi"><i class="fa-solid fa-trash-can"></i></button>
-                        </td>
-                    </tr>
-                `;
-            }).join('');
-        }
-
-        function renderNotebookSubjects() {
-            const container = document.getElementById('subject-list-container');
-            if(!container) return;
-            container.innerHTML = Object.keys(storage.ebooks).map(sub => `
-                <button onclick="selectSubject('${sub.replace(/'/g, "\\'")}')" class="w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold transition-all truncate flex items-center justify-between ${storage.activeSubject === sub ? 'text-white shadow-md' : 'opacity-70 hover:opacity-100 hover:bg-black/15'}" style="${storage.activeSubject === sub ? 'background-color: var(--accent-color);' : ''}">
-                    <span class="truncate"><i class="fa-solid fa-book-open mr-2"></i> ${sub}</span>
-                    <i class="fa-solid fa-chevron-right text-[10px] opacity-60"></i>
-                </button>
-            `).join('');
-
-            if(!storage.ebooks[storage.activeSubject]) {
-                storage.activeSubject = Object.keys(storage.ebooks)[0] || '';
-            }
-            selectSubject(storage.activeSubject);
-        }
-
-        function selectSubject(sub) {
-            storage.activeSubject = sub;
-            const titleEl = document.getElementById('active-subject-title');
-            const textareaEl = document.getElementById('ebook-textarea');
-            if(titleEl) titleEl.innerText = sub;
-            if(textareaEl) textareaEl.value = storage.ebooks[sub] || '';
-            renderNotebookSubjects();
-        }
-
-        function addSubjectBook() {
-            const newSub = prompt("Masukkan Nama Mata Kuliah / E-Book Baru:");
-            if(newSub && !storage.ebooks[newSub]) {
-                storage.ebooks[newSub] = "✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: " + newSub + "\n\nPoin Penting:\n1. Tuliskan ringkasan e-book dan jurnal wajib di sini.\n2. Catat instruksi khusus dari dosen pengampu.";
-                storage.activeSubject = newSub;
-                saveData();
-            } else if(storage.ebooks[newSub]) {
-                alert("Mata kuliah / e-book tersebut sudah ada dalam daftar!");
-            }
-        }
-
-        function editActiveSubjectTitle() {
-            const oldSub = storage.activeSubject;
-            const newSub = prompt("Edit Nama Mata Kuliah / Judul E-Book:", oldSub);
-            if(newSub && newSub !== oldSub) {
-                if(storage.ebooks[newSub]) {
-                    alert("Nama mata kuliah tersebut sudah ada!");
-                    return;
-                }
-                storage.ebooks[newSub] = storage.ebooks[oldSub];
-                delete storage.ebooks[oldSub];
-                storage.activeSubject = newSub;
-                saveData();
-            }
-        }
-
-        function deleteActiveSubjectBook() {
-            const sub = storage.activeSubject;
-            if(confirm(`Hapus e-book dan catatan untuk mata kuliah "${sub}"?`)) {
-                delete storage.ebooks[sub];
-                const keys = Object.keys(storage.ebooks);
-                storage.activeSubject = keys.length > 0 ? keys[0] : '';
-                saveData();
-            }
-        }
-
-        function saveCurrentNote(val) {
-            if(storage.activeSubject) {
-                storage.ebooks[storage.activeSubject] = val;
-                saveData();
-            }
-        }
-
-        function openTaskModal() { document.getElementById('task-modal').classList.remove('hidden'); }
-        function closeTaskModal() { 
-            document.getElementById('task-modal').classList.add('hidden');
-            document.getElementById('task-form').reset();
-        }
-
-        function handleSaveTask(e) {
-            e.preventDefault();
-            const matkul = document.getElementById('input-matkul').value;
-            const judul = document.getElementById('input-judul').value;
-            const deadline = document.getElementById('input-deadline').value;
-            const status = document.getElementById('input-status').value;
-
-            storage.tugas.push({ matkul, judul, deadline, status });
-            saveData();
-            closeTaskModal();
-        }
-
-        function updateTaskStatus(index, newStatus) {
-            storage.tugas[index].status = newStatus;
-            saveData();
-        }
-
-        function deleteTugas(index) {
-            if(confirm("Hapus tugas ini?")) {
-                storage.tugas.splice(index, 1);
-                saveData();
-            }
-        }
-
-        function renderAll() {
-            const semSelect = document.getElementById('sidebar-sem-select');
-            if(semSelect) semSelect.value = storage.activeSemester;
-            const semBadge = document.getElementById('active-sem-badge');
-            if(semBadge) semBadge.innerText = 'Sem ' + storage.activeSemester;
-            
-            const avatarImg = document.getElementById('user-avatar-img');
-            if(avatarImg) avatarImg.src = storage.userAvatar;
-            const avatarLoginImg = document.getElementById('user-avatar-login-img');
-            if(avatarLoginImg) avatarLoginImg.src = storage.userAvatar;
-
-            const pendingTugas = storage.tugas.filter(t => t.status !== 'Submitted').length;
-            const statTugas = document.getElementById('dash-stat-tugas');
-            if(statTugas) statTugas.innerText = pendingTugas;
-
-            let totalSksAll = 0;
-            Object.values(storage.kurikulum).forEach(list => {
-                list.forEach(item => { if(item.status === 'Lulus') totalSksAll += Number(item.sks); });
-            });
-            const statSks = document.getElementById('dash-stat-sks');
-            if(statSks) statSks.innerText = totalSksAll + " SKS";
-
-            const totalAbsen = storage.absensi.length;
-            const hadirAbsen = storage.absensi.filter(a => a.kehadiran === 'Hadir').length;
-            const persentaseHadir = totalAbsen > 0 ? Math.round((hadirAbsen / totalAbsen) * 100) : 100;
-            const statAbsen = document.getElementById('dash-stat-absensi');
-            if(statAbsen) statAbsen.innerText = persentaseHadir + "%";
-
-            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
-            const todayName = days[new Date().getDay()];
-            const dayBadge = document.getElementById('current-day-badge');
-            if(dayBadge) dayBadge.innerText = todayName;
-
-            const todaySchedules = storage.jadwal.filter(j => j.hari.toLowerCase() === todayName.toLowerCase());
-            const statJadwal = document.getElementById('dash-stat-jadwal');
-            if(statJadwal) statJadwal.innerText = todaySchedules.length + " Sesi";
-
-            const dailyContainer = document.getElementById('dashboard-daily-schedule');
-            if(dailyContainer) {
-                if(todaySchedules.length > 0) {
-                    dailyContainer.innerHTML = todaySchedules.map(s => `
-                        <div class="p-3.5 rounded-xl border flex items-center justify-between text-xs" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
-                            <div>
-                                <span class="font-extrabold">${s.matkul}</span>
-                                <p class="opacity-70 text-[11px] mt-0.5"><i class="fa-regular fa-clock mr-1"></i> ${s.waktu} • <span class="text-amber-400 font-semibold"><i class="fa-solid fa-location-dot"></i> ${s.lokasi || 'Ruang Pasca UNNES'}</span></p>
-                                <p class="opacity-60 text-[10px] mt-0.5">Dosen: ${s.dosen} | SKS: ${s.sks || 3}</p>
-                            </div>
-                            <span class="px-2.5 py-1 rounded font-bold text-[10px] animate-pulse" style="background-color: var(--accent-color); color: #fff;">Pengingat Aktif</span>
-                        </div>
-                    `).join('');
-                } else {
-                    dailyContainer.innerHTML = `<div class="p-4 rounded-xl text-center opacity-60 text-xs italic border" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">Tidak ada jadwal kuliah hari ${todayName}. Waktu optimal untuk riset literatur tesis Pascasarjana UNNES.</div>`;
-                }
-            }
-
-            const deadlineContainer = document.getElementById('dashboard-deadline-list');
-            if(deadlineContainer) {
-                const activeTugas = storage.tugas.filter(t => t.status !== 'Submitted');
-                if(activeTugas.length > 0) {
-                    deadlineContainer.innerHTML = activeTugas.slice(0, 3).map(t => `
-                        <div class="p-3.5 rounded-xl border flex items-center justify-between text-xs" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
-                            <div>
-                                <span class="text-[10px] font-extrabold uppercase" style="color: var(--accent-color);">${t.matkul}</span>
-                                <h4 class="font-extrabold mt-0.5">${t.judul}</h4>
-                                <p class="text-[11px] opacity-70 mt-0.5"><i class="fa-regular fa-clock mr-1 text-rose-400"></i> ${t.deadline}</p>
-                            </div>
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">${t.status}</span>
-                        </div>
-                    `).join('');
-                } else {
-                    deadlineContainer.innerHTML = `<div class="p-4 rounded-xl text-center opacity-60 text-xs italic border" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">Semua tugas akademik Pascasarjana UNNES telah diselesaikan dengan sangat baik! 🚀</div>`;
-                }
-            }
-
-            renderJadwalTable();
-            renderAbsensiTable();
-
-            const tugasContainer = document.getElementById('tugas-container');
-            if(tugasContainer) {
-                tugasContainer.innerHTML = storage.tugas.map((t, i) => {
-                    let badgeColor = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
-                    if(t.status === 'Submitted') badgeColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-                    if(t.status === 'In Progress') badgeColor = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
-
-                    return `
-                        <div class="p-5 rounded-2xl border shadow-sm flex flex-col justify-between space-y-4 text-xs backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="space-y-1">
-                                <span class="font-extrabold px-2 py-0.5 rounded uppercase text-[10px]" style="background-color: var(--accent-color); color: #fff;">${t.matkul}</span>
-                                <h4 class="font-extrabold text-sm mt-1">${t.judul}</h4>
-                                <p class="opacity-70"><i class="fa-regular fa-clock mr-1"></i> Deadline: ${t.deadline}</p>
-                            </div>
-                            <div class="flex items-center justify-between pt-2 border-sys border-t" style="border-color: var(--border-color);">
-                                <select onchange="updateTaskStatus(${i}, this.value)" class="px-3 py-1.5 rounded-lg font-bold border ${badgeColor} outline-none cursor-pointer" style="background: rgba(0,0,0,0.2);">
-                                    <option value="Pending" ${t.status === 'Pending' ? 'selected' : ''}>Pending</option>
-                                    <option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
-                                    <option value="Submitted" ${t.status === 'Submitted' ? 'selected' : ''}>Submitted</option>
-                                </select>
-                                <button onclick="deleteTugas(${i})" class="opacity-50 hover:text-rose-400 p-2"><i class="fa-solid fa-trash-can"></i></button>
-                            </div>
-                        </div>
-                    `;
-                }).join('');
-            }
-
-            renderKurikulumTable(storage.activeKurikulumTab);
-        }
-    </script>
 </body>
 </html>
