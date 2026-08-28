@@ -130,14 +130,14 @@
 </head>
 <body style="background-color: var(--bg-main); color: var(--text-main);" class="font-sans antialiased transition-colors duration-300 overflow-hidden">
 
-    <div id="login-section" class="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-2xl" style="background-color: var(--bg-main);">
-        <div class="w-full max-w-md p-8 rounded-3xl shadow-2xl relative overflow-hidden border" style="background-color: var(--bg-card); border-color: var(--border-color);">
+    <div id="login-section" class="fixed inset-0 z-[100] flex items-center justify-center p-4 backdrop-blur-2xl" style="background-color: var(--bg-main);">
+        <div class="w-full max-w-md p-6 sm:p-8 rounded-3xl shadow-2xl relative overflow-hidden border" style="background-color: var(--bg-card); border-color: var(--border-color);">
             <div class="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-3xl opacity-25" style="background-color: var(--accent-color);"></div>
             <div class="text-center mb-8 relative">
                 <div class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg text-white text-2xl font-bold" style="background: linear-gradient(135deg, var(--accent-color), #c084fc);">
                     <i class="fa-solid fa-graduation-cap"></i>
                 </div>
-                <h2 class="text-2xl font-extrabold tracking-tight">AAAAIIM PASCASARJANA UNNES</h2>
+                <h2 class="text-xl sm:text-2xl font-extrabold tracking-tight">AAAAIIM PASCASARJANA UNNES</h2>
                 <p class="text-xs mt-1 opacity-70">Executive Command & Postgraduate Intelligence Center</p>
             </div>
             <div class="space-y-4 relative">
@@ -157,25 +157,29 @@
         </div>
     </div>
 
-    <div id="main-dashboard" class="flex h-screen overflow-hidden hidden">
+    <div id="main-dashboard" class="flex h-screen overflow-hidden hidden relative">
         
-        <aside class="w-72 border-r flex flex-col justify-between flex-shrink-0 transition-colors duration-300" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
+        <!-- SIDEBAR (RESPONSIVE DRAWER UNTUK HP & DESKTOP) -->
+        <aside id="sidebar-drawer" class="absolute lg:relative inset-y-0 left-0 z-50 w-72 border-r flex flex-col justify-between flex-shrink-0 transition-transform duration-300 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
             <div>
-                <div class="p-6 border-b flex items-center space-x-3" style="border-color: var(--border-color);">
-                    <div class="relative group cursor-pointer" onclick="document.getElementById('avatar-upload').click()" title="Klik untuk ganti foto profil">
-                        <img id="user-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="w-12 h-12 rounded-2xl object-cover border-2 shadow-md" style="border-color: var(--accent-color);" alt="Profil">
-                        <div class="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-[10px]">
-                            <i class="fa-solid fa-camera"></i>
+                <div class="p-6 border-b flex items-center justify-between" style="border-color: var(--border-color);">
+                    <div class="flex items-center space-x-3 overflow-hidden">
+                        <div class="relative group cursor-pointer flex-shrink-0" onclick="document.getElementById('avatar-upload').click()" title="Klik untuk ganti foto profil">
+                            <img id="user-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="w-12 h-12 rounded-2xl object-cover border-2 shadow-md" style="border-color: var(--accent-color);" alt="Profil">
+                            <div class="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-[10px]">
+                                <i class="fa-solid fa-camera"></i>
+                            </div>
+                        </div>
+                        <input type="file" id="avatar-upload" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
+                        <div class="overflow-hidden">
+                            <h1 class="font-extrabold text-xs tracking-tight truncate" id="sidebar-username">Hikarinaim Aistimas</h1>
+                            <span class="text-[10px] opacity-60 block truncate">Pascasarjana UNNES</span>
                         </div>
                     </div>
-                    <input type="file" id="avatar-upload" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
-                    <div class="overflow-hidden">
-                        <h1 class="font-extrabold text-xs tracking-tight truncate" id="sidebar-username">Hikarinaim Aistimas</h1>
-                        <span class="text-[10px] opacity-60 block truncate">Pascasarjana UNNES</span>
-                    </div>
+                    <button onclick="toggleMobileSidebar()" class="lg:hidden text-base opacity-70 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>
                 </div>
 
-                <nav class="p-4 space-y-1.5">
+                <nav class="p-4 space-y-1.5 overflow-y-auto max-h-[calc(100vh-260px)] custom-scrollbar">
                     <button onclick="showTab('dashboard')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-white font-semibold text-xs transition-all shadow-md" style="background-color: var(--accent-color);"><i class="fa-solid fa-chart-pie w-5"></i><span>Command Center</span></button>
                     <button onclick="showTab('kurikulum')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl opacity-70 hover:opacity-100 hover:bg-black/10 font-medium text-xs transition-all"><i class="fa-solid fa-layer-group w-5"></i><span>Kurikulum (Sem 1 - 4)</span></button>
                     <button onclick="showTab('jadwal')" class="nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl opacity-70 hover:opacity-100 hover:bg-black/10 font-medium text-xs transition-all"><i class="fa-solid fa-calendar-days w-5"></i><span>Jadwal & Lokasi Kelas</span></button>
@@ -213,47 +217,55 @@
             </div>
         </aside>
 
-        <main class="flex-1 flex flex-col overflow-y-auto custom-scrollbar" style="background-color: var(--bg-main);">
-            <header class="h-20 backdrop-blur-md border-b px-8 flex items-center justify-between sticky top-0 z-50 transition-colors duration-300" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                <div>
-                    <h2 id="tab-title" class="text-lg font-extrabold tracking-tight">Command Center</h2>
-                    <p class="text-xs opacity-60">Selamat datang kembali di Pascasarjana UNNES.</p>
+        <!-- OVERLAY UNTUK MOBILE SAAT SIDEBAR TERBUKA -->
+        <div id="sidebar-overlay" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-black/50 z-40 lg:hidden hidden backdrop-blur-sm"></div>
+
+        <main class="flex-1 flex flex-col overflow-y-auto custom-scrollbar w-full" style="background-color: var(--bg-main);">
+            <header class="h-20 backdrop-blur-md border-b px-4 sm:px-8 flex items-center justify-between sticky top-0 z-30 transition-colors duration-300" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                <div class="flex items-center space-x-3">
+                    <button onclick="toggleMobileSidebar()" class="lg:hidden w-10 h-10 rounded-xl border flex items-center justify-center text-sm shadow-sm" style="border-color: var(--border-color); background-color: var(--bg-main);">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div>
+                        <h2 id="tab-title" class="text-base sm:text-lg font-extrabold tracking-tight truncate max-w-[180px] sm:max-w-none">Command Center</h2>
+                        <p class="text-[11px] sm:text-xs opacity-60 hidden sm:block">Selamat datang kembali di Pascasarjana UNNES.</p>
+                    </div>
                 </div>
-                <div class="flex items-center space-x-4">
-                    <div id="realtime-clock" class="text-xs font-semibold px-4 py-2 rounded-xl border shadow-inner hidden sm:block" style="background-color: var(--bg-main); border-color: var(--border-color);"></div>
-                    <button onclick="handleLogout()" class="flex items-center space-x-2 px-4 py-2.5 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all text-xs font-bold border border-rose-500/20 shadow-sm">
-                        <i class="fa-solid fa-power-off"></i><span>Logout</span>
+                <div class="flex items-center space-x-2 sm:space-x-4">
+                    <div id="realtime-clock" class="text-xs font-semibold px-4 py-2 rounded-xl border shadow-inner hidden md:block" style="background-color: var(--bg-main); border-color: var(--border-color);"></div>
+                    <button onclick="handleLogout()" class="flex items-center space-x-2 px-3 sm:px-4 py-2.5 rounded-xl bg-rose-500/10 text-rose-400 hover:bg-rose-500 hover:text-white transition-all text-xs font-bold border border-rose-500/20 shadow-sm">
+                        <i class="fa-solid fa-power-off"></i><span class="hidden sm:inline">Logout</span>
                     </button>
                 </div>
             </header>
 
-            <div class="p-8 space-y-8 max-w-7xl mx-auto w-full">
+            <div class="p-4 sm:p-8 space-y-6 sm:space-y-8 max-w-7xl mx-auto w-full">
                 
-                <div id="tab-dashboard" class="tab-content space-y-8">
-                    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div class="border p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white shadow-md" style="background-color: var(--accent-color);"><i class="fa-solid fa-list-check"></i></div>
+                <div id="tab-dashboard" class="tab-content space-y-6 sm:space-y-8">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+                        <div class="border p-5 sm:p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                            <div class="w-12 h-12 rounded-xl flex items-center justify-center text-xl font-bold text-white shadow-md flex-shrink-0" style="background-color: var(--accent-color);"><i class="fa-solid fa-list-check"></i></div>
                             <div>
                                 <p class="text-xs opacity-70 font-medium">Tugas Pending</p>
                                 <h3 id="dash-stat-tugas" class="text-2xl font-extrabold">0</h3>
                             </div>
                         </div>
-                        <div class="border p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-calendar-day"></i></div>
+                        <div class="border p-5 sm:p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                            <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center justify-center text-xl font-bold flex-shrink-0"><i class="fa-solid fa-calendar-day"></i></div>
                             <div>
                                 <p class="text-xs opacity-70 font-medium">Jadwal Hari Ini</p>
                                 <h3 id="dash-stat-jadwal" class="text-2xl font-extrabold">0 Sesi</h3>
                             </div>
                         </div>
-                        <div class="border p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-clipboard-user"></i></div>
+                        <div class="border p-5 sm:p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                            <div class="w-12 h-12 rounded-xl bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 flex items-center justify-center text-xl font-bold flex-shrink-0"><i class="fa-solid fa-clipboard-user"></i></div>
                             <div>
                                 <p class="text-xs opacity-70 font-medium">Kehadiran Kuliah</p>
                                 <h3 id="dash-stat-absensi" class="text-2xl font-extrabold">0%</h3>
                             </div>
                         </div>
-                        <div class="border p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-xl font-bold"><i class="fa-solid fa-graduation-cap"></i></div>
+                        <div class="border p-5 sm:p-6 rounded-2xl shadow-sm flex items-center space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                            <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 border border-blue-500/30 flex items-center justify-center text-xl font-bold flex-shrink-0"><i class="fa-solid fa-graduation-cap"></i></div>
                             <div>
                                 <p class="text-xs opacity-70 font-medium">Total SKS Tempuh</p>
                                 <h3 id="dash-stat-sks" class="text-2xl font-extrabold">0 SKS</h3>
@@ -262,7 +274,7 @@
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                        <div class="border rounded-2xl p-6 shadow-sm flex flex-col justify-between backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <div class="border rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div>
                                 <div class="flex items-center justify-between mb-4">
                                     <h3 class="font-extrabold text-sm flex items-center space-x-2">
@@ -275,7 +287,7 @@
                             </div>
                         </div>
 
-                        <div class="border rounded-2xl p-6 shadow-sm flex flex-col justify-between backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <div class="border rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div>
                                 <div class="flex items-center justify-between mb-4">
                                     <h3 class="font-extrabold text-sm flex items-center space-x-2">
@@ -292,47 +304,47 @@
 
                 <div id="tab-kurikulum" class="tab-content hidden space-y-6">
                     <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                        <button onclick="switchKurikulumTab(1)" id="kur-btn-1" class="p-4 rounded-2xl border text-left transition-all shadow-md" style="background-color: var(--accent-color); border-color: var(--accent-color); color: #fff;">
+                        <button onclick="switchKurikulumTab(1)" id="kur-btn-1" class="p-3 sm:p-4 rounded-2xl border text-left transition-all shadow-md" style="background-color: var(--accent-color); border-color: var(--accent-color); color: #fff;">
                             <span class="text-[10px] uppercase tracking-wider font-bold opacity-80">Fase I</span>
-                            <h4 class="font-extrabold text-sm mt-0.5">Semester 1</h4>
-                            <p class="text-[11px] opacity-80 mt-1">Foundational Core</p>
+                            <h4 class="font-extrabold text-xs sm:text-sm mt-0.5">Semester 1</h4>
+                            <p class="text-[10px] sm:text-[11px] opacity-80 mt-1">Foundational Core</p>
                         </button>
-                        <button onclick="switchKurikulumTab(2)" id="kur-btn-2" class="p-4 rounded-2xl border text-left transition-all" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <button onclick="switchKurikulumTab(2)" id="kur-btn-2" class="p-3 sm:p-4 rounded-2xl border text-left transition-all" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <span class="text-[10px] uppercase tracking-wider font-bold opacity-60">Fase II</span>
-                            <h4 class="font-extrabold text-sm mt-0.5">Semester 2</h4>
-                            <p class="text-[11px] opacity-70 mt-1">Advanced Methods</p>
+                            <h4 class="font-extrabold text-xs sm:text-sm mt-0.5">Semester 2</h4>
+                            <p class="text-[10px] sm:text-[11px] opacity-70 mt-1">Advanced Methods</p>
                         </button>
-                        <button onclick="switchKurikulumTab(3)" id="kur-btn-3" class="p-4 rounded-2xl border text-left transition-all" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <button onclick="switchKurikulumTab(3)" id="kur-btn-3" class="p-3 sm:p-4 rounded-2xl border text-left transition-all" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <span class="text-[10px] uppercase tracking-wider font-bold opacity-60">Fase III</span>
-                            <h4 class="font-extrabold text-sm mt-0.5">Semester 3</h4>
-                            <p class="text-[11px] opacity-70 mt-1">Specialization & Proposal</p>
+                            <h4 class="font-extrabold text-xs sm:text-sm mt-0.5">Semester 3</h4>
+                            <p class="text-[10px] sm:text-[11px] opacity-70 mt-1">Specialization & Proposal</p>
                         </button>
-                        <button onclick="switchKurikulumTab(4)" id="kur-btn-4" class="p-4 rounded-2xl border text-left transition-all" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <button onclick="switchKurikulumTab(4)" id="kur-btn-4" class="p-3 sm:p-4 rounded-2xl border text-left transition-all" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <span class="text-[10px] uppercase tracking-wider font-bold opacity-60">Fase IV</span>
-                            <h4 class="font-extrabold text-sm mt-0.5">Semester 4</h4>
-                            <p class="text-[11px] opacity-70 mt-1">Thesis & Defense</p>
+                            <h4 class="font-extrabold text-xs sm:text-sm mt-0.5">Semester 4</h4>
+                            <p class="text-[10px] sm:text-[11px] opacity-70 mt-1">Thesis & Defense</p>
                         </button>
                     </div>
 
-                    <div class="border rounded-2xl p-6 shadow-sm backdrop-blur-md space-y-6" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                    <div class="border rounded-2xl p-5 sm:p-6 shadow-sm backdrop-blur-md space-y-6" style="background-color: var(--bg-card); border-color: var(--border-color);">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b" style="border-color: var(--border-color);">
                             <div>
                                 <span class="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);" id="kur-header-tag">Semester 1</span>
-                                <h3 class="font-extrabold text-lg mt-1" id="kur-header-title">Mata Kuliah Semester 1</h3>
+                                <h3 class="font-extrabold text-base sm:text-lg mt-1" id="kur-header-title">Mata Kuliah Semester 1</h3>
                             </div>
-                            <div class="flex items-center space-x-3">
-                                <div class="text-right">
+                            <div class="flex items-center justify-between sm:justify-end w-full sm:w-auto space-x-3">
+                                <div class="text-left sm:text-right">
                                     <span class="text-[10px] uppercase tracking-wider opacity-60 block font-bold">Total SKS Semester</span>
-                                    <span class="text-base font-extrabold" id="kur-total-sks">18 SKS</span>
+                                    <span class="text-sm sm:text-base font-extrabold" id="kur-total-sks">18 SKS</span>
                                 </div>
                                 <button onclick="addKurikulumSubject()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2" style="background-color: var(--accent-color);">
-                                    <i class="fa-solid fa-plus"></i><span>Tambah Matkul</span>
+                                    <i class="fa-solid fa-plus"></i><span>Tambah</span>
                                 </button>
                             </div>
                         </div>
 
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="w-full text-left text-xs min-w-[650px]">
                                 <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                                     <tr>
                                         <th class="px-6 py-4">Kode / Mata Kuliah</th>
@@ -350,15 +362,15 @@
 
                 <div id="tab-jadwal" class="tab-content hidden space-y-6">
                     <div class="border rounded-2xl overflow-hidden shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                        <div class="p-6 border-b flex justify-between items-center" style="border-color: var(--border-color);">
+                        <div class="p-5 sm:p-6 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4" style="border-color: var(--border-color);">
                             <div>
                                 <h3 class="font-extrabold text-sm">Jadwal Kuliah & Lokasi Ruangan Kelas Pascasarjana UNNES</h3>
                                 <p class="text-xs opacity-60 mt-0.5">Kelola jadwal mingguan, SKS, lokasi ruangan, serta link materi atau catatan.</p>
                             </div>
-                            <button onclick="addJadwal()" class="text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md" style="background-color: var(--accent-color);">+ Tambah Jadwal</button>
+                            <button onclick="addJadwal()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md w-full sm:w-auto text-center" style="background-color: var(--accent-color);">+ Tambah Jadwal</button>
                         </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="w-full text-left text-xs min-w-[750px]">
                                 <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                                     <tr>
                                         <th class="px-6 py-4">Hari</th>
@@ -378,18 +390,18 @@
                 </div>
 
                 <div id="tab-absensi" class="tab-content hidden space-y-6">
-                    <div class="border rounded-2xl p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                    <div class="border rounded-2xl p-5 sm:p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                             <div>
                                 <h3 class="font-extrabold text-base">Tools Absensi & Materi Perkuliahan Pascasarjana</h3>
-                                <p class="text-xs opacity-65">Absensi dan materi terisi otomatis dari jadwal berulang mingguan. Anda cukup mengisi status Hadir dan Materi.</p>
+                                <p class="text-xs opacity-65">Absensi dan materi terisi otomatis dari jadwal berulang mingguan.</p>
                             </div>
-                            <button onclick="generateAutomatedAbsensi()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2 bg-emerald-600 hover:bg-emerald-500">
-                                <i class="fa-solid fa-rotate"></i><span>Sinkronkan & Generate Sesi Otomatis</span>
+                            <button onclick="generateAutomatedAbsensi()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center space-x-2 bg-emerald-600 hover:bg-emerald-500 w-full sm:w-auto">
+                                <i class="fa-solid fa-rotate"></i><span>Sinkronkan Sesi Otomatis</span>
                             </button>
                         </div>
-                        <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs">
+                        <div class="overflow-x-auto custom-scrollbar">
+                            <table class="w-full text-left text-xs min-w-[700px]">
                                 <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                                     <tr>
                                         <th class="px-6 py-4">Pertemuan & Matkul</th>
@@ -408,52 +420,52 @@
 
                 <div id="tab-notebook" class="tab-content hidden space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                        <div class="lg:col-span-1 border rounded-2xl p-4 flex flex-col justify-between h-[680px] backdrop-blur-md shadow-lg" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <div class="lg:col-span-1 border rounded-2xl p-4 flex flex-col justify-between h-[300px] lg:h-[680px] backdrop-blur-md shadow-lg" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div>
                                 <div class="flex items-center justify-between mb-4 px-2">
                                     <div>
                                         <h3 class="font-extrabold text-xs uppercase tracking-wider opacity-90">Katalog E-Book</h3>
-                                        <p class="text-[10px] opacity-60 mt-0.5">Pilih, ubah, atau hapus judul buku</p>
+                                        <p class="text-[10px] opacity-60 mt-0.5">Pilih atau tambah mata kuliah</p>
                                     </div>
                                     <button onclick="addSubjectBook()" class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shadow-md transition-transform active:scale-95" style="background-color: var(--accent-color);" title="Tambah Mata Kuliah Baru"><i class="fa-solid fa-plus"></i></button>
                                 </div>
-                                <div id="subject-list-container" class="space-y-1.5 overflow-y-auto max-h-[580px] custom-scrollbar pr-1"></div>
+                                <div id="subject-list-container" class="space-y-1.5 overflow-y-auto max-h-[220px] lg:max-h-[580px] custom-scrollbar pr-1"></div>
                             </div>
                         </div>
 
-                        <div class="lg:col-span-3 border rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[680px] backdrop-blur-md relative" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="p-5 border-b flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-8" style="border-color: var(--border-color); background: linear-gradient(135deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));">
+                        <div class="lg:col-span-3 border rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[550px] lg:h-[680px] backdrop-blur-md relative" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                            <div class="p-4 sm:p-5 border-b flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-6 sm:px-8" style="border-color: var(--border-color); background: linear-gradient(135deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));">
                                 <div>
                                     <span class="text-[10px] font-extrabold uppercase tracking-widest" style="color: var(--accent-color);"><i class="fa-solid fa-feather-pointed mr-1"></i> Executive Academic Journal</span>
-                                    <h3 id="active-subject-title" class="font-extrabold text-base mt-0.5">Pilih Mata Kuliah di Sidebar</h3>
+                                    <h3 id="active-subject-title" class="font-extrabold text-sm sm:text-base mt-0.5">Pilih Mata Kuliah di Sidebar</h3>
                                 </div>
                                 <div class="flex items-center space-x-2">
-                                    <button onclick="renameActiveSubjectBook()" class="px-3 py-1.5 rounded-lg border text-[11px] font-bold opacity-80 hover:opacity-100 transition-all shadow-sm" style="background-color: var(--bg-main); border-color: var(--border-color);" title="Ganti Judul E-Book Aktif"><i class="fa-solid fa-pen mr-1"></i> Ganti Judul</button>
-                                    <button onclick="deleteActiveSubjectBook()" class="px-3 py-1.5 rounded-lg border text-[11px] font-bold text-rose-400 border-rose-500/30 bg-rose-500/10 hover:bg-rose-500 hover:text-white transition-all shadow-sm" title="Hapus E-Book Aktif"><i class="fa-solid fa-trash-can mr-1"></i> Hapus</button>
+                                    <button onclick="renameActiveSubjectBook()" class="px-3 py-1.5 rounded-lg border text-[11px] font-bold opacity-80 hover:opacity-100 transition-all shadow-sm" style="background-color: var(--bg-main); border-color: var(--border-color);" title="Ganti Judul"><i class="fa-solid fa-pen mr-1"></i> Ganti Judul</button>
+                                    <button onclick="deleteActiveSubjectBook()" class="px-3 py-1.5 rounded-lg border text-[11px] font-bold text-rose-400 border-rose-500/30 bg-rose-500/10 hover:bg-rose-500 hover:text-white transition-all shadow-sm" title="Hapus"><i class="fa-solid fa-trash-can mr-1"></i> Hapus</button>
                                 </div>
                             </div>
 
                             <div class="flex-1 p-0 overflow-y-auto custom-scrollbar relative">
                                 <div class="absolute left-6 top-0 bottom-0 w-0.5 opacity-25" style="background-color: var(--accent-color);"></div>
-                                <textarea id="ebook-textarea" oninput="saveCurrentNote(this.value)" class="w-full h-full notebook-page focus:outline-none pl-12 pr-8 py-2 font-medium resize-none text-sm placeholder:opacity-40" placeholder="Tuliskan intisari jurnal, catatan kuliah interaktif, atau draf kerangka tesis Anda di sini... Setiap baris dirancang rapi selaras dengan garis akademik."></textarea>
+                                <textarea id="ebook-textarea" oninput="saveCurrentNote(this.value)" class="w-full h-full notebook-page focus:outline-none pl-12 pr-6 sm:pr-8 py-2 font-medium resize-none text-sm placeholder:opacity-40" placeholder="Tuliskan intisari jurnal, catatan kuliah interaktif, atau draf kerangka tesis Anda di sini..."></textarea>
                             </div>
 
-                            <div class="px-8 py-3 border-t text-[11px] opacity-60 flex items-center justify-between" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">
+                            <div class="px-6 sm:px-8 py-3 border-t text-[10px] sm:text-[11px] opacity-60 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-1" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">
                                 <span><i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Tersimpan otomatis di enkripsi lokal & Firebase Cloud</span>
-                                <span class="font-bold uppercase tracking-wider text-[10px]" style="color: var(--accent-color);">Pascasarjana UNNES Edition</span>
+                                <span class="font-bold uppercase tracking-wider" style="color: var(--accent-color);">Pascasarjana UNNES Edition</span>
                             </div>
                         </div>
                     </div>
                 </div>
 
                 <div id="tab-tugas" class="tab-content hidden space-y-6">
-                    <div class="border rounded-2xl p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                    <div class="border rounded-2xl p-5 sm:p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                             <div>
                                 <h3 class="font-extrabold text-base">Manajemen Tugas & Tenggat Waktu</h3>
                                 <p class="text-xs opacity-65">Pantau status pengerjaan tugas pascasarjana Anda secara terstruktur.</p>
                             </div>
-                            <button onclick="openTaskModal()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2" style="background-color: var(--accent-color);">
+                            <button onclick="openTaskModal()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center space-x-2 w-full sm:w-auto" style="background-color: var(--accent-color);">
                                 <i class="fa-solid fa-plus"></i><span>Tambah Tugas Baru</span>
                             </button>
                         </div>
@@ -478,7 +490,7 @@
                 </div>
                 <div>
                     <label class="block font-bold uppercase mb-1 opacity-70">Judul / Detail Tugas</label>
-                    <input type="text" id="input-judul" required placeholder="Contoh: Review Jurnal Internasional Bereputasi" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                    <input type="text" id="input-judul" required placeholder="Contoh: Review Jurnal Internasional" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
                 </div>
                 <div>
                     <label class="block font-bold uppercase mb-1 opacity-70">Deadline Waktu & Tanggal</label>
@@ -577,6 +589,13 @@
             renderAll();
         }
 
+        function toggleMobileSidebar() {
+            const drawer = document.getElementById('sidebar-drawer');
+            const overlay = document.getElementById('sidebar-overlay');
+            drawer.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
         function handleLogin() {
             const u = document.getElementById('username').value.trim();
             const p = document.getElementById('password').value.trim();
@@ -652,6 +671,9 @@
                 tugas: "Tugas & Deadline Akademik"
             };
             document.getElementById('tab-title').innerText = titles[tabId];
+            if(window.innerWidth < 1024) {
+                toggleMobileSidebar();
+            }
             if(tabId === 'notebook') renderNotebookSubjects();
             if(tabId === 'kurikulum') renderKurikulumTable(storage.activeKurikulumTab);
             if(tabId === 'absensi') renderAbsensiTable();
@@ -666,12 +688,12 @@
                     btn.style.backgroundColor = 'var(--accent-color)';
                     btn.style.borderColor = 'var(--accent-color)';
                     btn.style.color = '#fff';
-                    btn.className = "p-4 rounded-2xl border text-left transition-all shadow-md";
+                    btn.className = "p-3 sm:p-4 rounded-2xl border text-left transition-all shadow-md";
                 } else {
                     btn.style.backgroundColor = 'var(--bg-card)';
                     btn.style.borderColor = 'var(--border-color)';
                     btn.style.color = 'var(--text-main)';
-                    btn.className = "p-4 rounded-2xl border text-left transition-all opacity-70 hover:opacity-100";
+                    btn.className = "p-3 sm:p-4 rounded-2xl border text-left transition-all opacity-70 hover:opacity-100";
                 }
             }
             renderKurikulumTable(semNum);
@@ -756,9 +778,9 @@
             const matkul = prompt("Nama Mata Kuliah:");
             const sks = prompt("Jumlah SKS (Contoh: 3):", "3");
             const waktu = prompt("Waktu (Contoh: 13.30 - 16.00):");
-            const lokasi = prompt("Lokasi / Ruang Kelas (Contoh: Gedung Pasca UNNES Lt. 3, Ruang 301):");
+            const lokasi = prompt("Lokasi / Ruang Kelas:");
             const dosen = prompt("Dosen Pengampu:");
-            const info = prompt("Link / Keterangan (Contoh: https://lms.unnes.ac.id atau Catatan):");
+            const info = prompt("Link / Keterangan:");
             if(hari && matkul) {
                 storage.jadwal.push({ hari, matkul, sks: Number(sks || 3), waktu, lokasi: lokasi || 'Ruang Kuliah Pascasarjana UNNES', dosen, info: info || '-' });
                 generateAutomatedAbsensi(false);
@@ -806,8 +828,8 @@
                         <a href="${j.info && j.info.startsWith('http') ? j.info : '#'}" target="_blank" class="underline hover:opacity-100" style="color: var(--accent-color);" title="${j.info || '-'}">${j.info || '-'}</a>
                     </td>
                     <td class="px-6 py-4 text-center space-x-1">
-                        <button onclick="editJadwal(${i})" class="text-blue-400 hover:text-blue-500 p-1.5" title="Edit Jadwal"><i class="fa-solid fa-pen-to-square"></i></button>
-                        <button onclick="deleteJadwal(${i})" class="text-rose-400 hover:text-rose-500 p-1.5" title="Hapus Jadwal"><i class="fa-solid fa-trash-can"></i></button>
+                        <button onclick="editJadwal(${i})" class="text-blue-400 hover:text-blue-500 p-1.5" title="Edit"><i class="fa-solid fa-pen-to-square"></i></button>
+                        <button onclick="deleteJadwal(${i})" class="text-rose-400 hover:text-rose-500 p-1.5" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
                     </td>
                 </tr>
             `).join('');
@@ -854,7 +876,7 @@
             storage.absensi = newAbsensiList;
             saveData();
             if(showAlert) {
-                alert("Absensi dan materi berhasil di-generate secara otomatis berdasarkan jadwal mingguan berulang!");
+                alert("Absensi dan materi berhasil di-generate secara otomatis!");
             }
         }
 
@@ -896,7 +918,7 @@
                             </select>
                         </td>
                         <td class="px-6 py-4 font-medium">
-                            <input type="text" value="${a.materi}" onchange="updateAbsensiStatus(${i}, 'materi', this.value)" class="w-full bg-transparent border-b border-dashed outline-none py-1" style="border-color: var(--border-color);" title="Klik untuk edit materi">
+                            <input type="text" value="${a.materi}" onchange="updateAbsensiStatus(${i}, 'materi', this.value)" class="w-full bg-transparent border-b border-dashed outline-none py-1" style="border-color: var(--border-color);">
                         </td>
                         <td class="px-6 py-4">
                             <select onchange="updateAbsensiStatus(${i}, 'kehadiran', this.value)" class="px-3 py-1.5 rounded-lg font-bold border ${badgeHadir} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
@@ -906,7 +928,7 @@
                             </select>
                         </td>
                         <td class="px-6 py-4 text-center">
-                            <button onclick="deleteAbsensi(${i})" class="text-rose-400 hover:text-rose-500 p-1.5" title="Hapus Sesi"><i class="fa-solid fa-trash-can"></i></button>
+                            <button onclick="deleteAbsensi(${i})" class="text-rose-400 hover:text-rose-500 p-1.5" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
                         </td>
                     </tr>
                 `;
@@ -943,14 +965,13 @@
         function addSubjectBook() {
             const newSub = prompt("Masukkan Nama Mata Kuliah Baru untuk E-Book:");
             if(newSub && !storage.ebooks[newSub]) {
-                storage.ebooks[newSub] = "✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Pengantar & Landasan Teori " + newSub + "\n\nPoin Penting:\n1. Tuliskan ringkasan jurnal dan literatur wajib di sini.\n2. Catat instruksi khusus dari dosen pengampu.\n3. Susun kerangka gagasan untuk analisis tesis.";
+                storage.ebooks[newSub] = "✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Pengantar & Landasan Teori " + newSub + "\n\nPoin Penting:\n1. Tuliskan ringkasan jurnal dan literatur wajib di sini.\n2. Catat instruksi khusus dari dosen pengampu.";
                 storage.activeSubject = newSub;
                 saveData();
                 renderNotebookSubjects();
             }
         }
 
-        // TOOL BARU: GANTI JUDUL E-BOOK AKTIF
         function renameActiveSubjectBook() {
             if(!storage.activeSubject || !storage.ebooks[storage.activeSubject]) {
                 alert("Pilih e-book yang ingin diganti judulnya terlebih dahulu!");
@@ -960,7 +981,7 @@
             const newName = prompt("Ubah Nama / Judul Mata Kuliah E-Book:", oldName);
             if(newName && newName.trim() !== "" && newName !== oldName) {
                 if(storage.ebooks[newName]) {
-                    alert("Nama mata kuliah tersebut sudah ada di katalog!");
+                    alert("Nama mata kuliah tersebut sudah ada!");
                     return;
                 }
                 storage.ebooks[newName] = storage.ebooks[oldName];
@@ -971,14 +992,13 @@
             }
         }
 
-        // TOOL BARU: HAPUS E-BOOK AKTIF
         function deleteActiveSubjectBook() {
             if(!storage.activeSubject || !storage.ebooks[storage.activeSubject]) {
                 alert("Pilih e-book yang ingin dihapus terlebih dahulu!");
                 return;
             }
             const target = storage.activeSubject;
-            if(confirm(`Apakah Anda yakin ingin menghapus e-book dan catatan untuk mata kuliah "${target}"?`)) {
+            if(confirm(`Apakah Anda yakin ingin menghapus e-book "${target}"?`)) {
                 delete storage.ebooks[target];
                 const remainingKeys = Object.keys(storage.ebooks);
                 storage.activeSubject = remainingKeys.length > 0 ? remainingKeys[0] : '';
@@ -1063,17 +1083,16 @@
             if(dailyContainer) {
                 if(todaySchedules.length > 0) {
                     dailyContainer.innerHTML = todaySchedules.map(s => `
-                        <div class="p-3.5 rounded-xl border flex items-center justify-between text-xs" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
+                        <div class="p-3.5 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                             <div>
                                 <span class="font-extrabold">${s.matkul}</span>
                                 <p class="opacity-70 text-[11px] mt-0.5"><i class="fa-regular fa-clock mr-1"></i> ${s.waktu} • <span class="text-amber-400 font-semibold"><i class="fa-solid fa-location-dot"></i> ${s.lokasi || 'Ruang Pasca UNNES'}</span></p>
-                                <p class="opacity-60 text-[10px] mt-0.5">Dosen: ${s.dosen} | SKS: ${s.sks || 3}</p>
                             </div>
-                            <span class="px-2.5 py-1 rounded font-bold text-[10px] animate-pulse" style="background-color: var(--accent-color); color: #fff;">Pengingat Aktif</span>
+                            <span class="px-2.5 py-1 rounded font-bold text-[10px] animate-pulse self-end sm:self-auto" style="background-color: var(--accent-color); color: #fff;">Aktif</span>
                         </div>
                     `).join('');
                 } else {
-                    dailyContainer.innerHTML = `<div class="p-4 rounded-xl text-center opacity-60 text-xs italic border" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">Tidak ada jadwal kuliah hari ${todayName}. Waktu optimal untuk riset literatur tesis Pascasarjana UNNES.</div>`;
+                    dailyContainer.innerHTML = `<div class="p-4 rounded-xl text-center opacity-60 text-xs italic border" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">Tidak ada jadwal kuliah hari ${todayName}. Waktu optimal untuk riset literatur.</div>`;
                 }
             }
 
@@ -1082,17 +1101,17 @@
                 const activeTugas = storage.tugas.filter(t => t.status !== 'Submitted');
                 if(activeTugas.length > 0) {
                     deadlineContainer.innerHTML = activeTugas.slice(0, 3).map(t => `
-                        <div class="p-3.5 rounded-xl border flex items-center justify-between text-xs" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
+                        <div class="p-3.5 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                             <div>
                                 <span class="text-[10px] font-extrabold uppercase" style="color: var(--accent-color);">${t.matkul}</span>
                                 <h4 class="font-extrabold mt-0.5">${t.judul}</h4>
                                 <p class="text-[11px] opacity-70 mt-0.5"><i class="fa-regular fa-clock mr-1 text-rose-400"></i> ${t.deadline}</p>
                             </div>
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">${t.status}</span>
+                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 self-end sm:self-auto">${t.status}</span>
                         </div>
                     `).join('');
                 } else {
-                    deadlineContainer.innerHTML = `<div class="p-4 rounded-xl text-center opacity-60 text-xs italic border" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">Semua tugas akademik Pascasarjana UNNES telah diselesaikan dengan sangat baik! 🚀</div>`;
+                    deadlineContainer.innerHTML = `<div class="p-4 rounded-xl text-center opacity-60 text-xs italic border" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">Semua tugas akademik telah diselesaikan! 🚀</div>`;
                 }
             }
 
