@@ -364,28 +364,29 @@
                     </div>
                 </div>
 
-                <!-- TAB 4: ABSENSI -->
+                <!-- TAB 4: ABSENSI (AUTO-SYNC DARI JADWAL) -->
                 <div id="tab-absensi" class="tab-content hidden space-y-6">
                     <div class="border rounded-2xl p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                             <div>
-                                <h3 class="font-extrabold text-base">Tools Absensi & Materi Perkuliahan Pascasarjana</h3>
-                                <p class="text-xs opacity-65">Pantau status pelaksanaan perkuliahan, catatan materi, dan rekapitulasi kehadiran Anda.</p>
+                                <h3 class="font-extrabold text-base">Tools Absensi & Materi Perkuliahan Otomatis</h3>
+                                <p class="text-xs opacity-65">Daftar sesi pertemuan dihasilkan otomatis dari Jadwal Kuliah Anda. Cukup isi kehadiran dan materi.</p>
                             </div>
-                            <button onclick="addAbsensiSesi()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2" style="background-color: var(--accent-color);">
-                                <i class="fa-solid fa-plus"></i><span>Tambah Sesi Pertemuan</span>
-                            </button>
+                            <div class="flex items-center space-x-2">
+                                <span class="text-[11px] px-3 py-1.5 rounded-lg border font-bold bg-emerald-500/10 text-emerald-400 border-emerald-500/20">
+                                    <i class="fa-solid fa-rotate mr-1"></i> Sinkron Jadwal Aktif
+                                </span>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
                             <table class="w-full text-left text-xs">
                                 <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                                     <tr>
-                                        <th class="px-6 py-4">Pertemuan & Matkul</th>
-                                        <th class="px-6 py-4">Tanggal / Waktu</th>
-                                        <th class="px-6 py-4">Status Pelaksanaan</th>
+                                        <th class="px-6 py-4">Hari & Mata Kuliah</th>
+                                        <th class="px-6 py-4">Waktu / Ruangan</th>
+                                        <th class="px-6 py-4">Dosen Pengampu</th>
                                         <th class="px-6 py-4">Materi Pembahasan</th>
                                         <th class="px-6 py-4">Kehadiran Saya</th>
-                                        <th class="px-6 py-4 text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-absensi-body" class="divide-y" style="border-color: var(--border-color);"></tbody>
@@ -522,10 +523,8 @@
                 { hari: 'Senin', matkul: 'Filsafat Ilmu & Epistemologi Pendidikan', sks: 3, waktu: '13.30 - 16.00', lokasi: 'Gedung Pascasarjana UNNES Lt. 3, Ruang 301', dosen: 'Prof. Dr. Tri Joko Raharjo, M.Pd.', info: 'https://lms.unnes.ac.id (LMS Kuliah)' },
                 { hari: 'Rabu', matkul: 'Statistika & Analisis Data Kuantitatif Lanjut', sks: 3, waktu: '09.00 - 11.30', lokasi: 'Lab Komputer Pascasarjana UNNES Lt. 2', dosen: 'Dr. Hardi Suyitno, M.Pd.', info: 'Membawa laptop terinstal software SPSS / R' }
             ],
-            absensi: JSON.parse(localStorage.getItem('aaaaíim_pasca_absensi')) || [
-                { pertemuan: 'Pertemuan 1', matkul: 'Filsafat Ilmu & Epistemologi Pendidikan', tanggal: '24 Agustus 2026', statusKuliah: 'Sudah Dilaksanakan', materi: 'Ontologi, Epistemologi, dan Aksiologi Ilmu', kehadiran: 'Hadir' },
-                { pertemuan: 'Pertemuan 2', matkul: 'Statistika & Analisis Data Kuantitatif Lanjut', tanggal: '26 Agustus 2026', statusKuliah: 'Sudah Dilaksanakan', materi: 'Uji Normalitas, Homogenitas, dan Regresi Ganda', kehadiran: 'Hadir' }
-            ],
+            // Menyimpan state absensi otomatis berdasarkan index jadwal
+            absensiState: JSON.parse(localStorage.getItem('aaaaíim_pasca_absensi_state')) || {},
             ebooks: JSON.parse(localStorage.getItem('aaaaíim_pasca_ebooks')) || {
                 'Filsafat Ilmu & Epistemologi Pendidikan': '✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Landasan Ontologis & Epistemologis Ilmu Pendidikan\n\nPoin Penting:\n1. Hakikat kebenaran ilmiah dalam perspektif post-positivisme.\n2. Konstruksi paradigma berpikir kritis bagi mahasiswa magister.\n3. Relevansi filsafat ilmu dengan pengembangan tesis.',
                 'Statistika & Analisis Data Kuantitatif Lanjut': '✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Analisis Multivariat & Pengujian Hipotesis Kompleks\n\nPoin Penting:\n1. Pemilihan uji statistik parametrik dan non-parametrik yang tepat.\n2. Interpretasi output SPSS untuk publikasi jurnal ilmiah.\n3. Validitas dan reliabilitas instrumen penelitian.'
@@ -551,7 +550,7 @@
         function saveData() {
             localStorage.setItem('aaaaíim_pasca_kurikulum', JSON.stringify(storage.kurikulum));
             localStorage.setItem('aaaaíim_pasca_jadwal', JSON.stringify(storage.jadwal));
-            localStorage.setItem('aaaaíim_pasca_absensi', JSON.stringify(storage.absensi));
+            localStorage.setItem('aaaaíim_pasca_absensi_state', JSON.stringify(storage.absensiState));
             localStorage.setItem('aaaaíim_pasca_ebooks', JSON.stringify(storage.ebooks));
             localStorage.setItem('aaaaíim_pasca_tugas', JSON.stringify(storage.tugas));
             localStorage.setItem('aaaaíim_pasca_theme', storage.theme);
@@ -635,7 +634,7 @@
                 dashboard: "Command Center",
                 kurikulum: "Kurikulum Pascasarjana UNNES (Semester 1 - 4)",
                 jadwal: "Jadwal Perkuliahan & Lokasi Kelas",
-                absensi: "Absensi & Materi Kuliah",
+                absensi: "Absensi & Materi Kuliah Otomatis",
                 notebook: "E-Book Per Mata Kuliah",
                 tugas: "Tugas & Deadline Akademik"
             };
@@ -798,69 +797,51 @@
             `).join('');
         }
 
-        function addAbsensiSesi() {
-            const pertemuan = prompt("Pertemuan ke (Contoh: Pertemuan 3):");
-            const matkul = prompt("Nama Mata Kuliah:");
-            const tanggal = prompt("Tanggal (Contoh: 28 Agustus 2026):");
-            const statusKuliah = prompt("Status Pelaksanaan (Sudah Dilaksanakan / Belum Dilaksanakan):", "Sudah Dilaksanakan");
-            const materi = prompt("Topik Materi Pembahasan:");
-            const kehadiran = prompt("Status Kehadiran Anda (Hadir / Izin / Alpha):", "Hadir");
-
-            if(pertemuan && matkul) {
-                storage.absensi.push({ pertemuan, matkul, tanggal: tanggal || 'Hari Ini', statusKuliah: statusKuliah || 'Sudah Dilaksanakan', materi: materi || 'Materi Umum', kehadiran: kehadiran || 'Hadir' });
-                saveData();
+        // Fungsi Absensi Otomatis tersinkron dari Jadwal Kuliah
+        function updateAbsensiState(index, field, val) {
+            if(!storage.absensiState[index]) {
+                storage.absensiState[index] = { materi: '', kehadiran: 'Hadir' };
             }
-        }
-
-        function updateAbsensiStatus(index, field, val) {
-            storage.absensi[index][field] = val;
+            storage.absensiState[index][field] = val;
             saveData();
-        }
-
-        function deleteAbsensi(index) {
-            if(confirm("Hapus data sesi absensi ini?")) {
-                storage.absensi.splice(index, 1);
-                saveData();
-            }
         }
 
         function renderAbsensiTable() {
             const tbody = document.getElementById('table-absensi-body');
             if(!tbody) return;
-            tbody.innerHTML = storage.absensi.map((a, i) => {
-                let badgeStatus = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
-                if(a.statusKuliah === 'Sudah Dilaksanakan') badgeStatus = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-                if(a.statusKuliah === 'Belum Dilaksanakan') badgeStatus = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
 
+            if(storage.jadwal.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-8 text-center opacity-60 italic">Belum ada jadwal kuliah yang terdaftar. Tambahkan jadwal terlebih dahulu di menu Jadwal & Lokasi Kelas.</td></tr>`;
+                return;
+            }
+
+            tbody.innerHTML = storage.jadwal.map((j, i) => {
+                const state = storage.absensiState[i] || { materi: 'Materi Pembahasan Perkuliahan', kehadiran: 'Hadir' };
+                
                 let badgeHadir = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-                if(a.kehadiran === 'Izin') badgeHadir = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
-                if(a.kehadiran === 'Alpha') badgeHadir = 'bg-rose-500/20 text-rose-300 border-rose-500/30';
+                if(state.kehadiran === 'Izin') badgeHadir = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
+                if(state.kehadiran === 'Alpha') badgeHadir = 'bg-rose-500/20 text-rose-300 border-rose-500/30';
 
                 return `
                     <tr class="transition-all hover:bg-black/5">
                         <td class="px-6 py-4">
-                            <span class="font-extrabold text-[10px] px-2 py-0.5 rounded border mr-1" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${a.pertemuan}</span>
-                            <span class="font-extrabold block mt-1">${a.matkul}</span>
+                            <span class="font-extrabold text-[10px] px-2 py-0.5 rounded border mr-1" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${j.hari}</span>
+                            <span class="font-extrabold block mt-1">${j.matkul}</span>
                         </td>
-                        <td class="px-6 py-4 opacity-75">${a.tanggal}</td>
                         <td class="px-6 py-4">
-                            <select onchange="updateAbsensiStatus(${i}, 'statusKuliah', this.value)" class="px-3 py-1.5 rounded-lg font-bold border ${badgeStatus} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
-                                <option value="Sudah Dilaksanakan" ${a.statusKuliah === 'Sudah Dilaksanakan' ? 'selected' : ''}>Sudah Dilaksanakan</option>
-                                <option value="Belum Dilaksanakan" ${a.statusKuliah === 'Belum Dilaksanakan' ? 'selected' : ''}>Belum Dilaksanakan</option>
-                            </select>
+                            <span class="font-semibold block">${j.waktu}</span>
+                            <span class="text-[11px] text-amber-400 opacity-90"><i class="fa-solid fa-location-dot"></i> ${j.lokasi}</span>
                         </td>
+                        <td class="px-6 py-4 opacity-75">${j.dosen}</td>
                         <td class="px-6 py-4 font-medium">
-                            <input type="text" value="${a.materi}" onchange="updateAbsensiStatus(${i}, 'materi', this.value)" class="w-full bg-transparent border-b border-dashed outline-none py-1" style="border-color: var(--border-color);" title="Klik untuk edit materi">
+                            <input type="text" value="${state.materi}" onchange="updateAbsensiState(${i}, 'materi', this.value)" class="w-full bg-transparent border-b border-dashed outline-none py-1" style="border-color: var(--border-color);" placeholder="Ketik materi pertemuan..." title="Klik untuk edit materi">
                         </td>
                         <td class="px-6 py-4">
-                            <select onchange="updateAbsensiStatus(${i}, 'kehadiran', this.value)" class="px-3 py-1.5 rounded-lg font-bold border ${badgeHadir} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
-                                <option value="Hadir" ${a.kehadiran === 'Hadir' ? 'selected' : ''}>Hadir</option>
-                                <option value="Izin" ${a.kehadiran === 'Izin' ? 'selected' : ''}>Izin</option>
-                                <option value="Alpha" ${a.kehadiran === 'Alpha' ? 'selected' : ''}>Alpha</option>
+                            <select onchange="updateAbsensiState(${i}, 'kehadiran', this.value)" class="px-3 py-1.5 rounded-lg font-bold border ${badgeHadir} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
+                                <option value="Hadir" ${state.kehadiran === 'Hadir' ? 'selected' : ''}>Hadir</option>
+                                <option value="Izin" ${state.kehadiran === 'Izin' ? 'selected' : ''}>Izin</option>
+                                <option value="Alpha" ${state.kehadiran === 'Alpha' ? 'selected' : ''}>Alpha</option>
                             </select>
-                        </td>
-                        <td class="px-6 py-4 text-center">
-                            <button onclick="deleteAbsensi(${i})" class="text-rose-400 hover:text-rose-500 p-1.5"><i class="fa-solid fa-trash-can"></i></button>
                         </td>
                     </tr>
                 `;
@@ -958,9 +939,16 @@
             const statSks = document.getElementById('dash-stat-sks');
             if(statSks) statSks.innerText = totalSksAll + " SKS";
 
-            const totalAbsen = storage.absensi.length;
-            const hadirAbsen = storage.absensi.filter(a => a.kehadiran === 'Hadir').length;
-            const persentaseHadir = totalAbsen > 0 ? Math.round((hadirAbsen / totalAbsen) * 100) : 100;
+            // Hitung persentase kehadiran berdasarkan absensi otomatis jadwal
+            const totalJadwal = storage.jadwal.length;
+            let hadirCount = 0;
+            if(totalJadwal > 0) {
+                storage.jadwal.forEach((_, idx) => {
+                    const st = storage.absensiState[idx];
+                    if(!st || st.kehadiran === 'Hadir') hadirCount++;
+                });
+            }
+            const persentaseHadir = totalJadwal > 0 ? Math.round((hadirCount / totalJadwal) * 100) : 100;
             const statAbsen = document.getElementById('dash-stat-absensi');
             if(statAbsen) statAbsen.innerText = persentaseHadir + "%";
 
