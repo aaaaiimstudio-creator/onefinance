@@ -71,7 +71,6 @@
         .custom-scrollbar::-webkit-scrollbar-thumb { background: rgba(148, 163, 184, 0.25); border-radius: 10px; }
         .custom-scrollbar::-webkit-scrollbar-thumb:hover { background: rgba(148, 163, 184, 0.4); }
 
-        /* TEMA-TEMA MODERN */
         :root, html[data-theme="velvet"] {
             --bg-main: #0c0a14;
             --bg-sidebar: #13101f;
@@ -158,7 +157,6 @@
     </div>
 
     <div id="main-dashboard" class="flex h-screen overflow-hidden hidden relative">
-        
         <div id="sidebar-overlay" onclick="toggleSidebar()" class="fixed inset-0 bg-black/50 z-40 lg:hidden hidden backdrop-blur-sm"></div>
 
         <aside id="app-sidebar" class="fixed lg:static inset-y-0 left-0 z-50 w-72 border-r flex flex-col justify-between flex-shrink-0 transition-transform duration-300 -translate-x-full lg:translate-x-0 shadow-2xl lg:shadow-none" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
@@ -447,7 +445,7 @@
                             </div>
 
                             <div class="px-4 sm:px-8 py-3 border-t text-[10px] sm:text-[11px] opacity-60 flex flex-col sm:flex-row items-center justify-between gap-1" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">
-                                <span><i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Tersimpan otomatis di enkripsi lokal & Firebase Cloud</span>
+                                <span id="save-status-indicator"><i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Tersimpan otomatis di enkripsi lokal & Firebase Cloud</span>
                                 <span class="font-bold uppercase tracking-wider text-[10px]" style="color: var(--accent-color);">Pascasarjana UNNES Edition</span>
                             </div>
                         </div>
@@ -458,14 +456,14 @@
                     <div class="border rounded-2xl p-5 sm:p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                         <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 mb-6">
                             <div>
-                                <h3 class="font-extrabold text-sm sm:text-base">Manajemen Tugas & Tenggat Waktu</h3>
-                                <p class="text-xs opacity-65">Pantau status pengerjaan tugas pascasarjana Anda secara terstruktur.</p>
+                                <h3 class="font-extrabold text-sm sm:text-base">Daftar Tugas & Deadline Akademik</h3>
+                                <p class="text-xs opacity-65">Kelola penugasan mata kuliah magister/doktoral.</p>
                             </div>
-                            <button onclick="openTaskModal()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center justify-center space-x-2 w-full sm:w-auto" style="background-color: var(--accent-color);">
+                            <button onclick="openTaskModal()" class="text-white px-4 py-2.5 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2 w-full sm:w-auto" style="background-color: var(--accent-color);">
                                 <i class="fa-solid fa-plus"></i><span>Tambah Tugas Baru</span>
                             </button>
                         </div>
-                        <div id="tugas-container" class="grid grid-cols-1 md:grid-cols-2 gap-4"></div>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="task-list-container"></div>
                     </div>
                 </div>
 
@@ -473,20 +471,20 @@
         </main>
     </div>
 
-    <div id="task-modal" class="fixed inset-0 bg-black/60 backdrop-blur-sm z-[110] hidden flex items-center justify-center p-4">
-        <div class="border rounded-3xl max-w-md w-full p-6 shadow-2xl" style="background-color: var(--bg-card); border-color: var(--border-color);">
-            <div class="flex items-center justify-between mb-4">
-                <h3 class="font-extrabold text-sm">Form Input Tugas Akademik</h3>
-                <button onclick="closeTaskModal()" class="opacity-60 hover:opacity-100"><i class="fa-solid fa-xmark text-base"></i></button>
+    <div id="task-modal" class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden">
+        <div class="w-full max-w-lg p-6 rounded-3xl border shadow-2xl relative" style="background-color: var(--bg-card); border-color: var(--border-color);">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b" style="border-color: var(--border-color);">
+                <h3 class="font-extrabold text-sm sm:text-base">Tambah Tugas / Deadline Baru</h3>
+                <button onclick="closeTaskModal()" class="text-base opacity-70 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="task-form" onsubmit="handleSaveTask(event)" class="space-y-4 text-xs">
                 <div>
                     <label class="block font-bold uppercase mb-1 opacity-70">Mata Kuliah</label>
-                    <input type="text" id="input-matkul" required placeholder="Contoh: Metodologi Penelitian Lanjut" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                    <input type="text" id="input-matkul" required placeholder="Contoh: Filsafat Ilmu" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
                 </div>
                 <div>
-                    <label class="block font-bold uppercase mb-1 opacity-70">Judul / Detail Tugas</label>
-                    <input type="text" id="input-judul" required placeholder="Contoh: Review Jurnal Internasional Bereputasi" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                    <label class="block font-bold uppercase mb-1 opacity-70">Judul / Deskripsi Tugas</label>
+                    <input type="text" id="input-judul" required placeholder="Contoh: Review Jurnal Internasional" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
                 </div>
                 <div>
                     <label class="block font-bold uppercase mb-1 opacity-70">Deadline Waktu & Tanggal</label>
@@ -517,22 +515,23 @@
                 1: [
                     { kode: 'UNN801', nama: 'Filsafat Ilmu & Epistemologi Pendidikan', sks: 3, dosen: 'Prof. Dr. Tri Joko Raharjo, M.Pd.', status: 'Lulus' },
                     { kode: 'UNN802', nama: 'Statistika & Analisis Data Kuantitatif Lanjut', sks: 3, dosen: 'Dr. Hardi Suyitno, M.Pd.', status: 'Sedang Berjalan' },
-                    { kode: 'UNN803', nama: 'Metodologi Penelitian Pendidikan / Studi Lanjut', sks: 3, dosen: 'Prof. Dr. Agus Nuryatin, M.Hum.', status: 'Sedang Berjalan' },
-                    { kode: 'UNN804', nama: 'Teori Belajar & Pembelajaran Lanjutan', sks: 3, dosen: 'Prof. Dr. Rustono, M.Hum.', status: 'Sedang Berjalan' }
+                    { kode: 'UNN803', nama: 'Metodologi Penelitian Pendidikan Lanjut', sks: 3, dosen: 'Prof. Dr. Soesanto, M.Pd.', status: 'Sedang Berjalan' },
+                    { kode: 'UNN804', nama: 'Teori Belajar & Pembelajaran Kontemporer', sks: 3, dosen: 'Prof. Dr. Masrukhin, M.Pd.', status: 'Belum Ambil' },
+                    { kode: 'UNN805', nama: 'Kepemimpinan & Kebijakan Pendidikan', sks: 3, dosen: 'Dr. Ngabiyanto, M.Si.', status: 'Belum Ambil' },
+                    { kode: 'UNN806', nama: 'Kajian Kurikulum & Pengembangan Inovasi', sks: 3, dosen: 'Dr. Sungkono, M.Pd.', status: 'Belum Ambil' }
                 ],
                 2: [
-                    { kode: 'UNN805', nama: 'Desain Kurikulum & Evaluasi Program', sks: 3, dosen: 'Dr. Kartono, M.Si.', status: 'Belum Ambil' },
-                    { kode: 'UNN806', nama: 'Kepemimpinan & Manajemen Pendidikan Modern', sks: 3, dosen: 'Prof. Dr. Fakhruddin, M.Pd.', status: 'Belum Ambil' },
-                    { kode: 'UNN807', nama: 'Kajian Isu Strategis Pendidikan Global', sks: 3, dosen: 'Dr. Edy Subkhan, S.Pd., M.Si.', status: 'Belum Ambil' },
-                    { kode: 'UNN808', nama: 'Publikasi Jurnal Internasional Bereputasi', sks: 3, dosen: 'Tim Pascasarjana UNNES', status: 'Belum Ambil' }
+                    { kode: 'UNN807', nama: 'Evaluasi Program & Desain Penilaian', sks: 3, dosen: 'Prof. Dr. Subiyanto, M.Pd.', status: 'Belum Ambil' },
+                    { kode: 'UNN808', nama: 'Analisis Data Kualitatif & Etnografi', sks: 3, dosen: 'Prof. Dr. Agus Nuryatin, M.Hum.', status: 'Belum Ambil' },
+                    { kode: 'UNN809', nama: 'Teknologi Pembelajaran & AI dalam Edukasi', sks: 3, dosen: 'Dr. Haryono, M.T.', status: 'Belum Ambil' },
+                    { kode: 'UNN810', nama: 'Seminar Proposal Tesis', sks: 3, dosen: 'Tim Penguji Pascasarjana UNNES', status: 'Belum Ambil' }
                 ],
                 3: [
-                    { kode: 'UNN901', nama: 'Kajian Konsentrasi Khusus Pilihan I', sks: 3, dosen: 'Tim Dosen Pakar', status: 'Belum Ambil' },
-                    { kode: 'UNN902', nama: 'Kajian Konsentrasi Khusus Pilihan II', sks: 3, dosen: 'Tim Dosen Pakar', status: 'Belum Ambil' },
-                    { kode: 'UNN903', nama: 'Seminar Proposal Tesis Magister', sks: 3, dosen: 'Tim Penguji UNNES', status: 'Belum Ambil' }
+                    { kode: 'UNN811', nama: 'Publikasi Jurnal Internasional Bereputasi', sks: 4, dosen: 'Board of Reviewers UNNES', status: 'Belum Ambil' },
+                    { kode: 'UNN812', nama: 'Riset Mandiri & Pengumpulan Data Tesis', sks: 6, dosen: 'Dosen Pembimbing Tesis', status: 'Belum Ambil' }
                 ],
                 4: [
-                    { kode: 'UNN999', nama: 'Penelitian Lapangan & Sidang Tesis Magister', sks: 6, dosen: 'Promotor & Co-Promotor UNNES', status: 'Belum Ambil' }
+                    { kode: 'UNN813', nama: 'Sidang Ujian Tesis Magister', sks: 6, dosen: 'Promotor & Co-Promotor UNNES', status: 'Belum Ambil' }
                 ]
             },
             jadwal: JSON.parse(localStorage.getItem('aaaaíim_pasca_jadwal')) || [
@@ -559,53 +558,37 @@
                     if(!storage.absensi || storage.absensi.length === 0) {
                         generateAutomatedAbsensi(false);
                     }
-                    renderAll();
-                    console.log("Data berhasil dimuat dari Firebase Cloud!");
                 }
             }
-            if(!storage.absensi || storage.absensi.length === 0) {
-                generateAutomatedAbsensi(false);
-            }
+            setTheme(storage.theme);
+            document.getElementById('sidebar-username').innerText = "Hikarinaim Aistimas";
+            if(storage.userAvatar) document.getElementById('user-avatar-img').src = storage.userAvatar;
+            
+            updateClock();
+            setInterval(updateClock, 1000);
+            renderAll();
         });
 
-        function saveData() {
-            localStorage.setItem('aaaaíim_pasca_kurikulum', JSON.stringify(storage.kurikulum));
-            localStorage.setItem('aaaaíim_pasca_jadwal', JSON.stringify(storage.jadwal));
-            localStorage.setItem('aaaaíim_pasca_absensi', JSON.stringify(storage.absensi));
-            localStorage.setItem('aaaaíim_pasca_ebooks', JSON.stringify(storage.ebooks));
-            localStorage.setItem('aaaaíim_pasca_tugas', JSON.stringify(storage.tugas));
-            localStorage.setItem('aaaaíim_pasca_theme', storage.theme);
-            localStorage.setItem('aaaaíim_pasca_active_sem', storage.activeSemester);
-            localStorage.setItem('aaaaíim_pasca_avatar', storage.userAvatar);
-
-            if (typeof window.firebaseCloudSync === 'function') {
-                window.firebaseCloudSync(storage);
-            }
-
-            renderAll();
+        function updateClock() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' };
+            const clockEl = document.getElementById('realtime-clock');
+            if(clockEl) clockEl.innerHTML = `<i class="fa-solid fa-clock text-accent mr-1.5" style="color:var(--accent-color)"></i> ${now.toLocaleDateString('id-ID', options)}`;
         }
 
         function handleLogin() {
-            const u = document.getElementById('username').value.trim();
-            const p = document.getElementById('password').value.trim();
-            const err = document.getElementById('login-error');
-
-            if(u === 'admin' && p === 'admin123') {
+            const user = document.getElementById('username').value;
+            const pass = document.getElementById('password').value;
+            if(user === 'admin' && pass === 'admin123') {
                 document.getElementById('login-section').classList.add('hidden');
                 document.getElementById('main-dashboard').classList.remove('hidden');
-                setTheme(storage.theme);
-                document.getElementById('sidebar-sem-select').value = storage.activeSemester;
-                document.getElementById('user-avatar-img').src = storage.userAvatar;
-                renderAll();
             } else {
-                err.classList.remove('hidden');
+                document.getElementById('login-error').classList.remove('hidden');
             }
         }
 
         function handleLogout() {
-            if(confirm("Apakah Anda ingin keluar dari sistem pascasarjana UNNES?")) {
-                location.reload();
-            }
+            location.reload();
         }
 
         function toggleSidebar() {
@@ -649,7 +632,6 @@
         function showTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(t => t.classList.add('hidden'));
             document.getElementById('tab-' + tabId).classList.remove('hidden');
-            
             document.querySelectorAll('.nav-btn').forEach(b => {
                 b.style.backgroundColor = 'transparent';
                 b.style.boxShadow = 'none';
@@ -657,7 +639,7 @@
             });
             event.currentTarget.className = "nav-btn w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-white font-semibold text-xs transition-all shadow-md";
             event.currentTarget.style.backgroundColor = 'var(--accent-color)';
-
+            
             const titles = {
                 dashboard: "Command Center",
                 kurikulum: "Kurikulum Pascasarjana UNNES (Semester 1 - 4)",
@@ -668,7 +650,7 @@
             };
             document.getElementById('tab-title').innerText = titles[tabId];
             if(window.innerWidth < 1024) {
-                toggleSidebar(); // Tutup sidebar otomatis di HP setelah klik menu
+                toggleSidebar();
             }
             if(tabId === 'notebook') renderNotebookSubjects();
             if(tabId === 'kurikulum') renderKurikulumTable(storage.activeKurikulumTab);
@@ -689,7 +671,7 @@
                     btn.style.backgroundColor = 'var(--bg-card)';
                     btn.style.borderColor = 'var(--border-color)';
                     btn.style.color = 'var(--text-main)';
-                    btn.className = "p-3 sm:p-4 rounded-2xl border text-left transition-all opacity-70 hover:opacity-100";
+                    btn.className = "p-3 sm:p-4 rounded-2xl border text-left transition-all";
                 }
             }
             renderKurikulumTable(semNum);
@@ -697,23 +679,22 @@
 
         function renderKurikulumTable(semNum) {
             const subjects = storage.kurikulum[semNum] || [];
-            const titles = {
-                1: "Semester 1 — Foundational Core",
-                2: "Semester 2 — Advanced Methods & Operations",
-                3: "Semester 3 — Specialization & Research Proposal",
-                4: "Semester 4 — Thesis Research & Final Defense"
-            };
-            document.getElementById('kur-header-tag').innerText = "Semester " + semNum;
-            document.getElementById('kur-header-title').innerText = titles[semNum];
-            
-            const totalSks = subjects.reduce((acc, curr) => acc + Number(curr.sks), 0);
-            document.getElementById('kur-total-sks').innerText = totalSks + " SKS";
-
             const tbody = document.getElementById('kurikulum-table-body');
+            const totalSksEl = document.getElementById('kur-total-sks');
+            const headerTitle = document.getElementById('kur-header-title');
+            const headerTag = document.getElementById('kur-header-tag');
+
+            if(headerTitle) headerTitle.innerText = `Mata Kuliah Semester ${semNum}`;
+            if(headerTag) headerTag.innerText = `Semester ${semNum}`;
+
+            const totalSks = subjects.reduce((acc, curr) => acc + (curr.sks || 3), 0);
+            if(totalSksEl) totalSksEl.innerText = totalSks + " SKS";
+
+            if(!tbody) return;
             tbody.innerHTML = subjects.map((sub, idx) => {
-                let badgeClass = 'bg-slate-500/20 text-slate-300 border-slate-500/30';
+                let badgeClass = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
                 if(sub.status === 'Lulus') badgeClass = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
-                if(sub.status === 'Sedang Berjalan') badgeClass = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+                if(sub.status === 'Sedang Berjalan') badgeClass = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
 
                 return `
                     <tr class="transition-all hover:bg-black/5">
@@ -755,49 +736,45 @@
             const kode = prompt("Masukkan Kode Matkul (Contoh: UNN809):");
             const nama = prompt("Nama Mata Kuliah:");
             const sks = prompt("Jumlah SKS (Contoh: 3):", "3");
-            const dosen = prompt("Dosen Pengampu:");
+            const dosen = prompt("Nama Dosen Pengampu:");
             if(kode && nama) {
                 if(!storage.kurikulum[storage.activeKurikulumTab]) storage.kurikulum[storage.activeKurikulumTab] = [];
-                storage.kurikulum[storage.activeKurikulumTab].push({ kode, nama, sks: Number(sks), dosen: dosen || 'Tim Dosen UNNES', status: 'Sedang Berjalan' });
+                storage.kurikulum[storage.activeKurikulumTab].push({ kode, nama, sks: Number(sks || 3), dosen: dosen || 'Dosen Pascasarjana UNNES', status: 'Belum Ambil' });
                 saveData();
                 renderKurikulumTable(storage.activeKurikulumTab);
             }
         }
 
-        setInterval(() => {
-            const el = document.getElementById('realtime-clock');
-            if(el) el.innerText = new Date().toLocaleString('id-ID', { dateStyle: 'full', timeStyle: 'medium' });
-        }, 1000);
-
         function addJadwal() {
-            const hari = prompt("Hari Kuliah (Contoh: Senin, Selasa, dll):");
+            const hari = prompt("Hari (Senin / Selasa / Rabu / Kamis / Jumat / Sabtu):", "Senin");
             const matkul = prompt("Nama Mata Kuliah:");
-            const sks = prompt("Jumlah SKS (Contoh: 3):", "3");
-            const waktu = prompt("Waktu (Contoh: 13.30 - 16.00):");
-            const lokasi = prompt("Lokasi / Ruang Kelas (Contoh: Gedung Pasca UNNES Lt. 3, Ruang 301):");
+            const sks = prompt("Jumlah SKS:", "3");
+            const waktu = prompt("Waktu (Contoh: 13.30 - 16.00):", "13.30 - 16.00");
+            const lokasi = prompt("Lokasi Ruangan:", "Gedung Pascasarjana UNNES Lt. 3");
             const dosen = prompt("Dosen Pengampu:");
-            const info = prompt("Link / Keterangan (Contoh: https://lms.unnes.ac.id atau Catatan):");
+            const info = prompt("Link LMS / Keterangan Tambahan:", "https://lms.unnes.ac.id");
             if(hari && matkul) {
-                storage.jadwal.push({ hari, matkul, sks: Number(sks || 3), waktu, lokasi: lokasi || 'Ruang Kuliah Pascasarjana UNNES', dosen, info: info || '-' });
+                storage.jadwal.push({ hari, matkul, sks: Number(sks || 3), waktu, lokasi, dosen, info });
                 generateAutomatedAbsensi(false);
                 saveData();
+                renderJadwalTable();
             }
         }
 
         function editJadwal(index) {
             const j = storage.jadwal[index];
-            const hari = prompt("Edit Hari Kuliah:", j.hari);
-            const matkul = prompt("Edit Nama Mata Kuliah:", j.matkul);
-            const sks = prompt("Edit Jumlah SKS:", j.sks || 3);
+            const hari = prompt("Edit Hari:", j.hari);
+            const matkul = prompt("Edit Mata Kuliah:", j.matkul);
+            const sks = prompt("Edit SKS:", j.sks || 3);
             const waktu = prompt("Edit Waktu:", j.waktu);
-            const lokasi = prompt("Edit Lokasi / Ruang Kelas:", j.lokasi);
+            const lokasi = prompt("Edit Lokasi:", j.lokasi);
             const dosen = prompt("Edit Dosen Pengampu:", j.dosen);
             const info = prompt("Edit Link / Keterangan:", j.info || '');
-
             if(hari && matkul) {
                 storage.jadwal[index] = { hari, matkul, sks: Number(sks || 3), waktu, lokasi, dosen, info };
                 generateAutomatedAbsensi(false);
                 saveData();
+                renderJadwalTable();
             }
         }
 
@@ -806,6 +783,7 @@
                 storage.jadwal.splice(index, 1);
                 generateAutomatedAbsensi(false);
                 saveData();
+                renderJadwalTable();
             }
         }
 
@@ -832,48 +810,33 @@
         }
 
         function generateAutomatedAbsensi(showAlert = true) {
-            const dayMap = { 'Minggu': 0, 'Senin': 1, 'Selasa': 2, 'Rabu': 3, 'Kamis': 4, 'Jumat': 5, 'Sabtu': 6 };
-            let newAbsensiList = [];
-            
-            const existingMap = {};
-            if(storage.absensi && storage.absensi.length > 0) {
-                storage.absensi.forEach(item => {
-                    existingMap[item.pertemuan + '|' + item.matkul] = item;
-                });
-            }
-
-            storage.jadwal.forEach(j => {
-                const targetDayIndex = dayMap[j.hari] !== undefined ? dayMap[j.hari] : 1;
-                const baseDate = new Date();
-                
-                for(let week = 1; week <= 4; week++) {
-                    const d = new Date(baseDate);
-                    d.setDate(baseDate.getDate() + ((targetDayIndex + 7 - baseDate.getDay()) % 7) + (week - 1) * 7);
-                    const formattedDate = d.toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
-                    
-                    const pertemuanName = `Pertemuan ${week}`;
-                    const key = pertemuanName + '|' + j.matkul;
-                    
-                    if(existingMap[key]) {
-                        newAbsensiList.push(existingMap[key]);
-                    } else {
-                        newAbsensiList.push({
-                            pertemuan: pertemuanName,
+            if(!storage.absensi || storage.absensi.length === 0) {
+                storage.absensi = storage.jadwal.map((j, idx) => ({
+                    pertemuan: `Pertemuan 1 (${j.hari})`,
+                    matkul: j.matkul,
+                    tanggal: '1 September 2026',
+                    statusKuliah: 'Belum Dilaksanakan',
+                    materi: 'Pengantar & Pendalaman Silabus ' + j.matkul,
+                    kehadiran: 'Hadir'
+                }));
+            } else {
+                storage.jadwal.forEach(j => {
+                    const exists = storage.absensi.find(a => a.matkul === j.matkul);
+                    if(!exists) {
+                        storage.absensi.push({
+                            pertemuan: `Pertemuan 1 (${j.hari})`,
                             matkul: j.matkul,
-                            tanggal: `${formattedDate} (${j.hari})`,
-                            statusKuliah: week === 1 ? 'Sudah Dilaksanakan' : 'Belum Dilaksanakan',
-                            materi: `Pembahasan Materi ${j.matkul} Sesi ${week}`,
+                            tanggal: '1 September 2026',
+                            statusKuliah: 'Belum Dilaksanakan',
+                            materi: 'Pengantar & Pendalaman Silabus ' + j.matkul,
                             kehadiran: 'Hadir'
                         });
                     }
-                }
-            });
-
-            storage.absensi = newAbsensiList;
-            saveData();
-            if(showAlert) {
-                alert("Absensi dan materi berhasil di-generate secara otomatis berdasarkan jadwal mingguan berulang!");
+                });
             }
+            saveData();
+            renderAbsensiTable();
+            if(showAlert) alert("Absensi & Materi berhasil disinkronkan dengan jadwal kuliah!");
         }
 
         function updateAbsensiStatus(index, field, val) {
@@ -885,6 +848,7 @@
             if(confirm("Hapus sesi absensi ini?")) {
                 storage.absensi.splice(index, 1);
                 saveData();
+                renderAbsensiTable();
             }
         }
 
@@ -914,7 +878,7 @@
                             </select>
                         </td>
                         <td class="px-4 sm:px-6 py-4 font-medium">
-                            <input type="text" value="${a.materi}" onchange="updateAbsensiStatus(${i}, 'materi', this.value)" class="w-full bg-transparent border-b border-dashed outline-none py-1 text-xs" style="border-color: var(--border-color);" title="Klik untuk edit materi">
+                            <input type="text" value="${a.materi}" onchange="updateAbsensiStatus(${i}, 'materi', this.value)" class="w-full px-3 py-1.5 rounded-lg border outline-none text-xs" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
                         </td>
                         <td class="px-4 sm:px-6 py-4">
                             <select onchange="updateAbsensiStatus(${i}, 'kehadiran', this.value)" class="px-2.5 sm:px-3 py-1.5 rounded-lg font-bold border ${badgeHadir} outline-none cursor-pointer text-[11px]" style="background: rgba(0,0,0,0.2);">
@@ -924,7 +888,7 @@
                             </select>
                         </td>
                         <td class="px-4 sm:px-6 py-4 text-center">
-                            <button onclick="deleteAbsensi(${i})" class="text-rose-400 hover:text-rose-500 p-1.5" title="Hapus Sesi"><i class="fa-solid fa-trash-can"></i></button>
+                            <button onclick="deleteAbsensi(${i})" class="text-rose-400 hover:text-rose-500 p-1"><i class="fa-solid fa-trash-can"></i></button>
                         </td>
                     </tr>
                 `;
@@ -933,34 +897,39 @@
 
         function renderNotebookSubjects() {
             const container = document.getElementById('subject-list-container');
-            if(!container) return;
-            const keys = Object.keys(storage.ebooks);
-            
-            container.innerHTML = keys.map(sub => `
-                <button onclick="selectSubject('${sub.replace(/'/g, "\\'")}')" class="w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold transition-all truncate flex items-center justify-between ${storage.activeSubject === sub ? 'text-white shadow-md' : 'opacity-70 hover:opacity-100 hover:bg-black/15'}" style="${storage.activeSubject === sub ? 'background-color: var(--accent-color);' : ''}">
-                    <span class="truncate"><i class="fa-solid fa-book-open mr-2"></i> ${sub}</span>
-                    <i class="fa-solid fa-chevron-right text-[10px] opacity-60"></i>
-                </button>
-            `).join('');
-
-            if(keys.length > 0 && !storage.ebooks[storage.activeSubject]) {
-                storage.activeSubject = keys[0];
+            const subjects = Object.keys(storage.ebooks);
+            if(subjects.length > 0 && (!storage.activeSubject || !storage.ebooks[storage.activeSubject])) {
+                storage.activeSubject = subjects[0];
             }
-            selectSubject(storage.activeSubject);
+            if(!container) return;
+            container.innerHTML = subjects.map(sub => {
+                const isActive = sub === storage.activeSubject;
+                const activeStyle = isActive ? 'font-extrabold shadow-md' : 'opacity-75 font-medium hover:opacity-100';
+                const activeBg = isActive ? 'background-color: var(--accent-color); color: #fff;' : 'background-color: rgba(0,0,0,0.1);';
+                return `
+                    <button onclick="selectNotebookSubject('${sub}')" class="w-full text-left px-3.5 py-3 rounded-xl text-xs transition-all flex items-center justify-between ${activeStyle}" style="${activeBg}">
+                        <span class="truncate pr-2"><i class="fa-solid fa-book mr-2"></i>${sub}</span>
+                        ${isActive ? '<i class="fa-solid fa-chevron-right text-[10px]"></i>' : ''}
+                    </button>
+                `;
+            }).join('');
+
+            const titleEl = document.getElementById('active-subject-title');
+            const textarea = document.getElementById('ebook-textarea');
+            if(titleEl) titleEl.innerText = storage.activeSubject || 'Pilih Mata Kuliah';
+            if(textarea) {
+                textarea.value = storage.activeSubject ? (storage.ebooks[storage.activeSubject] || '') : '';
+            }
         }
 
-        function selectSubject(sub) {
+        function selectNotebookSubject(sub) {
             storage.activeSubject = sub;
-            const titleEl = document.getElementById('active-subject-title');
-            const textareaEl = document.getElementById('ebook-textarea');
-            if(titleEl) titleEl.innerText = sub;
-            if(textareaEl) textareaEl.value = storage.ebooks[sub] || '';
             renderNotebookSubjects();
         }
 
         function addSubjectBook() {
             const newSub = prompt("Masukkan Nama Mata Kuliah Baru untuk E-Book:");
-            if(newSub && !storage.ebooks[newSub]) {
+            if(newSub && newSub.trim() !== "" && !storage.ebooks[newSub]) {
                 storage.ebooks[newSub] = "✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Pengantar & Landasan Teori " + newSub + "\n\nPoin Penting:\n1. Tuliskan ringkasan jurnal dan literatur wajib di sini.\n2. Catat instruksi khusus dari dosen pengampu.\n3. Susun kerangka gagasan untuk analisis tesis.";
                 storage.activeSubject = newSub;
                 saveData();
@@ -1003,15 +972,35 @@
             }
         }
 
+        // --- OPTIMASI UTAMA: DEBOUNCED NOTE SAVING (AGAR MENGETIK TIDAK LEMOT) ---
+        let saveTimeout = null;
         function saveCurrentNote(val) {
             if(storage.activeSubject) {
                 storage.ebooks[storage.activeSubject] = val;
-                saveData();
+                
+                // Ubah status indikator penyimpanan menjadi "Mengetik..."
+                const indicator = document.getElementById('save-status-indicator');
+                if(indicator) indicator.innerHTML = `<i class="fa-solid fa-pen text-amber-400 mr-1 animate-pulse"></i> Mengetik (menyimpan otomatis)...`;
+
+                // Batalkan timeout sebelumnya agar tidak spam simpan setiap huruf
+                clearTimeout(saveTimeout);
+                
+                // Simpan instan ke localStorage secara ringan agar data tidak hilang jika ditutup mendadak
+                localStorage.setItem('aaaaíim_pasca_ebooks', JSON.stringify(storage.ebooks));
+
+                // Tunda sinkronisasi penuh (localStorage menyeluruh & Firebase Cloud) selama 1000ms (1 detik) setelah berhenti mengetik
+                saveTimeout = setTimeout(() => {
+                    saveDataQuiet();
+                    if(indicator) indicator.innerHTML = `<i class="fa-solid fa-cloud text-emerald-400 mr-1"></i> Tersimpan otomatis di enkripsi lokal & Firebase Cloud`;
+                }, 1000);
             }
         }
 
-        function openTaskModal() { document.getElementById('task-modal').classList.remove('hidden'); }
-        function closeTaskModal() { 
+        function openTaskModal() {
+            document.getElementById('task-modal').classList.remove('hidden');
+        }
+
+        function closeTaskModal() {
             document.getElementById('task-modal').classList.add('hidden');
             document.getElementById('task-form').reset();
         }
@@ -1022,7 +1011,6 @@
             const judul = document.getElementById('input-judul').value;
             const deadline = document.getElementById('input-deadline').value;
             const status = document.getElementById('input-status').value;
-
             storage.tugas.push({ matkul, judul, deadline, status });
             saveData();
             closeTaskModal();
@@ -1040,31 +1028,57 @@
             }
         }
 
+        function saveData() {
+            localStorage.setItem('aaaaíim_pasca_kurikulum', JSON.stringify(storage.kurikulum));
+            localStorage.setItem('aaaaíim_pasca_jadwal', JSON.stringify(storage.jadwal));
+            localStorage.setItem('aaaaíim_pasca_absensi', JSON.stringify(storage.absensi));
+            localStorage.setItem('aaaaíim_pasca_ebooks', JSON.stringify(storage.ebooks));
+            localStorage.setItem('aaaaíim_pasca_tugas', JSON.stringify(storage.tugas));
+            localStorage.setItem('aaaaíim_pasca_theme', storage.theme);
+            localStorage.setItem('aaaaíim_pasca_avatar', storage.userAvatar);
+            
+            if(typeof window.firebaseCloudSync === 'function') {
+                window.firebaseCloudSync(storage);
+            }
+            renderAll();
+        }
+
+        // Simpan data tanpa memicu re-render besar yang mengganggu UI
+        function saveDataQuiet() {
+            localStorage.setItem('aaaaíim_pasca_kurikulum', JSON.stringify(storage.kurikulum));
+            localStorage.setItem('aaaaíim_pasca_jadwal', JSON.stringify(storage.jadwal));
+            localStorage.setItem('aaaaíim_pasca_absensi', JSON.stringify(storage.absensi));
+            localStorage.setItem('aaaaíim_pasca_ebooks', JSON.stringify(storage.ebooks));
+            localStorage.setItem('aaaaíim_pasca_tugas', JSON.stringify(storage.tugas));
+            localStorage.setItem('aaaaíim_pasca_theme', storage.theme);
+            localStorage.setItem('aaaaíim_pasca_avatar', storage.userAvatar);
+            
+            if(typeof window.firebaseCloudSync === 'function') {
+                window.firebaseCloudSync(storage);
+            }
+        }
+
         function renderAll() {
             const semSelect = document.getElementById('sidebar-sem-select');
             if(semSelect) semSelect.value = storage.activeSemester;
             const semBadge = document.getElementById('active-sem-badge');
             if(semBadge) semBadge.innerText = 'Sem ' + storage.activeSemester;
-            
-            const avatarImg = document.getElementById('user-avatar-img');
-            if(avatarImg) avatarImg.src = storage.userAvatar;
 
-            const pendingTugas = storage.tugas.filter(t => t.status !== 'Submitted').length;
+            const pendingTugas = storage.tugas.filter(t => t.status !== 'Submitted');
             const statTugas = document.getElementById('dash-stat-tugas');
-            if(statTugas) statTugas.innerText = pendingTugas;
+            if(statTugas) statTugas.innerText = pendingTugas.length;
 
-            let totalSksAll = 0;
-            Object.values(storage.kurikulum).forEach(list => {
-                list.forEach(item => { if(item.status === 'Lulus') totalSksAll += Number(item.sks); });
-            });
+            const totalSksTempuh = Object.values(storage.kurikulum).flat()
+                .filter(s => s.status === 'Lulus' || s.status === 'Sedang Berjalan')
+                .reduce((acc, curr) => acc + (curr.sks || 3), 0);
             const statSks = document.getElementById('dash-stat-sks');
-            if(statSks) statSks.innerText = totalSksAll + " SKS";
+            if(statSks) statSks.innerText = totalSksTempuh + " SKS";
 
             const totalAbsen = storage.absensi.length;
             const hadirAbsen = storage.absensi.filter(a => a.kehadiran === 'Hadir').length;
             const persentaseHadir = totalAbsen > 0 ? Math.round((hadirAbsen / totalAbsen) * 100) : 100;
-            const statAbsen = document.getElementById('dash-stat-absensi');
-            if(statAbsen) statAbsen.innerText = persentaseHadir + "%";
+            const statAbsensi = document.getElementById('dash-stat-absensi');
+            if(statAbsensi) statAbsensi.innerText = persentaseHadir + "%";
 
             const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
             const todayName = days[new Date().getDay()];
@@ -1085,47 +1099,44 @@
                                 <p class="opacity-70 text-[11px] mt-0.5"><i class="fa-regular fa-clock mr-1"></i> ${s.waktu} • <span class="text-amber-400 font-semibold"><i class="fa-solid fa-location-dot"></i> ${s.lokasi || 'Ruang Pasca UNNES'}</span></p>
                                 <p class="opacity-60 text-[10px] mt-0.5">Dosen: ${s.dosen} | SKS: ${s.sks || 3}</p>
                             </div>
-                            <span class="px-2.5 py-1 rounded font-bold text-[10px] animate-pulse self-end sm:self-auto" style="background-color: var(--accent-color); color: #fff;">Pengingat Aktif</span>
+                            <span class="px-2.5 py-1 rounded font-bold text-[10px] border bg-emerald-500/20 text-emerald-300 border-emerald-500/30">Aktif Hari Ini</span>
                         </div>
                     `).join('');
                 } else {
-                    dailyContainer.innerHTML = `<div class="p-4 rounded-xl text-center opacity-60 text-xs italic border" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">Tidak ada jadwal kuliah hari ${todayName}. Waktu optimal untuk riset literatur tesis Pascasarjana UNNES.</div>`;
+                    dailyContainer.innerHTML = `<p class="text-xs opacity-60 italic py-2">Tidak ada jadwal perkuliahan terjadwal untuk hari ${todayName}. Waktu yang tepat untuk riset literatur atau pengerjaan tesis.</p>`;
                 }
             }
 
             const deadlineContainer = document.getElementById('dashboard-deadline-list');
-            if(deadlineContainer) {
-                const activeTugas = storage.tugas.filter(t => t.status !== 'Submitted');
-                if(activeTugas.length > 0) {
-                    deadlineContainer.innerHTML = activeTugas.slice(0, 3).map(t => `
-                        <div class="p-3.5 rounded-xl border flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 text-xs" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
+            if(container = deadlineContainer) {
+                const activeTasks = storage.tugas.slice(0, 3);
+                if(activeTasks.length > 0) {
+                    container.innerHTML = activeTasks.map(t => `
+                        <div class="p-3.5 rounded-xl border flex items-center justify-between text-xs" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                             <div>
-                                <span class="text-[10px] font-extrabold uppercase" style="color: var(--accent-color);">${t.matkul}</span>
-                                <h4 class="font-extrabold mt-0.5">${t.judul}</h4>
-                                <p class="text-[11px] opacity-70 mt-0.5"><i class="fa-regular fa-clock mr-1 text-rose-400"></i> ${t.deadline}</p>
+                                <span class="text-[9px] font-bold px-2 py-0.5 rounded border mr-2" style="background-color: var(--bg-main); border-color: var(--border-color); color: var(--accent-color);">${t.matkul}</span>
+                                <h4 class="font-extrabold mt-1">${t.judul}</h4>
+                                <p class="opacity-70 text-[11px] mt-0.5"><i class="fa-regular fa-clock mr-1"></i> Deadline: ${t.deadline}</p>
                             </div>
-                            <span class="px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30 self-end sm:self-auto">${t.status}</span>
+                            <span class="px-2.5 py-1 rounded font-bold text-[10px] border ${t.status === 'Submitted' ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30' : 'bg-amber-500/20 text-amber-300 border-amber-500/30'}">${t.status}</span>
                         </div>
                     `).join('');
                 } else {
-                    deadlineContainer.innerHTML = `<div class="p-4 rounded-xl text-center opacity-60 text-xs italic border" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">Semua tugas akademik Pascasarjana UNNES telah diselesaikan dengan sangat baik! 🚀</div>`;
+                    container.innerHTML = `<p class="text-xs opacity-60 italic py-2">Belum ada tugas akademik yang tercatat.</p>`;
                 }
             }
 
-            renderJadwalTable();
-            renderAbsensiTable();
-
-            const tugasContainer = document.getElementById('tugas-container');
-            if(tugasContainer) {
-                tugasContainer.innerHTML = storage.tugas.map((t, i) => {
+            const taskListContainer = document.getElementById('task-list-container');
+            if(taskListContainer) {
+                taskListContainer.innerHTML = storage.tugas.map((t, i) => {
                     let badgeColor = 'bg-amber-500/20 text-amber-300 border-amber-500/30';
-                    if(t.status === 'Submitted') badgeColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
                     if(t.status === 'In Progress') badgeColor = 'bg-blue-500/20 text-blue-300 border-blue-500/30';
+                    if(t.status === 'Submitted') badgeColor = 'bg-emerald-500/20 text-emerald-300 border-emerald-500/30';
 
                     return `
-                        <div class="p-5 rounded-2xl border shadow-sm flex flex-col justify-between space-y-4 text-xs backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
-                            <div class="space-y-1">
-                                <span class="font-extrabold px-2 py-0.5 rounded uppercase text-[10px] inline-block mb-1" style="background-color: var(--accent-color); color: #fff;">${t.matkul}</span>
+                        <div class="p-4 rounded-2xl border flex flex-col justify-between space-y-3 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                            <div>
+                                <span class="text-[9px] font-extrabold px-2 py-0.5 rounded border inline-block mb-1" style="background-color: var(--accent-color); color: #fff;">${t.matkul}</span>
                                 <h4 class="font-extrabold text-sm mt-1">${t.judul}</h4>
                                 <p class="opacity-70"><i class="fa-regular fa-clock mr-1"></i> Deadline: ${t.deadline}</p>
                             </div>
