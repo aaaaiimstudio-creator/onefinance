@@ -116,20 +116,13 @@
     <div id="login-section" class="fixed inset-0 z-[100] flex items-center justify-center backdrop-blur-2xl" style="background-color: var(--bg-main);">
         <div class="w-full max-w-md p-8 rounded-3xl shadow-2xl relative overflow-hidden border" style="background-color: var(--bg-card); border-color: var(--border-color);">
             <div class="absolute -top-24 -right-24 w-48 h-48 rounded-full blur-3xl opacity-25" style="background-color: var(--accent-color);"></div>
-            
-            <!-- Foto Profil Lebih Besar di Menu Login -->
-            <div class="text-center mb-6 relative">
-                <div class="relative group cursor-pointer inline-block mx-auto mb-4" onclick="document.getElementById('avatar-upload-login').click()" title="Klik untuk ganti foto profil">
-                    <img id="user-avatar-login-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250" class="w-24 h-24 rounded-3xl object-cover border-4 shadow-xl mx-auto" style="border-color: var(--accent-color);" alt="Profil">
-                    <div class="absolute inset-0 bg-black/40 rounded-3xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-xs">
-                        <i class="fa-solid fa-camera fa-lg"></i>
-                    </div>
+            <div class="text-center mb-8 relative">
+                <div class="w-16 h-16 rounded-2xl mx-auto mb-4 flex items-center justify-center shadow-lg text-white text-2xl font-bold" style="background: linear-gradient(135deg, var(--accent-color), #c084fc);">
+                    <i class="fa-solid fa-graduation-cap"></i>
                 </div>
-                <input type="file" id="avatar-upload-login" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
                 <h2 class="text-2xl font-extrabold tracking-tight">AAAAIIM PASCASARJANA UNNES</h2>
                 <p class="text-xs mt-1 opacity-70">Executive Command & Postgraduate Intelligence Center</p>
             </div>
-
             <div class="space-y-4 relative">
                 <div>
                     <label class="block text-[11px] font-bold uppercase tracking-wider mb-1.5 opacity-70">Username</label>
@@ -153,18 +146,17 @@
         <!-- SIDEBAR -->
         <aside class="w-72 border-r flex flex-col justify-between flex-shrink-0 transition-colors duration-300" style="background-color: var(--bg-sidebar); border-color: var(--border-color);">
             <div>
-                <!-- Foto Profil Lebih Besar & Menarik di Sidebar -->
-                <div class="p-6 border-b flex flex-col items-center text-center space-y-3" style="border-color: var(--border-color);">
-                    <div class="relative group cursor-pointer inline-block" onclick="document.getElementById('avatar-upload').click()" title="Klik untuk ganti foto profil">
-                        <img id="user-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250" class="w-20 h-20 rounded-3xl object-cover border-4 shadow-xl" style="border-color: var(--accent-color);" alt="Profil">
-                        <div class="absolute inset-0 bg-black/40 rounded-3xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-xs">
-                            <i class="fa-solid fa-camera fa-lg"></i>
+                <div class="p-6 border-b flex items-center space-x-3" style="border-color: var(--border-color);">
+                    <div class="relative group cursor-pointer" onclick="document.getElementById('avatar-upload').click()" title="Klik untuk ganti foto profil">
+                        <img id="user-avatar-img" src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150" class="w-12 h-12 rounded-2xl object-cover border-2 shadow-md" style="border-color: var(--accent-color);" alt="Profil">
+                        <div class="absolute inset-0 bg-black/40 rounded-2xl opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity text-white text-[10px]">
+                            <i class="fa-solid fa-camera"></i>
                         </div>
                     </div>
                     <input type="file" id="avatar-upload" accept="image/*" class="hidden" onchange="handleAvatarUpload(event)">
-                    <div>
-                        <h1 class="font-extrabold text-sm tracking-tight truncate" id="sidebar-username">Hikarinaim Aistimas</h1>
-                        <span class="text-[11px] opacity-70 block truncate font-semibold mt-0.5" style="color: var(--accent-color);">Pascasarjana UNNES</span>
+                    <div class="overflow-hidden">
+                        <h1 class="font-extrabold text-xs tracking-tight truncate" id="sidebar-username">Hikarinaim Aistimas</h1>
+                        <span class="text-[10px] opacity-60 block truncate">Pascasarjana UNNES</span>
                     </div>
                 </div>
 
@@ -402,17 +394,17 @@
                     </div>
                 </div>
 
-                <!-- TAB 5: E-BOOK PER MATKUL (LENGKAP DENGAN TOOLS TAMBAH, EDIT, HAPUS EBOOK) -->
+                <!-- TAB 5: E-BOOK PER MATKUL -->
                 <div id="tab-notebook" class="tab-content hidden space-y-6">
                     <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
                         <div class="lg:col-span-1 border rounded-2xl p-4 flex flex-col justify-between h-[680px] backdrop-blur-md shadow-lg" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div>
                                 <div class="flex items-center justify-between mb-4 px-2">
                                     <div>
-                                        <h3 class="font-extrabold text-xs uppercase tracking-wider opacity-90">Katalog E-Book Matkul</h3>
-                                        <p class="text-[10px] opacity-60 mt-0.5">Kelola & baca e-book per matkul</p>
+                                        <h3 class="font-extrabold text-xs uppercase tracking-wider opacity-90">Katalog E-Book</h3>
+                                        <p class="text-[10px] opacity-60 mt-0.5">Pilih mata kuliah & tulis ringkasan</p>
                                     </div>
-                                    <button onclick="addSubjectBook()" class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shadow-md transition-transform active:scale-95" style="background-color: var(--accent-color);" title="Tambah Mata Kuliah / E-Book Baru"><i class="fa-solid fa-plus"></i></button>
+                                    <button onclick="addSubjectBook()" class="w-8 h-8 rounded-xl text-white flex items-center justify-center text-xs shadow-md transition-transform active:scale-95" style="background-color: var(--accent-color);" title="Tambah Mata Kuliah Baru"><i class="fa-solid fa-plus"></i></button>
                                 </div>
                                 <div id="subject-list-container" class="space-y-1.5 overflow-y-auto max-h-[580px] custom-scrollbar pr-1"></div>
                             </div>
@@ -421,22 +413,17 @@
                         <div class="lg:col-span-3 border rounded-2xl overflow-hidden shadow-2xl flex flex-col h-[680px] backdrop-blur-md relative" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div class="p-5 border-b flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 px-8" style="border-color: var(--border-color); background: linear-gradient(135deg, rgba(0,0,0,0.15), rgba(0,0,0,0.05));">
                                 <div>
-                                    <span class="text-[10px] font-extrabold uppercase tracking-widest" style="color: var(--accent-color);"><i class="fa-solid fa-feather-pointed mr-1"></i> Executive Academic Journal & E-Book Reader</span>
+                                    <span class="text-[10px] font-extrabold uppercase tracking-widest" style="color: var(--accent-color);"><i class="fa-solid fa-feather-pointed mr-1"></i> Executive Academic Journal</span>
                                     <h3 id="active-subject-title" class="font-extrabold text-base mt-0.5">Pilih Mata Kuliah di Sidebar</h3>
                                 </div>
-                                <div class="flex items-center space-x-2">
-                                    <button onclick="editActiveSubjectTitle()" class="px-3 py-1.5 rounded-xl border text-xs font-bold transition-all hover:bg-black/10 flex items-center space-x-1.5" style="border-color: var(--border-color);">
-                                        <i class="fa-solid fa-pen-to-square text-blue-400"></i><span>Edit Judul E-Book</span>
-                                    </button>
-                                    <button onclick="deleteActiveSubjectBook()" class="px-3 py-1.5 rounded-xl border text-xs font-bold transition-all hover:bg-rose-500/10 text-rose-400 border-rose-500/20 flex items-center space-x-1.5">
-                                        <i class="fa-solid fa-trash-can"></i><span>Hapus E-Book</span>
-                                    </button>
+                                <div class="text-right hidden sm:block">
+                                    <p class="text-[11px] font-serif italic opacity-75">"Konsistensi riset dan ketajaman analisis adalah kunci kesuksesan magister."</p>
                                 </div>
                             </div>
 
                             <div class="flex-1 p-0 overflow-y-auto custom-scrollbar relative">
                                 <div class="absolute left-6 top-0 bottom-0 w-0.5 opacity-25" style="background-color: var(--accent-color);"></div>
-                                <textarea id="ebook-textarea" oninput="saveCurrentNote(this.value)" class="w-full h-full notebook-page focus:outline-none pl-12 pr-8 py-2 font-medium resize-none text-sm placeholder:opacity-40" placeholder="Tuliskan intisari e-book, jurnal, catatan kuliah interaktif, atau draf kerangka tesis Anda di sini..."></textarea>
+                                <textarea id="ebook-textarea" oninput="saveCurrentNote(this.value)" class="w-full h-full notebook-page focus:outline-none pl-12 pr-8 py-2 font-medium resize-none text-sm placeholder:opacity-40" placeholder="Tuliskan intisari jurnal, catatan kuliah interaktif, atau draf kerangka tesis Anda di sini... Setiap baris dirancang rapi selaras dengan garis akademik."></textarea>
                             </div>
 
                             <div class="px-8 py-3 border-t text-[11px] opacity-60 flex items-center justify-between" style="border-color: var(--border-color); background-color: rgba(0,0,0,0.05);">
@@ -508,7 +495,7 @@
         let storage = {
             activeSemester: '1',
             activeKurikulumTab: 1,
-            userAvatar: localStorage.getItem('aaaaíim_pasca_avatar') || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=250',
+            userAvatar: localStorage.getItem('aaaaíim_pasca_avatar') || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150',
             kurikulum: JSON.parse(localStorage.getItem('aaaaíim_pasca_kurikulum')) || {
                 1: [
                     { kode: 'UNN801', nama: 'Filsafat Ilmu & Epistemologi Pendidikan', sks: 3, dosen: 'Prof. Dr. Tri Joko Raharjo, M.Pd.', status: 'Lulus' },
@@ -533,15 +520,12 @@
             },
             jadwal: JSON.parse(localStorage.getItem('aaaaíim_pasca_jadwal')) || [
                 { hari: 'Senin', matkul: 'Filsafat Ilmu & Epistemologi Pendidikan', sks: 3, waktu: '13.30 - 16.00', lokasi: 'Gedung Pascasarjana UNNES Lt. 3, Ruang 301', dosen: 'Prof. Dr. Tri Joko Raharjo, M.Pd.', info: 'https://lms.unnes.ac.id (LMS Kuliah)' },
-                { hari: 'Rabu', matkul: 'Statistika & Analisis Data Kuantitatif Lanjut', sks: 3, waktu: '09.00 - 11.30', lokasi: 'Lab Komputer Pascasarjana UNNES Lt. 2', dosen: 'Dr. Hardi Suyitno, M.Pd.', info: 'Membawa laptop terinstal software SPSS / R' },
-                { hari: 'Kamis', matkul: 'Metodologi Penelitian Pendidikan / Studi Lanjut', sks: 3, waktu: '13.30 - 16.00', lokasi: 'Gedung Pascasarjana UNNES Lt. 2, Ruang 204', dosen: 'Prof. Dr. Agus Nuryatin, M.Hum.', info: 'Diskusi Proposal Tesis' }
+                { hari: 'Rabu', matkul: 'Statistika & Analisis Data Kuantitatif Lanjut', sks: 3, waktu: '09.00 - 11.30', lokasi: 'Lab Komputer Pascasarjana UNNES Lt. 2', dosen: 'Dr. Hardi Suyitno, M.Pd.', info: 'Membawa laptop terinstal software SPSS / R' }
             ],
             absensi: JSON.parse(localStorage.getItem('aaaaíim_pasca_absensi')) || [],
             ebooks: JSON.parse(localStorage.getItem('aaaaíim_pasca_ebooks')) || {
-                'Filsafat Ilmu & Epistemologi Pendidikan': '✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: Landasan Ontologis & Epistemologis Ilmu Pendidikan\n\nPoin Penting:\n1. Hakikat kebenaran ilmiah dalam perspektif post-positivisme.\n2. Konstruksi paradigma berpikir kritis bagi mahasiswa magister.\n3. Relevansi filsafat ilmu dengan pengembangan tesis.',
-                'Statistika & Analisis Data Kuantitatif Lanjut': '✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: Analisis Multivariat & Pengujian Hipotesis Kompleks\n\nPoin Penting:\n1. Pemilihan uji statistik parametrik dan non-parametrik yang tepat.\n2. Interpretasi output SPSS untuk publikasi jurnal ilmiah.\n3. Validitas dan reliabilitas instrumen penelitian.',
-                'Metodologi Penelitian Pendidikan / Studi Lanjut': '✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: Desain Riset Kualitatif & Kuantitatif\n\nPoin Penting:\n1. Penyusunan rumusan masalah dan pertanyaan penelitian yang tajam.\n2. Teknik pengumpulan data primer dan sekunder.',
-                'Teori Belajar & Pembelajaran Lanjutan': '✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: Konstruktivisme & Kognitivisme Modern\n\nPoin Penting:\n1. Implementasi teori Vygotsky dan Piaget dalam era digital.'
+                'Filsafat Ilmu & Epistemologi Pendidikan': '✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Landasan Ontologis & Epistemologis Ilmu Pendidikan\n\nPoin Penting:\n1. Hakikat kebenaran ilmiah dalam perspektif post-positivisme.\n2. Konstruksi paradigma berpikir kritis bagi mahasiswa magister.\n3. Relevansi filsafat ilmu dengan pengembangan tesis.',
+                'Statistika & Analisis Data Kuantitatif Lanjut': '✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Analisis Multivariat & Pengujian Hipotesis Kompleks\n\nPoin Penting:\n1. Pemilihan uji statistik parametrik dan non-parametrik yang tepat.\n2. Interpretasi output SPSS untuk publikasi jurnal ilmiah.\n3. Validitas dan reliabilitas instrumen penelitian.'
             },
             activeSubject: 'Filsafat Ilmu & Epistemologi Pendidikan',
             tugas: JSON.parse(localStorage.getItem('aaaaíim_pasca_tugas')) || [
@@ -565,9 +549,6 @@
             if(!storage.absensi || storage.absensi.length === 0) {
                 generateAutomatedAbsensi(false);
             }
-            // Update avatar di login & dashboard awal
-            document.getElementById('user-avatar-img').src = storage.userAvatar;
-            document.getElementById('user-avatar-login-img').src = storage.userAvatar;
         });
 
         function saveData() {
@@ -617,7 +598,6 @@
                 reader.onload = function(event) {
                     storage.userAvatar = event.target.result;
                     document.getElementById('user-avatar-img').src = storage.userAvatar;
-                    document.getElementById('user-avatar-login-img').src = storage.userAvatar;
                     saveData();
                 };
                 reader.readAsDataURL(file);
@@ -752,12 +732,6 @@
             if(kode && nama) {
                 if(!storage.kurikulum[storage.activeKurikulumTab]) storage.kurikulum[storage.activeKurikulumTab] = [];
                 storage.kurikulum[storage.activeKurikulumTab].push({ kode, nama, sks: Number(sks), dosen: dosen || 'Tim Dosen UNNES', status: 'Sedang Berjalan' });
-                
-                // Otomatis tambahkan juga ke e-book jika belum ada
-                if(!storage.ebooks[nama]) {
-                    storage.ebooks[nama] = "✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: " + nama + "\n\nTuliskan ringkasan e-book, jurnal, atau catatan penting di sini.";
-                }
-
                 saveData();
                 renderKurikulumTable(storage.activeKurikulumTab);
             }
@@ -778,12 +752,6 @@
             const info = prompt("Link / Keterangan (Contoh: https://lms.unnes.ac.id atau Catatan):");
             if(hari && matkul) {
                 storage.jadwal.push({ hari, matkul, sks: Number(sks || 3), waktu, lokasi: lokasi || 'Ruang Kuliah Pascasarjana UNNES', dosen, info: info || '-' });
-                
-                // Otomatis buat e-book untuk matkul jadwal baru jika belum ada
-                if(!storage.ebooks[matkul]) {
-                    storage.ebooks[matkul] = "✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: " + matkul + "\n\nTuliskan ringkasan e-book dan jurnal di sini.";
-                }
-
                 generateAutomatedAbsensi(false);
                 saveData();
             }
@@ -841,6 +809,7 @@
             const dayMap = { 'Minggu': 0, 'Senin': 1, 'Selasa': 2, 'Rabu': 3, 'Kamis': 4, 'Jumat': 5, 'Sabtu': 6 };
             let newAbsensiList = [];
             
+            // Pertahankan data kehadiran/materi yang sudah pernah diisi manual sebelumnya jika ada
             const existingMap = {};
             if(storage.absensi && storage.absensi.length > 0) {
                 storage.absensi.forEach(item => {
@@ -848,6 +817,7 @@
                 });
             }
 
+            // Generate 4 pertemuan berulang ke depan per mata kuliah sesuai jadwal mingguan
             storage.jadwal.forEach(j => {
                 const targetDayIndex = dayMap[j.hari] !== undefined ? dayMap[j.hari] : 1;
                 const baseDate = new Date();
@@ -937,12 +907,11 @@
             }).join('');
         }
 
-        // --- TOOLS E-BOOK PER MATKUL (TAMBAH, EDIT, HAPUS) ---
         function renderNotebookSubjects() {
             const container = document.getElementById('subject-list-container');
             if(!container) return;
             container.innerHTML = Object.keys(storage.ebooks).map(sub => `
-                <button onclick="selectSubject('${sub.replace(/'/g, "\\'")}')" class="w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold transition-all truncate flex items-center justify-between ${storage.activeSubject === sub ? 'text-white shadow-md' : 'opacity-70 hover:opacity-100 hover:bg-black/15'}" style="${storage.activeSubject === sub ? 'background-color: var(--accent-color);' : ''}">
+                <button onclick="selectSubject('${sub}')" class="w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold transition-all truncate flex items-center justify-between ${storage.activeSubject === sub ? 'text-white shadow-md' : 'opacity-70 hover:opacity-100 hover:bg-black/15'}" style="${storage.activeSubject === sub ? 'background-color: var(--accent-color);' : ''}">
                     <span class="truncate"><i class="fa-solid fa-book-open mr-2"></i> ${sub}</span>
                     <i class="fa-solid fa-chevron-right text-[10px] opacity-60"></i>
                 </button>
@@ -964,37 +933,10 @@
         }
 
         function addSubjectBook() {
-            const newSub = prompt("Masukkan Nama Mata Kuliah / E-Book Baru:");
+            const newSub = prompt("Masukkan Nama Mata Kuliah Baru untuk E-Book:");
             if(newSub && !storage.ebooks[newSub]) {
-                storage.ebooks[newSub] = "✨ E-BOOK & CATATAN KULIAH PASCASARJANA UNNES\nTopik: " + newSub + "\n\nPoin Penting:\n1. Tuliskan ringkasan e-book dan jurnal wajib di sini.\n2. Catat instruksi khusus dari dosen pengampu.";
+                storage.ebooks[newSub] = "✨ CATATAN KULIAH PASCASARJANA UNNES\nTopik: Pengantar & Landasan Teori " + newSub + "\n\nPoin Penting:\n1. Tuliskan ringkasan jurnal dan literatur wajib di sini.\n2. Catat instruksi khusus dari dosen pengampu.\n3. Susun kerangka gagasan untuk analisis tesis.";
                 storage.activeSubject = newSub;
-                saveData();
-            } else if(storage.ebooks[newSub]) {
-                alert("Mata kuliah / e-book tersebut sudah ada dalam daftar!");
-            }
-        }
-
-        function editActiveSubjectTitle() {
-            const oldSub = storage.activeSubject;
-            const newSub = prompt("Edit Nama Mata Kuliah / Judul E-Book:", oldSub);
-            if(newSub && newSub !== oldSub) {
-                if(storage.ebooks[newSub]) {
-                    alert("Nama mata kuliah tersebut sudah ada!");
-                    return;
-                }
-                storage.ebooks[newSub] = storage.ebooks[oldSub];
-                delete storage.ebooks[oldSub];
-                storage.activeSubject = newSub;
-                saveData();
-            }
-        }
-
-        function deleteActiveSubjectBook() {
-            const sub = storage.activeSubject;
-            if(confirm(`Hapus e-book dan catatan untuk mata kuliah "${sub}"?`)) {
-                delete storage.ebooks[sub];
-                const keys = Object.keys(storage.ebooks);
-                storage.activeSubject = keys.length > 0 ? keys[0] : '';
                 saveData();
             }
         }
@@ -1044,8 +986,6 @@
             
             const avatarImg = document.getElementById('user-avatar-img');
             if(avatarImg) avatarImg.src = storage.userAvatar;
-            const avatarLoginImg = document.getElementById('user-avatar-login-img');
-            if(avatarLoginImg) avatarLoginImg.src = storage.userAvatar;
 
             const pendingTugas = storage.tugas.filter(t => t.status !== 'Submitted').length;
             const statTugas = document.getElementById('dash-stat-tugas');
@@ -1127,7 +1067,7 @@
                                 <h4 class="font-extrabold text-sm mt-1">${t.judul}</h4>
                                 <p class="opacity-70"><i class="fa-regular fa-clock mr-1"></i> Deadline: ${t.deadline}</p>
                             </div>
-                            <div class="flex items-center justify-between pt-2 border-sys border-t" style="border-color: var(--border-color);">
+                            <div class="flex items-center justify-between pt-2 border-t" style="border-color: var(--border-color);">
                                 <select onchange="updateTaskStatus(${i}, this.value)" class="px-3 py-1.5 rounded-lg font-bold border ${badgeColor} outline-none cursor-pointer" style="background: rgba(0,0,0,0.2);">
                                     <option value="Pending" ${t.status === 'Pending' ? 'selected' : ''}>Pending</option>
                                     <option value="In Progress" ${t.status === 'In Progress' ? 'selected' : ''}>In Progress</option>
