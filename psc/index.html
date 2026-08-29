@@ -28,7 +28,6 @@
 
     const docRef = doc(db, "pascasarjana_unnes", "hikarinaim_profile");
 
-    // Real-time listener agar perubahan di satu browser/perangkat langsung tampil di perangkat lain secara live
     onSnapshot(docRef, (docSnap) => {
         if (docSnap.exists()) {
             const cloudData = docSnap.data();
@@ -263,6 +262,20 @@
                         </div>
                     </div>
 
+                    <div class="border rounded-2xl p-5 sm:p-6 shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
+                        <div class="flex items-center justify-between mb-4">
+                            <div>
+                                <h3 class="font-extrabold text-xs sm:text-sm flex items-center space-x-2">
+                                    <i class="fa-solid fa-chart-bar" style="color: var(--accent-color);"></i>
+                                    <span>Grafik Distribusi Beban Jadwal Mingguan (Sesi Kuliah)</span>
+                                </h3>
+                                <p class="text-[11px] opacity-60 mt-0.5">Visualisasi jumlah sesi perkuliahan aktif per hari dalam seminggu.</p>
+                            </div>
+                            <span class="text-[10px] font-bold px-2.5 py-1 rounded-full border" style="background-color: var(--bg-main); border-color: var(--border-color);">Real-time</span>
+                        </div>
+                        <div id="dashboard-schedule-chart" class="grid grid-cols-2 sm:grid-cols-6 gap-3 pt-2"></div>
+                    </div>
+
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div class="border rounded-2xl p-5 sm:p-6 shadow-sm flex flex-col justify-between backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div>
@@ -353,22 +366,22 @@
                     <div class="border rounded-2xl overflow-hidden shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                         <div class="p-5 sm:p-6 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4" style="border-color: var(--border-color);">
                             <div>
-                                <h3 class="font-extrabold text-sm">Jadwal Kuliah & Lokasi Ruangan Kelas Pascasarjana UNNES</h3>
-                                <p class="text-xs opacity-60 mt-0.5">Kelola jadwal mingguan, SKS, lokasi ruangan, serta link materi atau catatan.</p>
+                                <h3 class="font-extrabold text-sm">Jadwal Kuliah, Lokasi Ruangan & Tautan Kelas</h3>
+                                <p class="text-xs opacity-60 mt-0.5">Kelola jadwal mingguan, SKS, ruangan, tautan kelas (Zoom/LMS), serta pengeditan data.</p>
                             </div>
-                            <button onclick="addJadwal()" class="text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2" style="background-color: var(--accent-color);">
+                            <button onclick="openJadwalModal()" class="text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2" style="background-color: var(--accent-color);">
                                 <i class="fa-solid fa-plus"></i><span>Tambah Jadwal</span>
                             </button>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs min-w-[700px]">
+                            <table class="w-full text-left text-xs min-w-[800px]">
                                 <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                                     <tr>
-                                        <th class="px-4 sm:px-6 py-4">Hari</th>
+                                        <th class="px-4 sm:px-6 py-4">Hari & Waktu</th>
                                         <th class="px-4 sm:px-6 py-4">Mata Kuliah & SKS</th>
-                                        <th class="px-4 sm:px-6 py-4">Waktu</th>
-                                        <th class="px-4 sm:px-6 py-4">Lokasi / Ruangan</th>
+                                        <th class="px-4 sm:px-6 py-4">Lokasi Ruangan</th>
                                         <th class="px-4 sm:px-6 py-4">Dosen Pengampu</th>
+                                        <th class="px-4 sm:px-6 py-4">Tautan (LMS/Zoom)</th>
                                         <th class="px-4 sm:px-6 py-4 text-center">Aksi</th>
                                     </tr>
                                 </thead>
@@ -382,21 +395,28 @@
                     <div class="border rounded-2xl overflow-hidden shadow-sm backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                         <div class="p-5 sm:p-6 border-b flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4" style="border-color: var(--border-color);">
                             <div>
-                                <h3 class="font-extrabold text-sm">Absensi Perkuliahan & Rekap Kehadiran</h3>
-                                <p class="text-xs opacity-60 mt-0.5">Dibuat otomatis dari daftar jadwal mingguan Anda.</p>
+                                <h3 class="font-extrabold text-sm">Absensi Perkuliahan & Catatan Mandiri</h3>
+                                <p class="text-xs opacity-60 mt-0.5">Kelola rekap kehadiran kuliah dan tambahkan catatan materi secara mandiri.</p>
                             </div>
-                            <button onclick="generateAutomatedAbsensi(true)" class="text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2" style="background-color: var(--accent-color);">
-                                <i class="fa-solid fa-rotate"></i><span>Refresh Absensi</span>
-                            </button>
+                            <div class="flex items-center space-x-2">
+                                <button onclick="openAbsensiModal()" class="text-white px-4 py-2 rounded-xl text-xs font-bold transition-all shadow-md flex items-center space-x-2" style="background-color: var(--accent-color);">
+                                    <i class="fa-solid fa-plus"></i><span>Tambah Baris Absensi</span>
+                                </button>
+                                <button onclick="generateAutomatedAbsensi(true)" class="px-4 py-2 rounded-xl text-xs font-bold border transition-all shadow-sm" style="border-color: var(--border-color);">
+                                    <i class="fa-solid fa-rotate mr-1"></i><span>Auto-Generate</span>
+                                </button>
+                            </div>
                         </div>
                         <div class="overflow-x-auto">
-                            <table class="w-full text-left text-xs min-w-[700px]">
+                            <table class="w-full text-left text-xs min-w-[750px]">
                                 <thead class="border-b uppercase tracking-wider opacity-70" style="background-color: rgba(0,0,0,0.1); border-color: var(--border-color);">
                                     <tr>
                                         <th class="px-4 sm:px-6 py-4">Pertemuan & Mata Kuliah</th>
-                                        <th class="px-4 sm:px-6 py-4">Tanggal Perkiraan</th>
+                                        <th class="px-4 sm:px-6 py-4">Tanggal / Waktu</th>
                                         <th class="px-4 sm:px-6 py-4">Status Kuliah</th>
                                         <th class="px-4 sm:px-6 py-4">Kehadiran Saya</th>
+                                        <th class="px-4 sm:px-6 py-4">Catatan Kuliah / Dosen</th>
+                                        <th class="px-4 sm:px-6 py-4 text-center">Aksi</th>
                                     </tr>
                                 </thead>
                                 <tbody id="table-absensi-body" class="divide-y" style="border-color: var(--border-color);"></tbody>
@@ -459,7 +479,6 @@
         </main>
     </div>
 
-    <!-- Modal Tambah/Edit Tugas -->
     <div id="task-modal" class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden">
         <div class="w-full max-w-lg p-6 rounded-3xl border shadow-2xl relative" style="background-color: var(--bg-card); border-color: var(--border-color);">
             <div class="flex items-center justify-between mb-4 pb-3 border-b" style="border-color: var(--border-color);">
@@ -483,6 +502,103 @@
                 <div class="flex justify-end space-x-3 pt-2">
                     <button type="button" onclick="closeTaskModal()" class="px-4 py-2 rounded-xl border font-bold" style="border-color: var(--border-color);">Batal</button>
                     <button type="submit" class="px-5 py-2 rounded-xl text-white font-bold shadow-md" style="background-color: var(--accent-color);">Simpan Tugas</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="jadwal-modal" class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden">
+        <div class="w-full max-w-lg p-6 rounded-3xl border shadow-2xl relative" style="background-color: var(--bg-card); border-color: var(--border-color);">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b" style="border-color: var(--border-color);">
+                <h3 id="jadwal-modal-title" class="font-extrabold text-sm sm:text-base">Tambah Jadwal Kuliah</h3>
+                <button onclick="closeJadwalModal()" class="text-base opacity-70 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="jadwal-form" onsubmit="handleSaveJadwal(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="input-jadwal-index" value="">
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold uppercase mb-1 opacity-70">Hari</label>
+                        <select id="input-jadwal-hari" class="w-full px-3 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                            <option value="Senin">Senin</option>
+                            <option value="Selasa">Selasa</option>
+                            <option value="Rabu">Rabu</option>
+                            <option value="Kamis">Kamis</option>
+                            <option value="Jumat">Jumat</option>
+                            <option value="Sabtu">Sabtu</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block font-bold uppercase mb-1 opacity-70">SKS</label>
+                        <input type="number" id="input-jadwal-sks" value="3" required class="w-full px-3 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold uppercase mb-1 opacity-70">Mata Kuliah</label>
+                    <input type="text" id="input-jadwal-matkul" required placeholder="Contoh: Filsafat Ilmu" class="w-full px-3 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold uppercase mb-1 opacity-70">Waktu</label>
+                        <input type="text" id="input-jadwal-waktu" required placeholder="15:30 - 18:00" class="w-full px-3 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                    </div>
+                    <div>
+                        <label class="block font-bold uppercase mb-1 opacity-70">Lokasi / Ruangan</label>
+                        <input type="text" id="input-jadwal-lokasi" required placeholder="Gedung Pascasarjana Lt. 3" class="w-full px-3 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold uppercase mb-1 opacity-70">Dosen Pengampu</label>
+                    <input type="text" id="input-jadwal-dosen" required placeholder="Prof. Dr...." class="w-full px-3 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                </div>
+                <div>
+                    <label class="block font-bold uppercase mb-1 opacity-70">Tautan Tautan / Link Kuliah (Zoom/LMS)</label>
+                    <input type="text" id="input-jadwal-info" placeholder="https://lms.unnes.ac.id atau Link Zoom" class="w-full px-3 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeJadwalModal()" class="px-4 py-2 rounded-xl border font-bold" style="border-color: var(--border-color);">Batal</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-white font-bold shadow-md" style="background-color: var(--accent-color);">Simpan Jadwal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="absensi-modal" class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden">
+        <div class="w-full max-w-lg p-6 rounded-3xl border shadow-2xl relative" style="background-color: var(--bg-card); border-color: var(--border-color);">
+            <div class="flex items-center justify-between mb-4 pb-3 border-b" style="border-color: var(--border-color);">
+                <h3 id="absensi-modal-title" class="font-extrabold text-sm sm:text-base">Tambah Baris Absensi & Catatan</h3>
+                <button onclick="closeAbsensiModal()" class="text-base opacity-70 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <form id="absensi-form" onsubmit="handleSaveAbsensi(event)" class="space-y-3 text-xs">
+                <input type="hidden" id="input-absensi-index" value="">
+                <div>
+                    <label class="block font-bold uppercase mb-1 opacity-70">Pertemuan Ke-</label>
+                    <input type="text" id="input-absensi-pertemuan" required placeholder="Contoh: Pertemuan 1" class="w-full px-3 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                </div>
+                <div>
+                    <label class="block font-bold uppercase mb-1 opacity-70">Mata Kuliah</label>
+                    <input type="text" id="input-absensi-matkul" required placeholder="Contoh: Filsafat Ilmu" class="w-full px-3 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                </div>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block font-bold uppercase mb-1 opacity-70">Tanggal / Waktu</label>
+                        <input type="text" id="input-absensi-tanggal" required placeholder="12 Oktober 2026" class="w-full px-3 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                    </div>
+                    <div>
+                        <label class="block font-bold uppercase mb-1 opacity-70">Status Kehadiran</label>
+                        <select id="input-absensi-kehadiran" class="w-full px-3 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
+                            <option value="Hadir">Hadir</option>
+                            <option value="Izin">Izin</option>
+                            <option value="Alpha">Alpha</option>
+                        </select>
+                    </div>
+                </div>
+                <div>
+                    <label class="block font-bold uppercase mb-1 opacity-70">Catatan Kuliah / Dosen</label>
+                    <textarea id="input-absensi-catatan" rows="3" placeholder="Tuliskan catatan penting materi atau tugas dari dosen..." class="w-full px-3 py-2.5 rounded-xl border outline-none resize-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);"></textarea>
+                </div>
+                <div class="flex justify-end space-x-3 pt-2">
+                    <button type="button" onclick="closeAbsensiModal()" class="px-4 py-2 rounded-xl border font-bold" style="border-color: var(--border-color);">Batal</button>
+                    <button type="submit" class="px-5 py-2 rounded-xl text-white font-bold shadow-md" style="background-color: var(--accent-color);">Simpan Absensi</button>
                 </div>
             </form>
         </div>
@@ -746,19 +862,60 @@
         }
 
         // --- JADWAL ---
-        function addJadwal() {
-            const hari = prompt("Hari Kuliah (Contoh: Senin, Selasa, Rabu, Kamis, Jumat, Sabtu):");
-            const matkul = prompt("Nama Mata Kuliah:");
-            const sks = prompt("Jumlah SKS:", "3");
-            const waktu = prompt("Waktu (Contoh: 15:30 - 18:00):");
-            const lokasi = prompt("Lokasi Ruangan:", "Gedung Pascasarjana UNNES");
-            const dosen = prompt("Nama Dosen Pengampu:");
-            const info = prompt("Link / Keterangan:", "https://lms.unnes.ac.id");
-            if(hari && matkul) {
-                storage.jadwal.push({ hari: hari.trim(), matkul, sks: Number(sks || 3), waktu, lokasi, dosen, info });
-                generateAutomatedAbsensi(false);
-                saveData();
+        function openJadwalModal(index = null) {
+            const modal = document.getElementById('jadwal-modal');
+            const modalTitle = document.getElementById('jadwal-modal-title');
+            const idxInput = document.getElementById('input-jadwal-index');
+            const hariInput = document.getElementById('input-jadwal-hari');
+            const matkulInput = document.getElementById('input-jadwal-matkul');
+            const sksInput = document.getElementById('input-jadwal-sks');
+            const waktuInput = document.getElementById('input-jadwal-waktu');
+            const lokasiInput = document.getElementById('input-jadwal-lokasi');
+            const dosenInput = document.getElementById('input-jadwal-dosen');
+            const infoInput = document.getElementById('input-jadwal-info');
+
+            if (index !== null && storage.jadwal[index]) {
+                modalTitle.innerText = "Edit Jadwal Kuliah";
+                idxInput.value = index;
+                hariInput.value = storage.jadwal[index].hari;
+                matkulInput.value = storage.jadwal[index].matkul;
+                sksInput.value = storage.jadwal[index].sks || 3;
+                waktuInput.value = storage.jadwal[index].waktu;
+                lokasiInput.value = storage.jadwal[index].lokasi;
+                dosenInput.value = storage.jadwal[index].dosen;
+                infoInput.value = storage.jadwal[index].info || '';
+            } else {
+                modalTitle.innerText = "Tambah Jadwal Kuliah Baru";
+                idxInput.value = "";
+                document.getElementById('jadwal-form').reset();
             }
+            modal.classList.remove('hidden');
+        }
+
+        function closeJadwalModal() {
+            document.getElementById('jadwal-modal').classList.add('hidden');
+        }
+
+        function handleSaveJadwal(e) {
+            e.preventDefault();
+            const index = document.getElementById('input-jadwal-index').value;
+            const hari = document.getElementById('input-jadwal-hari').value;
+            const matkul = document.getElementById('input-jadwal-matkul').value;
+            const sks = Number(document.getElementById('input-jadwal-sks').value || 3);
+            const waktu = document.getElementById('input-jadwal-waktu').value;
+            const lokasi = document.getElementById('input-jadwal-lokasi').value;
+            const dosen = document.getElementById('input-jadwal-dosen').value;
+            const info = document.getElementById('input-jadwal-info').value;
+
+            if (index !== "") {
+                storage.jadwal[index] = { hari, matkul, sks, waktu, lokasi, dosen, info };
+            } else {
+                storage.jadwal.push({ hari, matkul, sks, waktu, lokasi, dosen, info });
+            }
+
+            closeJadwalModal();
+            generateAutomatedAbsensi(false);
+            saveData();
         }
 
         function renderJadwalTable() {
@@ -766,13 +923,24 @@
             if(!tbody) return;
             tbody.innerHTML = storage.jadwal.map((j, i) => `
                 <tr class="transition-all hover:bg-black/5">
-                    <td class="px-4 sm:px-6 py-4 font-bold" style="color: var(--accent-color);">${j.hari}</td>
-                    <td class="px-4 sm:px-6 py-4 font-extrabold">${j.matkul} <span class="text-[10px] opacity-70 block font-normal">${j.sks || 3} SKS</span></td>
-                    <td class="px-4 sm:px-6 py-4 opacity-80">${j.waktu}</td>
+                    <td class="px-4 sm:px-6 py-4">
+                        <span class="font-bold block" style="color: var(--accent-color);">${j.hari}</span>
+                        <span class="text-[10px] opacity-75">${j.waktu}</span>
+                    </td>
+                    <td class="px-4 sm:px-6 py-4">
+                        <span class="font-extrabold block">${j.matkul}</span>
+                        <span class="text-[10px] opacity-70">${j.sks || 3} SKS</span>
+                    </td>
                     <td class="px-4 sm:px-6 py-4 font-medium">${j.lokasi}</td>
                     <td class="px-4 sm:px-6 py-4 opacity-80">${j.dosen}</td>
+                    <td class="px-4 sm:px-6 py-4">
+                        ${j.info ? `<a href="${j.info.startsWith('http') ? j.info : 'https://'+j.info}" target="_blank" class="text-xs font-semibold underline truncate max-w-[150px] inline-block" style="color: var(--accent-color);"><i class="fa-solid fa-link mr-1"></i>Buka Tautan</a>` : '<span class="opacity-40 italic">Tidak ada tautan</span>'}
+                    </td>
                     <td class="px-4 sm:px-6 py-4 text-center">
-                        <button onclick="deleteJadwal(${i})" class="opacity-50 hover:text-rose-400 p-1"><i class="fa-solid fa-trash-can"></i></button>
+                        <div class="flex items-center justify-center space-x-1">
+                            <button onclick="openJadwalModal(${i})" class="opacity-70 hover:text-blue-400 p-1.5" title="Edit Jadwal"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteJadwal(${i})" class="opacity-50 hover:text-rose-400 p-1.5" title="Hapus Jadwal"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
                     </td>
                 </tr>
             `).join('');
@@ -797,11 +965,72 @@
                         matkul: j.matkul,
                         tanggal: `Sesuai Jadwal ${j.hari}`,
                         statusKuliah: p === 1 ? 'Sudah Dilaksanakan' : 'Belum Dilaksanakan',
-                        kehadiran: 'Hadir'
+                        kehadiran: 'Hadir',
+                        catatan: ''
                     });
                 }
             });
             storage.absensi = newAbsensi;
+            saveData();
+        }
+
+        function openAbsensiModal(index = null) {
+            const modal = document.getElementById('absensi-modal');
+            const modalTitle = document.getElementById('absensi-modal-title');
+            const idxInput = document.getElementById('input-absensi-index');
+            const pertemuanInput = document.getElementById('input-absensi-pertemuan');
+            const matkulInput = document.getElementById('input-absensi-matkul');
+            const tanggalInput = document.getElementById('input-absensi-tanggal');
+            const kehadiranInput = document.getElementById('input-absensi-kehadiran');
+            const catatanInput = document.getElementById('input-absensi-catatan');
+
+            if (index !== null && storage.absensi[index]) {
+                modalTitle.innerText = "Edit Baris Absensi & Catatan";
+                idxInput.value = index;
+                pertemuanInput.value = storage.absensi[index].pertemuan;
+                matkulInput.value = storage.absensi[index].matkul;
+                tanggalInput.value = storage.absensi[index].tanggal;
+                kehadiranInput.value = storage.absensi[index].kehadiran;
+                catatanInput.value = storage.absensi[index].catatan || '';
+            } else {
+                modalTitle.innerText = "Tambah Baris Absensi & Catatan Baru";
+                idxInput.value = "";
+                document.getElementById('absensi-form').reset();
+            }
+            modal.classList.remove('hidden');
+        }
+
+        function closeAbsensiModal() {
+            document.getElementById('absensi-modal').classList.add('hidden');
+        }
+
+        function handleSaveAbsensi(e) {
+            e.preventDefault();
+            const index = document.getElementById('input-absensi-index').value;
+            const pertemuan = document.getElementById('input-absensi-pertemuan').value;
+            const matkul = document.getElementById('input-absensi-matkul').value;
+            const tanggal = document.getElementById('input-absensi-tanggal').value;
+            const kehadiran = document.getElementById('input-absensi-kehadiran').value;
+            const catatan = document.getElementById('input-absensi-catatan').value;
+
+            if (index !== "") {
+                storage.absensi[index].pertemuan = pertemuan;
+                storage.absensi[index].matkul = matkul;
+                storage.absensi[index].tanggal = tanggal;
+                storage.absensi[index].kehadiran = kehadiran;
+                storage.absensi[index].catatan = catatan;
+            } else {
+                storage.absensi.push({
+                    pertemuan,
+                    matkul,
+                    tanggal,
+                    statusKuliah: 'Belum Dilaksanakan',
+                    kehadiran,
+                    catatan
+                });
+            }
+
+            closeAbsensiModal();
             saveData();
         }
 
@@ -828,12 +1057,28 @@
                             <option value="Alpha" ${a.kehadiran === 'Alpha' ? 'selected' : ''}>Alpha</option>
                         </select>
                     </td>
+                    <td class="px-4 sm:px-6 py-4">
+                        <input type="text" value="${a.catatan || ''}" onchange="updateAbsensiCatatan(${i}, this.value)" placeholder="Klik isi catatan..." class="w-full px-2.5 py-1 rounded-lg text-[11px] border outline-none bg-transparent" style="border-color: var(--border-color);">
+                    </td>
+                    <td class="px-4 sm:px-6 py-4 text-center">
+                        <div class="flex items-center justify-center space-x-1">
+                            <button onclick="openAbsensiModal(${i})" class="opacity-70 hover:text-blue-400 p-1" title="Edit Baris"><i class="fa-solid fa-pen-to-square"></i></button>
+                            <button onclick="deleteAbsensi(${i})" class="opacity-50 hover:text-rose-400 p-1" title="Hapus"><i class="fa-solid fa-trash-can"></i></button>
+                        </div>
+                    </td>
                 </tr>
             `).join('');
         }
 
-        function updateAbsensiStatus(i, val) { storage.absensi[i].statusKuliah = val; saveData(); }
-        function updateAbsensiHadir(i, val) { storage.absensi[i].kehadiran = val; saveData(); }
+        function updateAbsensiStatus(i, val) { storage.absensi[i].statusKuliah = val; saveDataQuiet(); }
+        function updateAbsensiHadir(i, val) { storage.absensi[i].kehadiran = val; saveDataQuiet(); }
+        function updateAbsensiCatatan(i, val) { storage.absensi[i].catatan = val; saveDataQuiet(); }
+        function deleteAbsensi(i) {
+            if(confirm("Hapus baris absensi ini?")) {
+                storage.absensi.splice(i, 1);
+                saveData();
+            }
+        }
 
         // --- NOTEBOOK / E-BOOK ---
         function renderNotebookSubjects() {
@@ -942,12 +1187,10 @@
             const deadline = document.getElementById('input-deadline').value;
 
             if (index !== "") {
-                // Mode Edit
                 storage.tugas[index].matkul = matkul;
                 storage.tugas[index].judul = judul;
                 storage.tugas[index].deadline = deadline;
             } else {
-                // Mode Tambah Baru
                 storage.tugas.push({ matkul, judul, deadline, status: 'Pending' });
             }
 
@@ -999,12 +1242,10 @@
         }
 
         function renderDashboardStats() {
-            // Hitung jumlah tugas pending & in progress (selain submitted)
             const activeTasks = storage.tugas.filter(t => t.status !== 'Submitted');
             const dashTugas = document.getElementById('dash-stat-tugas');
             if(dashTugas) dashTugas.innerText = activeTasks.length;
 
-            // Hitung jadwal hari ini secara otomatis berdasarkan nama hari perangkat
             const daysMap = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
             const currentDayName = daysMap[new Date().getDay()];
             
@@ -1034,7 +1275,30 @@
                 dashAbs.innerText = percent + "%";
             }
 
-            // Render Daily Schedule di Dashboard berdasarkan hari aktif hari ini
+            // Render Grafik Jadwal Mingguan di Dashboard
+            const chartContainer = document.getElementById('dashboard-schedule-chart');
+            if(chartContainer) {
+                const listHari = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+                const maxSesi = Math.max(...listHari.map(h => storage.jadwal.filter(j => j.hari.toLowerCase() === h.toLowerCase()).length), 1);
+                
+                chartContainer.innerHTML = listHari.map(hari => {
+                    const count = storage.jadwal.filter(j => j.hari.toLowerCase() === hari.toLowerCase()).length;
+                    const percentHeight = Math.max(Math.round((count / maxSesi) * 100), 15);
+                    const isToday = hari.toLowerCase() === currentDayName.toLowerCase();
+                    return `
+                        <div class="p-3 rounded-xl border flex flex-col justify-between items-center text-center" style="background-color: var(--bg-main); border-color: ${isToday ? 'var(--accent-color)' : 'var(--border-color)'};">
+                            <span class="text-[10px] font-bold opacity-70">${hari}</span>
+                            <div class="w-full bg-black/20 h-20 rounded-lg flex items-end justify-center p-1 my-2">
+                                <div class="w-full rounded-md transition-all duration-500 flex items-center justify-center text-[10px] font-extrabold text-white shadow-sm" style="height: ${percentHeight}%; background-color: ${isToday ? 'var(--accent-color)' : 'rgba(139, 92, 246, 0.4)'};">
+                                    ${count}
+                                </div>
+                            </div>
+                            <span class="text-[10px] font-extrabold" style="color: var(--accent-color);">${count} Sesi</span>
+                        </div>
+                    `;
+                }).join('');
+            }
+
             const dailyContainer = document.getElementById('dashboard-daily-schedule');
             if(dailyContainer) {
                 dailyContainer.innerHTML = todaySchedules.length > 0 ? todaySchedules.map(j => `
@@ -1048,7 +1312,6 @@
                 `).join('') : `<p class="text-xs opacity-60 italic">Tidak ada jadwal kuliah untuk hari ${currentDayName} ini.</p>`;
             }
 
-            // Render SEMUA tugas Pending & In Progress di Dashboard (Kecuali Submitted)
             const deadlineContainer = document.getElementById('dashboard-deadline-list');
             if(deadlineContainer) {
                 deadlineContainer.innerHTML = activeTasks.length > 0 ? activeTasks.map(t => `
