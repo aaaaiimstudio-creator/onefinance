@@ -12,7 +12,28 @@
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
     import { getFirestore, doc, setDoc, getDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-    const firebaseConfig = {
+    // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+import { getAnalytics } from "firebase/analytics";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyB8L2mjD2fiUqP3iAGccCh98MyIgsgM_14",
+  authDomain: "aaaiim-onefinance.firebaseapp.com",
+  databaseURL: "https://aaaiim-onefinance-default-rtdb.firebaseio.com",
+  projectId: "aaaiim-onefinance",
+  storageBucket: "aaaiim-onefinance.firebasestorage.app",
+  messagingSenderId: "111442380622",
+  appId: "1:111442380622:web:9106c659173ed914bd401f",
+  measurementId: "G-ZFTSGN3YR9"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);const firebaseConfig = {
           apiKey: "AIzaSyAElGVmqqeJFYW7O4VX-eYXhCxa8LDjWkA",
           authDomain: "aaaaimm-pascasarjana.firebaseapp.com",
           databaseURL: "https://aaaaimm-pascasarjana-default-rtdb.asia-southeast1.firebasedatabase.app",
