@@ -237,7 +237,7 @@
                         <div class="border p-4 sm:p-6 rounded-2xl shadow-sm flex items-center space-x-3 sm:space-x-4 backdrop-blur-md" style="background-color: var(--bg-card); border-color: var(--border-color);">
                             <div class="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center text-lg sm:text-xl font-bold text-white shadow-md flex-shrink-0" style="background-color: var(--accent-color);"><i class="fa-solid fa-list-check"></i></div>
                             <div class="overflow-hidden">
-                                <p class="text-[11px] sm:text-xs opacity-70 font-medium truncate">Tugas Pending</p>
+                                <p class="text-[11px] sm:text-xs opacity-70 font-medium truncate">Tugas Pending/In Progress</p>
                                 <h3 id="dash-stat-tugas" class="text-xl sm:text-2xl font-extrabold">0</h3>
                             </div>
                         </div>
@@ -283,7 +283,7 @@
                                 <div class="flex items-center justify-between mb-4">
                                     <h3 class="font-extrabold text-xs sm:text-sm flex items-center space-x-2">
                                         <i class="fa-solid fa-hourglass-half text-rose-400"></i>
-                                        <span>Deadline Tugas Pascasarjana</span>
+                                        <span>Daftar Tugas Pending & In Progress</span>
                                     </h3>
                                     <button onclick="showTab('tugas')" class="text-xs font-bold hover:underline" style="color: var(--accent-color);">Kelola Tugas</button>
                                 </div>
@@ -460,7 +460,7 @@
         </main>
     </div>
 
-    <!-- Modal Tambah / Edit Tugas -->
+    <!-- Modal Tambah/Edit Tugas -->
     <div id="task-modal" class="fixed inset-0 z-[110] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm hidden">
         <div class="w-full max-w-lg p-6 rounded-3xl border shadow-2xl relative" style="background-color: var(--bg-card); border-color: var(--border-color);">
             <div class="flex items-center justify-between mb-4 pb-3 border-b" style="border-color: var(--border-color);">
@@ -468,7 +468,7 @@
                 <button onclick="closeTaskModal()" class="text-base opacity-70 hover:opacity-100"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <form id="task-form" onsubmit="handleSaveTask(event)" class="space-y-4 text-xs">
-                <input type="hidden" id="input-task-index" value="-1">
+                <input type="hidden" id="input-task-index" value="">
                 <div>
                     <label class="block font-bold uppercase mb-1 opacity-70">Mata Kuliah</label>
                     <input type="text" id="input-matkul" required placeholder="Contoh: Filsafat Ilmu" class="w-full px-4 py-2.5 rounded-xl border outline-none" style="background: rgba(0,0,0,0.1); border-color: var(--border-color); color: var(--text-main);">
@@ -909,42 +909,46 @@
         }
 
         // --- TUGAS ---
-        function openTaskModal() {
-            document.getElementById('task-modal-title').innerText = "Tambah Tugas / Deadline Baru";
-            document.getElementById('input-task-index').value = "-1";
-            document.getElementById('task-form').reset();
-            document.getElementById('task-modal').classList.remove('hidden');
+        function openTaskModal(index = null) {
+            const modal = document.getElementById('task-modal');
+            const modalTitle = document.getElementById('task-modal-title');
+            const idxInput = document.getElementById('input-task-index');
+            const matkulInput = document.getElementById('input-matkul');
+            const judulInput = document.getElementById('input-judul');
+            const deadlineInput = document.getElementById('input-deadline');
+
+            if (index !== null && storage.tugas[index]) {
+                modalTitle.innerText = "Edit Tugas / Deadline";
+                idxInput.value = index;
+                matkulInput.value = storage.tugas[index].matkul;
+                judulInput.value = storage.tugas[index].judul;
+                deadlineInput.value = storage.tugas[index].deadline;
+            } else {
+                modalTitle.innerText = "Tambah Tugas / Deadline Baru";
+                idxInput.value = "";
+                document.getElementById('task-form').reset();
+            }
+            modal.classList.remove('hidden');
         }
 
-        function openEditTaskModal(i) {
-            const task = storage.tugas[i];
-            if(!task) return;
-            document.getElementById('task-modal-title').innerText = "Edit Tugas / Deadline";
-            document.getElementById('input-task-index').value = i;
-            document.getElementById('input-matkul').value = task.matkul;
-            document.getElementById('input-judul').value = task.judul;
-            document.getElementById('input-deadline').value = task.deadline;
-            document.getElementById('task-modal').classList.remove('hidden');
-        }
-
-        function closeTaskModal() { 
-            document.getElementById('task-modal').classList.add('hidden'); 
+        function closeTaskModal() {
+            document.getElementById('task-modal').classList.add('hidden');
         }
 
         function handleSaveTask(e) {
             e.preventDefault();
-            const index = Number(document.getElementById('input-task-index').value);
+            const index = document.getElementById('input-task-index').value;
             const matkul = document.getElementById('input-matkul').value;
             const judul = document.getElementById('input-judul').value;
             const deadline = document.getElementById('input-deadline').value;
 
-            if (index >= 0) {
-                // Update tugas yang sudah ada
+            if (index !== "") {
+                // Mode Edit
                 storage.tugas[index].matkul = matkul;
                 storage.tugas[index].judul = judul;
                 storage.tugas[index].deadline = deadline;
             } else {
-                // Tambah tugas baru
+                // Mode Tambah Baru
                 storage.tugas.push({ matkul, judul, deadline, status: 'Pending' });
             }
 
@@ -986,7 +990,7 @@
                                 <option value="Submitted" ${t.status === 'Submitted' ? 'selected' : ''}>Submitted</option>
                             </select>
                             <div class="flex items-center space-x-1">
-                                <button onclick="openEditTaskModal(${i})" class="opacity-60 hover:text-blue-400 p-2" title="Edit Tugas"><i class="fa-solid fa-pen"></i></button>
+                                <button onclick="openTaskModal(${i})" class="opacity-70 hover:text-blue-400 p-2" title="Edit Tugas"><i class="fa-solid fa-pen-to-square"></i></button>
                                 <button onclick="deleteTugas(${i})" class="opacity-50 hover:text-rose-400 p-2" title="Hapus Tugas"><i class="fa-solid fa-trash-can"></i></button>
                             </div>
                         </div>
@@ -996,9 +1000,10 @@
         }
 
         function renderDashboardStats() {
-            const pendingTugas = storage.tugas.filter(t => t.status !== 'Submitted').length;
+            // Hitung jumlah tugas pending & in progress (selain submitted)
+            const activeTasks = storage.tugas.filter(t => t.status !== 'Submitted');
             const dashTugas = document.getElementById('dash-stat-tugas');
-            if(dashTugas) dashTugas.innerText = pendingTugas;
+            if(dashTugas) dashTugas.innerText = activeTasks.length;
 
             // Hitung jadwal hari ini secara otomatis berdasarkan nama hari perangkat
             const daysMap = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
@@ -1044,18 +1049,18 @@
                 `).join('') : `<p class="text-xs opacity-60 italic">Tidak ada jadwal kuliah untuk hari ${currentDayName} ini.</p>`;
             }
 
-            // Render Deadline di Dashboard
+            // Render SEMUA tugas Pending & In Progress di Dashboard (Kecuali Submitted)
             const deadlineContainer = document.getElementById('dashboard-deadline-list');
             if(deadlineContainer) {
-                deadlineContainer.innerHTML = storage.tugas.slice(0, 2).map(t => `
+                deadlineContainer.innerHTML = activeTasks.length > 0 ? activeTasks.map(t => `
                     <div class="p-3 rounded-xl border flex items-center justify-between text-xs" style="background-color: var(--bg-main); border-color: var(--border-color);">
                         <div>
                             <span class="font-extrabold text-rose-400">Deadline: ${t.deadline}</span>
-                            <p class="font-bold mt-0.5">${t.judul}</p>
+                            <p class="font-bold mt-0.5"><span style="color: var(--accent-color);">[${t.matkul}]</span> ${t.judul}</p>
                         </div>
                         <span class="text-[10px] px-2 py-0.5 rounded border" style="border-color: var(--border-color);">${t.status}</span>
                     </div>
-                `).join('') || '<p class="text-xs opacity-60">Tidak ada deadline aktif.</p>';
+                `).join('') : '<p class="text-xs opacity-60 italic">Tidak ada tugas yang pending atau in progress.</p>';
             }
         }
     </script>
