@@ -586,7 +586,7 @@
                 <div class="p-2.5 bg-cyan-500/10 text-cyan-500 border border-cyan-500/20 rounded-2xl"><i class="fa-solid fa-vault"></i></div>
               </div>
               <h3 class="text-xl sm:text-2xl font-black mt-3 text-adaptive-main font-mono tracking-tight" id="kpiAssets">Rp 0</h3>
-              <p class="text-[11px] text-cyan-500 mt-1 font-bold">Konsolidasi Rekening</p>
+              <p class="text-[11px] text-cyan-500 mt-1 font-bold">Total Saldo Akhir Sistem</p>
             </div>
           </div>
 
@@ -832,7 +832,7 @@
                   <i class="fa-solid fa-receipt brand-text"></i> Rekening Koran & Buku Besar per Akun
                 </h2>
                 <p class="text-xs text-adaptive-muted mt-1 font-medium">
-                  Croscek seluruh mutasi masuk, keluar, dan saldo berjalan (*running balance*) untuk setiap transaksi, termasuk riwayat transfer antar akun.
+                  Croscek seluruh mutasi masuk, keluar, dan saldo berjalan (*running balance*) untuk setiap transaksi, termasuk riwayat transfer antar akun.<br><strong class="brand-text">Saldo Akhir Sistem = Total Saldo Masuk − Total Saldo Keluar.</strong>
                 </p>
               </div>
 
@@ -1170,6 +1170,26 @@
 
       cycleSelect.innerHTML = html;
     })();
+
+    // Cek rekonsiliasi tanpa mengubah data Firebase.
+    // Bisa dijalankan dari Console browser:
+    // checkSystemBalanceReconciliation()
+    function checkSystemBalanceReconciliation() {
+      const result = accounts.map(a => {
+        const calc = calculateSystemEndingBalance(a.name);
+        const stored = parseFloat(a.balance || 0);
+        return {
+          rekening: a.name,
+          totalMasuk: calc.totalIn,
+          totalKeluar: calc.totalOut,
+          saldoAkhirSistem: calc.endingBalance,
+          saldoTersimpan: stored,
+          selisih: calc.endingBalance - stored
+        };
+      });
+      console.table(result);
+      return result;
+    }
 
     // CUSTOM COLOR TOOL LOGIC
     function toggleColorPicker() {
@@ -1987,11 +2007,46 @@
         const currentVal = sel.value;
         let html = '';
         accounts.forEach(a => {
-          html += `<option value="${a.name}">${a.name} (${a.type}) — Saldo: ${formatRp(a.balance)}</option>`;
+          html += `<option value="${a.name}">${a.name} (${a.type}) — Saldo Akhir Sistem: ${formatRp(getAccountSystemBalance(a.name))}</option>`;
         });
         sel.innerHTML = html;
         if (currentVal) sel.value = currentVal;
       });
+    }
+
+
+    // ============================================================
+    // SALDO AKHIR SISTEM
+    // Rumus: TOTAL SALDO MASUK - TOTAL SALDO KELUAR
+    // Menggunakan seluruh transaksi historis per rekening.
+    // ============================================================
+    function calculateSystemEndingBalance(accountName) {
+      const accountTxs = transactions.filter(t => t.account === accountName);
+      let totalIn = 0;
+      let totalOut = 0;
+
+      accountTxs.forEach(t => {
+        const amount = Math.max(0, parseFloat(t.amount || 0));
+        if (t.type === 'Pendapatan') totalIn += amount;
+        else if (t.type === 'Pengeluaran') totalOut += amount;
+      });
+
+      return {
+        totalIn,
+        totalOut,
+        endingBalance: totalIn - totalOut,
+        transactionCount: accountTxs.length
+      };
+    }
+
+    function getAccountSystemBalance(accountName) {
+      return calculateSystemEndingBalance(accountName).endingBalance;
+    }
+
+    function getTotalSystemEndingBalance() {
+      return accounts.reduce((sum, account) => {
+        return sum + getAccountSystemBalance(account.name);
+      }, 0);
     }
 
     // RENDER DASHBOARD & KEUANGAN UTAMA
@@ -2018,7 +2073,7 @@
       });
 
       const netIncome = totalInc - totalExp;
-      let totalAssets = accounts.reduce((sum, a) => sum + parseFloat(a.balance || 0), 0);
+      let totalAssets = getTotalSystemEndingBalance();
 
       document.getElementById('kpiIncome').innerText = formatRp(totalInc);
       document.getElementById('kpiExpense').innerText = formatRp(totalExp);
@@ -2092,8 +2147,11 @@
               <h4 class="text-sm font-bold text-adaptive-main">${a.name}</h4>
             </div>
             <div class="mt-4 pt-3 border-t border-adaptive flex justify-between items-center">
-              <span class="text-[10px] text-adaptive-muted uppercase font-bold">Saldo Terkini</span>
-              <span class="text-sm font-black font-mono brand-text">${formatRp(a.balance)}</span>
+              <div>
+                <span class="text-[10px] text-adaptive-muted uppercase font-bold block">Saldo Akhir Sistem</span>
+                <span class="text-[9px] text-adaptive-muted">Total Masuk − Total Keluar</span>
+              </div>
+              <span class="text-sm font-black font-mono brand-text">${formatRp(getAccountSystemBalance(a.name))}</span>
             </div>
           </div>
         `;
@@ -2398,59 +2456,57 @@
       const select = document.getElementById('statementAccountSelect');
       if (!select) return;
 
-      if (accounts.length === 0) return;
-      if (!select.value && accounts.length > 0) select.value = accounts[0].name;
+      if (accounts.length === 0) {
+        document.getElementById('stmtTotalIn').innerText = formatRp(0);
+        document.getElementById('stmtTotalOut').innerText = formatRp(0);
+        document.getElementById('stmtEndingBalance').innerText = formatRp(0);
+        document.getElementById('statementTableBody').innerHTML =
+          `<tr><td colspan="6" class="py-6 text-center text-adaptive-muted">Belum ada rekening.</td></tr>`;
+        return;
+      }
 
+      if (!select.value) select.value = accounts[0].name;
       const selectedAccName = select.value;
+
+      // SALDO AKHIR SISTEM TIDAK TERPENGARUH FILTER PERIODE.
+      // Rumus: Total Saldo Masuk - Total Saldo Keluar.
+      const calc = calculateSystemEndingBalance(selectedAccName);
+
+      // Tabel tetap mengikuti filter periode yang sedang dipilih.
       const filtered = getFilteredTransactions();
+      const filteredTxs = filtered
+        .filter(t => t.account === selectedAccName)
+        .sort((a, b) => new Date(a.date || '1970-01-01') - new Date(b.date || '1970-01-01'));
 
-      // Urutkan transaksi secara kronologis (terlama ke terbaru) untuk menghitung running balance dengan akurat
-      const accTxs = filtered.filter(t => t.account === selectedAccName).sort((a, b) => new Date(a.date) - new Date(b.date));
+      // Running balance dihitung dari seluruh transaksi historis secara kronologis.
+      const allTxs = transactions
+        .filter(t => t.account === selectedAccName)
+        .sort((a, b) => new Date(a.date || '1970-01-01') - new Date(b.date || '1970-01-01'));
 
-      let totalIn = 0;
-      let totalOut = 0;
-      
-      // Cari saldo awal sebelum filter atau dari akun langsung
-      const targetAccObj = accounts.find(a => a.name === selectedAccName);
-      let runningBalance = targetAccObj ? parseFloat(targetAccObj.balance || 0) : 0;
+      let running = 0;
+      const runningMap = new Map();
 
-      // Jika kita ingin menghitung running balance dari awal transaksi hingga filter
-      let currentRunningBal = targetAccObj ? parseFloat(targetAccObj.balance || 0) : 0;
-      
-      // Hitung mundur atau maju running balance
+      allTxs.forEach(t => {
+        const amount = Math.max(0, parseFloat(t.amount || 0));
+        if (t.type === 'Pendapatan') running += amount;
+        else if (t.type === 'Pengeluaran') running -= amount;
+        runningMap.set(t.id, running);
+      });
+
       let html = '';
-      if (accTxs.length === 0) {
-        html = `<tr><td colspan="6" class="py-6 text-center text-adaptive-muted">Tidak ada mutasi transaksi untuk rekening ${selectedAccName} pada periode ini.</td></tr>`;
+      if (filteredTxs.length === 0) {
+        html = `<tr>
+          <td colspan="6" class="py-6 text-center text-adaptive-muted">
+            Tidak ada mutasi transaksi untuk rekening ${selectedAccName} pada periode ini.
+          </td>
+        </tr>`;
       } else {
-        // Untuk tabel rekening koran, urutkan dari terbaru ke terlama atau sebaliknya sesuai pilihan sort order
-        const sortOrder = document.getElementById('filterSortOrder').value;
-        let displayList = [...accTxs];
+        const sortEl = document.getElementById('filterSortOrder');
+        const sortOrder = sortEl ? sortEl.value : 'DESC';
+        let displayList = [...filteredTxs];
         if (sortOrder === 'DESC') displayList.reverse();
 
         displayList.forEach(t => {
-          const isInc = t.type === 'Pendapatan';
-          const amt = parseFloat(t.amount || 0);
-          if (isInc) totalIn += amt;
-          else totalOut += amt;
-        });
-
-        // Hitung ulang running balance secara berurutan
-        let tempBal = targetAccObj ? parseFloat(targetAccObj.balance || 0) : 0;
-        // Sederhanakan running balance per baris transaksi
-        let runningArr = [];
-        let runningAcc = tempBal;
-        
-        // Urutkan ascedhing untuk hitung running balance
-        accTxs.forEach(t => {
-          const isInc = t.type === 'Pendapatan';
-          if (isInc) runningAcc += parseFloat(t.amount || 0);
-          else runningAcc -= parseFloat(t.amount || 0);
-          runningArr.push({ ...t, runningBal: runningAcc });
-        });
-
-        if (sortOrder === 'DESC') runningArr.reverse();
-
-        runningArr.forEach(t => {
           const isInc = t.type === 'Pendapatan';
           html += `
             <tr class="hover:bg-slate-800/20 transition-all">
@@ -2459,18 +2515,19 @@
               <td class="py-3 px-3 text-adaptive-sub">${t.notes || '-'}</td>
               <td class="py-3 px-3 text-right font-mono font-bold text-emerald-500">${isInc ? formatRp(t.amount) : '-'}</td>
               <td class="py-3 px-3 text-right font-mono font-bold text-rose-500">${!isInc ? formatRp(t.amount) : '-'}</td>
-              <td class="py-3 px-3 text-right font-mono font-bold brand-text">${formatRp(t.runningBal)}</td>
+              <td class="py-3 px-3 text-right font-mono font-bold brand-text">${formatRp(runningMap.get(t.id) || 0)}</td>
             </tr>
           `;
         });
       }
 
-      document.getElementById('stmtTotalIn').innerText = formatRp(totalIn);
-      document.getElementById('stmtTotalOut').innerText = formatRp(totalOut);
-      document.getElementById('stmtEndingBalance').innerText = formatRp(targetAccObj ? targetAccObj.balance : 0);
+      document.getElementById('stmtTotalIn').innerText = formatRp(calc.totalIn);
+      document.getElementById('stmtTotalOut').innerText = formatRp(calc.totalOut);
+      document.getElementById('stmtEndingBalance').innerText = formatRp(calc.endingBalance);
       document.getElementById('stmtTitle').innerText = `Rekening Koran: ${selectedAccName}`;
 
-      document.getElementById('statementTableBody').innerHTML = html;
+      const body = document.getElementById('statementTableBody');
+      if (body) body.innerHTML = html;
     }
 
     // TAB 6: LAPORAN KEUANGAN PDF STANDAR ENTERPRISE
@@ -2497,7 +2554,7 @@
       });
 
       let netProfit = totalInc - totalExp;
-      let totalAssets = accounts.reduce((sum, a) => sum + parseFloat(a.balance || 0), 0);
+      let totalAssets = getTotalSystemEndingBalance();
       
       let totalHutang = 0;
       let totalPiutang = 0;
@@ -2518,10 +2575,16 @@
 
       let accRows = '';
       accounts.forEach(a => {
+        const accountCalc = calculateSystemEndingBalance(a.name);
         accRows += `
           <tr class="border-b border-adaptive/40">
-            <td class="py-2 px-3 text-adaptive-sub pl-6">• ${a.name} (${a.type})</td>
-            <td class="py-2 px-3 text-right font-mono brand-text">${formatRp(a.balance)}</td>
+            <td class="py-2 px-3 text-adaptive-sub pl-6">
+              • ${a.name} (${a.type})
+              <div class="text-[9px] text-adaptive-muted mt-0.5">
+                Masuk: ${formatRp(accountCalc.totalIn)} | Keluar: ${formatRp(accountCalc.totalOut)}
+              </div>
+            </td>
+            <td class="py-2 px-3 text-right font-mono brand-text">${formatRp(accountCalc.endingBalance)}</td>
           </tr>
         `;
       });
