@@ -317,7 +317,7 @@
           </div>
 
           <div>
-            <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Saldo Awal / Rekonsiliasi (Rp)</label>
+            <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Saldo Terkini (Rp)</label>
             <input type="number" id="editAccBalance" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium font-mono">
           </div>
 
@@ -452,7 +452,7 @@
           </div>
         </div>
 
-        <!-- MENU BAR -->
+        <!-- MENU BAR 2 BARIS (GRID) -->
         <div class="border-t border-adaptive bg-slate-900/35 dark:bg-black/30 py-2 px-2 sm:px-6 lg:px-8">
           <div class="max-w-7xl mx-auto grid grid-cols-3 sm:grid-cols-5 lg:grid-cols-9 gap-1.5">
             <button onclick="switchTab('dashboard')" id="nav-dashboard" class="tab-btn active border-b-2 border-[var(--brand-primary)] brand-text font-extrabold flex items-center justify-center gap-1.5 px-2 py-2 text-[11px] tracking-wider uppercase transition-all rounded-lg bg-slate-800/40 hover:bg-slate-800/70 text-center">
@@ -582,11 +582,11 @@
 
             <div class="glass-card p-5 sm:p-6 rounded-3xl relative overflow-hidden group hover:border-cyan-500 transition-all">
               <div class="flex justify-between items-start">
-                <span class="text-[10px] font-bold text-adaptive-muted uppercase tracking-widest">Total Kas Saat Ini</span>
+                <span class="text-[10px] font-bold text-adaptive-muted uppercase tracking-widest">Total Kas & Bank</span>
                 <div class="p-2.5 bg-cyan-500/10 text-cyan-500 border border-cyan-500/20 rounded-2xl"><i class="fa-solid fa-vault"></i></div>
               </div>
               <h3 class="text-xl sm:text-2xl font-black mt-3 text-adaptive-main font-mono tracking-tight" id="kpiAssets">Rp 0</h3>
-              <p class="text-[11px] text-cyan-500 mt-1 font-bold">Rekonsiliasi Saldo Riil</p>
+              <p class="text-[11px] text-cyan-500 mt-1 font-bold">Konsolidasi Rekening</p>
             </div>
           </div>
 
@@ -832,7 +832,7 @@
                   <i class="fa-solid fa-receipt brand-text"></i> Rekening Koran & Buku Besar per Akun
                 </h2>
                 <p class="text-xs text-adaptive-muted mt-1 font-medium">
-                  Croscek seluruh mutasi masuk, keluar, dan saldo berjalan (*running balance*) untuk setiap transaksi, termasuk riwayat transfer antar akun.
+                  Croscek seluruh mutasi masuk, keluar, dan saldo berjalan (*running balance*) untuk setiap transaksi, termasuk riwayat transfer antar akun. Saldo berjalan saat ini menampilkan total kas terkonsolidasi.
                 </p>
               </div>
 
@@ -854,27 +854,27 @@
               <h3 class="text-xl font-black text-rose-500 font-mono mt-2" id="stmtTotalOut">Rp 0</h3>
             </div>
             <div class="glass-card p-4 sm:p-5 rounded-3xl border border-[var(--brand-glow)]">
-              <span class="text-[10px] font-bold brand-text uppercase tracking-widest block">Sisa Saldo Berjalan / Akhir</span>
-              <h3 class="text-xl font-black brand-text font-mono mt-2" id="stmtFinalBalance">Rp 0</h3>
+              <span class="text-[10px] font-bold brand-text uppercase tracking-widest block">Total Kas / Saldo Saat Ini</span>
+              <h3 class="text-xl font-black brand-text font-mono mt-2" id="stmtEndingBalance">Rp 0</h3>
             </div>
           </div>
 
           <div class="glass-card p-5 sm:p-6 rounded-3xl">
             <div class="flex justify-between items-center mb-6 pb-4 border-b border-adaptive">
-              <div>
-                <h3 class="text-sm font-bold text-adaptive-main tracking-wide uppercase" id="stmtTableTitle">Mutasi Rekening</h3>
-                <p class="text-xs text-adaptive-muted font-medium">Buku besar kronologis akun terpilih</p>
-              </div>
+              <h3 class="text-sm font-bold text-adaptive-main tracking-wide uppercase" id="stmtTitle">Rincian Mutasi & Saldo Berjalan (Total Kas)</h3>
+              <span class="text-[10px] bg-[var(--brand-light)] brand-text px-3 py-1 rounded-full font-bold uppercase border border-[var(--brand-glow)]">Total Kas Aktif</span>
             </div>
+
             <div class="custom-scroll">
               <table class="w-full text-left border-collapse min-w-[700px]">
                 <thead>
                   <tr class="border-b border-adaptive text-[10px] text-adaptive-muted uppercase tracking-wider font-bold">
                     <th class="py-3 px-3">Tanggal</th>
-                    <th class="py-3 px-3">Keterangan / Transaksi</th>
-                    <th class="py-3 px-3 text-right">Masuk (+)</th>
-                    <th class="py-3 px-3 text-right">Keluar (-)</th>
-                    <th class="py-3 px-3 text-right">Saldo Berjalan</th>
+                    <th class="py-3 px-3">Kategori / Transaksi</th>
+                    <th class="py-3 px-3">Catatan / Memo</th>
+                    <th class="py-3 px-3 text-right text-emerald-500">Uang Masuk (+)</th>
+                    <th class="py-3 px-3 text-right text-rose-500">Uang Keluar (-)</th>
+                    <th class="py-3 px-3 text-right brand-text">Saldo Berjalan (Total Kas)</th>
                   </tr>
                 </thead>
                 <tbody id="statementTableBody" class="divide-y divide-adaptive text-xs font-medium">
@@ -884,25 +884,39 @@
           </div>
         </section>
 
-        <!-- TAB HUTANG PIUTANG -->
+        <!-- TAB HUTANG & PIUTANG -->
         <section id="tab-hutangpiutang" class="tab-content hidden space-y-6">
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div class="glass-card p-5 sm:p-6 rounded-3xl border-l-4 border-l-rose-500">
+              <span class="text-[10px] font-bold text-adaptive-muted uppercase tracking-widest block">Total Hutang Usaha (Kewajiban Belum Lunas)</span>
+              <h3 class="text-2xl font-black text-rose-500 font-mono mt-2" id="kpiTotalHutang">Rp 0</h3>
+              <p class="text-xs text-adaptive-muted mt-1 font-medium">Kewajiban pembayaran kepada pihak ketiga.</p>
+            </div>
+
+            <div class="glass-card p-5 sm:p-6 rounded-3xl border-l-4 border-l-emerald-500">
+              <span class="text-[10px] font-bold text-adaptive-muted uppercase tracking-widest block">Total Piutang Usaha (Tagihan Belum Lunas)</span>
+              <h3 class="text-2xl font-black text-emerald-500 font-mono mt-2" id="kpiTotalPiutang">Rp 0</h3>
+              <p class="text-xs text-adaptive-muted mt-1 font-medium">Hak penerimaan dana dari pihak/klien lain.</p>
+            </div>
+          </div>
+
           <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div class="glass-card p-5 sm:p-6 rounded-3xl h-fit">
               <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase mb-1">Catat Hutang / Piutang</h2>
-              <p class="text-xs text-adaptive-muted mb-6 font-medium">Formulir Pencatatan Kewajiban & Tagihan</p>
+              <p class="text-xs text-adaptive-muted mb-6 font-medium">Pencatatan pos kewajiban & hak penerimaan dana</p>
 
               <form id="debtForm" onsubmit="handleSaveDebt(event)" class="space-y-4">
                 <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Tipe Catatan</label>
+                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Jenis Catatan</label>
                   <select id="debtType" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                    <option value="Hutang">Hutang (Kewajiban Kami)</option>
-                    <option value="Piutang">Piutang (Tagihan ke Pihak Lain)</option>
+                    <option value="Hutang">Hutang (Kewajiban Kita Pay)</option>
+                    <option value="Piutang">Piutang (Tagihan Ke Pihak Lain)</option>
                   </select>
                 </div>
 
                 <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Nama Pihak Terkait</label>
-                  <input type="text" id="debtPerson" placeholder="Nama Supplier / Klien / Rekanan" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
+                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Nama Pihak / Mitra (Debitur/Kreditur)</label>
+                  <input type="text" id="debtPerson" placeholder="Contoh: PT Mitra Jaya / Bpk. Ahmad" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
                 </div>
 
                 <div>
@@ -916,32 +930,26 @@
                 </div>
 
                 <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Keterangan / Catatan</label>
-                  <textarea id="debtNotes" rows="2" placeholder="Catatan transaksi..." class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium"></textarea>
+                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Keterangan / Memo</label>
+                  <textarea id="debtNotes" rows="2" placeholder="Catatan keperluan hutang/piutang..." class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium"></textarea>
                 </div>
 
-                <button type="submit" class="w-full py-4 brand-gradient text-slate-950 font-bold rounded-xl transition-all shadow-xl flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
-                  <i class="fa-solid fa-cloud-arrow-up"></i> Simpan Catatan
+                <button type="submit" id="btnSaveDebt" class="w-full py-4 brand-gradient text-slate-950 font-bold rounded-xl transition-all shadow-xl flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
+                  <i class="fa-solid fa-plus-circle"></i> Simpan Catatan
                 </button>
               </form>
             </div>
 
             <div class="lg:col-span-2 glass-card p-5 sm:p-6 rounded-3xl">
-              <div class="flex justify-between items-center mb-6 pb-4 border-b border-adaptive">
-                <div>
-                  <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase">Daftar Hutang & Piutang Aktif</h2>
-                  <p class="text-xs text-adaptive-muted font-medium">Kelola dan lakukan pelunasan langsung</p>
-                </div>
-              </div>
+              <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase mb-6 pb-4 border-b border-adaptive">Daftar Hutang & Piutang</h2>
               <div class="custom-scroll">
                 <table class="w-full text-left border-collapse min-w-[600px]">
                   <thead>
-                    <tr class="border-b border-adaptive text-[10px] text-adaptive-muted uppercase tracking-wider font-bold">
-                      <th class="py-3 px-3">Tipe</th>
-                      <th class="py-3 px-3">Pihak Terkait</th>
-                      <th class="py-3 px-3 text-right">Nominal Awal</th>
-                      <th class="py-3 px-3 text-right">Sisa Tagihan</th>
+                    <tr class="border-b border-adaptive text-[10px] sm:text-[11px] text-adaptive-muted uppercase tracking-wider font-bold">
+                      <th class="py-3 px-3">Jenis</th>
+                      <th class="py-3 px-3">Mitra / Pihak</th>
                       <th class="py-3 px-3">Jatuh Tempo</th>
+                      <th class="py-3 px-3 text-right">Nominal</th>
                       <th class="py-3 px-3 text-center">Status</th>
                       <th class="py-3 px-3 text-center">Aksi</th>
                     </tr>
@@ -954,788 +962,595 @@
           </div>
         </section>
 
-        <!-- TAB TRANSFER AKUN -->
-        <section id="tab-transfer" class="tab-content hidden space-y-6">
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="glass-card p-5 sm:p-6 rounded-3xl h-fit">
-              <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase mb-1">Transfer Dana Internal</h2>
-              <p class="text-xs text-adaptive-muted mb-6 font-medium">Pindahkan saldo antar Kas, Bank, atau E-Wallet</p>
+        <!-- TAB 4: TRANSFER ANTAR AKUN -->
+        <section id="tab-transfer" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="glass-card p-5 sm:p-6 rounded-3xl h-fit">
+            <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase mb-1">Transfer Dana Antar Rekening</h2>
+            <p class="text-xs text-adaptive-muted mb-6 font-medium">Pemindahan saldo kas internal perusahaan</p>
 
-              <form id="transferForm" onsubmit="handleSaveTransfer(event)" class="space-y-4">
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Dari Rekening (Sumber)</label>
-                  <select id="transferFromAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                  </select>
+            <form id="transferForm" onsubmit="handleSaveTransfer(event)" class="space-y-4">
+              <div>
+                <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Rekening Sumber (Pengirim)</label>
+                <select id="transferFromAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
+                </select>
+              </div>
+
+              <div class="flex justify-center my-1">
+                <div class="p-2.5 bg-[var(--brand-light)] brand-text rounded-full border border-[var(--brand-glow)]">
+                  <i class="fa-solid fa-arrow-down text-sm"></i>
                 </div>
+              </div>
 
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Ke Rekening (Tujuan)</label>
-                  <select id="transferToAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                  </select>
-                </div>
+              <div>
+                <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Rekening Tujuan (Penerima)</label>
+                <select id="transferToAccount" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
+                </select>
+              </div>
 
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Nominal Transfer (Rp)</label>
-                  <input type="number" id="transferAmount" placeholder="0" min="1" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium font-mono">
-                </div>
+              <div>
+                <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Nominal Transfer (Rp)</label>
+                <input type="number" id="transferAmount" placeholder="0" min="1" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium font-mono">
+              </div>
 
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Tanggal Transfer</label>
-                  <input type="date" id="transferDate" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                </div>
+              <div>
+                <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Tanggal Transfer</label>
+                <input type="date" id="transferDate" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
+              </div>
 
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Memo Transfer</label>
-                  <textarea id="transferNotes" rows="2" placeholder="Keterangan transfer..." class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium"></textarea>
-                </div>
+              <div>
+                <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Memo Transfer</label>
+                <textarea id="transferNotes" rows="2" placeholder="Keterangan transfer..." class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium"></textarea>
+              </div>
 
-                <button type="submit" class="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl transition-all shadow-xl flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
-                  <i class="fa-solid fa-right-left"></i> Eksekusi Transfer Dana
-                </button>
-              </form>
+              <button type="submit" id="btnSaveTransfer" class="w-full py-4 bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold rounded-xl shadow-lg flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
+                <i class="fa-solid fa-right-left"></i> Proses Pemindahan Dana
+              </button>
+            </form>
+          </div>
+
+          <div class="lg:col-span-2 glass-card p-5 sm:p-6 rounded-3xl">
+            <div class="flex justify-between items-center mb-6 pb-4 border-b border-adaptive">
+              <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase">Riwayat Transfer Antar Rekening</h2>
             </div>
-
-            <div class="lg:col-span-2 glass-card p-5 sm:p-6 rounded-3xl">
-              <div class="flex justify-between items-center mb-6 pb-4 border-b border-adaptive">
-                <div>
-                  <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase">Riwayat Transfer Internal</h2>
-                  <p class="text-xs text-adaptive-muted font-medium">Mutasi pemindahan saldo antar instrumen</p>
-                </div>
-              </div>
-              <div class="custom-scroll">
-                <table class="w-full text-left border-collapse min-w-[600px]">
-                  <thead>
-                    <tr class="border-b border-adaptive text-[10px] text-adaptive-muted uppercase tracking-wider font-bold">
-                      <th class="py-3 px-3">Tanggal</th>
-                      <th class="py-3 px-3">Pengirim</th>
-                      <th class="py-3 px-3">Penerima</th>
-                      <th class="py-3 px-3 text-right">Nominal</th>
-                      <th class="py-3 px-3">Memo</th>
-                      <th class="py-3 px-3 text-center">Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody id="transferTableBody" class="divide-y divide-adaptive text-xs font-medium">
-                  </tbody>
-                </table>
-              </div>
+            <div class="custom-scroll">
+              <table class="w-full text-left border-collapse min-w-[500px]">
+                <thead>
+                  <tr class="border-b border-adaptive text-[10px] text-adaptive-muted uppercase tracking-wider font-bold">
+                    <th class="py-2.5 px-2">Tanggal</th>
+                    <th class="py-2.5 px-2">Transfer Rekening</th>
+                    <th class="py-2.5 px-2">Memo / Catatan</th>
+                    <th class="py-2.5 px-2 text-right">Nominal Transfer</th>
+                    <th class="py-2.5 px-2 text-center">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="transferHistoryBody" class="divide-y divide-adaptive text-xs font-medium">
+                </tbody>
+              </table>
             </div>
           </div>
         </section>
 
-        <!-- TAB MANAJEMEN AKUN -->
-        <section id="tab-akun" class="tab-content hidden space-y-6">
-          <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-            <div class="glass-card p-5 sm:p-6 rounded-3xl h-fit">
-              <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase mb-1">Tambah Akun / Kas</h2>
-              <p class="text-xs text-adaptive-muted mb-6 font-medium">Daerah instrumen penyimpanan dana</p>
+        <!-- TAB 5: AKUN & KAS -->
+        <section id="tab-akun" class="tab-content hidden grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div class="glass-card p-5 sm:p-6 rounded-3xl h-fit">
+            <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase mb-1">Tambah Akun/Bank Baru</h2>
+            <p class="text-xs text-adaptive-muted mb-6 font-medium">Tambah entitas Kas baru secara global</p>
 
-              <form id="accForm" onsubmit="handleSaveAcc(event)" class="space-y-4">
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Nama Akun / Bank</label>
-                  <input type="text" id="accName" placeholder="Contoh: BCA Utama, Kas Tunai" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                </div>
-
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Tipe Instrumen</label>
-                  <select id="accType" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
-                    <option value="Kas">Kas Tunai</option>
-                    <option value="Bank">Rekening Bank</option>
-                    <option value="E-Wallet">E-Wallet / Digital</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Saldo Awal / Rekonsiliasi (Rp)</label>
-                  <input type="number" id="accBalance" placeholder="0" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium font-mono">
-                </div>
-
-                <button type="submit" class="w-full py-4 brand-gradient text-slate-950 font-bold rounded-xl transition-all shadow-xl flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
-                  <i class="fa-solid fa-plus"></i> Tambah Akun Baru
-                </button>
-              </form>
-            </div>
-
-            <div class="lg:col-span-2 glass-card p-5 sm:p-6 rounded-3xl">
-              <div class="flex justify-between items-center mb-6 pb-4 border-b border-adaptive">
-                <div>
-                  <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase">Konsolidasi Seluruh Rekening & Kas</h2>
-                  <p class="text-xs text-adaptive-muted font-medium">Total dana riil yang dipegang saat ini</p>
-                </div>
+            <form id="accForm" onsubmit="handleSaveAccount(event)" class="space-y-4">
+              <div>
+                <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Nama Akun / Bank</label>
+                <input type="text" id="accName" placeholder="BCA Utama, Kas Operasional" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
               </div>
-              <div class="custom-scroll">
-                <table class="w-full text-left border-collapse min-w-[500px]">
-                  <thead>
-                    <tr class="border-b border-adaptive text-[10px] text-adaptive-muted uppercase tracking-wider font-bold">
-                      <th class="py-3 px-3">Nama Akun</th>
-                      <th class="py-3 px-3">Tipe</th>
-                      <th class="py-3 px-3 text-right">Saldo Saat Ini</th>
-                      <th class="py-3 px-3 text-center">Aksi</th>
-                    </tr>
-                  </thead>
-                  <tbody id="accTableBody" class="divide-y divide-adaptive text-xs font-medium">
-                  </tbody>
-                </table>
+
+              <div>
+                <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Tipe Instrumen</label>
+                <select id="accType" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium">
+                  <option value="Kas">Kas Tunai</option>
+                  <option value="Bank">Rekening Bank</option>
+                  <option value="E-Wallet">E-Wallet / Digital</option>
+                </select>
               </div>
+
+              <div>
+                <label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Saldo Awal (Rp)</label>
+                <input type="number" id="accBalance" placeholder="0" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium font-mono">
+              </div>
+
+              <button type="submit" id="btnSaveAcc" class="w-full py-4 brand-gradient text-slate-950 font-bold rounded-xl shadow-xl flex items-center justify-center gap-2 text-xs tracking-wider uppercase">
+                <i class="fa-solid fa-plus-circle"></i> Tambah Akun Cloud
+              </button>
+            </form>
+          </div>
+
+          <div class="lg:col-span-2 glass-card p-5 sm:p-6 rounded-3xl">
+            <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase mb-6 pb-4 border-b border-adaptive">Kelola Portofolio Rekening & Kas</h2>
+            <div id="accountCardsList" class="grid grid-cols-1 md:grid-cols-2 gap-4">
             </div>
           </div>
         </section>
 
-        <!-- TAB LAPORAN PDF -->
+        <!-- TAB 6: LAPORAN KEUANGAN PDF -->
         <section id="tab-laporan" class="tab-content hidden space-y-6">
-          <div class="glass-card p-4 sm:p-6 rounded-3xl flex flex-col sm:flex-row items-center justify-between gap-4 no-print border-l-4 border-l-[var(--brand-primary)]">
+          <div class="flex flex-col sm:flex-row justify-between sm:items-center gap-3 no-print">
             <div>
-              <h2 class="text-base font-bold text-adaptive-main tracking-wide uppercase">Pusat Laporan Eksekutif & Cetak PDF</h2>
-              <p class="text-xs text-adaptive-muted font-medium">Laporan resmi perusahaan siap cetak atau simpan ke PDF.</p>
+              <h2 class="text-base font-bold text-adaptive-main uppercase tracking-wider">Laporan Keuangan Standar Akuntansi Enterprise</h2>
+              <p class="text-xs text-adaptive-muted font-medium">Laba Rugi Rinci, Neraca Konsolidasi, Laporan Arus Kas, CALK, Rekomendasi, serta Pengesahan TTD Resmi.</p>
             </div>
-            <button onclick="window.print()" class="py-3 px-6 brand-gradient text-slate-950 font-bold rounded-xl text-xs uppercase shadow-lg flex items-center gap-2 transition-all">
-              <i class="fa-solid fa-print"></i> Cetak / Simpan PDF
+            <button onclick="window.print()" class="px-6 py-4 brand-gradient text-slate-950 font-bold rounded-xl shadow-xl hover:scale-105 transition-all flex items-center justify-center gap-2 text-xs uppercase tracking-wider w-full sm:w-auto">
+              <i class="fa-solid fa-file-pdf"></i> Unduh / Cetak Laporan PDF
             </button>
           </div>
 
-          <!-- PRINTABLE REPORT TEMPLATE -->
-          <div id="printableReport" class="glass-card p-8 sm:p-12 rounded-3xl report-bg space-y-8 border border-adaptive">
-            <div class="flex justify-between items-start border-b border-adaptive pb-6">
-              <div>
-                <h1 class="text-2xl font-black uppercase tracking-wider text-adaptive-main">AAAIIM <span class="brand-text">OneFinance</span></h1>
-                <p class="text-xs text-adaptive-muted uppercase font-bold tracking-widest mt-1">Laporan Resmi Keuangan & Wealth Management</p>
-              </div>
-              <div class="text-right">
-                <p class="text-xs font-bold text-adaptive-main" id="reportDateRange">Periode: Semua Waktu</p>
-                <p class="text-[10px] text-adaptive-muted mt-0.5">Dicetak pada: <span id="reportPrintTimestamp"></span></p>
-              </div>
-            </div>
-
-            <div class="grid grid-cols-3 gap-4">
-              <div class="p-4 rounded-2xl bg-slate-100 dark:bg-corporate-900 border border-adaptive">
-                <span class="text-[10px] font-bold text-adaptive-muted uppercase block">Total Pemasukan</span>
-                <h4 class="text-lg font-black text-emerald-500 font-mono mt-1" id="reportTotalIncome">Rp 0</h4>
-              </div>
-              <div class="p-4 rounded-2xl bg-slate-100 dark:bg-corporate-900 border border-adaptive">
-                <span class="text-[10px] font-bold text-adaptive-muted uppercase block">Total Pengeluaran</span>
-                <h4 class="text-lg font-black text-rose-500 font-mono mt-1" id="reportTotalExpense">Rp 0</h4>
-              </div>
-              <div class="p-4 rounded-2xl bg-slate-100 dark:bg-corporate-900 border border-adaptive">
-                <span class="text-[10px] font-bold text-adaptive-muted uppercase block">Laba Bersih</span>
-                <h4 class="text-lg font-black brand-text font-mono mt-1" id="reportNetProfit">Rp 0</h4>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="text-xs font-bold uppercase tracking-wider text-adaptive-main mb-3">Ringkasan Konsolidasi Kas & Bank</h3>
-              <div class="custom-scroll">
-                <table class="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr class="border-b border-adaptive text-[10px] text-adaptive-muted uppercase font-bold">
-                      <th class="py-2.5 px-3">Nama Akun / Bank</th>
-                      <th class="py-2.5 px-3">Tipe Instrumen</th>
-                      <th class="py-2.5 px-3 text-right">Saldo Saat Ini</th>
-                    </tr>
-                  </thead>
-                  <tbody id="reportAccTableBody" class="divide-y divide-adaptive font-medium">
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div>
-              <h3 class="text-xs font-bold uppercase tracking-wider text-adaptive-main mb-3">Ringkasan Jurnal Transaksi Periode Terpilih</h3>
-              <div class="custom-scroll">
-                <table class="w-full text-left border-collapse text-xs">
-                  <thead>
-                    <tr class="border-b border-adaptive text-[10px] text-adaptive-muted uppercase font-bold">
-                      <th class="py-2.5 px-3">Tanggal</th>
-                      <th class="py-2.5 px-3">Tipe</th>
-                      <th class="py-2.5 px-3">Kategori</th>
-                      <th class="py-2.5 px-3">Akun</th>
-                      <th class="py-2.5 px-3 text-right">Nominal</th>
-                    </tr>
-                  </thead>
-                  <tbody id="reportTxTableBody" class="divide-y divide-adaptive font-medium">
-                  </tbody>
-                </table>
-              </div>
-            </div>
-
-            <div class="pt-8 border-t border-adaptive flex justify-between items-end text-xs">
-              <div>
-                <p class="font-bold text-adaptive-main">Disetujui Oleh:</p>
-                <div class="h-16"></div>
-                <p class="font-bold text-adaptive-main underline">Direktur Keuangan & Wealth Management</p>
-              </div>
-              <div class="text-right">
-                <p class="font-bold text-adaptive-main">AAAIIM OneFinance System</p>
-                <p class="text-[10px] text-adaptive-muted">Autentikasi Digital Perusahaan</p>
-              </div>
-            </div>
+          <div class="p-6 sm:p-10 rounded-3xl border shadow-2xl report-bg" id="printableReport">
           </div>
         </section>
-      </main>
 
-      <!-- FOOTER -->
-      <footer class="border-t border-adaptive mt-12 py-6 bg-slate-900/20 text-center text-xs text-adaptive-muted no-print">
-        <p>&copy; 2026 AAAIIM OneFinance Enterprise Wealth & Capital Management. All rights reserved.</p>
-      </footer>
+      </main>
     </div>
   </div>
 
-  <!-- SCRIPT APLIKASI UTAMA -->
-  <script>
-    // Konfigurasi Firebase (Simulasi / Lokal fallback jika belum dikonfigurasi penuh)
-    const firebaseConfig = {
-      databaseURL: "https://aaaiim-onefinance-default-rtdb.firebaseio.com/"
-    };
-    try {
-      firebase.initializeApp(firebaseConfig);
-    } catch (e) {
-      console.warn("Firebase sudah diinisialisasi atau berjalan secara offline.", e);
-    }
+  <!-- FOOTER -->
+  <footer class="text-center py-6 border-t border-adaptive no-print flex flex-col items-center justify-center gap-3">
+    <div class="text-adaptive-muted text-[11px] tracking-widest font-extrabold uppercase">
+      APP BY AAAIIM ONEFINANCE — WEALTH & CAPITAL MANAGEMENT SYSTEM
+    </div>
+    <button onclick="resetDataKeuangan()" id="btnResetData" class="text-[10px] text-slate-400 hover:text-rose-500 opacity-60 hover:opacity-100 transition-all flex items-center gap-1.5 underline font-medium">
+      <i class="fa-solid fa-rotate-left text-[9px]"></i> Reset Data Keuangan
+    </button>
+  </footer>
 
+  <!-- FIREBASE & APPLICATION LOGIC -->
+  <script>
+    // 1. KONFIGURASI FIREBASE
+    const firebaseConfig = {
+      apiKey: "AIzaSyB8L2mjD2fiUqP3iAGccCh98MyIgsgM_14",
+      authDomain: "aaaiim-onefinance.firebaseapp.com",
+      databaseURL: "https://aaaiim-onefinance-default-rtdb.firebaseio.com",
+      projectId: "aaaiim-onefinance",
+      storageBucket: "aaaiim-onefinance.firebasestorage.app",
+      messagingSenderId: "111442380622",
+      appId: "1:111442380622:web:9106c659173ed914bd401f",
+      measurementId: "G-ZFTSGN3YR9"
+    };
+
+    firebase.initializeApp(firebaseConfig);
     const db = firebase.database();
 
-    // State Global Aplikasi
-    let state = {
-      user: null,
-      transactions: [],
-      transfers: [],
-      accounts: [
-        { id: 'acc-1', name: 'Kas Tunai Utama', type: 'Kas', initialBalance: 5000000 },
-        { id: 'acc-2', name: 'Bank BCA Korporat', type: 'Bank', initialBalance: 25000000 },
-        { id: 'acc-3', name: 'Bank Mandiri Bisnis', type: 'Bank', initialBalance: 15000000 },
-        { id: 'acc-4', name: 'E-Wallet Operational', type: 'E-Wallet', initialBalance: 2000000 }
-      ],
-      debts: [],
-      darkMode: true,
-      currentTheme: 'theme-emerald'
-    };
-
+    // State Variables
+    let transactions = [];
+    let accounts = [];
+    let debts = [];
+    let currentUser = null;
     let cashflowChartInstance = null;
     let categoryChartInstance = null;
 
-    // Inisialisasi Tanggal Hari Ini pada Form
-    document.addEventListener('DOMContentLoaded', () => {
-      const todayStr = new Date().toISOString().split('T')[0];
-      if(document.getElementById('txDate')) document.getElementById('txDate').value = todayStr;
-      if(document.getElementById('debtDueDate')) document.getElementById('debtDueDate').value = todayStr;
-      if(document.getElementById('transferDate')) document.getElementById('transferDate').value = todayStr;
+    const todayDate = new Date().toISOString().split('T')[0];
+    document.getElementById('txDate').value = todayDate;
+    document.getElementById('transferDate').value = todayDate;
+    if(document.getElementById('debtDueDate')) document.getElementById('debtDueDate').value = todayDate;
+    document.getElementById('filterSpecificDate').value = todayDate;
 
-      initFilterDropdowns();
-      loadDataFromFirebase();
-    });
-
-    // Sinkronisasi Firebase Realtime Database
-    function loadDataFromFirebase() {
-      db.ref('onefinance_data').on('value', (snapshot) => {
-        const val = snapshot.val();
-        if (val) {
-          state.transactions = val.transactions || [];
-          state.transfers = val.transfers || [];
-          state.accounts = val.accounts || state.accounts;
-          state.debts = val.debts || [];
-        }
-        refreshAllViews();
-      }, (error) => {
-        console.warn("Menggunakan penyimpanan lokal / offline mode.", error);
-        refreshAllViews();
-      });
+    // Helper Format Rupiah
+    function formatRp(val) {
+      return new Intl.NumberFormat('id-ID', { style: 'currency', currency: 'IDR', maximumFractionDigits: 0 }).format(val || 0);
     }
 
-    function saveDataToFirebase() {
-      db.ref('onefinance_data').set({
-        transactions: state.transactions,
-        transfers: state.transfers,
-        accounts: state.accounts,
-        debts: state.debts
-      }).catch(err => {
-        showToast("Gagal menyimpan ke cloud: " + err.message);
-      });
-    }
-
-    // Autentikasi Login Sederhana
-    function handleLogin(e) {
-      e.preventDefault();
-      const u = document.getElementById('loginUser').value.trim();
-      const p = document.getElementById('loginPass').value.trim();
-      if(u === 'admin' && p === 'admin123') {
-        state.user = { name: 'Admin Direksi', role: 'Akses Penuh', avatar: 'ADM' };
-        document.getElementById('loginOverlay').classList.add('hidden');
-        document.getElementById('mainApp').classList.remove('hidden');
-        showToast("Login Berhasil. Selamat Datang, Admin Direksi!");
-        refreshAllViews();
-      } else {
-        showToast("Username atau Kata Sandi salah! Gunakan admin / admin123");
+    // Populasikan Opsi Tahun
+    (function populateYearFilter() {
+      const yearSelect = document.getElementById('filterYear');
+      const currentYear = new Date().getFullYear();
+      let html = `<option value="ALL" selected>Semua Tahun</option>`;
+      for (let y = currentYear - 3; y <= currentYear + 2; y++) {
+        html += `<option value="${y}">${y}</option>`;
       }
-    }
+      yearSelect.innerHTML = html;
+    })();
 
-    function handleLogout() {
-      state.user = null;
-      document.getElementById('loginOverlay').classList.remove('hidden');
-      document.getElementById('mainApp').classList.add('hidden');
-      showToast("Sesi diakhiri.");
-    }
+    // Populasikan Opsi Siklus Gaji (24-24)
+    (function populateCycleMonthFilter() {
+      const cycleSelect = document.getElementById('filterCycleMonth');
+      const monthNames = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+      const currentDate = new Date();
+      
+      let html = `<option value="ALL" selected>Semua Siklus Gaji</option>`;
+      const pad = (num) => String(num).padStart(2, '0');
 
-    // Toggle Tema & Warna
-    function toggleDarkMode() {
-      const html = document.documentElement;
-      state.darkMode = !state.darkMode;
-      if(state.darkMode) {
-        html.classList.add('dark');
-        document.getElementById('themeIcon').className = 'fa-solid fa-moon';
-        document.getElementById('themeText').innerText = 'Night';
-      } else {
-        html.classList.remove('dark');
-        document.getElementById('themeIcon').className = 'fa-solid fa-sun';
-        document.getElementById('themeText').innerText = 'Day';
+      for (let i = 0; i < 12; i++) {
+        const start = new Date(currentDate.getFullYear(), i, 24);
+        const end = new Date(currentDate.getFullYear(), i + 1, 24);
+        
+        const labelText = `24 ${monthNames[start.getMonth()]} - 24 ${monthNames[end.getMonth()]}`;
+        
+        const valStart = `${start.getFullYear()}-${pad(start.getMonth() + 1)}-${pad(start.getDate())}`;
+        const valEnd = `${end.getFullYear()}-${pad(end.getMonth() + 1)}-${pad(end.getDate())}`;
+
+        html += `<option value="${valStart}|${valEnd}">${labelText}</option>`;
       }
-      refreshAllViews();
-    }
 
-    function changeThemeAccent(themeClass) {
-      document.body.className = document.body.className.replace(/theme-\w+/g, '');
-      document.body.classList.add(themeClass);
-      state.currentTheme = themeClass;
-      toggleColorPicker();
-      showToast("Tema warna diperbarui!");
-      refreshAllViews();
-    }
+      cycleSelect.innerHTML = html;
+    })();
 
+    // CUSTOM COLOR TOOL LOGIC
     function toggleColorPicker() {
       const box = document.getElementById('colorPickerBox');
       box.classList.toggle('hidden');
     }
 
-    function showToast(msg) {
-      const t = document.getElementById('toast');
-      document.getElementById('toastMsg').innerText = msg;
-      t.classList.remove('hidden');
-      setTimeout(() => t.classList.add('hidden'), 4000);
+    function changeThemeAccent(themeName) {
+      document.body.className = document.body.className.replace(/theme-\w+/g, '').trim();
+      document.body.classList.add(themeName);
+      localStorage.setItem('themeAccent', themeName);
+      renderCharts();
     }
 
-    // Navigasi Tab
-    function switchTab(tabId) {
-      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-      document.querySelectorAll('.tab-btn').forEach(btn => {
-        btn.classList.remove('active', 'border-[var(--brand-primary)]', 'brand-text', 'font-extrabold');
-        btn.classList.add('border-transparent', 'text-adaptive-muted');
-      });
-
-      document.getElementById('tab-' + tabId).classList.remove('hidden');
-      const activeBtn = document.getElementById('nav-' + tabId);
-      if(activeBtn) {
-        activeBtn.classList.add('active', 'border-[var(--brand-primary)]', 'brand-text', 'font-extrabold');
-        activeBtn.classList.remove('border-transparent', 'text-adaptive-muted');
-      }
-
-      if(tabId === 'croscheckbeban') initExpenseCategoryDropdown();
-      if(tabId === 'rekeningkoran') initStatementAccountDropdown();
-      
-      refreshAllViews();
-    }
+    const savedAccent = localStorage.getItem('themeAccent') || 'theme-emerald';
+    document.body.classList.add(savedAccent);
 
     function toggleMobileFilterPanel() {
       const container = document.getElementById('filterOptionsContainer');
       const icon = document.getElementById('filterToggleIcon');
-      container.classList.toggle('hidden');
-      icon.classList.toggle('fa-chevron-down');
-      icon.classList.toggle('fa-chevron-up');
+      if (container.classList.contains('hidden')) {
+        container.classList.remove('hidden');
+        container.classList.add('flex', 'flex-col');
+        if(icon) icon.className = 'fa-solid fa-chevron-up';
+      } else {
+        container.classList.add('hidden');
+        container.classList.remove('flex', 'flex-col');
+        if(icon) icon.className = 'fa-solid fa-chevron-down';
+      }
     }
 
-    // Inisialisasi Dropdown Filter Waktu
-    function initFilterDropdowns() {
-      const cycleSelect = document.getElementById('filterCycleMonth');
-      const yearSelect = document.getElementById('filterYear');
-      
-      const now = new Date();
-      const currentYear = now.getFullYear();
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toastMsg');
+      toastMsg.innerText = msg;
+      toast.classList.remove('hidden');
+      setTimeout(() => toast.classList.add('hidden'), 3500);
+    }
 
-      yearSelect.innerHTML = '';
-      for(let y = currentYear - 2; y <= currentYear + 1; y++) {
-        yearSelect.innerHTML += `<option value="${y}" ${y === currentYear ? 'selected' : ''}>${y}</option>`;
+    function switchTab(tabName) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+      document.querySelectorAll('.tab-btn').forEach(el => {
+        el.classList.remove('active', 'border-[var(--brand-primary)]', 'brand-text', 'font-extrabold', 'bg-slate-800/40');
+        el.classList.add('border-transparent', 'text-adaptive-muted', 'bg-slate-800/20');
+      });
+
+      const targetTab = document.getElementById(`tab-${tabName}`);
+      const targetNav = document.getElementById(`nav-${tabName}`);
+      if (targetTab) targetTab.classList.remove('hidden');
+      if (targetNav) {
+        targetNav.classList.add('active', 'border-[var(--brand-primary)]', 'brand-text', 'font-extrabold', 'bg-slate-800/40');
+        targetNav.classList.remove('border-transparent', 'text-adaptive-muted', 'bg-slate-800/20');
       }
 
-      const months = ['Januari','Februari','Maret','April','Mei','Juni','July','Agustus','September','Oktober','November','Desember'];
-      cycleSelect.innerHTML = '';
-      months.forEach((m, idx) => {
-        const val = String(idx + 1).padStart(2, '0');
-        const isCurrent = (idx === now.getMonth()) ? 'selected' : '';
-        cycleSelect.innerHTML += `<option value="${val}" ${isCurrent}>Siklus Gaji ${m}</option>`;
+      if (tabName === 'croscheckbeban') {
+        renderCroscheckBeban();
+      } else if (tabName === 'rekeningkoran') {
+        renderAccountStatement();
+      } else if (tabName === 'laporan') {
+        renderFinancialReport();
+      }
+    }
+
+    function downloadBackupJSON(customFileName) {
+      const backupData = {
+        exportDate: new Date().toISOString(),
+        exportedBy: currentUser ? currentUser.name : 'System',
+        accounts: accounts,
+        transactions: transactions,
+        debts: debts
+      };
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(backupData, null, 2));
+      const downloadAnchor = document.createElement('a');
+      const timeStamp = new Date().toISOString().split('T')[0];
+      const fileName = customFileName || `backup_financial_data_${timeStamp}.json`;
+      
+      downloadAnchor.setAttribute("href", dataStr);
+      downloadAnchor.setAttribute("download", fileName);
+      document.body.appendChild(downloadAnchor);
+      downloadAnchor.click();
+      downloadAnchor.remove();
+      
+      showToast('📥 File Backup JSON Otomatis Diunduh!');
+    }
+
+    function toggleDarkMode() {
+      const html = document.documentElement;
+      const themeIcon = document.getElementById('themeIcon');
+      const themeText = document.getElementById('themeText');
+
+      if (html.classList.contains('dark')) {
+        html.classList.remove('dark');
+        themeIcon.className = 'fa-solid fa-sun brand-text';
+        themeText.innerText = 'Day Mode';
+        localStorage.setItem('theme', 'light');
+      } else {
+        html.classList.add('dark');
+        themeIcon.className = 'fa-solid fa-moon brand-text';
+        themeText.innerText = 'Night Mode';
+        localStorage.setItem('theme', 'dark');
+      }
+      renderDashboard();
+    }
+
+    if (localStorage.getItem('theme') === 'light') {
+      document.documentElement.classList.remove('dark');
+      document.getElementById('themeIcon').className = 'fa-solid fa-sun brand-text';
+      document.getElementById('themeText').innerText = 'Day Mode';
+    }
+
+    function handleLogin(e) {
+      e.preventDefault();
+      const u = document.getElementById('loginUser').value.trim().toLowerCase();
+      const p = document.getElementById('loginPass').value;
+
+      if (u === 'admin' && p === 'admin123') {
+        currentUser = { name: 'Admin Direksi', role: 'admin', label: 'Super Admin' };
+      } else if (u === 'staf' && p === 'staf123') {
+        currentUser = { name: 'Staf Keuangan', role: 'staf', label: 'Operasional' };
+      } else if (u === 'auditor' && p === 'auditor123') {
+        currentUser = { name: 'Auditor Eksternal', role: 'auditor', label: 'Read-Only' };
+      } else {
+        showToast('❌ Username atau Password Salah!');
+        return;
+      }
+
+      document.getElementById('filterCycleMonth').value = 'ALL';
+      document.getElementById('filterCalendarMonth').value = 'ALL';
+      document.getElementById('filterYear').value = 'ALL';
+
+      document.getElementById('loginOverlay').classList.add('hidden');
+      document.getElementById('mainApp').classList.remove('hidden');
+      document.getElementById('userNameDisplay').innerText = currentUser.name;
+      document.getElementById('userRoleDisplay').innerHTML = `<i class="fa-solid fa-shield text-[8px]"></i> ${currentUser.label}`;
+      document.getElementById('userAvatar').innerText = currentUser.name.substring(0, 3).toUpperCase();
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      applyRolePermissions();
+      renderDashboard();
+      showToast(`Selamat datang, ${currentUser.name}. Memuat seluruh data.`);
+    }
+
+    function handleLogout() {
+      currentUser = null;
+      document.getElementById('mainApp').classList.add('hidden');
+      document.getElementById('loginOverlay').classList.remove('hidden');
+    }
+
+    function applyRolePermissions() {
+      const isAuditor = currentUser && currentUser.role === 'auditor';
+      ['btnSaveTx', 'btnSaveTransfer', 'btnSaveAcc', 'btnSaveDebt', 'btnResetData'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (btn) {
+          btn.disabled = isAuditor;
+          btn.style.opacity = isAuditor ? '0.5' : '1';
+        }
       });
+    }
+
+    // REALTIME LISTENERS FIREBASE
+    db.ref('transactions').on('value', (snapshot) => {
+      const data = snapshot.val();
+      transactions = [];
+      if (data) {
+        Object.keys(data).forEach(key => {
+          transactions.push({ id: key, ...data[key] });
+        });
+      }
+      renderDashboard();
+    });
+
+    db.ref('accounts').on('value', (snapshot) => {
+      const data = snapshot.val();
+      accounts = [];
+      if (data) {
+        Object.keys(data).forEach(key => {
+          accounts.push({ id: key, ...data[key] });
+        });
+      } else {
+        db.ref('accounts/default').set({ name: 'Kas Utama', type: 'Kas', balance: 0 });
+      }
+      renderDashboard();
+    });
+
+    db.ref('debts').on('value', (snapshot) => {
+      const data = snapshot.val();
+      debts = [];
+      if (data) {
+        Object.keys(data).forEach(key => {
+          debts.push({ id: key, ...data[key] });
+        });
+      }
+      renderDashboard();
+    });
+
+    function resetDataKeuangan() {
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      
+      const confirmFirst = confirm("⚠️ PERINGATAN KETAT:\nSistem akan OTOMATIS mengunduh file cadangan (.json) sebelum data terhapus.\nApakah Anda yakin ingin MENGHAPUS SEMUA DATA?");
+      if (!confirmFirst) return;
+
+      const confirmSecond = prompt("Ketik 'RESET' untuk mengonfirmasi:");
+      if (confirmSecond !== 'RESET') {
+        return showToast('❌ Pembatalan Reset Data!');
+      }
+
+      downloadBackupJSON(`AUTOBACKUP_BEFORE_RESET_${new Date().toISOString().split('T')[0]}.json`);
+
+      db.ref('transactions').remove();
+      db.ref('debts').remove();
+      db.ref('accounts').set({
+        default: { name: 'Kas Utama', type: 'Kas', balance: 0 }
+      });
+
+      showToast('⚠️ Seluruh data keuangan telah direset!');
     }
 
     function toggleFilterMode() {
       const mode = document.getElementById('filterMode').value;
-      const cycleSel = document.getElementById('filterCycleMonth');
-      const calSel = document.getElementById('filterCalendarMonth');
-      const specDate = document.getElementById('filterSpecificDate');
-      const btnReset = document.getElementById('btnClearSpecificDate');
+      const cycleSelect = document.getElementById('filterCycleMonth');
+      const calendarSelect = document.getElementById('filterCalendarMonth');
+      const specificDateInput = document.getElementById('filterSpecificDate');
+      const btnClearDate = document.getElementById('btnClearSpecificDate');
+      const yearSelect = document.getElementById('filterYear');
 
-      cycleSel.classList.add('hidden');
-      calSel.classList.add('hidden');
-      specDate.classList.add('hidden');
-      btnReset.classList.add('hidden');
-
-      if(mode === 'CYCLE24') {
-        cycleSel.classList.remove('hidden');
-      } else if(mode === 'CALENDAR') {
-        calSel.classList.remove('hidden');
-      } else if(mode === 'EXACT_DATE') {
-        specDate.classList.remove('hidden');
-        btnReset.classList.remove('hidden');
+      if (mode === 'CYCLE24') {
+        cycleSelect.classList.remove('hidden');
+        calendarSelect.classList.add('hidden');
+        specificDateInput.classList.add('hidden');
+        btnClearDate.classList.add('hidden');
+        yearSelect.classList.remove('hidden');
+      } else if (mode === 'CALENDAR') {
+        cycleSelect.classList.add('hidden');
+        calendarSelect.classList.remove('hidden');
+        specificDateInput.classList.add('hidden');
+        btnClearDate.classList.add('hidden');
+        yearSelect.classList.remove('hidden');
+      } else if (mode === 'EXACT_DATE') {
+        cycleSelect.classList.add('hidden');
+        calendarSelect.classList.add('hidden');
+        specificDateInput.classList.remove('hidden');
+        btnClearDate.classList.remove('hidden');
+        yearSelect.classList.add('hidden');
       }
       renderDashboard();
     }
 
     function clearSpecificDateFilter() {
-      document.getElementById('filterSpecificDate').value = '';
-      document.getElementById('filterMode').value = 'CYCLE24';
-      toggleFilterMode();
+      document.getElementById('filterSpecificDate').value = todayDate;
+      renderDashboard();
     }
 
-    // Filter Transaksi Berdasarkan Periode yang Dipilih
     function getFilteredTransactions() {
       const mode = document.getElementById('filterMode').value;
-      const year = parseInt(document.getElementById('filterYear').value);
+      const selectedYearVal = document.getElementById('filterYear').value;
       const sortOrder = document.getElementById('filterSortOrder').value;
+      const indicator = document.getElementById('filterPeriodIndicator');
 
-      let filtered = [...state.transactions];
-
-      if(mode === 'EXACT_DATE') {
-        const exact = document.getElementById('filterSpecificDate').value;
-        if(exact) {
-          filtered = filtered.filter(t => t.date === exact);
-        }
-      } else if(mode === 'CALENDAR') {
-        const m = document.getElementById('filterCalendarMonth').value;
-        filtered = filtered.filter(t => {
-          const [y, mm] = t.date.split('-');
-          const matchYear = parseInt(y) === year;
-          const matchMonth = (m === 'ALL' || mm === m);
-          return matchYear && matchMonth;
-        });
-      } else if(mode === 'CYCLE24') {
-        const mStr = document.getElementById('filterCycleMonth').value;
-        const targetMonth = parseInt(mStr);
+      let filtered = transactions.filter(t => {
+        if (!t.date) return false;
         
-        filtered = filtered.filter(t => {
-          const d = new Date(t.date);
-          const tYear = d.getFullYear();
-          const tMonth = d.getMonth() + 1;
-          const tDay = d.getDate();
+        if (mode === 'EXACT_DATE') {
+          const exactDate = document.getElementById('filterSpecificDate').value;
+          return exactDate ? t.date === exactDate : true;
+        }
 
-          let periodYear = tYear;
-          let periodMonth = tMonth;
-          if(tDay >= 24) {
-            periodMonth = tMonth + 1;
-            if(periodMonth > 12) { periodMonth = 1; periodYear++; }
+        const txDate = new Date(t.date + 'T00:00:00');
+        const txYear = txDate.getFullYear();
+
+        if (mode === 'CALENDAR') {
+          const selectedMonth = document.getElementById('filterCalendarMonth').value;
+          const matchMonth = (selectedMonth === 'ALL') || ((txDate.getMonth() + 1).toString().padStart(2, '0') === selectedMonth);
+          const matchYear = (selectedYearVal === 'ALL') || (txYear.toString() === selectedYearVal);
+          return matchMonth && matchYear;
+        } 
+        else if (mode === 'CYCLE24') {
+          const selectedCycleVal = document.getElementById('filterCycleMonth').value;
+
+          if (selectedCycleVal === 'ALL') {
+            if (selectedYearVal !== 'ALL') {
+              return txYear.toString() === selectedYearVal;
+            }
+            return true;
           }
-          return periodYear === year && periodMonth === targetMonth;
-        });
-      }
 
-      filtered.sort((a, b) => {
-        const da = new Date(a.date), db = new Date(b.date);
-        return sortOrder === 'DESC' ? db - da : da - db;
-      });
+          const [startDateStr, endDateStr] = selectedCycleVal.split('|');
+          const startDate = new Date(startDateStr + 'T00:00:00');
+          const endDate = new Date(endDateStr + 'T23:59:59');
 
-      return filtered;
-    }
-
-    function formatRupiah(num) {
-      return 'Rp ' + Number(num).toLocaleString('id-ID');
-    }
-
-    // FUNGSI UTAMA: MENGHITUNG SALDO BERJALAN DAN TOTAL KAS SAAT INI
-    // Berdasarkan saldo awal ditambah seluruh mutasi masuk & keluar
-    function calculateAccountCurrentBalance(accName) {
-      const acc = state.accounts.find(a => a.name === accName);
-      if(!acc) return 0;
-      
-      let balance = Number(acc.initialBalance || 0);
-
-      // Tambah pendapatan pada akun ini
-      state.transactions.forEach(t => {
-        if(t.account === accName) {
-          if(t.type === 'Pendapatan') {
-            balance += Number(t.amount);
-          } else if(t.type === 'Pengeluaran') {
-            balance -= Number(t.amount);
+          if (selectedYearVal !== 'ALL' && startDate.getFullYear().toString() !== selectedYearVal) {
+             startDate.setFullYear(parseInt(selectedYearVal));
+             endDate.setFullYear(parseInt(selectedYearVal));
+             if(startDate.getMonth() === 11) endDate.setFullYear(parseInt(selectedYearVal) + 1);
           }
+
+          return txDate >= startDate && txDate <= endDate;
         }
+        return true;
       });
 
-      // Sesuaikan transfer masuk dan keluar
-      state.transfers.forEach(tr => {
-        if(tr.fromAccount === accName) {
-          balance -= Number(tr.amount);
-        }
-        if(tr.toAccount === accName) {
-          balance += Number(tr.amount);
-        }
-      });
-
-      // Sesuaikan pelunasan hutang/piutang melalui akun ini
-      state.debts.forEach(d => {
-        if(d.paidAccount === accName && d.paidAmount) {
-          if(d.type === 'Hutang') {
-            balance -= Number(d.paidAmount);
-          } else if(d.type === 'Piutang') {
-            balance += Number(d.paidAmount);
+      if (indicator) {
+        if (mode === 'EXACT_DATE') {
+          const exactDate = document.getElementById('filterSpecificDate').value;
+          if (exactDate) {
+            const formattedDate = new Date(exactDate + 'T00:00:00').toLocaleDateString('id-ID', { day: 'numeric', month: 'long', year: 'numeric' });
+            indicator.innerText = `Spesifik: ${formattedDate}`;
+          } else {
+            indicator.innerText = `Menampilkan Semua Transaksi`;
           }
-        }
-      });
-
-      return balance;
-    }
-
-    function getTotalCurrentAssets() {
-      let total = 0;
-      state.accounts.forEach(acc => {
-        total += calculateAccountCurrentBalance(acc.name);
-      });
-      return total;
-    }
-
-    // Refresh Seluruh Tampilan UI & Grafik
-    function refreshAllViews() {
-      renderDashboard();
-      renderPencatatanHistory();
-      renderAkunTable();
-      renderTransferTable();
-      renderDebtTable();
-      populateAccountDropdowns();
-      renderReportView();
-    }
-
-    // RENDER DASHBOARD
-    function renderDashboard() {
-      const filtered = getFilteredTransactions();
-
-      let totalInc = 0, totalExp = 0;
-      filtered.forEach(t => {
-        if(t.type === 'Pendapatan') totalInc += Number(t.amount);
-        if(t.type === 'Pengeluaran') totalExp += Number(t.amount);
-      });
-
-      const netProfit = totalInc - totalExp;
-      const totalAssets = getTotalCurrentAssets();
-
-      document.getElementById('kpiIncome').innerText = formatRupiah(totalInc);
-      document.getElementById('kpiExpense').innerText = formatRupiah(totalExp);
-      
-      const kpiNet = document.getElementById('kpiNet');
-      kpiNet.innerText = formatRupiah(netProfit);
-      kpiNet.className = `text-xl sm:text-2xl font-black mt-3 font-mono tracking-tight ${netProfit >= 0 ? 'brand-text' : 'text-rose-500'}`;
-
-      document.getElementById('kpiAssets').innerText = formatRupiah(totalAssets);
-
-      // Render Tabel Jurnal di Dashboard
-      const tbody = document.getElementById('txTableBody');
-      tbody.innerHTML = '';
-      if(filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-adaptive-muted">Tidak ada data transaksi pada periode ini.</td></tr>`;
-      } else {
-        filtered.forEach(t => {
-          const badgeColor = t.type === 'Pendapatan' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-rose-500/10 text-rose-500 border-rose-500/20';
-          tbody.innerHTML += `
-            <tr class="hover:bg-slate-800/10 transition-colors">
-              <td class="py-3 px-3 font-mono text-adaptive-sub">${t.date}</td>
-              <td class="py-3 px-3"><span class="px-2.5 py-1 rounded-lg text-[10px] font-bold border ${badgeColor}">${t.type}</span></td>
-              <td class="py-3 px-3 font-bold text-adaptive-main">${t.category}</td>
-              <td class="py-3 px-3 text-adaptive-sub">${t.account}</td>
-              <td class="py-3 px-3 text-adaptive-muted">${t.notes || '-'}</td>
-              <td class="py-3 px-3 text-right font-mono font-bold ${t.type === 'Pendapatan' ? 'text-emerald-500' : 'text-rose-500'}">${t.type === 'Pendapatan' ? '+' : '-'}${formatRupiah(t.amount)}</td>
-              <td class="py-3 px-3 text-center">
-                <button onclick="openEditTxModal('${t.id}')" class="p-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-lg text-adaptive-sub transition-all mr-1" title="Edit"><i class="fa-solid fa-pen text-xs"></i></button>
-                <button onclick="deleteTx('${t.id}')" class="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 rounded-lg transition-all" title="Hapus"><i class="fa-solid fa-trash text-xs"></i></button>
-              </td>
-            </tr>
-          `;
-        });
-      }
-
-      renderCharts(filtered, totalInc, totalExp);
-      renderAnalisisSection(totalInc, totalExp, totalAssets);
-    }
-
-    // Grafik Chart.js
-    function renderCharts(filteredTx, totalInc, totalExp) {
-      // 1. Chart Arus Kas
-      const ctx1 = document.getElementById('cashflowChart').getContext('2d');
-      if(cashflowChartInstance) cashflowChartInstance.destroy();
-
-      cashflowChartInstance = new Chart(ctx1, {
-        type: 'bar',
-        data: {
-          labels: ['Total Pemasukan', 'Total Pengeluaran', 'Laba Bersih'],
-          datasets: [{
-            label: 'Arus Kas (Rp)',
-            data: [totalInc, totalExp, totalInc - totalExp],
-            backgroundColor: ['#10b981', '#f43f5e', '#3b82f6'],
-            borderRadius: 12
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } },
-          scales: {
-            y: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255,255,255,0.05)' } },
-            x: { ticks: { color: '#9ca3af' }, grid: { display: false } }
+        } else if (mode === 'CYCLE24') {
+          const cycleSelect = document.getElementById('filterCycleMonth');
+          const mVal = cycleSelect.value;
+          if (mVal !== 'ALL' && cycleSelect.selectedIndex !== -1) {
+            const mText = cycleSelect.options[cycleSelect.selectedIndex].text;
+            indicator.innerText = `Siklus: ${mText}`;
+          } else {
+            indicator.innerText = `Semua Periode Transaksi`;
+          }
+        } else {
+          const mVal = document.getElementById('filterCalendarMonth').value;
+          const yVal = document.getElementById('filterYear').value;
+          if(mVal === 'ALL' && yVal === 'ALL') {
+            indicator.innerText = `Semua Periode Transaksi`;
+          } else {
+            indicator.innerText = `Kalender: Bln ${mVal} | Thn ${yVal}`;
           }
         }
-      });
-
-      // 2. Chart Kategori Beban
-      const catMap = {};
-      filteredTx.filter(t => t.type === 'Pengeluaran').forEach(t => {
-        catMap[t.category] = (catMap[t.category] || 0) + Number(t.amount);
-      });
-
-      const catLabels = Object.keys(catMap);
-      const catData = Object.values(catMap);
-
-      const ctx2 = document.getElementById('categoryChart').getContext('2d');
-      if(categoryChartInstance) categoryChartInstance.destroy();
-
-      categoryChartInstance = new Chart(ctx2, {
-        type: 'doughnut',
-        data: {
-          labels: catLabels.length > 0 ? catLabels : ['Tidak Ada Beban'],
-          datasets: [{
-            data: catData.length > 0 ? catData : [1],
-            backgroundColor: ['#10b981', '#06b6d4', '#8b5cf6', '#f59e0b', '#f43f5e', '#3b82f6']
-          }]
-        },
-        options: {
-          responsive: true,
-          maintainAspectRatio: false,
-          plugins: { legend: { display: false } }
-        }
-      });
-
-      // Render List Persentase Kategori
-      const catListEl = document.getElementById('categoryPercentageList');
-      catListEl.innerHTML = '';
-      if(totalExp > 0 && catLabels.length > 0) {
-        catLabels.forEach((cat, idx) => {
-          const amt = catMap[cat];
-          const pct = ((amt / totalExp) * 100).toFixed(1);
-          catListEl.innerHTML += `
-            <div class="flex justify-between items-center text-xs py-1 border-b border-adaptive/50">
-              <span class="text-adaptive-sub truncate max-w-[140px]">${cat}</span>
-              <span class="font-mono font-bold brand-text">${pct}% (${formatRupiah(amt)})</span>
-            </div>
-          `;
-        });
-      } else {
-        catListEl.innerHTML = `<p class="text-[11px] text-adaptive-muted text-center py-2">Belum ada data pengeluaran.</p>`;
-      }
-    }
-
-    // RENDER ANALISIS & KESEHATAN FINANSIAL
-    function renderAnalisisSection(inc, exp, assets) {
-      const npm = inc > 0 ? (((inc - exp) / inc) * 100).toFixed(1) : 0;
-      const expRatio = inc > 0 ? ((exp / inc) * 100).toFixed(1) : 0;
-
-      document.getElementById('npmValue').innerText = npm + '%';
-      document.getElementById('expenseRatioValue').innerText = expRatio + '%';
-
-      let health = 'SEHAT';
-      let desc = 'Arus kas dan struktur permodalan perusahaan berada dalam kondisi sangat stabil.';
-      if(exp > inc) {
-        health = 'DEFISIT';
-        desc = 'Peringatan: Pengeluaran operasional melebihi pendapatan. Segera lakukan audit beban.';
-      } else if(npm < 15) {
-        health = 'KURANG EFISIEN';
-        desc = 'Margin laba bersih di bawah standar minimal 15%. Perlu efisiensi biaya.';
       }
 
-      document.getElementById('healthScore').innerText = health;
-      document.getElementById('healthDesc').innerText = desc;
-
-      const execSum = document.getElementById('executiveSummary');
-      execSum.innerHTML = `
-        <p>• Total Likuiditas / Kas Riil saat ini mencapai <strong>${formatRupiah(assets)}</strong> yang tersebar di seluruh rekening terdaftar.</p>
-        <p>• Rasio margin laba bersih perusahaan berada pada level <strong>${npm}%</strong>, mencerminkan kemampuan konversi pendapatan menjadi profit.</p>
-        <p>• Rekomendasi strategis: Pertahankan disiplin anggaran dan optimalkan penagihan piutang tepat waktu.</p>
-      `;
+      return filtered.sort((a, b) => {
+        const dateA = new Date(a.date || '1970-01-01');
+        const dateB = new Date(b.date || '1970-01-01');
+        return sortOrder === 'ASC' ? dateA - dateB : dateB - dateA;
+      });
     }
 
-    // MANAJEMEN JURNAL TRANSAKSI
     function handleSaveTx(e) {
       e.preventDefault();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+
+      const accountName = document.getElementById('txAccount').value;
+      const amount = parseFloat(document.getElementById('txAmount').value);
+      const type = document.getElementById('txType').value;
+
       const newTx = {
-        id: 'tx-' + Date.now(),
-        type: document.getElementById('txType').value,
-        amount: Number(document.getElementById('txAmount').value),
-        account: document.getElementById('txAccount').value,
-        category: document.getElementById('txCategory').value.trim(),
+        type: type,
+        amount: amount,
+        account: accountName,
+        category: document.getElementById('txCategory').value || 'Umum',
         date: document.getElementById('txDate').value,
-        notes: document.getElementById('txNotes').value.trim()
+        notes: document.getElementById('txNotes').value || '-'
       };
 
-      state.transactions.push(newTx);
-      saveDataToFirebase();
-      document.getElementById('txForm').reset();
-      const todayStr = new Date().toISOString().split('T')[0];
-      document.getElementById('txDate').value = todayStr;
-      showToast("Jurnal transaksi berhasil disimpan!");
-      refreshAllViews();
-    }
+      db.ref('transactions').push(newTx);
 
-    function deleteTx(id) {
-      if(confirm("Apakah Anda yakin ingin menghapus jurnal transaksi ini?")) {
-        state.transactions = state.transactions.filter(t => t.id !== id);
-        saveDataToFirebase();
-        showToast("Jurnal transaksi dihapus.");
-        refreshAllViews();
-      }
-    }
-
-    function renderPencatatanHistory() {
-      const tbody = document.getElementById('pencatatanTxHistoryBody');
-      if(!tbody) return;
-      tbody.innerHTML = '';
-      
-      const list = [...state.transactions].reverse();
-      if(list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-adaptive-muted">Belum ada riwayat jurnal.</td></tr>`;
-        return;
+      const targetAcc = accounts.find(a => a.name === accountName);
+      if (targetAcc) {
+        const adjustment = type === 'Pendapatan' ? amount : -amount;
+        db.ref('accounts/' + targetAcc.id).update({ balance: parseFloat(targetAcc.balance || 0) + adjustment });
       }
 
-      list.forEach(t => {
-        const badgeColor = t.type === 'Pendapatan' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-rose-500/10 text-rose-500 border-rose-500/20';
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/10 transition-colors">
-            <td class="py-2.5 px-2 font-mono text-adaptive-sub">${t.date}</td>
-            <td class="py-2.5 px-2"><span class="px-2 py-0.5 rounded text-[9px] font-bold border ${badgeColor}">${t.type}</span></td>
-            <td class="py-2.5 px-2 text-adaptive-sub">${t.account}</td>
-            <td class="py-2.5 px-2 font-bold text-adaptive-main">${t.category}</td>
-            <td class="py-2.5 px-2 text-right font-mono font-bold ${t.type === 'Pendapatan' ? 'text-emerald-500' : 'text-rose-500'}">${t.type === 'Pendapatan' ? '+' : '-'}${formatRupiah(t.amount)}</td>
-            <td class="py-2.5 px-2 text-center">
-              <button onclick="openEditTxModal('${t.id}')" class="p-1 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 rounded text-adaptive-sub mr-1"><i class="fa-solid fa-pen text-[10px]"></i></button>
-              <button onclick="deleteTx('${t.id}')" class="p-1 bg-rose-500/10 text-rose-500 rounded"><i class="fa-solid fa-trash text-[10px]"></i></button>
-            </td>
-          </tr>
-        `;
-      });
+      document.getElementById('txAmount').value = '';
+      document.getElementById('txNotes').value = '';
+      showToast('✅ Jurnal Transaksi Disimpan!');
     }
 
-    // MODAL EDIT TRANSAKSI
     function openEditTxModal(id) {
-      const t = state.transactions.find(x => x.id === id);
-      if(!t) return;
-      document.getElementById('editTxId').value = t.id;
-      document.getElementById('editTxType').value = t.type;
-      document.getElementById('editTxAmount').value = t.amount;
-      document.getElementById('editTxCategory').value = t.category;
-      document.getElementById('editTxDate').value = t.date;
-      document.getElementById('editTxNotes').value = t.notes || '';
-      
-      const accSel = document.getElementById('editTxAccount');
-      accSel.innerHTML = '';
-      state.accounts.forEach(acc => {
-        accSel.innerHTML += `<option value="${acc.name}" ${acc.name === t.account ? 'selected' : ''}>${acc.name}</option>`;
-      });
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      const tx = transactions.find(t => t.id === id);
+      if (!tx) return;
+
+      updateAccountDropdowns();
+
+      document.getElementById('editTxId').value = tx.id;
+      document.getElementById('editTxType').value = tx.type;
+      document.getElementById('editTxAmount').value = tx.amount;
+      document.getElementById('editTxAccount').value = tx.account;
+      document.getElementById('editTxCategory').value = tx.category || '';
+      document.getElementById('editTxDate').value = tx.date;
+      document.getElementById('editTxNotes').value = tx.notes || '';
 
       document.getElementById('editTxModal').classList.remove('hidden');
     }
@@ -1746,212 +1561,171 @@
 
     function handleUpdateTx(e) {
       e.preventDefault();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+
       const id = document.getElementById('editTxId').value;
-      const idx = state.transactions.findIndex(x => x.id === id);
-      if(idx !== -1) {
-        state.transactions[idx] = {
-          id: id,
-          type: document.getElementById('editTxType').value,
-          amount: Number(document.getElementById('editTxAmount').value),
-          account: document.getElementById('editTxAccount').value,
-          category: document.getElementById('editTxCategory').value.trim(),
-          date: document.getElementById('editTxDate').value,
-          notes: document.getElementById('editTxNotes').value.trim()
-        };
-        saveDataToFirebase();
-        closeEditTxModal();
-        showToast("Jurnal transaksi diperbarui!");
-        refreshAllViews();
-      }
-    }
+      const oldTx = transactions.find(t => t.id === id);
+      if (!oldTx) return;
 
-    // MANAJEMEN AKUN & KAS
-    function handleSaveAcc(e) {
-      e.preventDefault();
-      const name = document.getElementById('accName').value.trim();
-      if(state.accounts.some(a => a.name.toLowerCase() === name.toLowerCase())) {
-        alert("Nama akun/bank sudah terdaftar!");
-        return;
+      const updatedType = document.getElementById('editTxType').value;
+      const updatedAmount = parseFloat(document.getElementById('editTxAmount').value);
+      const updatedAccount = document.getElementById('editTxAccount').value;
+      const updatedCategory = document.getElementById('editTxCategory').value;
+      const updatedDate = document.getElementById('editTxDate').value;
+      const updatedNotes = document.getElementById('editTxNotes').value;
+
+      const oldAcc = accounts.find(a => a.name === oldTx.account);
+      if (oldAcc) {
+        const revertVal = oldTx.type === 'Pendapatan' ? -oldTx.amount : oldTx.amount;
+        db.ref('accounts/' + oldAcc.id).update({ balance: parseFloat(oldAcc.balance || 0) + revertVal });
       }
 
-      const newAcc = {
-        id: 'acc-' + Date.now(),
-        name: name,
-        type: document.getElementById('accType').value,
-        initialBalance: Number(document.getElementById('accBalance').value)
-      };
-
-      state.accounts.push(newAcc);
-      saveDataToFirebase();
-      document.getElementById('accForm').reset();
-      showToast("Akun baru berhasil ditambahkan!");
-      refreshAllViews();
-    }
-
-    function deleteAcc(id) {
-      if(confirm("Hapus akun ini?")) {
-        state.accounts = state.accounts.filter(a => a.id !== id);
-        saveDataToFirebase();
-        showToast("Akun dihapus.");
-        refreshAllViews();
+      const newAcc = accounts.find(a => a.name === updatedAccount);
+      if (newAcc) {
+        const applyVal = updatedType === 'Pendapatan' ? updatedAmount : -updatedAmount;
+        const currentBal = (oldAcc && oldAcc.id === newAcc.id) 
+          ? (parseFloat(oldAcc.balance || 0) + (oldTx.type === 'Pendapatan' ? -oldTx.amount : oldTx.amount))
+          : parseFloat(newAcc.balance || 0);
+        
+        db.ref('accounts/' + newAcc.id).update({ balance: currentBal + applyVal });
       }
-    }
 
-    function renderAkunTable() {
-      const tbody = document.getElementById('accTableBody');
-      if(!tbody) return;
-      tbody.innerHTML = '';
-      
-      state.accounts.forEach(acc => {
-        const curBal = calculateAccountCurrentBalance(acc.name);
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/10 transition-colors">
-            <td class="py-3 px-3 font-bold text-adaptive-main">${acc.name}</td>
-            <td class="py-3 px-3"><span class="px-2 py-0.5 rounded text-[10px] font-bold bg-cyan-500/10 text-cyan-500 border border-cyan-500/20">${acc.type}</span></td>
-            <td class="py-3 px-3 text-right font-mono font-bold brand-text">${formatRupiah(curBal)}</td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="openEditAccModal('${acc.id}')" class="p-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-lg text-adaptive-sub mr-1"><i class="fa-solid fa-pen text-xs"></i></button>
-              <button onclick="deleteAcc('${acc.id}')" class="p-1.5 bg-rose-500/10 text-rose-500 rounded-lg"><i class="fa-solid fa-trash text-xs"></i></button>
-            </td>
-          </tr>
-        `;
+      db.ref('transactions/' + id).update({
+        type: updatedType,
+        amount: updatedAmount,
+        account: updatedAccount,
+        category: updatedCategory,
+        date: updatedDate,
+        notes: updatedNotes
       });
+
+      closeEditTxModal();
+      showToast('✅ Transaksi Berhasil Diperbarui!');
     }
 
-    function openEditAccModal(id) {
-      const acc = state.accounts.find(a => a.id === id);
-      if(!acc) return;
-      document.getElementById('editAccId').value = acc.id;
-      document.getElementById('oldAccName').value = acc.name;
-      document.getElementById('editAccName').value = acc.name;
-      document.getElementById('editAccType').value = acc.type;
-      document.getElementById('editAccBalance').value = acc.initialBalance;
-      document.getElementById('editAccModal').classList.remove('hidden');
-    }
+    function deleteTx(id) {
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      if (!confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) return;
 
-    function closeEditAccModal() {
-      document.getElementById('editAccModal').classList.add('hidden');
-    }
-
-    function handleUpdateAcc(e) {
-      e.preventDefault();
-      const id = document.getElementById('editAccId').value;
-      const oldName = document.getElementById('oldAccName').value;
-      const newName = document.getElementById('editAccName').value.trim();
-      
-      const acc = state.accounts.find(a => a.id === id);
-      if(acc) {
-        acc.name = newName;
-        acc.type = document.getElementById('editAccType').value;
-        acc.initialBalance = Number(document.getElementById('editAccBalance').value);
-
-        // Update nama akun di transaksi & transfer jika berubah
-        if(oldName !== newName) {
-          state.transactions.forEach(t => { if(t.account === oldName) t.account = newName; });
-          state.transfers.forEach(tr => {
-            if(tr.fromAccount === oldName) tr.fromAccount = newName;
-            if(tr.toAccount === oldName) tr.toAccount = newName;
-          });
-          state.debts.forEach(d => { if(d.paidAccount === oldName) d.paidAccount = newName; });
+      const tx = transactions.find(t => t.id === id);
+      if (tx) {
+        const acc = accounts.find(a => a.name === tx.account);
+        if (acc) {
+          const revertVal = tx.type === 'Pendapatan' ? -tx.amount : tx.amount;
+          db.ref('accounts/' + acc.id).update({ balance: parseFloat(acc.balance || 0) + revertVal });
         }
-
-        saveDataToFirebase();
-        closeEditAccModal();
-        showToast("Akun berhasil diperbarui!");
-        refreshAllViews();
       }
+
+      db.ref('transactions/' + id).remove();
+      showToast('🗑️ Transaksi Dihapus!');
     }
 
-    // MANAJEMEN TRANSFER INTERNAL
+    // HANDLER TRANSFER ANTAR AKUN
     function handleSaveTransfer(e) {
       e.preventDefault();
-      const from = document.getElementById('transferFromAccount').value;
-      const to = document.getElementById('transferToAccount').value;
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
 
-      if(from === to) {
-        alert("Rekening sumber dan tujuan tidak boleh sama!");
-        return;
+      const fromAccName = document.getElementById('transferFromAccount').value;
+      const toAccName = document.getElementById('transferToAccount').value;
+      const amount = parseFloat(document.getElementById('transferAmount').value);
+      const date = document.getElementById('transferDate').value;
+      const notes = document.getElementById('transferNotes').value || 'Transfer Antar Rekening';
+
+      if (fromAccName === toAccName) {
+        return showToast('❌ Rekening pengirim dan penerima tidak boleh sama!');
       }
 
-      const amt = Number(document.getElementById('transferAmount').value);
-      const fromBal = calculateAccountCurrentBalance(from);
-      if(amt > fromBal) {
-        alert("Saldo pada rekening sumber tidak mencukupi untuk transfer ini!");
-        return;
+      const fromAcc = accounts.find(a => a.name === fromAccName);
+      const toAcc = accounts.find(a => a.name === toAccName);
+
+      if (fromAcc && parseFloat(fromAcc.balance) < amount) {
+        if(!confirm('⚠️ Saldo pengirim kurang dari nominal transfer. Tetap lanjutkan?')) return;
       }
 
-      const newTr = {
-        id: 'tr-' + Date.now(),
-        fromAccount: from,
-        toAccount: to,
-        amount: amt,
-        date: document.getElementById('transferDate').value,
-        notes: document.getElementById('transferNotes').value.trim()
-      };
+      const transferGroupId = 'TRF_' + Date.now();
+      
+      db.ref('transactions').push({
+        groupId: transferGroupId,
+        type: 'Pengeluaran',
+        amount: amount,
+        account: fromAccName,
+        targetAccount: toAccName,
+        category: 'Transfer Antar Akun',
+        date: date,
+        notes: `Transfer Keluar ke ${toAccName} — ${notes}`
+      });
 
-      state.transfers.push(newTr);
-      saveDataToFirebase();
-      document.getElementById('transferForm').reset();
-      const todayStr = new Date().toISOString().split('T')[0];
-      document.getElementById('transferDate').value = todayStr;
-      showToast("Transfer internal berhasil dieksekusi!");
-      refreshAllViews();
+      db.ref('transactions').push({
+        groupId: transferGroupId,
+        type: 'Pendapatan',
+        amount: amount,
+        account: toAccName,
+        targetAccount: fromAccName,
+        category: 'Transfer Antar Akun',
+        date: date,
+        notes: `Transfer Masuk dari ${fromAccName} — ${notes}`
+      });
+
+      if (fromAcc) db.ref('accounts/' + fromAcc.id).update({ balance: parseFloat(fromAcc.balance || 0) - amount });
+      if (toAcc) db.ref('accounts/' + toAcc.id).update({ balance: parseFloat(toAcc.balance || 0) + amount });
+
+      document.getElementById('transferAmount').value = '';
+      document.getElementById('transferNotes').value = '';
+      showToast('✅ Transfer Antar Rekening & Rekening Koran Berhasil Disinkronkan!');
     }
 
-    function deleteTransfer(id) {
-      if(confirm("Hapus data transfer ini?")) {
-        state.transfers = state.transfers.filter(tr => tr.id !== id);
-        saveDataToFirebase();
-        showToast("Transfer dihapus.");
-        refreshAllViews();
-      }
-    }
+    function renderTransferHistory() {
+      const tbody = document.getElementById('transferHistoryBody');
+      if (!tbody) return;
 
-    function renderTransferTable() {
-      const tbody = document.getElementById('transferTableBody');
-      if(!tbody) return;
-      tbody.innerHTML = '';
+      const transfers = transactions.filter(t => t.category === 'Transfer Antar Akun' && t.type === 'Pengeluaran');
 
-      const list = [...state.transfers].reverse();
-      if(list.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-adaptive-muted">Belum ada riwayat transfer internal.</td></tr>`;
+      if (transfers.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="py-6 text-center text-adaptive-muted">Belum ada riwayat transfer antar rekening.</td></tr>`;
         return;
       }
 
-      list.forEach(tr => {
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/15 transition-colors">
-            <td class="py-3 px-3 font-mono text-adaptive-sub">${tr.date}</td>
-            <td class="py-3 px-3 font-bold text-rose-500">${tr.fromAccount}</td>
-            <td class="py-3 px-3 font-bold text-emerald-500">${tr.toAccount}</td>
-            <td class="py-3 px-3 text-right font-mono font-bold text-cyan-400">${formatRupiah(tr.amount)}</td>
-            <td class="py-3 px-3 text-adaptive-muted">${tr.notes || '-'}</td>
-            <td class="py-3 px-3 text-center">
-              <button onclick="openEditTransferModal('${tr.id}')" class="p-1.5 bg-slate-200 dark:bg-slate-800 hover:bg-slate-300 dark:hover:bg-slate-700 rounded-lg text-adaptive-sub mr-1" title="Edit Transfer"><i class="fa-solid fa-pen text-xs"></i></button>
-              <button onclick="deleteTransfer('${tr.id}')" class="p-1.5 bg-rose-500/10 hover:bg-rose-500/20 text-rose-500 rounded-lg transition-all" title="Hapus"><i class="fa-solid fa-trash text-xs"></i></button>
+      let html = '';
+      transfers.forEach(t => {
+        const targetAcc = t.targetAccount || (t.notes.includes('Transfer Keluar ke') ? t.notes.split('Transfer Keluar ke')[1].split('—')[0].trim() : '-');
+        html += `
+          <tr class="hover:bg-slate-800/20 transition-all">
+            <td class="py-3 px-2 font-mono text-[11px]">${t.date}</td>
+            <td class="py-3 px-2">
+              <span class="font-bold text-adaptive-main">${t.account}</span> 
+              <i class="fa-solid fa-arrow-right text-[10px] brand-text mx-1"></i> 
+              <span class="font-bold text-cyan-500">${targetAcc}</span>
+            </td>
+            <td class="py-3 px-2 text-adaptive-sub">${t.notes || '-'}</td>
+            <td class="py-3 px-2 text-right font-mono text-cyan-500 font-bold">${formatRp(t.amount)}</td>
+            <td class="py-3 px-2 text-center space-x-1">
+              <button onclick="openEditTransferModal('${t.id}')" class="p-1.5 text-cyan-500 hover:bg-cyan-500/10 rounded-lg"><i class="fa-solid fa-pen"></i></button>
+              <button onclick="deleteTransfer('${t.id}')" class="p-1.5 text-rose-500 hover:bg-rose-500/10 rounded-lg"><i class="fa-solid fa-trash"></i></button>
             </td>
           </tr>
         `;
       });
+
+      tbody.innerHTML = html;
     }
 
     function openEditTransferModal(id) {
-      const tr = state.transfers.find(x => x.id === id);
-      if(!tr) return;
-      document.getElementById('editTransferId').value = tr.id;
-      document.getElementById('editTransferAmount').value = tr.amount;
-      document.getElementById('editTransferDate').value = tr.date;
-      document.getElementById('editTransferNotes').value = tr.notes || '';
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      const tx = transactions.find(t => t.id === id);
+      if (!tx) return;
 
-      const fromSel = document.getElementById('editTransferFromAccount');
-      const toSel = document.getElementById('editTransferToAccount');
-      fromSel.innerHTML = '';
-      toSel.innerHTML = '';
+      updateAccountDropdowns();
 
-      state.accounts.forEach(acc => {
-        fromSel.innerHTML += `<option value="${acc.name}" ${acc.name === tr.fromAccount ? 'selected' : ''}>${acc.name}</option>`;
-        toSel.innerHTML += `<option value="${acc.name}" ${acc.name === tr.toAccount ? 'selected' : ''}>${acc.name}</option>`;
-      });
+      const fromAcc = tx.account;
+      const toAcc = tx.targetAccount || (tx.notes.includes('Transfer Keluar ke') ? tx.notes.split('Transfer Keluar ke')[1].split('—')[0].trim() : '');
+      const rawNotes = tx.notes.includes('—') ? tx.notes.split('—')[1].trim() : tx.notes;
+
+      document.getElementById('editTransferId').value = tx.id;
+      document.getElementById('editTransferFromAccount').value = fromAcc;
+      document.getElementById('editTransferToAccount').value = toAcc;
+      document.getElementById('editTransferAmount').value = tx.amount;
+      document.getElementById('editTransferDate').value = tx.date;
+      document.getElementById('editTransferNotes').value = rawNotes;
 
       document.getElementById('editTransferModal').classList.remove('hidden');
     }
@@ -1962,89 +1736,182 @@
 
     function handleUpdateTransfer(e) {
       e.preventDefault();
-      const id = document.getElementById('editTransferId').value;
-      const tr = state.transfers.find(x => x.id === id);
-      if(tr) {
-        tr.fromAccount = document.getElementById('editTransferFromAccount').value;
-        tr.toAccount = document.getElementById('editTransferToAccount').value;
-        tr.amount = Number(document.getElementById('editTransferAmount').value);
-        tr.date = document.getElementById('editTransferDate').value;
-        tr.notes = document.getElementById('editTransferNotes').value.trim();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
 
-        saveDataToFirebase();
-        closeEditTransferModal();
-        showToast("Transaksi transfer berhasil diperbarui!");
-        refreshAllViews();
-      }
+      const id = document.getElementById('editTransferId').value;
+      const oldTx = transactions.find(t => t.id === id);
+      if (!oldTx) return;
+
+      deleteTransfer(id, true);
+
+      const fromAccName = document.getElementById('editTransferFromAccount').value;
+      const toAccName = document.getElementById('editTransferToAccount').value;
+      const amount = parseFloat(document.getElementById('editTransferAmount').value);
+      const date = document.getElementById('editTransferDate').value;
+      const notes = document.getElementById('editTransferNotes').value || 'Transfer Antar Rekening';
+
+      const transferGroupId = 'TRF_' + Date.now();
+      db.ref('transactions').push({
+        groupId: transferGroupId,
+        type: 'Pengeluaran',
+        amount: amount,
+        account: fromAccName,
+        targetAccount: toAccName,
+        category: 'Transfer Antar Akun',
+        date: date,
+        notes: `Transfer Keluar ke ${toAccName} — ${notes}`
+      });
+
+      db.ref('transactions').push({
+        groupId: transferGroupId,
+        type: 'Pendapatan',
+        amount: amount,
+        account: toAccName,
+        targetAccount: fromAccName,
+        category: 'Transfer Antar Akun',
+        date: date,
+        notes: `Transfer Masuk dari ${fromAccName} — ${notes}`
+      });
+
+      const fromAcc = accounts.find(a => a.name === fromAccName);
+      const toAcc = accounts.find(a => a.name === toAccName);
+      if (fromAcc) db.ref('accounts/' + fromAcc.id).update({ balance: parseFloat(fromAcc.balance || 0) - amount });
+      if (toAcc) db.ref('accounts/' + toAcc.id).update({ balance: parseFloat(toAcc.balance || 0) + amount });
+
+      closeEditTransferModal();
+      showToast('✅ Transaksi Transfer Berhasil Diperbarui!');
     }
 
-    // MANAJEMEN HUTANG PIUTANG & PELUNASAN
+    function deleteTransfer(id, silent = false) {
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      if (!silent && !confirm('Hapus transaksi transfer ini? Saldo kedua rekening akan disesuaikan kembali.')) return;
+
+      const tx = transactions.find(t => t.id === id);
+      if (!tx) return;
+
+      const relatedTxs = transactions.filter(t => (t.groupId && t.groupId === tx.groupId) || (t.date === tx.date && t.amount === tx.amount && t.category === 'Transfer Antar Akun'));
+
+      relatedTxs.forEach(rel => {
+        const acc = accounts.find(a => a.name === rel.account);
+        if (acc) {
+          const revertVal = rel.type === 'Pendapatan' ? -rel.amount : rel.amount;
+          db.ref('accounts/' + acc.id).update({ balance: parseFloat(acc.balance || 0) + revertVal });
+        }
+        db.ref('transactions/' + rel.id).remove();
+      });
+
+      if (!silent) showToast('🗑️ Transaksi Transfer Dihapus!');
+    }
+
+    // MANAJEMEN AKUN
+    function handleSaveAccount(e) {
+      e.preventDefault();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+
+      const name = document.getElementById('accName').value.trim();
+      const type = document.getElementById('accType').value;
+      const balance = parseFloat(document.getElementById('accBalance').value || 0);
+
+      if (accounts.some(a => a.name.toLowerCase() === name.toLowerCase())) {
+        return showToast('❌ Nama akun sudah ada!');
+      }
+
+      db.ref('accounts').push({ name, type, balance });
+      document.getElementById('accName').value = '';
+      document.getElementById('accBalance').value = '';
+      showToast('✅ Akun Rekening Baru Ditambahkan!');
+    }
+
+    function openEditAccModal(id) {
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      const acc = accounts.find(a => a.id === id);
+      if (!acc) return;
+
+      document.getElementById('editAccId').value = acc.id;
+      document.getElementById('oldAccName').value = acc.name;
+      document.getElementById('editAccName').value = acc.name;
+      document.getElementById('editAccType').value = acc.type;
+      document.getElementById('editAccBalance').value = acc.balance;
+
+      document.getElementById('editAccModal').classList.remove('hidden');
+    }
+
+    function closeEditAccModal() {
+      document.getElementById('editAccModal').classList.add('hidden');
+    }
+
+    function handleUpdateAcc(e) {
+      e.preventDefault();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+
+      const id = document.getElementById('editAccId').value;
+      const oldName = document.getElementById('oldAccName').value;
+      const newName = document.getElementById('editAccName').value.trim();
+      const newType = document.getElementById('editAccType').value;
+      const newBalance = parseFloat(document.getElementById('editAccBalance').value || 0);
+
+      db.ref('accounts/' + id).update({
+        name: newName,
+        type: newType,
+        balance: newBalance
+      });
+
+      if (oldName !== newName) {
+        transactions.forEach(t => {
+          if (t.account === oldName) {
+            db.ref('transactions/' + t.id).update({ account: newName });
+          }
+        });
+      }
+
+      closeEditAccModal();
+      showToast('✅ Rekening Berhasil Diperbarui!');
+    }
+
+    function deleteAccount(id) {
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      if (accounts.length <= 1) return showToast('❌ Minimal harus ada 1 akun kas!');
+      if (!confirm('Hapus akun ini? Transaksi terkait tidak terhapus otomatis.')) return;
+
+      db.ref('accounts/' + id).remove();
+      showToast('🗑️ Rekening Dihapus!');
+    }
+
+    // HUTANG & PIUTANG
     function handleSaveDebt(e) {
       e.preventDefault();
-      const newDebt = {
-        id: 'debt-' + Date.now(),
-        type: document.getElementById('debtType').value,
-        person: document.getElementById('debtPerson').value.trim(),
-        amount: Number(document.getElementById('debtAmount').value),
-        remaining: Number(document.getElementById('debtAmount').value),
-        dueDate: document.getElementById('debtDueDate').value,
-        notes: document.getElementById('debtNotes').value.trim(),
-        status: 'Belum Lunas',
-        paidAmount: 0,
-        paidAccount: ''
-      };
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
 
-      state.debts.push(newDebt);
-      saveDataToFirebase();
-      document.getElementById('debtForm').reset();
-      showToast("Catatan hutang/piutang berhasil disimpan!");
-      refreshAllViews();
-    }
+      const type = document.getElementById('debtType').value;
+      const person = document.getElementById('debtPerson').value.trim();
+      const amount = parseFloat(document.getElementById('debtAmount').value);
+      const dueDate = document.getElementById('debtDueDate').value;
+      const notes = document.getElementById('debtNotes').value || '-';
 
-    function renderDebtTable() {
-      const tbody = document.getElementById('debtTableBody');
-      if(!tbody) return;
-      tbody.innerHTML = '';
-
-      if(state.debts.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="7" class="text-center py-6 text-adaptive-muted">Belum ada catatan hutang atau piutang.</td></tr>`;
-        return;
-      }
-
-      state.debts.forEach(d => {
-        const badgeColor = d.status === 'Lunas' ? 'bg-emerald-500/10 text-emerald-500 border-emerald-500/20' : 'bg-amber-500/10 text-amber-500 border-amber-500/20';
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/10 transition-colors">
-            <td class="py-3 px-3 font-bold text-adaptive-main">${d.type}</td>
-            <td class="py-3 px-3 text-adaptive-sub">${d.person}</td>
-            <td class="py-3 px-3 text-right font-mono">${formatRupiah(d.amount)}</td>
-            <td class="py-3 px-3 text-right font-mono font-bold brand-text">${formatRupiah(d.remaining)}</td>
-            <td class="py-3 px-3 font-mono text-adaptive-muted">${d.dueDate}</td>
-            <td class="py-3 px-3 text-center"><span class="px-2.5 py-1 rounded-lg text-[10px] font-bold border ${badgeColor}">${d.status}</span></td>
-            <td class="py-3 px-3 text-center">
-              ${d.status !== 'Lunas' ? `<button onclick="openPayDebtModal('${d.id}')" class="px-3 py-1 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-500 rounded-lg text-[11px] font-bold mr-1">Lunasi</button>` : ''}
-              <button onclick="deleteDebt('${d.id}')" class="p-1.5 bg-rose-500/10 text-rose-500 rounded-lg"><i class="fa-solid fa-trash text-xs"></i></button>
-            </td>
-          </tr>
-        `;
+      db.ref('debts').push({
+        type, person, amount, initialAmount: amount, dueDate, notes, status: 'Belum Lunas', createdAt: todayDate
       });
+
+      document.getElementById('debtPerson').value = '';
+      document.getElementById('debtAmount').value = '';
+      document.getElementById('debtNotes').value = '';
+      showToast('✅ Catatan Kewajiban/Tagihan Disimpan!');
     }
 
     function openPayDebtModal(id) {
-      const d = state.debts.find(x => x.id === id);
-      if(!d) return;
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      const d = debts.find(item => item.id === id);
+      if (!d) return;
+
+      updateAccountDropdowns();
+
       document.getElementById('payDebtId').value = d.id;
-      document.getElementById('payDebtCurrentAmount').value = d.remaining;
-      document.getElementById('payDebtInfo').innerText = `Pelunasan ${d.type} kepada/dari ${d.person}. Total Sisa: ${formatRupiah(d.remaining)}`;
-      document.getElementById('payDebtAmountInput').value = d.remaining;
-      document.getElementById('payDebtRemainingText').innerText = formatRupiah(0);
-
-      const accSel = document.getElementById('payDebtAccount');
-      accSel.innerHTML = '';
-      state.accounts.forEach(acc => {
-        accSel.innerHTML += `<option value="${acc.name}">${acc.name} (${formatRupiah(calculateAccountCurrentBalance(acc.name))})</option>`;
-      });
-
+      document.getElementById('payDebtCurrentAmount').value = d.amount;
+      document.getElementById('payDebtInfo').innerHTML = `Pelunasan <strong>${d.type}</strong> untuk <strong>${d.person}</strong> sebesar <span class="font-mono">${formatRp(d.amount)}</span>`;
+      document.getElementById('payDebtAmountInput').value = d.amount;
+      document.getElementById('payDebtAmountInput').max = d.amount;
+      
+      calculateDebtRemaining();
       document.getElementById('payDebtModal').classList.remove('hidden');
     }
 
@@ -2053,294 +1920,540 @@
     }
 
     function calculateDebtRemaining() {
-      const rem = Number(document.getElementById('payDebtCurrentAmount').value);
-      const paid = Number(document.getElementById('payDebtAmountInput').value);
-      const left = Math.max(0, rem - paid);
-      document.getElementById('payDebtRemainingText').innerText = formatRupiah(left);
+      const current = parseFloat(document.getElementById('payDebtCurrentAmount').value || 0);
+      const paid = parseFloat(document.getElementById('payDebtAmountInput').value || 0);
+      const remaining = Math.max(0, current - paid);
+      document.getElementById('payDebtRemainingText').innerText = formatRp(remaining);
     }
 
     function confirmPayDebt(e) {
       e.preventDefault();
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+
       const id = document.getElementById('payDebtId').value;
-      const paidAmt = Number(document.getElementById('payDebtAmountInput').value);
-      const accName = document.getElementById('payDebtAccount').value;
+      const paidAmount = parseFloat(document.getElementById('payDebtAmountInput').value);
+      const currentAmount = parseFloat(document.getElementById('payDebtCurrentAmount').value);
+      const accountName = document.getElementById('payDebtAccount').value;
+      const d = debts.find(item => item.id === id);
+      if (!d) return;
 
-      const d = state.debts.find(x => x.id === id);
-      if(d) {
-        d.remaining = Math.max(0, d.remaining - paidAmt);
-        d.paidAmount = (d.paidAmount || 0) + paidAmt;
-        d.paidAccount = accName;
-        if(d.remaining === 0) d.status = 'Lunas';
+      const newRemaining = currentAmount - paidAmount;
+      const newStatus = newRemaining <= 0 ? 'Lunas' : 'Belum Lunas';
 
-        saveDataToFirebase();
-        closePayDebtModal();
-        showToast("Pelunasan berhasil diproses!");
-        refreshAllViews();
+      db.ref('debts/' + id).update({
+        amount: newRemaining,
+        status: newStatus
+      });
+
+      const isHutang = d.type === 'Hutang';
+      const txType = isHutang ? 'Pengeluaran' : 'Pendapatan';
+      const category = isHutang ? 'Pelunasan Hutang' : 'Penerimaan Piutang';
+
+      db.ref('transactions').push({
+        type: txType,
+        amount: paidAmount,
+        account: accountName,
+        category: category,
+        date: todayDate,
+        notes: `Pelunasan ${d.type} (${d.person})`
+      });
+
+      const targetAcc = accounts.find(a => a.name === accountName);
+      if (targetAcc) {
+        const adjustment = isHutang ? -paidAmount : paidAmount;
+        db.ref('accounts/' + targetAcc.id).update({ balance: parseFloat(targetAcc.balance || 0) + adjustment });
       }
+
+      closePayDebtModal();
+      showToast('✅ Pelunasan berhasil diproses & dicatat dalam jurnal!');
     }
 
     function deleteDebt(id) {
-      if(confirm("Hapus catatan hutang/piutang ini?")) {
-        state.debts = state.debts.filter(d => d.id !== id);
-        saveDataToFirebase();
-        showToast("Catatan dihapus.");
-        refreshAllViews();
-      }
+      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      if (!confirm('Hapus catatan hutang/piutang ini?')) return;
+      db.ref('debts/' + id).remove();
+      showToast('🗑️ Catatan Dihapus!');
     }
 
-    // POPULATE ACCOUNT DROPDOWNS
-    function populateAccountDropdowns() {
-      const selects = ['txAccount', 'transferFromAccount', 'transferToAccount', 'editTransferFromAccount', 'editTransferToAccount'];
-      selects.forEach(id => {
-        const el = document.getElementById(id);
-        if(el) {
-          const curVal = el.value;
-          el.innerHTML = '';
-          state.accounts.forEach(acc => {
-            el.innerHTML += `<option value="${acc.name}">${acc.name} (${formatRupiah(calculateAccountCurrentBalance(acc.name))})</option>`;
-          });
-          if(curVal) el.value = curVal;
+    // RENDER UTAMA & DASHBOARD
+    function renderDashboard() {
+      updateAccountDropdowns();
+      const filtered = getFilteredTransactions();
+
+      let totalIncome = 0;
+      let totalExpense = 0;
+      const categoryMap = {};
+
+      filtered.forEach(t => {
+        if (t.type === 'Pendapatan') {
+          totalIncome += parseFloat(t.amount || 0);
+        } else if (t.type === 'Pengeluaran') {
+          totalExpense += parseFloat(t.amount || 0);
+          const cat = t.category || 'Lain-lain';
+          categoryMap[cat] = (categoryMap[cat] || 0) + parseFloat(t.amount || 0);
         }
       });
-    }
 
-    // TAB: CROSCHECK BEBAN
-    function initExpenseCategoryDropdown() {
-      const select = document.getElementById('expenseCategorySelect');
-      if(!select) return;
+      const netProfit = totalIncome - totalExpense;
+      let totalAssets = accounts.reduce((sum, a) => sum + parseFloat(a.balance || 0), 0);
 
-      const filtered = getFilteredTransactions();
-      let totalExp = 0;
-      const catMap = {};
+      document.getElementById('kpiIncome').innerText = formatRp(totalIncome);
+      document.getElementById('kpiExpense').innerText = formatRp(totalExpense);
+      document.getElementById('kpiNet').innerText = formatRp(netProfit);
+      document.getElementById('kpiAssets').innerText = formatRp(totalAssets);
 
-      filtered.filter(t => t.type === 'Pengeluaran').forEach(t => {
-        totalExp += Number(t.amount);
-        catMap[t.category] = (catMap[t.category] || 0) + Number(t.amount);
-      });
-
-      select.innerHTML = '<option value="ALL">Semua Kategori Beban</option>';
-      for(let cat in catMap) {
-        const amt = catMap[cat];
-        const pct = totalExp > 0 ? ((amt / totalExp) * 100).toFixed(1) : 0;
-        select.innerHTML += `<option value="${cat}">${cat} - ${formatRupiah(amt)} (${pct}%)</option>`;
-      }
-      renderCroscheckBeban();
-    }
-
-    function renderCroscheckBeban() {
-      const select = document.getElementById('expenseCategorySelect');
-      if(!select) return;
-      const selectedCat = select.value;
-      const filtered = getFilteredTransactions().filter(t => t.type === 'Pengeluaran');
-
-      let totalExpAll = 0;
-      filtered.forEach(t => totalExpAll += Number(t.amount));
-
-      const matched = selectedCat === 'ALL' ? filtered : filtered.filter(t => t.category === selectedCat);
+      // Render Tabel Jurnal Dashboard
+      const tbody = document.getElementById('txTableBody');
+      const pencatatanBody = document.getElementById('pencatatanTxHistoryBody');
       
-      let totalMatched = 0;
-      matched.forEach(t => totalMatched += Number(t.amount));
+      if (filtered.length === 0) {
+        const emptyRow = `<tr><td colspan="7" class="py-6 text-center text-adaptive-muted">Tidak ada transaksi ditemukan pada periode ini.</td></tr>`;
+        if (tbody) tbody.innerHTML = emptyRow;
+        if (pencatatanBody) pencatatanBody.innerHTML = emptyRow;
+      } else {
+        let html = '';
+        filtered.forEach(t => {
+          const isIncome = t.type === 'Pendapatan';
+          html += `
+            <tr class="hover:bg-slate-800/20 transition-all">
+              <td class="py-3 px-3 font-mono text-[11px]">${t.date}</td>
+              <td class="py-3 px-3">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${isIncome ? 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20' : 'bg-rose-500/10 text-rose-500 border border-rose-500/20'}">
+                  ${t.type}
+                </span>
+              </td>
+              <td class="py-3 px-3 font-semibold text-adaptive-main">${t.category || '-'}</td>
+              <td class="py-3 px-3 text-adaptive-sub">${t.account}</td>
+              <td class="py-3 px-3 text-adaptive-muted truncate max-w-[180px]">${t.notes || '-'}</td>
+              <td class="py-3 px-3 text-right font-mono font-bold ${isIncome ? 'text-emerald-500' : 'text-rose-500'}">
+                ${isIncome ? '+' : '-'}${formatRp(t.amount)}
+              </td>
+              <td class="py-3 px-3 text-center space-x-1">
+                <button onclick="openEditTxModal('${t.id}')" class="p-1.5 text-cyan-500 hover:bg-cyan-500/10 rounded-lg"><i class="fa-solid fa-pen"></i></button>
+                <button onclick="deleteTx('${t.id}')" class="p-1.5 text-rose-500 hover:bg-rose-500/10 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+              </td>
+            </tr>
+          `;
+        });
+        if (tbody) tbody.innerHTML = html;
+        if (pencatatanBody) pencatatanBody.innerHTML = html;
+      }
 
-      const percentage = totalExpAll > 0 ? ((totalMatched / totalExpAll) * 100).toFixed(1) : 0;
+      renderAccountCards();
+      renderDebtList();
+      renderTransferHistory();
+      renderAnalisis(totalIncome, totalExpense, netProfit);
+      renderCharts(filtered, categoryMap, totalExpense);
+    }
 
-      document.getElementById('croscheckTotalAmount').innerText = formatRupiah(totalMatched);
-      document.getElementById('croscheckCategoryLabel').innerText = `Kategori: ${selectedCat}`;
-      document.getElementById('croscheckTxCount').innerText = `${matched.length} Transaksi`;
-      document.getElementById('croscheckPercentage').innerText = percentage + '%';
+    function updateAccountDropdowns() {
+      const dropdownIds = ['txAccount', 'editTxAccount', 'transferFromAccount', 'transferToAccount', 'editTransferFromAccount', 'editTransferToAccount', 'payDebtAccount', 'statementAccountSelect'];
+      
+      dropdownIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
 
-      const tbody = document.getElementById('croscheckTableBody');
-      tbody.innerHTML = '';
-      if(matched.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" class="text-center py-6 text-adaptive-muted">Tidak ada rincian beban untuk kategori ini.</td></tr>`;
+        let html = '';
+        if (id === 'statementAccountSelect') {
+          html += `<option value="ALL">🌐 Semua Akun (Konsolidasi Total Kas)</option>`;
+        }
+        
+        accounts.forEach(acc => {
+          html += `<option value="${acc.name}">${acc.name} (${acc.type} - ${formatRp(acc.balance)})</option>`;
+        });
+        el.innerHTML = html;
+      });
+    }
+
+    function renderAccountCards() {
+      const container = document.getElementById('accountCardsList');
+      if (!container) return;
+
+      if (accounts.length === 0) {
+        container.innerHTML = `<p class="text-adaptive-muted text-xs">Belum ada akun terdaftar.</p>`;
         return;
       }
 
-      matched.forEach(t => {
-        const pctItem = totalExpAll > 0 ? ((Number(t.amount) / totalExpAll) * 100).toFixed(1) : 0;
-        tbody.innerHTML += `
-          <tr class="hover:bg-slate-800/10 transition-colors">
-            <td class="py-3 px-3 font-mono text-adaptive-sub">${t.date}</td>
-            <td class="py-3 px-3 font-bold text-adaptive-main">${t.category}</td>
-            <td class="py-3 px-3 text-adaptive-sub">${t.account}</td>
-            <td class="py-3 px-3 text-adaptive-muted">${t.notes || '-'}</td>
-            <td class="py-3 px-3 text-right font-mono font-bold text-rose-500">${formatRupiah(t.amount)}</td>
-            <td class="py-3 px-3 text-right font-mono font-bold brand-text">${pctItem}%</td>
+      let html = '';
+      accounts.forEach(acc => {
+        html += `
+          <div class="glass-card p-5 rounded-2xl border border-adaptive flex flex-col justify-between gap-4">
+            <div class="flex justify-between items-start">
+              <div>
+                <span class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider">${acc.type}</span>
+                <h4 class="text-base font-black text-adaptive-main mt-0.5">${acc.name}</h4>
+              </div>
+              <div class="space-x-1">
+                <button onclick="openEditAccModal('${acc.id}')" class="p-2 text-cyan-500 hover:bg-cyan-500/10 rounded-xl"><i class="fa-solid fa-pen text-xs"></i></button>
+                <button onclick="deleteAccount('${acc.id}')" class="p-2 text-rose-500 hover:bg-rose-500/10 rounded-xl"><i class="fa-solid fa-trash text-xs"></i></button>
+              </div>
+            </div>
+            <div>
+              <span class="text-[10px] text-adaptive-muted uppercase">Saldo Terkini</span>
+              <h3 class="text-xl font-black brand-text font-mono">${formatRp(acc.balance)}</h3>
+            </div>
+          </div>
+        `;
+      });
+      container.innerHTML = html;
+    }
+
+    function renderDebtList() {
+      const tbody = document.getElementById('debtTableBody');
+      if (!tbody) return;
+
+      let totalHutang = 0;
+      let totalPiutang = 0;
+
+      debts.forEach(d => {
+        if (d.status === 'Belum Lunas') {
+          if (d.type === 'Hutang') totalHutang += parseFloat(d.amount || 0);
+          if (d.type === 'Piutang') totalPiutang += parseFloat(d.amount || 0);
+        }
+      });
+
+      document.getElementById('kpiTotalHutang').innerText = formatRp(totalHutang);
+      document.getElementById('kpiTotalPiutang').innerText = formatRp(totalPiutang);
+
+      if (debts.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-adaptive-muted">Belum ada catatan hutang atau piutang.</td></tr>`;
+        return;
+      }
+
+      let html = '';
+      debts.forEach(d => {
+        const isHutang = d.type === 'Hutang';
+        const isLunas = d.status === 'Lunas';
+        html += `
+          <tr class="hover:bg-slate-800/20 transition-all">
+            <td class="py-3 px-3">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-bold ${isHutang ? 'bg-rose-500/10 text-rose-500 border border-rose-500/20' : 'bg-emerald-500/10 text-emerald-500 border border-emerald-500/20'}">
+                ${d.type}
+              </span>
+            </td>
+            <td class="py-3 px-3 font-bold text-adaptive-main">${d.person}</td>
+            <td class="py-3 px-3 font-mono text-[11px]">${d.dueDate}</td>
+            <td class="py-3 px-3 text-right font-mono font-bold ${isHutang ? 'text-rose-500' : 'text-emerald-500'}">${formatRp(d.amount)}</td>
+            <td class="py-3 px-3 text-center">
+              <span class="px-2.5 py-0.5 rounded-full text-[10px] font-bold ${isLunas ? 'bg-emerald-500/10 text-emerald-500' : 'bg-amber-500/10 text-amber-500'}">
+                ${d.status}
+              </span>
+            </td>
+            <td class="py-3 px-3 text-center space-x-1">
+              ${!isLunas ? `<button onclick="openPayDebtModal('${d.id}')" class="px-2.5 py-1 bg-emerald-500/20 text-emerald-500 hover:bg-emerald-500/30 rounded-lg text-[10px] font-bold uppercase">Lunasi</button>` : ''}
+              <button onclick="deleteDebt('${d.id}')" class="p-1.5 text-rose-500 hover:bg-rose-500/10 rounded-lg"><i class="fa-solid fa-trash"></i></button>
+            </td>
           </tr>
         `;
       });
+      tbody.innerHTML = html;
     }
 
-    // TAB: REKENING KORAN & BUKU BESAR
-    function initStatementAccountDropdown() {
-      const select = document.getElementById('statementAccountSelect');
-      if(!select) return;
-      select.innerHTML = '';
-      state.accounts.forEach(acc => {
-        select.innerHTML += `<option value="${acc.name}">${acc.name} (${acc.type})</option>`;
+    function renderAnalisis(income, expense, net) {
+      const npm = income > 0 ? ((net / income) * 100).toFixed(1) : 0;
+      const expenseRatio = income > 0 ? ((expense / income) * 100).toFixed(1) : 0;
+
+      document.getElementById('npmValue').innerText = `${npm}%`;
+      document.getElementById('expenseRatioValue').innerText = `${expenseRatio}%`;
+
+      const healthScoreEl = document.getElementById('healthScore');
+      const healthDescEl = document.getElementById('healthDesc');
+      const execSummary = document.getElementById('executiveSummary');
+
+      let scoreTxt = 'SEHAT';
+      let descTxt = 'Arus kas dan struktur permodalan sangat stabil.';
+      if (net < 0) {
+        scoreTxt = 'DEFISIT KRITIS';
+        descTxt = 'Pengeluaran melebihi pendapatan operasional. Segera lakukan pengetatan beban.';
+      } else if (expenseRatio > 80) {
+        scoreTxt = 'PERINGATAN BEBAN';
+        descTxt = 'Rasio beban operasional terlalu tinggi (>80% dari pemasukan).';
+      }
+
+      healthScoreEl.innerText = scoreTxt;
+      healthDescEl.innerText = descTxt;
+
+      execSummary.innerHTML = `
+        <p>• <strong>Total Pendapatan Bersih:</strong> Perusahaan membukukan arus masuk sebesar ${formatRp(income)} dengan beban operasional senilai ${formatRp(expense)}.</p>
+        <p>• <strong>Margin Laba Bersih (${npm}%):</strong> ${net >= 0 ? 'Kinerja profitabilitas berada dalam koridor aman dan positif.' : 'Profitabilitas negatif, memerlukan restrukturisasi biaya segera.'}</p>
+        <p>• <strong>Rekomendasi Strategis:</strong> Optimalisasi pengelolaan pos pengeluaran terbesar serta pastikan penagihan piutang berjalan tepat waktu untuk menjaga likuiditas kas.</p>
+      `;
+    }
+
+    function renderCharts(filteredTx, categoryMap, totalExpense) {
+      const ctxCash = document.getElementById('cashflowChart')?.getContext('2d');
+      const ctxCat = document.getElementById('categoryChart')?.getContext('2d');
+      if (!ctxCash || !ctxCat) return;
+
+      const dateMap = {};
+      filteredTx.forEach(t => {
+        if (!dateMap[t.date]) dateMap[t.date] = { income: 0, expense: 0 };
+        if (t.type === 'Pendapatan') dateMap[t.date].income += parseFloat(t.amount || 0);
+        if (t.type === 'Pengeluaran') dateMap[t.date].expense += parseFloat(t.amount || 0);
       });
-      renderAccountStatement();
+
+      const sortedDates = Object.keys(dateMap).sort();
+      const incomeData = sortedDates.map(d => dateMap[d].income);
+      const expenseData = sortedDates.map(d => dateMap[d].expense);
+
+      if (cashflowChartInstance) cashflowChartInstance.destroy();
+      cashflowChartInstance = new Chart(ctxCash, {
+        type: 'line',
+        data: {
+          labels: sortedDates,
+          datasets: [
+            { label: 'Pemasukan', data: incomeData, borderColor: '#10b981', backgroundColor: 'rgba(16, 185, 129, 0.1)', fill: true, tension: 0.3 },
+            { label: 'Pengeluaran', data: expenseData, borderColor: '#f43f5e', backgroundColor: 'rgba(244, 63, 94, 0.1)', fill: true, tension: 0.3 }
+          ]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+      });
+
+      const catLabels = Object.keys(categoryMap);
+      const catValues = Object.values(categoryMap);
+      const catColors = ['#10b981', '#06b6d4', '#f59e0b', '#8b5cf6', '#f43f5e', '#3b82f6', '#ec4899', '#14b8a6'];
+
+      if (categoryChartInstance) categoryChartInstance.destroy();
+      categoryChartInstance = new Chart(ctxCat, {
+        type: 'doughnut',
+        data: {
+          labels: catLabels,
+          datasets: [{ data: catValues, backgroundColor: catColors }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      });
+
+      const catListEl = document.getElementById('categoryPercentageList');
+      if (catListEl) {
+        let html = '';
+        catLabels.forEach((cat, idx) => {
+          const val = categoryMap[cat];
+          const pct = totalExpense > 0 ? ((val / totalExpense) * 100).toFixed(1) : 0;
+          html += `
+            <div class="flex justify-between items-center text-xs py-1.5 border-b border-adaptive">
+              <span class="text-adaptive-sub flex items-center gap-1.5"><span class="w-2.5 h-2.5 rounded-full" style="background:${catColors[idx % catColors.length]}"></span> ${cat}</span>
+              <span class="font-mono font-bold text-adaptive-main">${formatRp(val)} (${pct}%)</span>
+            </div>
+          `;
+        });
+        catListEl.innerHTML = html;
+      }
     }
 
+    // CROSCHECK BEBAN
+    function renderCroscheckBeban() {
+      const select = document.getElementById('expenseCategorySelect');
+      if (!select) return;
+
+      const filtered = getFilteredTransactions();
+      const expenseMap = {};
+      let totalExp = 0;
+
+      filtered.forEach(t => {
+        if (t.type === 'Pengeluaran') {
+          const cat = t.category || 'Lain-lain';
+          expenseMap[cat] = (expenseMap[cat] || 0) + parseFloat(t.amount || 0);
+          totalExp += parseFloat(t.amount || 0);
+        }
+      });
+
+      const currentSelected = select.value;
+      let htmlOpt = '';
+      const cats = Object.keys(expenseMap);
+
+      if (cats.length === 0) {
+        select.innerHTML = `<option value="">Tidak ada data pengeluaran</option>`;
+        document.getElementById('croscheckTotalAmount').innerText = formatRp(0);
+        document.getElementById('croscheckTxCount').innerText = `0 Transaksi`;
+        document.getElementById('croscheckPercentage').innerText = `0%`;
+        document.getElementById('croscheckTableBody').innerHTML = `<tr><td colspan="6" class="py-6 text-center text-adaptive-muted">Tidak ada data beban.</td></tr>`;
+        return;
+      }
+
+      cats.forEach(cat => {
+        const amt = expenseMap[cat];
+        const pct = totalExp > 0 ? ((amt / totalExp) * 100).toFixed(1) : 0;
+        const selectedAttr = (currentSelected === cat) ? 'selected' : '';
+        htmlOpt += `<option value="${cat}" ${selectedAttr}>${cat} — ${formatRp(amt)} (${pct}%)</option>`;
+      });
+      select.innerHTML = htmlOpt;
+
+      const activeCat = select.value || cats[0];
+      const activeTxs = filtered.filter(t => t.type === 'Pengeluaran' && (t.category || 'Lain-lain') === activeCat);
+      const activeCatTotal = expenseMap[activeCat] || 0;
+      const activeCatPct = totalExp > 0 ? ((activeCatTotal / totalExp) * 100).toFixed(1) : 0;
+
+      document.getElementById('croscheckTotalAmount').innerText = formatRp(activeCatTotal);
+      document.getElementById('croscheckCategoryLabel').innerText = `Kategori: ${activeCat}`;
+      document.getElementById('croscheckTxCount').innerText = `${activeTxs.length} Transaksi`;
+      document.getElementById('croscheckPercentage').innerText = `${activeCatPct}%`;
+      document.getElementById('croscheckTableTitle').innerText = `Rincian Beban: ${activeCat}`;
+
+      const tbody = document.getElementById('croscheckTableBody');
+      if (activeTxs.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-adaptive-muted">Tidak ada transaksi untuk kategori ini.</td></tr>`;
+        return;
+      }
+
+      let tbodyHtml = '';
+      activeTxs.forEach(t => {
+        const itemPct = activeCatTotal > 0 ? ((parseFloat(t.amount) / activeCatTotal) * 100).toFixed(1) : 0;
+        tbodyHtml += `
+          <tr class="hover:bg-slate-800/20 transition-all">
+            <td class="py-3 px-3 font-mono text-[11px]">${t.date}</td>
+            <td class="py-3 px-3 font-semibold text-adaptive-main">${t.category}</td>
+            <td class="py-3 px-3 text-adaptive-sub">${t.account}</td>
+            <td class="py-3 px-3 text-adaptive-muted">${t.notes || '-'}</td>
+            <td class="py-3 px-3 text-right font-mono font-bold text-rose-500">${formatRp(t.amount)}</td>
+            <td class="py-3 px-3 text-right font-mono brand-text font-bold">${itemPct}%</td>
+          </tr>
+        `;
+      });
+      tbody.innerHTML = tbodyHtml;
+    }
+
+    // REKENING KORAN & SALDO BERJALAN (TOTAL KAS SAAT INI)
     function renderAccountStatement() {
       const select = document.getElementById('statementAccountSelect');
-      if(!select) return;
-      const accName = select.value;
-      if(!accName) return;
-
-      const accObj = state.accounts.find(a => a.name === accName);
-      let runningBal = accObj ? Number(accObj.initialBalance || 0) : 0;
-
-      // Gabungkan mutasi transaksi dan transfer untuk akun ini secara kronologis (terlama ke terbaru)
-      let timeline = [];
-
-      state.transactions.forEach(t => {
-        if(t.account === accName) {
-          timeline.push({
-            date: t.date,
-            desc: `[${t.type}] ${t.category} (${t.notes || '-'})`,
-            in: t.type === 'Pendapatan' ? Number(t.amount) : 0,
-            out: t.type === 'Pengeluaran' ? Number(t.amount) : 0
-          });
-        }
-      });
-
-      state.transfers.forEach(tr => {
-        if(tr.fromAccount === accName) {
-          timeline.push({
-            date: tr.date,
-            desc: `Transfer Keluar ke ${tr.toAccount} (${tr.notes || '-'})`,
-            in: 0,
-            out: Number(tr.amount)
-          });
-        }
-        if(tr.toAccount === accName) {
-          timeline.push({
-            date: tr.date,
-            desc: `Transfer Masuk dari ${tr.fromAccount} (${tr.notes || '-'})`,
-            in: Number(tr.amount),
-            out: 0
-          });
-        }
-      });
-
-      timeline.sort((a, b) => new Date(a.date) - new Date(b.date));
-
-      let totalIn = 0, totalOut = 0;
       const tbody = document.getElementById('statementTableBody');
-      tbody.innerHTML = '';
+      if (!select || !tbody) return;
 
-      // Tampilkan baris Saldo Awal / Rekonsiliasi
-      tbody.innerHTML += `
-        <tr class="bg-slate-800/20 font-bold">
-          <td class="py-3 px-3 font-mono">-</td>
-          <td class="py-3 px-3 text-adaptive-main">Saldo Awal / Rekonsiliasi</td>
-          <td class="py-3 px-3 text-right">-</td>
-          <td class="py-3 px-3 text-right">-</td>
-          <td class="py-3 px-3 text-right font-mono brand-text">${formatRupiah(runningBal)}</td>
-        </tr>
-      `;
+      const selectedAccount = select.value;
+      const filtered = transactions.filter(t => selectedAccount === 'ALL' || t.account === selectedAccount);
+      filtered.sort((a, b) => new Date(a.date) - new Date(b.date));
 
-      if(timeline.length === 0) {
-        // Tetap tampilkan jika tidak ada mutasi
-      } else {
-        timeline.forEach(item => {
-          totalIn += item.in;
-          totalOut += item.out;
-          runningBal += (item.in - item.out);
+      let totalIn = 0;
+      let totalOut = 0;
 
-          tbody.innerHTML += `
-            <tr class="hover:bg-slate-800/10 transition-colors">
-              <td class="py-3 px-3 font-mono text-adaptive-sub">${item.date}</td>
-              <td class="py-3 px-3 text-adaptive-main">${item.desc}</td>
-              <td class="py-3 px-3 text-right font-mono text-emerald-500">${item.in > 0 ? '+' + formatRupiah(item.in) : '-'}</td>
-              <td class="py-3 px-3 text-right font-mono text-rose-500">${item.out > 0 ? '-' + formatRupiah(item.out) : '-'}</td>
-              <td class="py-3 px-3 text-right font-mono font-bold text-adaptive-main">${formatRupiah(runningBal)}</td>
-            </tr>
-          `;
-        });
-      }
-
-      document.getElementById('stmtTotalIn').innerText = formatRupiah(totalIn);
-      document.getElementById('stmtTotalOut').innerText = formatRupiah(totalOut);
-      document.getElementById('stmtFinalBalance').innerText = formatRupiah(runningBal);
-      document.getElementById('stmtTableTitle').innerText = `Mutasi Rekening: ${accName}`;
-    }
-
-    // LAPORAN PDF VIEW
-    function renderReportView() {
-      const filtered = getFilteredTransactions();
-      let totalInc = 0, totalExp = 0;
       filtered.forEach(t => {
-        if(t.type === 'Pendapatan') totalInc += Number(t.amount);
-        if(t.type === 'Pengeluaran') totalExp += Number(t.amount);
+        if (t.type === 'Pendapatan') totalIn += parseFloat(t.amount || 0);
+        if (t.type === 'Pengeluaran') totalOut += parseFloat(t.amount || 0);
       });
 
-      document.getElementById('reportTotalIncome').innerText = formatRupiah(totalInc);
-      document.getElementById('reportTotalExpense').innerText = formatRupiah(totalExp);
-      document.getElementById('reportNetProfit').innerText = formatRupiah(totalInc - totalExp);
-      document.getElementById('reportPrintTimestamp').innerText = new Date().toLocaleString('id-ID');
+      document.getElementById('stmtTotalIn').innerText = formatRp(totalIn);
+      document.getElementById('stmtTotalOut').innerText = formatRp(totalOut);
 
-      // Tabel Akun di Laporan
-      const accTbody = document.getElementById('reportAccTableBody');
-      if(accTbody) {
-        accTbody.innerHTML = '';
-        state.accounts.forEach(acc => {
-          accTbody.innerHTML += `
-            <tr>
-              <td class="py-2 px-3 font-bold">${acc.name}</td>
-              <td class="py-2 px-3">${acc.type}</td>
-              <td class="py-2 px-3 text-right font-mono">${formatRupiah(calculateAccountCurrentBalance(acc.name))}</td>
-            </tr>
-          `;
-        });
+      // Sesuai permintaan: Saldo berjalan saat ini merupakan total kas saat ini (konsolidasi seluruh akun kas/bank)
+      let runningBalance = accounts.reduce((sum, a) => sum + parseFloat(a.balance || 0), 0);
+      document.getElementById('stmtEndingBalance').innerText = formatRp(runningBalance);
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="6" class="py-6 text-center text-adaptive-muted">Tidak ada mutasi transaksi pada rekening ini.</td></tr>`;
+        return;
       }
 
-      // Tabel Transaksi di Laporan
-      const txTbody = document.getElementById('reportTxTableBody');
-      if(txTbody) {
-        txTbody.innerHTML = '';
-        filtered.slice(0, 30).forEach(t => {
-          txTbody.innerHTML += `
-            <tr>
-              <td class="py-2 px-3 font-mono">${t.date}</td>
-              <td class="py-2 px-3">${t.type}</td>
-              <td class="py-2 px-3 font-bold">${t.category}</td>
-              <td class="py-2 px-3">${t.account}</td>
-              <td class="py-2 px-3 text-right font-mono">${t.type === 'Pendapatan' ? '+' : '-'}${formatRupiah(t.amount)}</td>
-            </tr>
-          `;
-        });
-      }
+      let html = '';
+      // Hitung mundur untuk saldo berjalan dari total kas saat ini
+      let currentRunningBal = runningBalance;
+      const reversedFiltered = [...filtered].reverse();
+
+      reversedFiltered.forEach(t => {
+        const isIncome = t.type === 'Pendapatan';
+        const inAmt = isIncome ? parseFloat(t.amount || 0) : 0;
+        const outAmt = !isIncome ? parseFloat(t.amount || 0) : 0;
+
+        html += `
+          <tr class="hover:bg-slate-800/20 transition-all">
+            <td class="py-3 px-3 font-mono text-[11px]">${t.date}</td>
+            <td class="py-3 px-3 font-semibold text-adaptive-main">${t.category || '-'} <span class="text-[10px] text-adaptive-muted">(${t.account})</span></td>
+            <td class="py-3 px-3 text-adaptive-sub">${t.notes || '-'}</td>
+            <td class="py-3 px-3 text-right font-mono font-bold text-emerald-500">${inAmt > 0 ? '+' + formatRp(inAmt) : '-'}</td>
+            <td class="py-3 px-3 text-right font-mono font-bold text-rose-500">${outAmt > 0 ? '-' + formatRp(outAmt) : '-'}</td>
+            <td class="py-3 px-3 text-right font-mono font-bold brand-text">${formatRp(currentRunningBal)}</td>
+          </tr>
+        `;
+        // Mundurkan saldo berjalan untuk baris sebelumnya
+        currentRunningBal += isIncome ? -inAmt : outAmt;
+      });
+
+      tbody.innerHTML = html;
     }
 
-    // BACKUP JSON
-    function downloadBackupJSON() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(state, null, 2));
-      const dlAnchor = document.createElement('a');
-      dlAnchor.setAttribute("href", dataStr);
-      dlAnchor.setAttribute("download", `AAAIIM_OneFinance_Backup_${new Date().toISOString().split('T')[0]}.json`);
-      document.body.appendChild(dlAnchor);
-      dlAnchor.click();
-      dlAnchor.remove();
-      showToast("Backup data JSON berhasil diunduh.");
+    // LAPORAN PDF DINAMIS
+    function renderFinancialReport() {
+      const container = document.getElementById('printableReport');
+      if (!container) return;
+
+      const filtered = getFilteredTransactions();
+      let totalIncome = 0;
+      let totalExpense = 0;
+      const expenseCats = {};
+
+      filtered.forEach(t => {
+        if (t.type === 'Pendapatan') totalIncome += parseFloat(t.amount || 0);
+        if (t.type === 'Pengeluaran') {
+          totalExpense += parseFloat(t.amount || 0);
+          const cat = t.category || 'Lain-lain';
+          expenseCats[cat] = (expenseCats[cat] || 0) + parseFloat(t.amount || 0);
+        }
+      });
+
+      const netProfit = totalIncome - totalExpense;
+      const totalAssets = accounts.reduce((sum, a) => sum + parseFloat(a.balance || 0), 0);
+      const totalLiabilities = debts.filter(d => d.type === 'Hutang' && d.status === 'Belum Lunas').reduce((sum, d) => sum + parseFloat(d.amount || 0), 0);
+      const equity = totalAssets - totalLiabilities;
+
+      let expenseRows = '';
+      Object.keys(expenseCats).forEach(cat => {
+        expenseRows += `<tr><td class="py-1.5 px-3 text-adaptive-sub">• ${cat}</td><td class="py-1.5 px-3 text-right font-mono text-adaptive-main">${formatRp(expenseCats[cat])}</td></tr>`;
+      });
+
+      container.innerHTML = `
+        <div class="space-y-8">
+          <div class="text-center pb-6 border-b border-adaptive">
+            <h1 class="text-2xl font-black uppercase tracking-wider text-adaptive-main">AAAIIM ONEFINANCE</h1>
+            <p class="text-xs font-bold text-adaptive-muted uppercase tracking-widest mt-1">Laporan Keuangan Konsolidasian Enterprise</p>
+            <p class="text-[11px] font-mono text-adaptive-muted mt-1">Tanggal Cetak: ${new Date().toLocaleDateString('id-ID', { dateStyle: 'full' })}</p>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-adaptive-main border-b border-adaptive pb-2 mb-3">1. Laporan Laba Rugi Komprehensif</h3>
+            <table class="w-full text-xs">
+              <tr class="border-b border-adaptive font-bold"><td class="py-2 px-3">PENDAPATAN OPERASIONAL</td><td class="py-2 px-3 text-right font-mono text-emerald-500">${formatRp(totalIncome)}</td></tr>
+              <tr class="border-b border-adaptive font-bold"><td class="py-2 px-3">BEBAN OPERASIONAL & KELUARAN</td><td class="py-2 px-3 text-right font-mono text-rose-500">${formatRp(totalExpense)}</td></tr>
+              ${expenseRows}
+              <tr class="border-t-2 border-adaptive font-black text-sm"><td class="py-3 px-3 uppercase brand-text">Laba Bersih (Net Operating Income)</td><td class="py-3 px-3 text-right font-mono brand-text">${formatRp(netProfit)}</td></tr>
+            </table>
+          </div>
+
+          <div>
+            <h3 class="text-sm font-bold uppercase tracking-wider text-adaptive-main border-b border-adaptive pb-2 mb-3">2. Laporan Posisi Keuangan (Neraca Konsolidasian)</h3>
+            <table class="w-full text-xs">
+              <tr class="border-b border-adaptive"><td class="py-2 px-3 font-bold">Total Aset Kas & Rekening</td><td class="py-2 px-3 text-right font-mono font-bold text-cyan-500">${formatRp(totalAssets)}</td></tr>
+              <tr class="border-b border-adaptive"><td class="py-2 px-3 font-bold">Total Kewajiban (Hutang Usaha)</td><td class="py-2 px-3 text-right font-mono font-bold text-rose-500">${formatRp(totalLiabilities)}</td></tr>
+              <tr class="border-b border-adaptive font-black"><td class="py-2 px-3 uppercase">Ekuitas Bersih Perusahaan</td><td class="py-2 px-3 text-right font-mono brand-text">${formatRp(equity)}</td></tr>
+            </table>
+          </div>
+
+          <div class="grid grid-cols-2 gap-8 pt-12 text-center text-xs">
+            <div>
+              <p class="font-bold text-adaptive-muted uppercase">Disusun Oleh:</p>
+              <div class="h-20"></div>
+              <p class="font-bold border-t border-adaptive pt-1 text-adaptive-main">Staf Akuntansi & Keuangan</p>
+            </div>
+            <div>
+              <p class="font-bold text-adaptive-muted uppercase">Disetujui Oleh:</p>
+              <div class="h-20"></div>
+              <p class="font-bold border-t border-adaptive pt-1 text-adaptive-main">Direktur Utama / Komisaris</p>
+            </div>
+          </div>
+        </div>
+      `;
     }
 
     function filterDashboardTable() {
-      // Fitur pencarian tabel instan
-      const query = document.getElementById('dashboardSearch').value.toLowerCase();
+      const q = document.getElementById('dashboardSearch').value.toLowerCase();
       const rows = document.querySelectorAll('#txTableBody tr');
       rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
+        row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
       });
     }
 
     function filterCroscheckTable() {
-      const query = document.getElementById('croscheckSearch').value.toLowerCase();
+      const q = document.getElementById('croscheckSearch').value.toLowerCase();
       const rows = document.querySelectorAll('#croscheckTableBody tr');
       rows.forEach(row => {
-        const text = row.innerText.toLowerCase();
-        row.style.display = text.includes(query) ? '' : 'none';
+        row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
       });
     }
   </script>
