@@ -329,6 +329,25 @@
       </div>
     </div>
 
+    <!-- MODAL EDIT HUTANG / PIUTANG -->
+    <div id="editDebtModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md no-print">
+      <div class="glass-card max-w-md w-full p-5 sm:p-7 rounded-3xl border border-adaptive shadow-2xl relative max-h-[90vh] overflow-y-auto">
+        <div class="flex justify-between items-center mb-5 border-b border-adaptive pb-3">
+          <h3 class="text-sm sm:text-base font-bold text-adaptive-main uppercase tracking-wider flex items-center gap-2"><i class="fa-solid fa-pen-to-square brand-text"></i> Edit Hutang / Piutang</h3>
+          <button type="button" onclick="closeEditDebtModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+        </div>
+        <form id="editDebtForm" onsubmit="handleUpdateDebt(event)" class="space-y-4">
+          <input type="hidden" id="editDebtId">
+          <div><label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Jenis Catatan</label><select id="editDebtType" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium"><option value="Hutang">Hutang Usaha</option><option value="Piutang">Piutang Usaha</option></select></div>
+          <div><label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Mitra / Pihak</label><input type="text" id="editDebtPerson" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium"></div>
+          <div><label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Nilai Awal (Rp)</label><input type="number" id="editDebtInitialAmount" min="1" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium font-mono"><p id="editDebtPaymentInfo" class="text-[9px] text-adaptive-muted mt-1"></p></div>
+          <div><label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Jatuh Tempo</label><input type="date" id="editDebtDueDate" required class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium"></div>
+          <div><label class="text-[10px] font-bold text-adaptive-muted uppercase tracking-wider block mb-1">Keterangan / Memo</label><textarea id="editDebtNotes" rows="3" class="w-full p-3 rounded-xl glass-input text-xs outline-none font-medium"></textarea></div>
+          <div class="flex gap-3 pt-2"><button type="button" onclick="closeEditDebtModal()" class="w-1/2 py-3 bg-slate-200 dark:bg-slate-800 text-slate-800 dark:text-white font-bold rounded-xl text-xs uppercase">Batal</button><button type="submit" class="w-1/2 py-3 brand-gradient text-slate-950 font-bold rounded-xl text-xs uppercase shadow-lg">Simpan Perubahan</button></div>
+        </form>
+      </div>
+    </div>
+
     <!-- MODAL PELUNASAN HUTANG / PIUTANG -->
     <div id="payDebtModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/80 backdrop-blur-md no-print">
       <div class="glass-card max-w-md w-full p-5 sm:p-6 rounded-3xl border border-adaptive shadow-2xl relative">
@@ -1435,15 +1454,50 @@
       renderDashboard();
     });
 
-    db.ref('accounts').on('value', (snapshot) => {
+    db.ref('accounts').on('value', async (snapshot) => {
       const data = snapshot.val();
       accounts = [];
       if (data) {
         Object.keys(data).forEach(key => {
           accounts.push({ id: key, ...data[key] });
         });
+
+        // MIGRASI SALDO LAMA:
+        // Versi lama bisa memiliki saldo rekening = 0 walaupun saldo aktif
+        // sebenarnya berasal dari saldo awal + seluruh transaksi. Hitung ulang
+        // hanya untuk akun yang belum ditandai sebagai saldo aktual.
+        const migrationJobs = accounts.filter(a => a.balanceInitialized !== true).map(async (a) => {
+          const currentStored = toAmount(a.balance);
+          if (currentStored !== 0) {
+            await db.ref('accounts/' + a.id).update({ balanceInitialized: true });
+            return;
+          }
+
+          const opening = getOpeningAccountBalance(a);
+          const txNet = transactions
+            .filter(t => t.account === a.name)
+            .reduce((sum, t) => {
+              const amount = Math.abs(toAmount(t.amount));
+              if (!amount) return sum;
+              if (isIncome(t)) return sum + amount;
+              if (isExpense(t)) return sum - amount;
+              return sum;
+            }, 0);
+
+          const reconstructed = opening + txNet;
+          await db.ref('accounts/' + a.id).update({
+            balance: reconstructed,
+            balanceInitialized: true
+          });
+        });
+
+        if (migrationJobs.length) {
+          try { await Promise.all(migrationJobs); } catch (err) { console.error('Migrasi saldo akun gagal:', err); }
+          // Listener akan dipanggil kembali oleh Firebase setelah update.
+          return;
+        }
       } else {
-        db.ref('accounts/default').set({ name: 'Kas Utama', type: 'Kas', balance: 0 });
+        await db.ref('accounts/default').set({ name: 'Kas Utama', type: 'Kas', balance: 0, openingBalance: 0, balanceInitialized: true });
       }
       renderDashboard();
     });
@@ -1600,125 +1654,34 @@
       });
     }
 
-    function handleSaveTx(e) {
-      e.preventDefault();
-      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
-
-      const accountName = document.getElementById('txAccount').value;
-      const amount = parseFloat(document.getElementById('txAmount').value);
-      const type = document.getElementById('txType').value;
-
-      if (!accountName) return showToast('❌ Pilih rekening terlebih dahulu.');
-      if (!Number.isFinite(amount) || amount <= 0) return showToast('❌ Nominal transaksi harus lebih dari 0.');
-      if (!document.getElementById('txDate').value) return showToast('❌ Tanggal transaksi wajib diisi.');
-
-      const newTx = {
-        type: type,
-        amount: amount,
-        account: accountName,
-        category: document.getElementById('txCategory').value || 'Umum',
-        date: document.getElementById('txDate').value,
-        notes: document.getElementById('txNotes').value || '-'
-      };
-
-      db.ref('transactions').push(newTx);
-
-      const targetAcc = accounts.find(a => a.name === accountName);
-      if (targetAcc) {
-        const adjustment = type === 'Pendapatan' ? amount : -amount;
-        db.ref('accounts/' + targetAcc.id).update({ balance: parseFloat(targetAcc.balance || 0) + adjustment });
-      }
-
-      document.getElementById('txAmount').value = '';
-      document.getElementById('txNotes').value = '';
-      showToast('✅ Jurnal Transaksi Disimpan!');
+    // TRANSAKSI JURNAL — accounts.balance adalah saldo aktual berjalan.
+    function accountDelta(type, amount) { const n=Math.abs(toAmount(amount)); return type==='Pendapatan'?n:-n; }
+    function adjustAccountBalance(accountId, delta) {
+      if(!accountId || !Number.isFinite(delta) || delta===0) return Promise.resolve();
+      return db.ref('accounts/'+accountId).transaction(current=>{ if(current===null)return current; current.balance=toAmount(current.balance)+delta; return current; });
     }
-
+    async function handleSaveTx(e) {
+      e.preventDefault(); if(currentUser?.role==='auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
+      const accountName=document.getElementById('txAccount').value, amount=toAmount(document.getElementById('txAmount').value), type=document.getElementById('txType').value, date=document.getElementById('txDate').value;
+      if(!accountName) return showToast('❌ Pilih rekening terlebih dahulu.'); if(!Number.isFinite(amount)||amount<=0) return showToast('❌ Nominal transaksi harus lebih dari 0.'); if(!date) return showToast('❌ Tanggal transaksi wajib diisi.');
+      const acc=accounts.find(a=>a.name===accountName); if(!acc) return showToast('❌ Rekening tidak ditemukan.');
+      const newTx={type,amount,account:accountName,category:document.getElementById('txCategory').value.trim()||'Umum',date,notes:document.getElementById('txNotes').value.trim()||'-'};
+      try { await db.ref('transactions').push(newTx); await adjustAccountBalance(acc.id,accountDelta(type,amount)); document.getElementById('txAmount').value=''; document.getElementById('txNotes').value=''; showToast('✅ Transaksi tersimpan. Saldo rekening langsung diperbarui.'); } catch(error){ console.error(error); showToast('❌ Transaksi gagal disimpan.'); }
+    }
     function openEditTxModal(id) {
-      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
-      const tx = transactions.find(t => t.id === id);
-      if (!tx) return;
-
-      updateAccountDropdowns();
-
-      document.getElementById('editTxId').value = tx.id;
-      document.getElementById('editTxType').value = tx.type;
-      document.getElementById('editTxAmount').value = tx.amount;
-      document.getElementById('editTxAccount').value = tx.account;
-      document.getElementById('editTxCategory').value = tx.category || '';
-      document.getElementById('editTxDate').value = tx.date;
-      document.getElementById('editTxNotes').value = tx.notes || '';
-
-      document.getElementById('editTxModal').classList.remove('hidden');
+      if(currentUser?.role==='auditor') return showToast('❌ Akses Auditor hanya Read-Only.'); const tx=transactions.find(t=>t.id===id); if(!tx)return; updateAccountDropdowns();
+      document.getElementById('editTxId').value=tx.id; document.getElementById('editTxType').value=tx.type; document.getElementById('editTxAmount').value=toAmount(tx.amount); document.getElementById('editTxAccount').value=tx.account; document.getElementById('editTxCategory').value=tx.category||''; document.getElementById('editTxDate').value=tx.date; document.getElementById('editTxNotes').value=tx.notes||''; document.getElementById('editTxModal').classList.remove('hidden');
     }
-
-    function closeEditTxModal() {
-      document.getElementById('editTxModal').classList.add('hidden');
+    function closeEditTxModal(){ document.getElementById('editTxModal').classList.add('hidden'); }
+    async function handleUpdateTx(e){
+      e.preventDefault(); if(currentUser?.role==='auditor') return showToast('❌ Akses Auditor hanya Read-Only.'); const id=document.getElementById('editTxId').value, oldTx=transactions.find(t=>t.id===id); if(!oldTx)return;
+      const updatedType=document.getElementById('editTxType').value, updatedAmount=toAmount(document.getElementById('editTxAmount').value), updatedAccount=document.getElementById('editTxAccount').value, updatedCategory=document.getElementById('editTxCategory').value.trim()||'Umum', updatedDate=document.getElementById('editTxDate').value, updatedNotes=document.getElementById('editTxNotes').value.trim()||'-';
+      if(!updatedAccount||updatedAmount<=0||!updatedDate)return showToast('❌ Data transaksi belum lengkap/valid.'); const oldAcc=accounts.find(a=>a.name===oldTx.account), newAcc=accounts.find(a=>a.name===updatedAccount); if(!newAcc)return showToast('❌ Rekening tidak ditemukan.');
+      try { if(oldAcc) await adjustAccountBalance(oldAcc.id,-accountDelta(oldTx.type,oldTx.amount)); await adjustAccountBalance(newAcc.id,accountDelta(updatedType,updatedAmount)); await db.ref('transactions/'+id).update({type:updatedType,amount:updatedAmount,account:updatedAccount,category:updatedCategory,date:updatedDate,notes:updatedNotes}); closeEditTxModal(); showToast('✅ Transaksi dan saldo berhasil diperbarui.'); } catch(error){console.error(error);showToast('❌ Gagal memperbarui transaksi.');}
     }
-
-    function handleUpdateTx(e) {
-      e.preventDefault();
-      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
-
-      const id = document.getElementById('editTxId').value;
-      const oldTx = transactions.find(t => t.id === id);
-      if (!oldTx) return;
-
-      const updatedType = document.getElementById('editTxType').value;
-      const updatedAmount = parseFloat(document.getElementById('editTxAmount').value);
-      const updatedAccount = document.getElementById('editTxAccount').value;
-      const updatedCategory = document.getElementById('editTxCategory').value;
-      const updatedDate = document.getElementById('editTxDate').value;
-      const updatedNotes = document.getElementById('editTxNotes').value;
-
-      if (!updatedAccount) return showToast('❌ Pilih rekening terlebih dahulu.');
-      if (!Number.isFinite(updatedAmount) || updatedAmount <= 0) return showToast('❌ Nominal transaksi harus lebih dari 0.');
-      if (!updatedDate) return showToast('❌ Tanggal transaksi wajib diisi.');
-
-      const oldAcc = accounts.find(a => a.name === oldTx.account);
-      if (oldAcc) {
-        const revertVal = oldTx.type === 'Pendapatan' ? -oldTx.amount : oldTx.amount;
-        db.ref('accounts/' + oldAcc.id).update({ balance: parseFloat(oldAcc.balance || 0) + revertVal });
-      }
-
-      const newAcc = accounts.find(a => a.name === updatedAccount);
-      if (newAcc) {
-        const applyVal = updatedType === 'Pendapatan' ? updatedAmount : -updatedAmount;
-        const currentBal = (oldAcc && oldAcc.id === newAcc.id) 
-          ? (parseFloat(oldAcc.balance || 0) + (oldTx.type === 'Pendapatan' ? -oldTx.amount : oldTx.amount))
-          : parseFloat(newAcc.balance || 0);
-        
-        db.ref('accounts/' + newAcc.id).update({ balance: currentBal + applyVal });
-      }
-
-      db.ref('transactions/' + id).update({
-        type: updatedType,
-        amount: updatedAmount,
-        account: updatedAccount,
-        category: updatedCategory,
-        date: updatedDate,
-        notes: updatedNotes
-      });
-
-      closeEditTxModal();
-      showToast('✅ Transaksi Berhasil Diperbarui!');
-    }
-
-    function deleteTx(id) {
-      if (currentUser?.role === 'auditor') return showToast('❌ Akses Auditor hanya Read-Only.');
-      if (!confirm('Apakah Anda yakin ingin menghapus transaksi ini?')) return;
-
-      const tx = transactions.find(t => t.id === id);
-      if (tx) {
-        const acc = accounts.find(a => a.name === tx.account);
-        if (acc) {
-          const revertVal = tx.type === 'Pendapatan' ? -tx.amount : tx.amount;
-          db.ref('accounts/' + acc.id).update({ balance: parseFloat(acc.balance || 0) + revertVal });
-        }
-      }
-
-      db.ref('transactions/' + id).remove();
-      showToast('🗑️ Transaksi Dihapus!');
+    async function deleteTx(id){
+      if(currentUser?.role==='auditor')return showToast('❌ Akses Auditor hanya Read-Only.'); if(!confirm('Apakah Anda yakin ingin menghapus transaksi ini? Saldo rekening akan dikembalikan.'))return; const tx=transactions.find(t=>t.id===id); if(!tx)return; const acc=accounts.find(a=>a.name===tx.account);
+      try { if(acc)await adjustAccountBalance(acc.id,-accountDelta(tx.type,tx.amount)); await db.ref('transactions/'+id).remove(); showToast('🗑️ Transaksi dihapus dan saldo dikembalikan.'); }catch(error){console.error(error);showToast('❌ Gagal menghapus transaksi.');}
     }
 
     // HANDLER TRANSFER ANTAR AKUN (TERINTEGRASI KE REKENING KORAN)
@@ -1770,8 +1733,8 @@
       });
 
       // Update Saldo Kas/Akun Terkait
-      if (fromAcc) db.ref('accounts/' + fromAcc.id).update({ balance: parseFloat(fromAcc.balance || 0) - amount });
-      if (toAcc) db.ref('accounts/' + toAcc.id).update({ balance: parseFloat(toAcc.balance || 0) + amount });
+      if (fromAcc) adjustAccountBalance(fromAcc.id, -amount);
+      if (toAcc) adjustAccountBalance(toAcc.id, amount);
 
       document.getElementById('transferAmount').value = '';
       document.getElementById('transferNotes').value = '';
@@ -1879,8 +1842,8 @@
 
       const fromAcc = accounts.find(a => a.name === fromAccName);
       const toAcc = accounts.find(a => a.name === toAccName);
-      if (fromAcc) db.ref('accounts/' + fromAcc.id).update({ balance: parseFloat(fromAcc.balance || 0) - amount });
-      if (toAcc) db.ref('accounts/' + toAcc.id).update({ balance: parseFloat(toAcc.balance || 0) + amount });
+      if (fromAcc) adjustAccountBalance(fromAcc.id, -amount);
+      if (toAcc) adjustAccountBalance(toAcc.id, amount);
 
       closeEditTransferModal();
       showToast('✅ Transaksi Transfer Berhasil Diperbarui!');
@@ -1898,8 +1861,8 @@
       relatedTxs.forEach(rel => {
         const acc = accounts.find(a => a.name === rel.account);
         if (acc) {
-          const revertVal = rel.type === 'Pendapatan' ? -rel.amount : rel.amount;
-          db.ref('accounts/' + acc.id).update({ balance: parseFloat(acc.balance || 0) + revertVal });
+          const revertVal = rel.type === 'Pendapatan' ? -toAmount(rel.amount) : toAmount(rel.amount);
+          adjustAccountBalance(acc.id, revertVal);
         }
         db.ref('transactions/' + rel.id).remove();
       });
@@ -1920,7 +1883,7 @@
         return showToast('❌ Nama akun sudah ada!');
       }
 
-      db.ref('accounts').push({ name, type, balance, openingBalance: balance });
+      db.ref('accounts').push({ name, type, balance, openingBalance: balance, balanceInitialized: true });
       document.getElementById('accName').value = '';
       document.getElementById('accBalance').value = '';
       showToast('✅ Akun Rekening Baru Ditambahkan!');
@@ -1954,10 +1917,13 @@
       const newType = document.getElementById('editAccType').value;
       const newBalance = parseFloat(document.getElementById('editAccBalance').value || 0);
 
+      const editedAcc = accounts.find(a => a.id === id);
       db.ref('accounts/' + id).update({
         name: newName,
         type: newType,
-        balance: newBalance
+        balance: newBalance,
+        openingBalance: (editedAcc && editedAcc.openingBalance !== undefined) ? toAmount(editedAcc.openingBalance) : newBalance,
+        balanceInitialized: true
       });
 
       if (oldName !== newName) {
@@ -2000,6 +1966,19 @@
       document.getElementById('debtAmount').value = '';
       document.getElementById('debtNotes').value = '';
       showToast('✅ Catatan Kewajiban/Tagihan Disimpan!');
+    }
+
+    function openEditDebtModal(id){
+      if(currentUser?.role==='auditor')return showToast('❌ Akses Auditor hanya Read-Only.'); const d=debts.find(item=>item.id===id); if(!d)return; const initial=getDebtInitialAmount(d), remaining=toAmount(d.amount), paid=Math.max(0,initial-remaining);
+      document.getElementById('editDebtId').value=d.id; document.getElementById('editDebtType').value=d.type||'Hutang'; document.getElementById('editDebtPerson').value=d.person||''; document.getElementById('editDebtInitialAmount').value=initial; document.getElementById('editDebtDueDate').value=d.dueDate||todayDate; document.getElementById('editDebtNotes').value=d.notes||''; document.getElementById('editDebtPaymentInfo').innerText=`Sudah dibayar: ${formatRp(paid)} · Sisa saat ini: ${formatRp(remaining)}`; document.getElementById('editDebtModal').classList.remove('hidden');
+    }
+    function closeEditDebtModal(){document.getElementById('editDebtModal').classList.add('hidden');}
+    async function handleUpdateDebt(e){
+      e.preventDefault(); if(currentUser?.role==='auditor')return showToast('❌ Akses Auditor hanya Read-Only.'); const id=document.getElementById('editDebtId').value, oldDebt=debts.find(item=>item.id===id); if(!oldDebt)return showToast('❌ Data hutang/piutang tidak ditemukan.');
+      const type=document.getElementById('editDebtType').value, person=document.getElementById('editDebtPerson').value.trim(), initialAmount=toAmount(document.getElementById('editDebtInitialAmount').value), dueDate=document.getElementById('editDebtDueDate').value, notes=document.getElementById('editDebtNotes').value.trim()||'-';
+      const oldInitial=getDebtInitialAmount(oldDebt), oldRemaining=toAmount(oldDebt.amount), alreadyPaid=Math.max(0,oldInitial-oldRemaining); if(!person)return showToast('❌ Nama pihak wajib diisi.'); if(initialAmount<=0)return showToast('❌ Nilai awal harus lebih dari 0.'); if(!dueDate)return showToast('❌ Jatuh tempo wajib diisi.'); if(initialAmount<alreadyPaid)return showToast(`❌ Nilai awal tidak boleh lebih kecil dari pembayaran yang sudah masuk (${formatRp(alreadyPaid)}).`);
+      const newRemaining=Math.max(0,initialAmount-alreadyPaid), newStatus=newRemaining===0?'Lunas':'Belum Lunas';
+      try { await db.ref('debts/'+id).update({type,person,initialAmount,amount:newRemaining,dueDate,notes,status:newStatus,updatedAt:new Date().toISOString()}); const category=type==='Hutang'?'Pelunasan Hutang Usaha':'Penerimaan Piutang Usaha', txType=type==='Hutang'?'Pengeluaran':'Pendapatan', updates={}; transactions.forEach(t=>{if(String(t.debtId)===String(id)){updates['transactions/'+t.id+'/debtType']=type;updates['transactions/'+t.id+'/debtPerson']=person;updates['transactions/'+t.id+'/type']=txType;updates['transactions/'+t.id+'/category']=category;updates['transactions/'+t.id+'/notes']=`Pelunasan ${type} - ${person}`;}}); if(Object.keys(updates).length)await db.ref().update(updates); closeEditDebtModal(); showToast('✅ Hutang/Piutang berhasil diperbarui dan sisa dihitung ulang.'); }catch(error){console.error(error);showToast('❌ Gagal memperbarui hutang/piutang.');}
     }
 
     function openPayDebtModal(id) {
@@ -2235,8 +2214,7 @@
         [paymentId]: paymentRecord
       };
 
-      const nextAccountBalance = toAmount(targetAcc.balance) +
-        (txType === 'Pendapatan' ? paidAmount : -paidAmount);
+      const paymentDelta = txType === 'Pendapatan' ? paidAmount : -paidAmount;
 
       try {
         // Satu pembayaran menghasilkan:
@@ -2265,9 +2243,7 @@
             lastPaymentAt: paymentRecord.paidAt,
             lastPaymentAmount: paidAmount
           }),
-          db.ref('accounts/' + targetAcc.id).update({
-            balance: nextAccountBalance
-          })
+          adjustAccountBalance(targetAcc.id, paymentDelta)
         ]);
 
         closePayDebtModal();
@@ -2382,121 +2358,22 @@
     }
 
 
-    // ============================================================
-    // ENGINE SALDO REKENING — SINGLE SOURCE OF TRUTH
-    //
-    // Prinsip:
-    // 1. Transaksi historis tetap dipertahankan apa adanya.
-    // 2. Transfer internal tetap masuk ke saldo rekening masing-masing,
-    //    tetapi tidak masuk ke arus kas konsolidasi perusahaan.
-    // 3. Jika saldo tersimpan di Firebase valid dan tidak nol sementara
-    //    transaksi historis ada, saldo tersebut dianggap saldo aktual.
-    // 4. Jika saldo tersimpan 0/null tetapi transaksi sudah ada, sistem
-    //    melakukan fallback ke net transaksi agar data lama tidak tampil 0.
-    // 5. Jika tersedia saldo awal, saldo akhir = saldo awal + net seluruh transaksi.
-    // ============================================================
-    function getStoredAccountBalance(account) {
-      if (!account) return null;
-      const candidates = [account.balance, account.currentBalance, account.saldo];
-      for (const value of candidates) {
-        if (value === null || value === undefined || value === '') continue;
-        const n = toAmount(value);
-        if (Number.isFinite(n)) return n;
-      }
-      return null;
+    // ENGINE SALDO REKENING — accounts.balance adalah saldo aktual berjalan.
+    // openingBalance hanya saldo awal untuk laporan/referensi.
+    function getStoredAccountBalance(account){
+      if(!account)return 0; for(const value of [account.balance,account.currentBalance,account.saldo]){if(value!==null&&value!==undefined&&value!=='')return toAmount(value);} return 0;
     }
-
-    function getOpeningAccountBalance(account, transactionNet) {
-      if (!account) return 0;
-      const candidates = [
-        account.openingBalance,
-        account.initialBalance,
-        account.saldoAwal,
-        account.saldo_awal
-      ];
-      for (const value of candidates) {
-        if (value === null || value === undefined || value === '') continue;
-        const n = toAmount(value);
-        if (Number.isFinite(n)) return n;
-      }
-
-      const stored = getStoredAccountBalance(account);
-      if (stored === null) return 0;
-
-      // Data lama sering menyimpan balance=0 meskipun transaksi sudah ada.
-      // Dalam kondisi tersebut 0 dianggap belum tersinkron dan saldo awal
-      // dianggap 0 sehingga saldo akhir berasal dari transaksi historis.
-      if (stored === 0 && Math.abs(transactionNet) > 0) return 0;
-
-      // Jika saldo aktual tersimpan, kita dapat merekonstruksi saldo awal
-      // tanpa mengubah transaksi: saldo awal = saldo aktual - net transaksi.
-      return stored - transactionNet;
+    function getOpeningAccountBalance(account){
+      if(!account)return 0; for(const value of [account.openingBalance,account.initialBalance,account.saldoAwal,account.saldo_awal]){if(value!==null&&value!==undefined&&value!=='')return toAmount(value);} return getStoredAccountBalance(account);
     }
-
-    function calculateSystemEndingBalance(accountName) {
-      const account = accounts.find(a => a.name === accountName);
-      const accountTxs = transactions
-        .filter(t => t.account === accountName)
-        .sort((a, b) => {
-          const da = new Date((a.date || '1970-01-01') + 'T00:00:00');
-          const db = new Date((b.date || '1970-01-01') + 'T00:00:00');
-          return da - db || String(a.id || '').localeCompare(String(b.id || ''));
-        });
-
-      let totalIn = 0;
-      let totalOut = 0;
-      let externalIn = 0;
-      let externalOut = 0;
-
-      accountTxs.forEach(t => {
-        const amount = Math.abs(toAmount(t.amount));
-        if (!amount) return;
-
-        if (isIncome(t)) {
-          totalIn += amount;
-          if (!isInternalTransfer(t)) externalIn += amount;
-        } else if (isExpense(t)) {
-          totalOut += amount;
-          if (!isInternalTransfer(t)) externalOut += amount;
-        }
-      });
-
-      const transactionNet = totalIn - totalOut;
-      const openingBalance = getOpeningAccountBalance(account, transactionNet);
-      const calculatedEndingBalance = openingBalance + transactionNet;
-      const storedBalance = getStoredAccountBalance(account);
-
-      // Bila stored balance=0 sementara transaksi historis menghasilkan saldo
-      // non-zero, gunakan hasil rekonstruksi. Ini memperbaiki data lama tanpa
-      // mengubah satu pun transaksi.
-      const endingBalance =
-        storedBalance === null || (storedBalance === 0 && Math.abs(transactionNet) > 0)
-          ? calculatedEndingBalance
-          : storedBalance;
-
-      return {
-        totalIn,
-        totalOut,
-        externalIn,
-        externalOut,
-        transactionNet,
-        openingBalance,
-        storedBalance,
-        calculatedEndingBalance,
-        endingBalance,
-        transactionCount: accountTxs.length
-      };
+    function calculateSystemEndingBalance(accountName){
+      const account=accounts.find(a=>a.name===accountName), accountTxs=transactions.filter(t=>t.account===accountName); let totalIn=0,totalOut=0,externalIn=0,externalOut=0;
+      accountTxs.forEach(t=>{const amount=Math.abs(toAmount(t.amount));if(!amount)return;if(isIncome(t)){totalIn+=amount;if(!isInternalTransfer(t))externalIn+=amount;}else if(isExpense(t)){totalOut+=amount;if(!isInternalTransfer(t))externalOut+=amount;}});
+      const transactionNet=totalIn-totalOut, openingBalance=getOpeningAccountBalance(account), storedBalance=getStoredAccountBalance(account);
+      return {totalIn,totalOut,externalIn,externalOut,transactionNet,openingBalance,storedBalance,calculatedEndingBalance:storedBalance,endingBalance:storedBalance,transactionCount:accountTxs.length};
     }
-
-    function getAccountSystemBalance(accountName) {
-      return calculateSystemEndingBalance(accountName).endingBalance;
-    }
-
-    function getTotalSystemEndingBalance() {
-      return accounts.reduce((sum, account) => {
-        return sum + getAccountSystemBalance(account.name);
-      }, 0);
-    }
+    function getAccountSystemBalance(accountName){return calculateSystemEndingBalance(accountName).endingBalance;}
+    function getTotalSystemEndingBalance(){return accounts.reduce((sum,account)=>sum+getAccountSystemBalance(account.name),0);}
 
     // RENDER DASHBOARD & KEUANGAN UTAMA
     function renderDashboard() {
@@ -2648,6 +2525,7 @@
                 <i class="fa-solid fa-clock-rotate-left"></i> Riwayat
               </button>
               ${!isLunas ? `<button onclick="openPayDebtModal('${escapeHtml(d.id)}')" class="px-2 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-500 rounded text-[10px] font-bold uppercase">Bayar</button>` : ''}
+              <button onclick="openEditDebtModal('${escapeHtml(d.id)}')" class="px-2 py-1 bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-500 rounded text-[10px] font-bold uppercase"><i class="fa-solid fa-pen"></i> Edit</button>
               <button onclick="deleteDebt('${escapeHtml(d.id)}')" class="p-1.5 text-rose-500 hover:bg-rose-500/10 rounded" title="Hapus catatan">
                 <i class="fa-solid fa-trash text-xs"></i>
               </button>
@@ -3023,6 +2901,10 @@
       if (event.key === 'Escape') {
         closeDebtHistoryModal();
         closePayDebtModal();
+        closeEditDebtModal();
+        closeEditTxModal();
+        closeEditTransferModal();
+        closeEditAccModal();
       }
     });
 
