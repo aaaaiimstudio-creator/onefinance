@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Aplikasi Pencatatan Keuangan Trip Jogja by AAAIIM ONEFINANCE</title>
+    <title>SATAL Trip - Saling Talangan by AAAIIM ONEFINANCE</title>
+    <!-- Library untuk Download PDF secara Otomatis -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         :root {
             --primary-color: #800020; /* Deep Maroon */
@@ -538,16 +540,16 @@
         }
     </style>
 </head>
-<body>
+<body id="app-container">
 
     <header>
         <div>
-            <h1>🏯 Keuangan Trip Jogja</h1>
+            <h1>🤝 SATAL Trip - Saling Talangan</h1>
             <p>Pencatatan pengeluaran bersama & perhitungan iuran proporsional</p>
         </div>
         <div class="header-actions">
-            <button class="btn btn-outline btn-inline" onclick="exportToCSV()">📥 Unduh CSV</button>
-            <button class="btn btn-outline btn-inline" onclick="window.print()">🖨️ Cetak / PDF</button>
+            <button class="btn btn-outline btn-inline" onclick="exportToPDF()">📥 Unduh PDF</button>
+            <button class="btn btn-outline btn-inline" onclick="exportToCSV()">📊 Unduh CSV</button>
             <div class="header-badge">BY AAAIIM ONEFINANCE ✨</div>
         </div>
     </header>
@@ -583,7 +585,7 @@
                 <form id="transaction-form" onsubmit="addTransaction(event)">
                     <div class="form-group">
                         <label for="item-title">Keperluan / Transaksi</label>
-                        <input type="text" id="item-title" class="form-control" placeholder="Misal: Bensin, Tiket Candi, Makan Malam" required>
+                        <input type="text" id="item-title" class="form-control" placeholder="Misal: Bensin, Tiket Masuk, Makan Malam" required>
                     </div>
 
                     <div class="form-group">
@@ -686,7 +688,7 @@
     </div>
 
     <footer>
-        <p>Aplikasi Pencatatan Keuangan Trip Jogja — Powered <strong>BY AAAIIM ONEFINANCE</strong></p>
+        <p>SATAL Trip (Saling Talangan) — Powered <strong>BY AAAIIM ONEFINANCE</strong></p>
     </footer>
 
     <script>
@@ -694,16 +696,16 @@
         let transactions = [];
 
         function loadFromLocalStorage() {
-            const savedMembers = localStorage.getItem('trip_members');
-            const savedTransactions = localStorage.getItem('trip_transactions');
+            const savedMembers = localStorage.getItem('satal_members');
+            const savedTransactions = localStorage.getItem('satal_transactions');
 
             if (savedMembers) members = JSON.parse(savedMembers);
             if (savedTransactions) transactions = JSON.parse(savedTransactions);
         }
 
         function saveToLocalStorage() {
-            localStorage.setItem('trip_members', JSON.stringify(members));
-            localStorage.setItem('trip_transactions', JSON.stringify(transactions));
+            localStorage.setItem('satal_members', JSON.stringify(members));
+            localStorage.setItem('satal_transactions', JSON.stringify(transactions));
         }
 
         function formatRp(amount) {
@@ -986,7 +988,6 @@
 
                 let payment = Math.min(debtor.amount, creditor.amount);
 
-                // Ambil daftar transaksi ringkas yang ditalangi penerima transfer
                 let directItems = memberBreakdown[debtor.name] ? memberBreakdown[debtor.name].filter(item => item.payer === creditor.name) : [];
 
                 let directItemsText = "";
@@ -1035,6 +1036,20 @@
             }
         }
 
+        function exportToPDF() {
+            const element = document.getElementById('app-container');
+            const opt = {
+                margin:       0.5,
+                filename:     'Laporan_SATAL_Trip_AAAIIM_ONEFINANCE.pdf',
+                image:        { type: 'jpeg', quality: 0.98 },
+                html2canvas:  { scale: 2, useCORS: true },
+                jsPDF:        { unit: 'in', format: 'a4', orientation: 'portrait' }
+            };
+            
+            // Sembunyikan elemen interaktif saat dicetak ke PDF jika diperlukan
+            html2pdf().from(element).set(opt).save();
+        }
+
         function exportToCSV() {
             if (transactions.length === 0) {
                 alert("Tidak ada data transaksi untuk diunduh!");
@@ -1044,7 +1059,7 @@
             const today = new Date().toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
             
             let csvContent = "data:text/csv;charset=utf-8,";
-            csvContent += "LAPORAN KEUANGAN TRIP JOGJA - BY AAAIIM ONEFINANCE\n";
+            csvContent += "LAPORAN KEUANGAN SATAL TRIP - BY AAAIIM ONEFINANCE\n";
             csvContent += `Tanggal Unduh: ${today}\n\n`;
             csvContent += "No,Keperluan,Nominal,Ditalangi Oleh,Metode Pembayaran,Ditanggung Oleh\n";
 
@@ -1057,7 +1072,7 @@
             const encodedUri = encodeURI(csvContent);
             const link = document.createElement("a");
             link.setAttribute("href", encodedUri);
-            link.setAttribute("download", "Laporan_Keuangan_Trip_AAAIIM_ONEFINANCE.csv");
+            link.setAttribute("download", "Laporan_SATAL_Trip_AAAIIM_ONEFINANCE.csv");
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
@@ -1067,8 +1082,8 @@
             if (confirm("Apakah Anda yakin ingin menghapus semua data transaksi dan anggota? Data tidak dapat dikembalikan.")) {
                 transactions = [];
                 members = [];
-                localStorage.removeItem('trip_members');
-                localStorage.removeItem('trip_transactions');
+                localStorage.removeItem('satal_members');
+                localStorage.removeItem('satal_transactions');
                 renderMembers();
                 calculateAndRender();
             }
